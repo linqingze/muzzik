@@ -339,7 +339,7 @@
     }
 }
 -(void)rightBtnAction:(UIButton *)sender{
-    
+     
 }
 
 - (void)rtLabel:(id)rtLabel didSelectLinkWithURL:(NSURL*)url
