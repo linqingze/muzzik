@@ -1,0 +1,16 @@
+//
+//  setNameVc.h
+//  muzzik
+//
+//  Created by muzzik on 15/4/15.
+//  Copyright (c) 2015年 muzziker. All rights reserved.
+//
+
+#import "BaseNagationViewController.h"
+
+@interface setNameVc : BaseNagationViewController<UITextFieldDelegate>{
+    UITextField *nameText;
+    UILabel * tipsLabel;
+    BOOL isOk;
+}
+@end
