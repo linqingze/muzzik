@@ -38,6 +38,13 @@
 #define URL_Upload_audio        @"api/music/upload/params"
 
 #define URL_Reset_Pwd           @"api/user/resetPassword"
+#define URL_Get_Moved_music    @"api/user/movedMusic"
+//#define URL_
+
+
+
+
+
 //#define URL_check_phone @"http://192.168.1.112:3000/api/user/check"
 //#define URL_register @"http://192.168.1.112:3000/api/user/register"
 //#define URL_GetVerifiCode @"http://192.168.1.112:3000/api/user/verifiCode"
@@ -53,9 +60,12 @@
 #define Color_For_bubble [UIColor colorWithRed:255.0/255.0 green:125.0/255.0 blue:105.0/255.0 alpha:1]
 
 #pragma -mark Notification string
-#define String_StatusNotifiation @"StatusNotifiation"
-#define String_SetSongInformationNotification @"SetSongInformationNotification"
-#define String_WeiBo_Response_Notification @"weiboresponse"
+#define String_StatusNotifiation                   @"StatusNotifiation"
+#define String_SetSongInformationNotification      @"SetSongInformationNotification"
+#define String_WeiBo_Response_Notification         @"weiboresponse"
+#define String_SetSongPlayNextNotification         @"notification_play_next"
+
+
 #pragma -mark Font_Size
 
 #define Font_Size_Muzzik_Time 7.0
@@ -64,7 +74,11 @@
 #define Constant_String_PlayMode_Cycle 1
 #define Constant_String_PlayMode_Single 2
 #define Constant_String_PlayMode_Random 3
-
+#define Font_Next_Regular        @"AvenirNext-Regular"
+#define Font_Next_medium         @"AvenirNext-Medium"
+#define Font_Next_Bold           @"AvenirNext-Bold"
+#define Font_Next_DemiBold           @"AvenirNext-DemiBold"
+#define Font_Next_UltraLight     @"AvenirNext-UltraLight"
 
 #define DocumentsPath [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"]
 
@@ -105,5 +119,12 @@
 #define Constant_add            11
 #define Constant_save           12
 #define Constant_back           13
+
+
+
+#define SquareList             1
+#define MovedList              2
+#define LibraryList            3
+#define TempList               4
 
 #endif

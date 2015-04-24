@@ -515,13 +515,25 @@
         }];
         [requestForm startAsynchronous];
         _playMuzzik = playMuzzik;
-        message.text = playMuzzik.message;
+        if ([playMuzzik.message length]>0) {
+            message.text = playMuzzik.message;
+        }
+        
         artistName.text = playMuzzik.music.artist;
         songName.text = playMuzzik.music.name;
-        nickLabel.text = playMuzzik.user.name;
-       // NSLog(@"%@",[NSString stringWithFormat:@"%@%@",BaseURL_image,playMuzzik.user.avatar]);
-        [headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,playMuzzik.user.avatar]]];
-       // statements
+        if (playMuzzik.MuzzikUser) {
+            nickLabel.text = playMuzzik.MuzzikUser.name;
+            [headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,playMuzzik.MuzzikUser.avatar]]];
+        }else{
+            userInfo *user = [userInfo shareClass];
+            if ([user.token length]>0) {
+                [headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,user.avatar]]];
+                nickLabel.text = user.name;
+            }else{
+                nickLabel.text = @"Muzzik";
+                [headerImage setImage:[UIImage imageNamed:@"logo"]];
+            }
+        }
         
        
     }
@@ -575,9 +587,6 @@
     return nil;
 }
 
-- (FSPlaylistItem *)selectedPlaylistItem {
-    return _selectedPlaylistItem;
-}
 -(void)applicationDidEnterBackgroundControlRadioStatus:(NSNotification *)notification
 {
      NSDictionary *dict = [notification userInfo];

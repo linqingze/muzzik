@@ -18,7 +18,7 @@
 #import "userInfo.h"
 #import "playListController.h"
 #import "CXAHyperlinkLabel.h"
-
+#import "ChooseMusicVC.h"
 #import "LoginViewController.h"
 #define length_to_left 10
 #define length_to_right 10
@@ -26,7 +26,6 @@
 #define length_to_buttom 10
 @interface muzzikTrendController (){
     int numberOfProducts;
-    NSMutableArray *muzzikArray;
     BOOL needsLoad;
     ASIHTTPRequest *myrequest;
     UITableView *MytableView;
@@ -40,15 +39,11 @@
 @implementation muzzikTrendController
 
 //static NSString * const reuseIdentifier = @"Cell";
--(NSMutableArray *)muzziks{
-    if (!_muzziks) {
-        _muzziks = [NSMutableArray array];
-    }
-    return _muzziks;
-}
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     _musicplayer = [musicPlayer shareClass];
     [self.view setBackgroundColor:[UIColor whiteColor]];
@@ -125,14 +120,15 @@
     // Return the number of rows in the section.
     
     
-    return muzzikArray.count;
+    return self.muzziks.count;
 }
 
 
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     CXAHyperlinkLabel *label = [[CXAHyperlinkLabel alloc] initWithFrame:CGRectMake(75, 0, SCREEN_WIDTH-110, 500)];
-    [label setText:[[muzzikArray objectAtIndex:indexPath.row] objectForKey:@"message"]];
+    muzzik *tempMuzzik = [self.muzziks objectAtIndex:indexPath.row];
+    [label setText:tempMuzzik.message];
     CGSize msize = [label sizeThatFits:CGSizeMake(SCREEN_WIDTH-110, 2000)];
     return 240+msize.height;
 //    if ([[muzzikArray[indexPath.row] objectForKey:@"type"] isEqualToString:@"normal"]) {
@@ -158,62 +154,61 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 
-    if (muzzikArray.count>0) {
-        NSDictionary *muzzik = [muzzikArray objectAtIndex:indexPath.row];
-        if ([[muzzik objectForKey:@"type"]isEqualToString:@"repost"]) {
+    if (self.muzziks.count>0) {
+        muzzik *tempMuzzik = [self.muzziks objectAtIndex:indexPath.row];
+        if ([tempMuzzik.type isEqualToString:@"repost"]) {
             RepostCell *cell = [tableView dequeueReusableCellWithIdentifier:@"RepostCell" forIndexPath:indexPath];
             if (!cell.hasLoad) {
                 [cell.userImage setAlpha:0];
                 cell.hasLoad = YES;
             }
-            [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,[[muzzik objectForKey:@"user"] objectForKey:@"avatar"]]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            if ([tempMuzzik.music.key isEqualToString:self.musicplayer.localMuzzik.music.key]) {
+                cell.isPlaying = YES;
+            }else{
+                cell.isPlaying = NO;
+            }
+            [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempMuzzik.MuzzikUser.avatar]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                 [UIView animateWithDuration:0.5 animations:^{
                     [cell.userImage setAlpha:1];
                 }];
                 
             }];
-            cell.userName.text = [[muzzik objectForKey:@"user"] objectForKey:@"name"];
-            
-            NSLog(@"%@",[NSString stringWithFormat:@"%@%@",BaseURL_image,[[muzzik objectForKey:@"user"] objectForKey:@"avatar"]]);
-            [cell.muzzikMessage setText: [self transformMessage:[muzzik objectForKey:@"message"] withTopics:[muzzik objectForKey:@"topics"] andColorString:[NSString stringWithFormat:@"%@",[muzzik objectForKey:@"color"]]]];
-            cell.isMoved = [NSString stringWithFormat:@"%@",[muzzik objectForKey:@"ismoved"]];
-            if ([cell.isMoved isEqualToString:@"1"]) {
-                [cell.likeButton setImage:[UIImage imageNamed:@"赞红"] forState:UIControlStateNormal];
-            }else{
-                [cell.likeButton setImage:[UIImage imageNamed:@"赞黑"] forState:UIControlStateNormal];
-            }
+            cell.userName.text = tempMuzzik.MuzzikUser.name;
+
+            [cell.muzzikMessage setText: [self transformMessage:tempMuzzik.message withTopics:tempMuzzik.topics andColorString:[NSString stringWithFormat:@"%@",tempMuzzik.color]]];
+            cell.isMoved = tempMuzzik.ismoved;
             cell.index = indexPath.row;
             cell.muzzikMessage.delegate = self;
             CGSize msize = [cell.muzzikMessage sizeThatFits:CGSizeMake(SCREEN_WIDTH-110, 2000)];
             [cell.muzzikMessage setFrame:CGRectMake(cell.muzzikMessage.frame.origin.x, cell.muzzikMessage.frame.origin.y, msize.width, msize.height)];
             NSLog(@"%f",cell.muzzikMessage.frame.size.height);
             [cell.musicPlayView setFrame:CGRectMake(0, 70+cell.muzzikMessage.bounds.size.height, SCREEN_WIDTH, cell.musicPlayView.frame.size.height)];
-            cell.musicArtist.text = [[muzzik objectForKey:@"music"] objectForKey:@"artist"];
-            cell.musicName.text = [[muzzik objectForKey:@"music"] objectForKey:@"name"];
-            cell.timeStamp.text = [muzzik objectForKey:@"date"];
+            cell.musicArtist.text =tempMuzzik.music.artist;
+            cell.musicName.text = tempMuzzik.music.name;
+            cell.timeStamp.text = tempMuzzik.date;
             cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
-            [cell colorViewWithColorString:[NSString stringWithFormat:@"%@",[muzzik objectForKey:@"color"]]];
-            cell.muzzik_id = [muzzik objectForKey:@"_id"];
+            [cell colorViewWithColorString:[NSString stringWithFormat:@"%@",tempMuzzik.color]];
+            cell.muzzik_id = tempMuzzik.muzzik_id;
             cell.homeVc=self;
-            if ([[muzzik objectForKey:@"moveds"] integerValue]>0) {
-                [cell.moves setTitle:[NSString stringWithFormat:@"喜欢数%@",[muzzik objectForKey:@"moveds"]] forState:UIControlStateNormal];
+            if ([tempMuzzik.moveds integerValue]>0) {
+                [cell.moves setTitle:[NSString stringWithFormat:@"喜欢数%@",tempMuzzik.moveds] forState:UIControlStateNormal];
             }else{
                 [cell.moves setTitle:@"喜欢数" forState:UIControlStateNormal];
             }
-            if ([[muzzik objectForKey:@"reposts"] integerValue]>0) {
-                [cell.reposts setTitle:[NSString stringWithFormat:@"转发数%@",[muzzik objectForKey:@"reposts"]] forState:UIControlStateNormal];
+            if ([tempMuzzik.reposts integerValue]>0) {
+                [cell.reposts setTitle:[NSString stringWithFormat:@"转发数%@",tempMuzzik.reposts] forState:UIControlStateNormal];
             }
             else{
                 [cell.reposts setTitle:@"转发数" forState:UIControlStateNormal];
             }
-            if ([[muzzik objectForKey:@"comments"] integerValue]>0) {
-                [cell.comments setTitle:[NSString stringWithFormat:@"评论数%@",[muzzik objectForKey:@"comments"]] forState:UIControlStateNormal];
+            if ([tempMuzzik.comments integerValue]>0) {
+                [cell.comments setTitle:[NSString stringWithFormat:@"评论数%@",tempMuzzik.comments ] forState:UIControlStateNormal];
             }
             else{
                 [cell.comments setTitle:@"评论数" forState:UIControlStateNormal];
             }
-            if ([[muzzik objectForKey:@"shares"] integerValue]>0) {
-                [cell.shares setTitle:[NSString stringWithFormat:@"分享数%@",[muzzik objectForKey:@"shares"]] forState:UIControlStateNormal];
+            if ([tempMuzzik.shares integerValue]>0) {
+                [cell.shares setTitle:[NSString stringWithFormat:@"分享数%@",tempMuzzik.shares] forState:UIControlStateNormal];
             }
             else{
                 [cell.shares setTitle:@"分享数" forState:UIControlStateNormal];
@@ -221,91 +216,67 @@
             return  cell;
             
         }
-        else if ([[muzzik objectForKey:@"type"]isEqualToString:@"normal"]) {
+        else if ([tempMuzzik.type isEqualToString:@"normal"]) {
                 NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
             if (!cell.hasLoad) {
                 [cell.userImage setAlpha:0];
                 cell.hasLoad = YES;
             }
-                [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,[[muzzik objectForKey:@"user"] objectForKey:@"avatar"]]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            if ([tempMuzzik.music.key isEqualToString:self.musicplayer.localMuzzik.music.key]) {
+                cell.isPlaying = YES;
+            }else{
+                cell.isPlaying = NO;
+            }
+                [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempMuzzik.MuzzikUser.avatar]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                     [UIView animateWithDuration:0.5 animations:^{
                         [cell.userImage setAlpha:1];
                     }];
                     
                 }];
-                cell.userName.text = [[muzzik objectForKey:@"user"] objectForKey:@"name"];
+                cell.userName.text = tempMuzzik.MuzzikUser.name;
+            [cell.muzzikMessage setText: [self transformMessage:tempMuzzik.message withTopics:tempMuzzik.topics andColorString:[NSString stringWithFormat:@"%@",tempMuzzik.color]]];
+            cell.isMoved =tempMuzzik.ismoved;
             
-            NSLog(@"%@",[NSString stringWithFormat:@"%@%@",BaseURL_image,[[muzzik objectForKey:@"user"] objectForKey:@"avatar"]]);
-            [cell.muzzikMessage setText: [self transformMessage:[muzzik objectForKey:@"message"] withTopics:[muzzik objectForKey:@"topics"] andColorString:[NSString stringWithFormat:@"%@",[muzzik objectForKey:@"color"]]]];
-            cell.isMoved = [NSString stringWithFormat:@"%@",[muzzik objectForKey:@"ismoved"]];
-            if ([cell.isMoved isEqualToString:@"1"]) {
-                [cell.likeButton setImage:[UIImage imageNamed:@"赞红"] forState:UIControlStateNormal];
-            }else{
-                [cell.likeButton setImage:[UIImage imageNamed:@"赞黑"] forState:UIControlStateNormal];
-            }
             cell.index = indexPath.row;
             cell.muzzikMessage.delegate = self;
             CGSize msize = [cell.muzzikMessage sizeThatFits:CGSizeMake(SCREEN_WIDTH-110, 2000)];
             [cell.muzzikMessage setFrame:CGRectMake(cell.muzzikMessage.frame.origin.x, cell.muzzikMessage.frame.origin.y, msize.width, msize.height)];
             NSLog(@"%f",cell.muzzikMessage.frame.size.height);
             [cell.musicPlayView setFrame:CGRectMake(0, 70+cell.muzzikMessage.bounds.size.height, SCREEN_WIDTH, cell.musicPlayView.frame.size.height)];
-                cell.musicArtist.text = [[muzzik objectForKey:@"music"] objectForKey:@"artist"];
-                cell.musicName.text = [[muzzik objectForKey:@"music"] objectForKey:@"name"];
-                cell.timeStamp.text = [muzzik objectForKey:@"date"];
+            cell.musicArtist.text = tempMuzzik.music.artist;
+            cell.musicName.text = tempMuzzik.music.name;
+            cell.timeStamp.text = tempMuzzik.date;
             cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
-            [cell colorViewWithColorString:[NSString stringWithFormat:@"%@",[muzzik objectForKey:@"color"]]];
-            cell.muzzik_id = [muzzik objectForKey:@"_id"];
+            [cell colorViewWithColorString:[NSString stringWithFormat:@"%@",tempMuzzik.color]];
+            cell.muzzik_id = tempMuzzik.muzzik_id;
             cell.homeVc=self;
-            if ([[muzzik objectForKey:@"moveds"] integerValue]>0) {
-                [cell.moves setTitle:[NSString stringWithFormat:@"喜欢数%@",[muzzik objectForKey:@"moveds"]] forState:UIControlStateNormal];
+            if ([tempMuzzik.moveds integerValue]>0) {
+                [cell.moves setTitle:[NSString stringWithFormat:@"喜欢数%@",tempMuzzik.moveds] forState:UIControlStateNormal];
             }else{
                 [cell.moves setTitle:@"喜欢数" forState:UIControlStateNormal];
             }
-            if ([[muzzik objectForKey:@"reposts"] integerValue]>0) {
-                [cell.reposts setTitle:[NSString stringWithFormat:@"转发数%@",[muzzik objectForKey:@"reposts"]] forState:UIControlStateNormal];
+            if ([tempMuzzik.reposts integerValue]>0) {
+                [cell.reposts setTitle:[NSString stringWithFormat:@"转发数%@",tempMuzzik.reposts] forState:UIControlStateNormal];
             }
             else{
                 [cell.reposts setTitle:@"转发数" forState:UIControlStateNormal];
             }
-            if ([[muzzik objectForKey:@"comments"] integerValue]>0) {
-                [cell.comments setTitle:[NSString stringWithFormat:@"评论数%@",[muzzik objectForKey:@"comments"]] forState:UIControlStateNormal];
+            if ([tempMuzzik.comments integerValue]>0) {
+                [cell.comments setTitle:[NSString stringWithFormat:@"评论数%@",tempMuzzik.comments] forState:UIControlStateNormal];
             }
             else{
                 [cell.comments setTitle:@"评论数" forState:UIControlStateNormal];
             }
-            if ([[muzzik objectForKey:@"shares"] integerValue]>0) {
-                [cell.shares setTitle:[NSString stringWithFormat:@"分享数%@",[muzzik objectForKey:@"shares"]] forState:UIControlStateNormal];
+            if ([tempMuzzik.shares integerValue]>0) {
+                [cell.shares setTitle:[NSString stringWithFormat:@"分享数%@",tempMuzzik.shares] forState:UIControlStateNormal];
             }
             else{
                 [cell.shares setTitle:@"分享数" forState:UIControlStateNormal];
             }
                 return  cell;
-            }
-        else {
-            NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
-            [cell.userImage setAlpha:0];
-            [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,[[muzzik objectForKey:@"user"] objectForKey:@"avatar"]]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                [UIView animateWithDuration:0.5 animations:^{
-                    [cell.userImage setAlpha:1];
-                }];
-                
-            }];
-            NSLog(@"%@",[NSString stringWithFormat:@"%@%@",BaseURL_image,[[muzzik objectForKey:@"user"] objectForKey:@"avatar"]]);
-            cell.userName.text = [[muzzik objectForKey:@"user"] objectForKey:@"name"];
-             [cell.muzzikMessage setText: [self transformMessage:[muzzik objectForKey:@"message"] withTopics:[muzzik objectForKey:@"topics"] andColorString:[NSString stringWithFormat:@"%@",[muzzik objectForKey:@"color"]]]];
-            CGSize msize = [cell.muzzikMessage sizeThatFits:CGSizeMake(SCREEN_WIDTH-110, 2000)];
-            [cell.muzzikMessage setFrame:CGRectMake(cell.muzzikMessage.frame.origin.x, cell.muzzikMessage.frame.origin.y, msize.width, msize.height)];
-            NSLog(@"%f",cell.muzzikMessage.frame.size.height);
-            [cell.musicPlayView setFrame:CGRectMake(cell.musicPlayView.frame.origin.x, cell.musicPlayView.frame.origin.y-10+cell.muzzikMessage.bounds.size.height, SCREEN_WIDTH-110, cell.musicPlayView.frame.size.height)];
-            cell.muzzikMessage.delegate = self;
-            cell.musicArtist.text = [[muzzik objectForKey:@"music"] objectForKey:@"artist"];
-            cell.musicName.text = [[muzzik objectForKey:@"music"] objectForKey:@"name"];
-            cell.timeStamp.text = [muzzik objectForKey:@"date"];
-            cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
-            cell.homeVc=self;
-            return  cell;
+        }else{
+            return nil;
         }
-        
         
         }
 
@@ -330,8 +301,8 @@
     userInfo *user = [userInfo shareClass];
     if ([user.token length]>0) {
         //new po
-        LoginViewController *loginVC = [[LoginViewController alloc] init];
-        [self.homeNav.navigationController pushViewController:loginVC animated:YES];
+        ChooseMusicVC *choosevc = [[ChooseMusicVC alloc] init];
+        [self.homeNav.navigationController pushViewController:choosevc animated:YES];
     }
     else{
         LoginViewController *loginVC = [[LoginViewController alloc] init];
@@ -346,13 +317,7 @@
 {
    
 }
--(void)playSongWithSongModel:(muzzik *)songModel{
-    _musicplayer.MusicArray = self.muzziks;
-    [_musicplayer playSongWithSongModel:songModel];
 
-    
-    [self.homeNav checkShowMusicView];
-}
 -(void)playListAction{
     
 //    UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:UMShareToWechatSession];
@@ -381,12 +346,12 @@
     NSLog(@"%@",[url absoluteString]);
    // [SVProgressHUD showSuccessWithStatus:[NSString stringWithFormat:@"%@",url]];
 }
--(void)moveMuzzikWithId:(NSString *)muzzik_id isMoved:(NSString *) ismoved atIndex:(NSInteger) index{
+-(void)moveMuzzikWithId:(NSString *)muzzik_id isMoved:(BOOL) ismoved atIndex:(NSInteger) index{
     userInfo *user = [userInfo shareClass];
     if ([user.token length]>0) {
         ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/%@/moved",BaseURL,muzzik_id]]];
         NSDictionary *dic;
-        if ([ismoved isEqualToString:@"0"]) {
+        if (!ismoved ) {
             dic = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:@"ismoved"];
         }
         else{
@@ -401,12 +366,12 @@
               NSLog(@"%d",[weakrequest responseStatusCode]);
             if ([weakrequest responseStatusCode] == 200) {
                // NSData *data = [weakrequest responseData];
-                
-                [[muzzikArray objectAtIndex:index] setObject:[dic objectForKey:@"ismoved"]  forKey:@"ismoved"];
-                if ([[NSString stringWithFormat:@"%@",[dic objectForKey:@"ismoved"]]isEqualToString:@"1"]) {
-                    [[muzzikArray objectAtIndex:index] setObject:[NSString stringWithFormat:@"%d",([[[muzzikArray objectAtIndex:index] objectForKey:@"moveds"] intValue]+1)]  forKey:@"moveds"];
+                muzzik *localMuzzik = self.muzziks[index];
+                localMuzzik.ismoved = [[dic objectForKey:@"ismoved"] boolValue];
+                if ([[dic objectForKey:@"ismoved"] boolValue]) {
+                    localMuzzik.moveds = [NSString stringWithFormat:@"%d",[localMuzzik.moveds integerValue]-1];
                 }else{
-                   [[muzzikArray objectAtIndex:index] setObject:[NSString stringWithFormat:@"%d",([[[muzzikArray objectAtIndex:index] objectForKey:@"moveds"] intValue]-1)]  forKey:@"moveds"];
+                   localMuzzik.moveds = [NSString stringWithFormat:@"%d",[localMuzzik.moveds integerValue]-1];
                 }
                 NSIndexPath *indexPath=[NSIndexPath indexPathForRow:index inSection:0];
                 [MytableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];
@@ -435,12 +400,11 @@
         NSLog(@"%@",[weakrequest responseString]);
         NSLog(@"%d",[weakrequest responseStatusCode]);
         if ([weakrequest responseStatusCode] == 200) {
+             muzzik *localMuzzik = self.muzziks[index];
             [KVNProgress showSuccessWithStatus:@"转发成功"];
-            [[muzzikArray objectAtIndex:index] setObject:[NSString stringWithFormat:@"%d",([[[muzzikArray objectAtIndex:index] objectForKey:@"reposts"] intValue]+1)]  forKey:@"reposts"];
+            localMuzzik.reposts = [NSString stringWithFormat:@"%d",[localMuzzik.reposts integerValue]+1];
             NSIndexPath *indexPath=[NSIndexPath indexPathForRow:index inSection:0];
             [MytableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];
-            
-            
         }
         
         else if([weakrequest responseStatusCode] == 401){
@@ -472,9 +436,8 @@
         NSData *data = [weakrequest responseData];
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         if (dic) {
-            muzzikArray = [dic objectForKey:@"muzziks"];
             muzzik *muzzikToy = [muzzik new];
-            self.muzziks = [muzzikToy makeMuzziksByarray:muzzikArray];
+            self.muzziks = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
             [MytableView reloadData];
             
         }
@@ -485,4 +448,22 @@
     }];
     [request startAsynchronous];
 }
+
+-(void)playnextMuzzikUpdate{
+    if ([musicPlayer shareClass].listType == SquareList) {
+        [MytableView reloadData];
+    }
+    
+    
+}
+-(void)playSongWithSongModel:(muzzik *)songModel{
+    _musicplayer.listType = SquareList;
+    _musicplayer.MusicArray = self.muzziks;
+    [_musicplayer playSongWithSongModel:songModel];
+    
+    
+    
+    [self.homeNav checkShowMusicView];
+}
+
 @end

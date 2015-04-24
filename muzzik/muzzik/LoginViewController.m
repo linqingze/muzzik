@@ -243,7 +243,7 @@
         NSLog(@"%d",[weakrequest responseStatusCode]);
          NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
         if ([weakrequest responseStatusCode] == 200) {
-            
+            [MuzzikItem addMessageToLocal:dic];
             userInfo *user = [userInfo shareClass];
             if ([[dic allKeys] containsObject:@"token"]) {
                 user.token = [dic objectForKey:@"token"];
@@ -297,11 +297,12 @@
                     if ([weakrequest responseStatusCode] == 200) {
                         NSData *data = [weakrequest responseData];
                         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data  options:NSJSONReadingMutableContainers error:nil];
+                        [MuzzikItem addMessageToLocal:dic];
                         userInfo *user = [userInfo shareClass];
                         user.uid = [dic objectForKey:@"_id"];
                         user.token = [dic objectForKey:@"token"];
                         user.gender = [dic objectForKey:@"gender"];
-                        user.avatar = [dic objectForKey:@"blocked"];
+                        user.avatar = [dic objectForKey:@"avatar"];
                         user.name = [dic objectForKey:@"name"];
                         [self.navigationController popViewControllerAnimated:YES];
                         
@@ -339,11 +340,12 @@
         if ([weakrequest responseStatusCode] == 200) {
             NSData *data = [weakrequest responseData];
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data  options:NSJSONReadingMutableContainers error:nil];
+            [MuzzikItem addMessageToLocal:dic];
             userInfo *user = [userInfo shareClass];
             user.uid = [dic objectForKey:@"_id"];
             user.token = [dic objectForKey:@"token"];
             user.gender = [dic objectForKey:@"gender"];
-            user.avatar = [dic objectForKey:@"blocked"];
+            user.avatar = [dic objectForKey:@"avatar"];
             user.name = [dic objectForKey:@"name"];
             [self.navigationController popViewControllerAnimated:YES];
             

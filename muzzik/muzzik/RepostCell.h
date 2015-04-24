@@ -10,7 +10,7 @@
 #import "CXAHyperlinkLabel.h"
 #import "muzzikTrendController.h"
 @interface RepostCell : UITableViewCell
-
+@property (nonatomic) BOOL isPlaying;
 @property (nonatomic) UILabel *repostUserName;                 //转发用户名
 @property (nonatomic) UIImageView *repostImage;                //muzzik类型图标
 @property (nonatomic) UIImageView *userImage;                  //用户头像
@@ -39,7 +39,7 @@
 @property (nonatomic,weak) muzzikTrendController *homeVc;
 @property (nonatomic) muzzik *songModel;
 @property (nonatomic) NSString *muzzik_id;
-@property (nonatomic) NSString *isMoved;
+@property (nonatomic) BOOL isMoved;
 @property (nonatomic) NSInteger index;
 @property (nonatomic) BOOL hasLoad;
 @property (nonatomic) BOOL isReposted;

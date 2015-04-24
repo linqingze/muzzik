@@ -169,7 +169,7 @@
             btnImage = [UIImage imageNamed:@"确定"];
             break;
         case 4:
-            btnImage = [UIImage imageNamed:@"search"];
+            btnImage = [UIImage imageNamed:@"searchImage_white"];
             break;
         case 5:
             btnImage = [NSString stringWithFormat:@"下一步"];

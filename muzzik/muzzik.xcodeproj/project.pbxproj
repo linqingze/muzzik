@@ -135,8 +135,13 @@
 		F292902C1ADFCA9B0086E8D4 /* messageForResetVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F292902B1ADFCA9B0086E8D4 /* messageForResetVC.m */; };
 		F29BEEAB1AE0B4AA00172538 /* KVNProgressView.xib in Resources */ = {isa = PBXBuildFile; fileRef = F29BEEAA1AE0B4AA00172538 /* KVNProgressView.xib */; };
 		F2A5E2061AD90D8000FD8B3E /* muzzik.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A5E2051AD90D8000FD8B3E /* muzzik.m */; };
-		F2A5E2091AD90F9F00FD8B3E /* user.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A5E2081AD90F9F00FD8B3E /* user.m */; };
+		F2A5E2091AD90F9F00FD8B3E /* MuzzikUser.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A5E2081AD90F9F00FD8B3E /* MuzzikUser.m */; };
 		F2A5E20C1AD9106E00FD8B3E /* music.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A5E20B1AD9106E00FD8B3E /* music.m */; };
+		F2A62EE51AE94FDE00FAAA01 /* SongTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A62EE41AE94FDE00FAAA01 /* SongTableViewController.m */; };
+		F2A62EE81AE956A700FAAA01 /* MusicCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A62EE71AE956A700FAAA01 /* MusicCell.m */; };
+		F2A62EEB1AE9F6D900FAAA01 /* ChooseMusicVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A62EEA1AE9F6D900FAAA01 /* ChooseMusicVC.m */; };
+		F2A62EEE1AE9F70B00FAAA01 /* ScrollVCBase.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A62EED1AE9F70B00FAAA01 /* ScrollVCBase.m */; };
+		F2A62EF11AEA955300FAAA01 /* SearchLibraryMusicVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A62EF01AEA955300FAAA01 /* SearchLibraryMusicVC.m */; };
 		F2AD135A1AE2DEE6001BBEA1 /* NetTypeHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = F2AD13591AE2DEE6001BBEA1 /* NetTypeHelper.m */; };
 		F2B703671AC67EBF005F0903 /* TencentOpenApi_IOS_Bundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F2B703651AC67EBF005F0903 /* TencentOpenApi_IOS_Bundle.bundle */; };
 		F2B703681AC67EBF005F0903 /* TencentOpenAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2B703661AC67EBF005F0903 /* TencentOpenAPI.framework */; };
@@ -426,10 +431,20 @@
 		F29BEEAA1AE0B4AA00172538 /* KVNProgressView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = KVNProgressView.xib; sourceTree = "<group>"; };
 		F2A5E2041AD90D8000FD8B3E /* muzzik.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = muzzik.h; sourceTree = "<group>"; };
 		F2A5E2051AD90D8000FD8B3E /* muzzik.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = muzzik.m; sourceTree = "<group>"; };
-		F2A5E2071AD90F9F00FD8B3E /* user.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = user.h; sourceTree = "<group>"; };
-		F2A5E2081AD90F9F00FD8B3E /* user.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = user.m; sourceTree = "<group>"; };
+		F2A5E2071AD90F9F00FD8B3E /* MuzzikUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MuzzikUser.h; sourceTree = "<group>"; };
+		F2A5E2081AD90F9F00FD8B3E /* MuzzikUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MuzzikUser.m; sourceTree = "<group>"; };
 		F2A5E20A1AD9106E00FD8B3E /* music.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = music.h; sourceTree = "<group>"; };
 		F2A5E20B1AD9106E00FD8B3E /* music.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = music.m; sourceTree = "<group>"; };
+		F2A62EE31AE94FDE00FAAA01 /* SongTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SongTableViewController.h; sourceTree = "<group>"; };
+		F2A62EE41AE94FDE00FAAA01 /* SongTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SongTableViewController.m; sourceTree = "<group>"; };
+		F2A62EE61AE956A700FAAA01 /* MusicCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicCell.h; sourceTree = "<group>"; };
+		F2A62EE71AE956A700FAAA01 /* MusicCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MusicCell.m; sourceTree = "<group>"; };
+		F2A62EE91AE9F6D900FAAA01 /* ChooseMusicVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChooseMusicVC.h; sourceTree = "<group>"; };
+		F2A62EEA1AE9F6D900FAAA01 /* ChooseMusicVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChooseMusicVC.m; sourceTree = "<group>"; };
+		F2A62EEC1AE9F70B00FAAA01 /* ScrollVCBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScrollVCBase.h; sourceTree = "<group>"; };
+		F2A62EED1AE9F70B00FAAA01 /* ScrollVCBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScrollVCBase.m; sourceTree = "<group>"; };
+		F2A62EEF1AEA955300FAAA01 /* SearchLibraryMusicVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchLibraryMusicVC.h; sourceTree = "<group>"; };
+		F2A62EF01AEA955300FAAA01 /* SearchLibraryMusicVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchLibraryMusicVC.m; sourceTree = "<group>"; };
 		F2AD13581AE2DEE6001BBEA1 /* NetTypeHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetTypeHelper.h; sourceTree = "<group>"; };
 		F2AD13591AE2DEE6001BBEA1 /* NetTypeHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetTypeHelper.m; sourceTree = "<group>"; };
 		F2B703651AC67EBF005F0903 /* TencentOpenApi_IOS_Bundle.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = TencentOpenApi_IOS_Bundle.bundle; sourceTree = "<group>"; };
@@ -1006,8 +1021,8 @@
 			children = (
 				F2A5E2041AD90D8000FD8B3E /* muzzik.h */,
 				F2A5E2051AD90D8000FD8B3E /* muzzik.m */,
-				F2A5E2071AD90F9F00FD8B3E /* user.h */,
-				F2A5E2081AD90F9F00FD8B3E /* user.m */,
+				F2A5E2071AD90F9F00FD8B3E /* MuzzikUser.h */,
+				F2A5E2081AD90F9F00FD8B3E /* MuzzikUser.m */,
 				F2A5E20A1AD9106E00FD8B3E /* music.h */,
 				F2A5E20B1AD9106E00FD8B3E /* music.m */,
 			);
@@ -1017,6 +1032,16 @@
 		F2E8F11C1AE9121E0000509B /* 发po分享 */ = {
 			isa = PBXGroup;
 			children = (
+				F2A62EE91AE9F6D900FAAA01 /* ChooseMusicVC.h */,
+				F2A62EEA1AE9F6D900FAAA01 /* ChooseMusicVC.m */,
+				F2A62EEC1AE9F70B00FAAA01 /* ScrollVCBase.h */,
+				F2A62EED1AE9F70B00FAAA01 /* ScrollVCBase.m */,
+				F2A62EE31AE94FDE00FAAA01 /* SongTableViewController.h */,
+				F2A62EE41AE94FDE00FAAA01 /* SongTableViewController.m */,
+				F2A62EEF1AEA955300FAAA01 /* SearchLibraryMusicVC.h */,
+				F2A62EF01AEA955300FAAA01 /* SearchLibraryMusicVC.m */,
+				F2A62EE61AE956A700FAAA01 /* MusicCell.h */,
+				F2A62EE71AE956A700FAAA01 /* MusicCell.m */,
 			);
 			name = "发po分享";
 			sourceTree = "<group>";
@@ -1152,11 +1177,13 @@
 				E11246431AAAB1F20014D461 /* ASIDataCompressor.m in Sources */,
 				E11245FB1AAAAE4B0014D461 /* AppDelegate.m in Sources */,
 				E11246901AAAB2CD0014D461 /* RepostCell.m in Sources */,
+				F2A62EE81AE956A700FAAA01 /* MusicCell.m in Sources */,
 				E1FA12C91AB1499F005EDA1D /* LocalFileDataSource.m in Sources */,
 				E11245F81AAAAE4B0014D461 /* main.m in Sources */,
 				F261312B1ADE4DD90042F1D4 /* setHeadImageVC.m in Sources */,
+				F2A62EE51AE94FDE00FAAA01 /* SongTableViewController.m in Sources */,
 				E1FA12E41AB18252005EDA1D /* FSCheckContentTypeRequest.m in Sources */,
-				F2A5E2091AD90F9F00FD8B3E /* user.m in Sources */,
+				F2A5E2091AD90F9F00FD8B3E /* MuzzikUser.m in Sources */,
 				F29290261ADFB1B70086E8D4 /* UIImage+KVNImageEffects.m in Sources */,
 				E16716251AAD77830068AE98 /* userInfo.m in Sources */,
 				E112468E1AAAB2CD0014D461 /* muzzikTrendController.m in Sources */,
@@ -1168,6 +1195,7 @@
 				E16285BC1ACFE68000ACE713 /* ActivityUserCell.m in Sources */,
 				F292902C1ADFCA9B0086E8D4 /* messageForResetVC.m in Sources */,
 				E112469F1AAACE3C0014D461 /* topicCardCell.m in Sources */,
+				F2A62EEB1AE9F6D900FAAA01 /* ChooseMusicVC.m in Sources */,
 				F29290201ADFB1A40086E8D4 /* KVNProgress.m in Sources */,
 				E1FA12E51AB18252005EDA1D /* FSParsePlaylistRequest.m in Sources */,
 				E11246721AAAB20B0014D461 /* SDWebImageDownloaderOperation.m in Sources */,
@@ -1208,6 +1236,7 @@
 				E1FA12E61AB18252005EDA1D /* FSParseRssPodcastFeedRequest.m in Sources */,
 				E1FA12E21AB18252005EDA1D /* FSAudioController.m in Sources */,
 				E11246791AAAB20B0014D461 /* UIImageView+HighlightedWebCache.m in Sources */,
+				F2A62EF11AEA955300FAAA01 /* SearchLibraryMusicVC.m in Sources */,
 				E112466C1AAAB20B0014D461 /* MKAnnotationView+WebCache.m in Sources */,
 				E11246761AAAB20B0014D461 /* UIImage+GIF.m in Sources */,
 				E11246451AAAB1F20014D461 /* ASIDownloadCache.m in Sources */,
@@ -1223,6 +1252,7 @@
 				E1FA12C51AB1499F005EDA1D /* CoreFoundationDataSource.m in Sources */,
 				F2F0FC8C1ADD8B7100668103 /* TeachViewController.m in Sources */,
 				E1FA12E71AB18252005EDA1D /* FSPlaylistItem.m in Sources */,
+				F2A62EEE1AE9F70B00FAAA01 /* ScrollVCBase.m in Sources */,
 				F2AD135A1AE2DEE6001BBEA1 /* NetTypeHelper.m in Sources */,
 				E1FA13491AB1ABDD005EDA1D /* Reachability.m in Sources */,
 				F21EA1CA1ACECC6200F5ED32 /* TopicVC.m in Sources */,

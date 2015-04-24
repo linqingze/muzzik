@@ -9,15 +9,16 @@
 #import "muzzik.h"
 
 @implementation muzzik
--(NSMutableArray*)makeMuzziksByarray:(NSMutableArray *)array{
+-(NSMutableArray*)makeMuzziksByMuzzikArray:(NSMutableArray *)array{
     NSMutableArray *muzziks = [NSMutableArray array];
     for (NSDictionary *dic in array) {
         muzzik *newmuzzik = [muzzik new];
         newmuzzik.muzzik_id = [dic objectForKey:@"_id"];
+        newmuzzik.ismoved = [[dic objectForKey:@"ismoved"] boolValue];
         newmuzzik.date = [dic objectForKey:@"date"];
         newmuzzik.message = [dic objectForKey:@"message"];
         newmuzzik.image = [dic objectForKey:@"image"];
-        newmuzzik.tpoics = [dic objectForKey:@"tpoics"];
+        newmuzzik.topics = [dic objectForKey:@"tpoics"];
         newmuzzik.users = [dic objectForKey:@"users"];
         newmuzzik.type = [dic objectForKey:@"type"];
         newmuzzik.onlytext = [[dic objectForKey:@"onlytext"] boolValue];
@@ -28,20 +29,34 @@
         newmuzzik.moveds = [dic objectForKey:@"moveds"];
         newmuzzik.isprivate = [[dic objectForKey:@"private"] boolValue];
         newmuzzik.plays = [dic objectForKey:@"plays"];
-        newmuzzik.user = [user new];
-        newmuzzik.user.avatar = [[dic objectForKey:@"user"] objectForKey:@"avatar"];
-        newmuzzik.user.user_id = [[dic objectForKey:@"user"] objectForKey:@"_id"];
-        newmuzzik.user.gender = [[dic objectForKey:@"user"] objectForKey:@"gender"];
-        newmuzzik.user.name = [[dic objectForKey:@"user"] objectForKey:@"name"];
+        newmuzzik.MuzzikUser = [MuzzikUser new];
+        newmuzzik.MuzzikUser.avatar = [[dic objectForKey:@"user"] objectForKey:@"avatar"];
+        newmuzzik.MuzzikUser.user_id = [[dic objectForKey:@"user"] objectForKey:@"_id"];
+        newmuzzik.MuzzikUser.gender = [[dic objectForKey:@"user"] objectForKey:@"gender"];
+        newmuzzik.MuzzikUser.name = [[dic objectForKey:@"user"] objectForKey:@"name"];
         newmuzzik.music = [music new];
         newmuzzik.music.music_id = [[dic objectForKey:@"music"] objectForKey:@"_id"];
          newmuzzik.music.artist = [[dic objectForKey:@"music"] objectForKey:@"artist"];
         newmuzzik.music.key = [[dic objectForKey:@"music"] objectForKey:@"key"];
-        newmuzzik.music.block = [[[dic objectForKey:@"music"] objectForKey:@"block"] boolValue];
+       // newmuzzik.music.block = [[[dic objectForKey:@"music"] objectForKey:@"block"] boolValue];
         newmuzzik.music.name = [[dic objectForKey:@"music"] objectForKey:@"name"];
 //        if ([dic allKeys] containsObject:@"") {
 //            <#statements#>
 //        }
+        [muzziks addObject:newmuzzik];
+    }
+    return muzziks;
+}
+
+-(NSMutableArray*)makeMuzziksByMusicArray:(NSMutableArray *)array{
+    NSMutableArray *muzziks = [NSMutableArray array];
+    for (NSDictionary *dic in array) {
+        muzzik *newmuzzik = [muzzik new];
+        newmuzzik.music = [music new];
+        newmuzzik.music.music_id = [dic objectForKey:@"_id"];
+        newmuzzik.music.artist = [dic objectForKey:@"artist"];
+        newmuzzik.music.key = [dic objectForKey:@"key"];
+        newmuzzik.music.name = [dic objectForKey:@"name"];
         [muzziks addObject:newmuzzik];
     }
     return muzziks;

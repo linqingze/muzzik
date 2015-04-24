@@ -13,5 +13,4 @@
 @property (nonatomic,copy) NSString *key;
 @property (nonatomic,copy) NSString *name;
 @property (nonatomic,copy) NSString *music_id;
-@property (nonatomic,assign) BOOL block;
 @end

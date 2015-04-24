@@ -25,12 +25,6 @@ static NSMutableArray *playList;
 @end
 @implementation musicPlayer
 
--(NSMutableArray *)MusicArray{
-    if (!_MusicArray) {
-        _MusicArray = [[NSMutableArray alloc] init];
-    }
-    return _MusicArray;
-}
 +(musicPlayer *) shareClass{
     static musicPlayer *myclass=nil;
     if(!myclass){
@@ -40,7 +34,6 @@ static NSMutableArray *playList;
 }
 -(id)init{
    self = [super init];
-    localMuzzik = [muzzik new];
     
     _radioView = [[RFRadioView alloc] initWithFrame:CGRectMake(0,-64,SCREEN_WIDTH,64)];
     _radioView.delegate = self;
@@ -101,7 +94,7 @@ static NSMutableArray *playList;
         // 遍历结果集
         
         while ([rs next]) {
-            if ([[rs stringForColumn:@"songkey"] isEqualToString:localMuzzik.music.key]) {
+            if ([[rs stringForColumn:@"songkey"] isEqualToString:_localMuzzik.music.key]) {
                 [rs close];
                 [self.muzzikDB close];
                 return YES;
@@ -131,7 +124,7 @@ static NSMutableArray *playList;
     else{
         _radioView.musicUrl = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_audio,playMuzzik.music.key]];
         if ([[Reachability reachabilityForLocalWiFi] currentReachabilityStatus] == kReachableViaWiFi) {
-            [self downLoadFileWithModel:localMuzzik];
+            [self downLoadFileWithModel:_localMuzzik];
         }
     }
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackgroundSetSongInformation:) name:String_SetSongInformationNotification object:nil];
@@ -141,9 +134,10 @@ static NSMutableArray *playList;
     _radioView.playMuzzik = playMuzzik;
     //[_radioView setRadioViewLrc];
     globle.isPlaying = YES;
-    localMuzzik = playMuzzik;
+    _localMuzzik = playMuzzik;
     
     self.index = [self.MusicArray indexOfObject:playMuzzik];
+    [[NSNotificationCenter defaultCenter] postNotificationName:String_SetSongPlayNextNotification object:nil];
     NSLog(@"%d",self.index);
 }
 
@@ -152,8 +146,8 @@ static NSMutableArray *playList;
 {
     if (NSClassFromString(@"MPNowPlayingInfoCenter")) {
         NSMutableDictionary * dict = [[NSMutableDictionary alloc] init];
-        [dict setObject:localMuzzik.music.name forKey:MPMediaItemPropertyTitle];
-        [dict setObject:localMuzzik.music.artist  forKey:MPMediaItemPropertyArtist];
+        [dict setObject:_localMuzzik.music.name forKey:MPMediaItemPropertyTitle];
+        [dict setObject:_localMuzzik.music.artist  forKey:MPMediaItemPropertyArtist];
         [dict setObject:[NSNumber numberWithDouble:[AudioPlayer shareClass].duration] forKey:MPMediaItemPropertyPlaybackDuration];
         
         //音乐当前播放时间 在计时器中修改
@@ -166,7 +160,7 @@ static NSMutableArray *playList;
 -(void)playModleIsLock
 {
     
-    _radioView.playMuzzik = localMuzzik;
+    _radioView.playMuzzik = _localMuzzik;
     globle.isPlaying = YES;
 }
 -(void)play{
@@ -187,15 +181,15 @@ static NSMutableArray *playList;
                 if (self.index>=[self.MusicArray count]) {
                     self.index = 0;
                 }
-                localMuzzik = [self.MusicArray objectAtIndex:self.index];
-                [self playSongWithSongModel:localMuzzik];
+                _localMuzzik = [self.MusicArray objectAtIndex:self.index];
+                [self playSongWithSongModel:_localMuzzik];
             }
                 break;
             case 1:
             {
                 NSInteger  number = [self.MusicArray count];
-                localMuzzik = [self.MusicArray objectAtIndex:arc4random()%number];
-                [self playSongWithSongModel:localMuzzik];
+                _localMuzzik = [self.MusicArray objectAtIndex:arc4random()%number];
+                [self playSongWithSongModel:_localMuzzik];
             }
                 break;
             case -1:
@@ -234,6 +228,7 @@ static NSMutableArray *playList;
 {
     if (playModel == 0) {
         [self playNext];
+        
     }
     
     }

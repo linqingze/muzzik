@@ -370,12 +370,20 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     [userDefault setObject:message forKey:@"LoginAcess"];
     [userDefault synchronize];
 }
-
-
-+ (void)removeMessageFromLocal
++ (void)addStringToLocal:(NSString *)string ForKey:(NSString *)key
 {
     NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
-    [userDefault removeObjectForKey:@"LoginAcess"];
+    [userDefault setObject:string forKey:key];
+    [userDefault synchronize];
+}
++(NSString *)getStringForKey:(NSString *)key{
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    return [userDefault stringForKey:key];
+}
++ (void)removeMessageFromLocal:(NSString *)string
+{
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    [userDefault removeObjectForKey:string];
     
 }
 

@@ -30,9 +30,15 @@
 + (NSString *)base64StringFromText:(NSString *)text withKey:(NSString*)key;   //对文本进行加密
 + (NSString *)textFromBase64String:(NSString *)base64 withKey:(NSString*)key; //对文本进行解密
 + (UIImage*) createImageWithColor: (UIColor*) color;      //创建图片
-+ (void)addMessageToLocal:(NSMutableDictionary *)message;
-+ (void)removeMessageFromLocal;
-+ (NSMutableDictionary *)messageFromLocal;
+
+#pragma -mark 本地持久化数据
++ (void)addMessageToLocal:(NSDictionary *)message;
++ (void)addStringToLocal:(NSString *)string ForKey:(NSString *)key;
++ (void)removeMessageFromLocal:(NSString *)string;
++(NSString *)getStringForKey:(NSString *)key;
++ (NSDictionary *)messageFromLocal;
+
+
 + (BOOL) saveImageToCacheDir:(NSString *)directoryPath Image:(UIImage *)image imageName:(NSString *)imageName ImageType:(NSString *)imageType;
 +(NSData*) loadImageData:(NSString *)directoryPath Name:(NSString *)imageName;
 //加下划线

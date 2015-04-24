@@ -131,13 +131,44 @@
 -(void) colorViewWithColorString:(NSString *) colorString{
     UIColor *color;
     if ([colorString isEqualToString:@"1"]) {
-        color = [UIColor orangeColor];
+        color = [UIColor colorWithHexString:@"fea42c"];
+        if (self.isMoved) {
+            [self.likeButton setImage:[UIImage imageNamed:@"yellowlikedImage"] forState:UIControlStateNormal];
+        }else{
+            [self.likeButton setImage:[UIImage imageNamed:@"yellowlikeImage"] forState:UIControlStateNormal];
+        }
+        if (self.isPlaying) {
+            [self.playButton setImage:[UIImage imageNamed:@"yellowlikeImage"] forState:UIControlStateNormal];
+        }else{
+            [self.playButton setImage:[UIImage imageNamed:@"yellowplayImage"] forState:UIControlStateNormal];
+        }
     }
     else if([colorString isEqualToString:@"2"]){
-        color = [UIColor brownColor];
+        //bluelikeImage
+        color = [UIColor colorWithHexString:@"04a0bf"];
+        if (self.isMoved) {
+            [self.likeButton setImage:[UIImage imageNamed:@"bluelikedImage"] forState:UIControlStateNormal];
+        }else{
+            [self.likeButton setImage:[UIImage imageNamed:@"bluelikeImage"] forState:UIControlStateNormal];
+        }
+        if (self.isPlaying) {
+            [self.playButton setImage:[UIImage imageNamed:@"bluelikeImage"] forState:UIControlStateNormal];
+        }else{
+            [self.playButton setImage:[UIImage imageNamed:@"blueplayImage"] forState:UIControlStateNormal];
+        }
     }
     else{
-        color = [UIColor magentaColor];
+        color = [UIColor colorWithHexString:@"f26d7d"];
+        if (self.isMoved) {
+            [self.likeButton setImage:[UIImage imageNamed:@"redlikedImage"] forState:UIControlStateNormal];
+        }else{
+            [self.likeButton setImage:[UIImage imageNamed:@"redlikeImage"] forState:UIControlStateNormal];
+        }
+        if (self.isPlaying) {
+            [self.playButton setImage:[UIImage imageNamed:@"redlikeImage"] forState:UIControlStateNormal];
+        }else{
+            [self.playButton setImage:[UIImage imageNamed:@"redplayImage"] forState:UIControlStateNormal];
+        }
     }
     [_progress setTintColor:color];
     [_musicArtist setTextColor:color];

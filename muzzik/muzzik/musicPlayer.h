@@ -11,15 +11,16 @@
 #import "Globle.h"
 #import "FMDatabase.h"
 @interface musicPlayer : UIViewController{
-     muzzik * localMuzzik;
         Globle * globle;
     NSString *songpath;
 }
+@property (nonatomic,retain)muzzik * localMuzzik;
 @property (nonatomic) FMDatabase *muzzikDB;
 @property (nonatomic,strong) NSMutableArray * MusicArray;
 @property (nonatomic,assign) NSInteger index;
 @property (nonatomic) NSInteger playModel;
-@property (nonatomic) RFRadioView * radioView;
+@property (nonatomic,retain) RFRadioView * radioView;
+@property (nonatomic,assign) NSInteger listType;
 +(musicPlayer *) shareClass;
 +(NSMutableArray *)playMusicList;
 -(void)playSongWithSongModel:(muzzik *)playMuzzik;

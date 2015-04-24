@@ -29,7 +29,7 @@
 @property(nonatomic) NSURL *imageURL;
 -(void)playSongWithSongModel:(muzzik *)songModel;
 -(void)downMusicWithModel:(muzzik *)model;
--(void)moveMuzzikWithId:(NSString *)muzzik_id isMoved:(NSString *) ismoved atIndex:(NSInteger) index;
+-(void)moveMuzzikWithId:(NSString *)muzzik_id isMoved:(BOOL) ismoved atIndex:(NSInteger) index;
 -(void)repostActionWithMuzzik_id:(NSString *)muzzik_id atIndex:(NSInteger) index;
 -(void)shareActionWithMuzzik_id:(NSString *)muzzik_id atIndex:(NSInteger) index;
 @property(weak,nonatomic) HostViewController *homeNav;

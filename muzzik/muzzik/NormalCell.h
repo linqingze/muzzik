@@ -36,9 +36,10 @@
 @property (nonatomic,weak) muzzikTrendController *homeVc;
 @property (nonatomic) muzzik *songModel;
 @property (nonatomic) NSString *muzzik_id;
-@property (nonatomic) NSString *isMoved;
+@property (nonatomic) BOOL isMoved;
 @property (nonatomic) NSInteger index;
 @property (nonatomic) BOOL hasLoad;
 @property (nonatomic) BOOL isReposted;
+@property (nonatomic) BOOL isPlaying;
 -(void) colorViewWithColorString:(NSString *) colorString;
 @end
