@@ -19,9 +19,6 @@
 #define kDefaultCenterCurrentTab 0.0 // 1.0: YES, 0.0: NO
 
 #define kPageViewTag 34
-
-#define kDefaultIndicatorColor [UIColor colorWithRed:178.0/255.0 green:203.0/255.0 blue:57.0/255.0 alpha:0.75]
-#define kDefaultTabsViewBackgroundColor [UIColor colorWithRed:234.0/255.0 green:234.0/255.0 blue:234.0/255.0 alpha:0.75]
 #define kDefaultContentViewBackgroundColor [UIColor colorWithRed:248.0/255.0 green:248.0/255.0 blue:248.0/255.0 alpha:0.75]
 
 // TabView for tabs, that provides un/selected state indicators
@@ -272,8 +269,8 @@
     _centerCurrentTab = kDefaultCenterCurrentTab;
     
     // Default colors
-    _indicatorColor = kDefaultIndicatorColor;
-    _tabsViewBackgroundColor = kDefaultTabsViewBackgroundColor;
+    _indicatorColor = Color_IndicatorColor;
+    _tabsViewBackgroundColor = Color_NavigationBar;
     _contentViewBackgroundColor = kDefaultContentViewBackgroundColor;
     
     // pageViewController
@@ -307,8 +304,8 @@
     
     // Get colors if provided
     if ([self.delegate respondsToSelector:@selector(viewPager:colorForComponent:withDefault:)]) {
-        _indicatorColor = [self.delegate viewPager:self colorForComponent:ViewPagerIndicator withDefault:kDefaultIndicatorColor];
-        _tabsViewBackgroundColor = [self.delegate viewPager:self colorForComponent:ViewPagerTabsView withDefault:kDefaultTabsViewBackgroundColor];
+        _indicatorColor = [self.delegate viewPager:self colorForComponent:ViewPagerIndicator withDefault:Color_IndicatorColor];
+        _tabsViewBackgroundColor = [self.delegate viewPager:self colorForComponent:ViewPagerTabsView withDefault:Color_NavigationBar];
         _contentViewBackgroundColor = [self.delegate viewPager:self colorForComponent:ViewPagerContent withDefault:kDefaultContentViewBackgroundColor];
     }
     

@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SearchLibraryMusicVC : UIViewController
-
+@interface SearchLibraryMusicVC : UITableViewController
+-(void) playMuzzikWithIndex:(NSInteger) index;
+-(void) deleleMuzzikWithIndex:(NSInteger) index;
 @end

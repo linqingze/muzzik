@@ -38,7 +38,9 @@
 #define URL_Upload_audio        @"api/music/upload/params"
 
 #define URL_Reset_Pwd           @"api/user/resetPassword"
-#define URL_Get_Moved_music    @"api/user/movedMusic"
+#define URL_Get_Moved_music     @"api/user/movedMusic"
+#define URL_Get_suggest_muzzik  @"api/muzzik/suggest"
+
 //#define URL_
 
 
@@ -53,11 +55,10 @@
 #pragma -mark App_Color
 #define Color_underLine [UIColor colorWithRed:227.0/255.0 green:227.0/255.0 blue:227.0/255.0 alpha:1]
 #define Color_scarlet [UIColor colorWithRed:171.0/255.0 green:33.0/255.0 blue:31.0/255.0 alpha:1]
-#define Color_LightGray [UIColor lightGrayColor]
-#define Color_appDefaultLight [UIColor grayColor]
 #define Color_For_Background [UIColor colorWithRed:248.0/255.0 green:248.0/255.0 blue:248.0/255.0 alpha:1]
-#define Color_For_money [UIColor colorWithRed:164.0/255.0 green:36.0/255.0 blue:37.0/255.0 alpha:1]
 #define Color_For_bubble [UIColor colorWithRed:255.0/255.0 green:125.0/255.0 blue:105.0/255.0 alpha:1]
+#define Color_NavigationBar [UIColor colorWithHexString:@"555555"]
+#define Color_IndicatorColor [UIColor colorWithHexString:@"b2cc3a"]
 
 #pragma -mark Notification string
 #define String_StatusNotifiation                   @"StatusNotifiation"

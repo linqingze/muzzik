@@ -22,7 +22,6 @@
 #define kPageViewTag 34
 
 #define kDefaultIndicatorColor [UIColor colorWithRed:178.0/255.0 green:203.0/255.0 blue:57.0/255.0 alpha:0.75]
-#define kDefaultTabsViewBackgroundColor [UIColor blackColor]
 #define kDefaultContentViewBackgroundColor [UIColor colorWithRed:248.0/255.0 green:248.0/255.0 blue:248.0/255.0 alpha:0.75]
 
 // TabView for tabs, that provides un/selected state indicators
@@ -37,7 +36,7 @@
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        self.backgroundColor = [UIColor blackColor];
+        self.backgroundColor = Color_NavigationBar;
     }
     return self;
 }
@@ -89,7 +88,7 @@
     [super viewDidLoad];
     //[self.view setBackgroundColor:[UIColor blackColor]];
     _musicView = [musicPlayer shareClass].radioView;
-    [_musicView setBackgroundColor:[UIColor blackColor]];
+    [_musicView setBackgroundColor:Color_NavigationBar];
 
     [self reloadData];
 }
@@ -102,7 +101,7 @@
     frame.size.width = self.view.bounds.size.width;
     frame.size.height = self.tabHeight;
     _tabsView.frame = frame;
-    [_tabsView setBackgroundColor:[UIColor blackColor]];
+    [_tabsView setBackgroundColor:Color_NavigationBar];
     
     frame = _contentView.frame;
     frame.origin.x = 0.0;
@@ -305,7 +304,7 @@
     
     // Default colors
     _indicatorColor = kDefaultIndicatorColor;
-    _tabsViewBackgroundColor = kDefaultTabsViewBackgroundColor;
+    _tabsViewBackgroundColor = Color_NavigationBar;
     _contentViewBackgroundColor = kDefaultContentViewBackgroundColor;
     
     // pageViewController
@@ -340,7 +339,7 @@
     // Get colors if provided
     if ([self.delegate respondsToSelector:@selector(viewPager:colorForComponent:withDefault:)]) {
         _indicatorColor = [self.delegate viewPager:self colorForComponent:ViewPagerIndicator withDefault:kDefaultIndicatorColor];
-        _tabsViewBackgroundColor = [self.delegate viewPager:self colorForComponent:ViewPagerTabsView withDefault:kDefaultTabsViewBackgroundColor];
+        _tabsViewBackgroundColor = [self.delegate viewPager:self colorForComponent:ViewPagerTabsView withDefault:Color_NavigationBar];
         _contentViewBackgroundColor = [self.delegate viewPager:self colorForComponent:ViewPagerContent withDefault:kDefaultContentViewBackgroundColor];
     }
     

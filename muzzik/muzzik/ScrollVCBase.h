@@ -7,12 +7,19 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ViewPagerController.h"
 #import "BaseNagationViewController.h"
+#import "ViewPagerController.h"
+
+@protocol baseDataSource;
+@protocol baseDelegate;
+
+
+
+
 @interface ScrollVCBase : BaseNagationViewController
 
-@property id<ViewPagerDataSource> dataSource;
-@property id<ViewPagerDelegate> delegate;
+@property id<baseDataSource> dataSource;
+@property id<baseDelegate> delegate;
 
 #pragma mark ViewPagerOptions
 // Tab bar's height, defaults to 49.0
@@ -43,6 +50,46 @@
 #pragma mark Methods
 // Reload all tabs and contents
 - (void)reloadData;
+@end
+
+
+#pragma mark dataSource
+@protocol baseDataSource <NSObject>
+
+// Asks dataSource how many tabs will be
+- (NSUInteger)numberOfTabsForViewPager:(ScrollVCBase *)viewPager;
+// Asks dataSource to give a view to display as a tab item
+// It is suggested to return a view with a clearColor background
+// So that un/selected states can be clearly seen
+- (UIView *)viewPager:(ScrollVCBase *)viewPager viewForTabAtIndex:(NSUInteger)index;
+
+@optional
+// The content for any tab. Return a view controller and ViewPager will use its view to show as content
+- (UIViewController *)viewPager:(ScrollVCBase *)viewPager contentViewControllerForTabAtIndex:(NSUInteger)index;
+- (UIView *)viewPager:(ScrollVCBase *)viewPager contentViewForTabAtIndex:(NSUInteger)index;
+
+@end
+
+
+
+#pragma mark delegate
+@protocol baseDelegate <NSObject>
+
+@optional
+// delegate object must implement this method if wants to be informed when a tab changes
+- (void)viewPager:(ScrollVCBase *)viewPager didChangeTabToIndex:(NSUInteger)index;
+// Every time - reloadData called, ViewPager will ask its delegate for option values
+// So you don't have to set options from ViewPager itself
+- (CGFloat)viewPager:(ScrollVCBase *)viewPager valueForOption:(ViewPagerOption)option withDefault:(CGFloat)value;
+/*
+ * Use this method to customize the look and feel.
+ * viewPager will ask its delegate for colors for its components.
+ * And if they are provided, it will use them, otherwise it will use default colors.
+ * Also not that, colors for tab and content views will change the tabView's and contentView's background
+ * (you should provide these views with a clearColor to see the colors),
+ * and indicator will change its own color.
+ */
+- (UIColor *)viewPager:(ScrollVCBase *)viewPager colorForComponent:(ViewPagerComponent)component withDefault:(UIColor *)color;
 
 @end
 

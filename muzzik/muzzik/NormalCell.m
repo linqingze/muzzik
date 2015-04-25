@@ -25,7 +25,7 @@
     [self setSelectionStyle:UITableViewCellSelectionStyleNone];
     _songModel = [muzzik new];
     _timeStamp = [[UILabel alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-125, 0, 100, 5)];
-    [_timeStamp setTextColor:Color_LightGray];
+   // [_timeStamp setTextColor:Color_LightGray];
     [_timeStamp setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Time]];
     _timeStamp.textAlignment = NSTextAlignmentLeft;
     [self.contentView addSubview:_timeStamp];
@@ -34,12 +34,11 @@
     _userImage = [[UIImageView alloc] initWithFrame:CGRectMake(20, 20, 50, 50)];
     _userImage.layer.cornerRadius = 25;
     _userImage.layer.masksToBounds = YES;
-    [_userImage setBackgroundColor:[UIColor blueColor]];
     //    _userImage.layer.borderColor = [UIColor whiteColor].CGColor;
     //    _userImage.layer.borderWidth = 2.0f;
     [self.contentView addSubview:_userImage];
     _userName = [[UILabel alloc] initWithFrame:CGRectMake(75, 30, 100, 20)];
-    [_userName setTextColor:Color_LightGray];
+  //  [_userName setTextColor:Color_LightGray];
     [_userName setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Time]];
     [self.contentView addSubview:_userName];
     _muzzikMessage = [[CXAHyperlinkLabel alloc] initWithFrame:CGRectMake( 75, 50, SCREEN_WIDTH-110, 2000)];
@@ -57,11 +56,11 @@
     [_musicPlayView addSubview:_musicArtist];
     _likeButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 25, 25, 25)];
     [_likeButton addTarget:self action:@selector(moveAction) forControlEvents:UIControlEventTouchUpInside];
-    [_likeButton setImage:[UIImage imageNamed:@"赞黑"] forState:UIControlStateNormal];
+
     [_musicPlayView addSubview:_likeButton];
     
     _playButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-65, 25, 25, 25)];
-    [_playButton setImage:[UIImage imageNamed:@"发现红"] forState:UIControlStateNormal];
+
     [_playButton addTarget:self action:@selector(playMusicAction:) forControlEvents:UIControlEventTouchUpInside];
     [_musicPlayView addSubview:_playButton];
     

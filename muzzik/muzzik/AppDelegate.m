@@ -74,14 +74,14 @@
     
     HostViewController *hostVC = [[HostViewController alloc] init];
     UINavigationController *nac = [[UINavigationController alloc] initWithRootViewController:hostVC];
-    [nac.navigationBar setBarStyle:UIBarStyleBlack];
+    //[nac.navigationBar setBarStyle:UIBarStyleBlack];
     [self.window setRootViewController:nac];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     //[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
     [self becomeFirstResponder];
-
+     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:YES];
     return YES;
 }
 

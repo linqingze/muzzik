@@ -8,7 +8,11 @@
 
 #import "ChooseMusicVC.h"
 #import "SongTableViewController.h"
-@interface ChooseMusicVC () <ViewPagerDataSource, ViewPagerDelegate>
+#import "SearchLibraryMusicVC.h"
+@interface ChooseMusicVC () <baseDataSource, baseDataSource>{
+    UIView *searchView;
+    UISearchBar *searchBar;
+}
 
 @end
 
@@ -25,6 +29,31 @@
     
     [super viewDidLoad];
     [self initNagationBar:@"选歌" leftBtn:Constant_backImage rightBtn:4];
+    searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(50, 10, 0, 20)];
+    //[searchBar.subviews[0] removeFromSuperview];
+    [searchBar setBackgroundImage:[MuzzikItem createImageWithColor:[UIColor blackColor]]];
+    searchBar.placeholder = @"搜索";
+    searchBar.delegate = self;
+    UITextField *searchField;
+    UIView *view = searchBar.subviews[0];
+    
+    for(int i = 0; i < [view.subviews count]; i++) {
+        NSLog(@"%@",[[view.subviews objectAtIndex:i] class]);
+        if([[view.subviews objectAtIndex:i] isKindOfClass:[UITextField class]]) {
+            searchField = [view.subviews objectAtIndex:i];
+        }
+    }
+    if(!(searchField == nil)) {
+        searchField.textColor = [UIColor whiteColor];
+        [searchField setBackground: [MuzzikItem createImageWithColor:Color_For_Background]];//在这添加灰色的图片
+        [searchField setBorderStyle:UITextBorderStyleNone];
+        searchField.layer.cornerRadius = 8;
+        searchField.clipsToBounds = YES;
+    }
+    searchBar.returnKeyType = UIReturnKeySearch;
+    searchView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-150, 20, 0, 40)];
+    [searchView setBackgroundColor:[UIColor blackColor]];
+    [searchView addSubview:searchBar];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -51,11 +80,14 @@
 
 - (UIViewController *)viewPager:(ScrollVCBase *)viewPager contentViewControllerForTabAtIndex:(NSUInteger)index {
     
-    SongTableViewController *cvc = [[SongTableViewController alloc] init];
-    
-    
-    
-    return cvc;
+    if (index == 0) {
+        SongTableViewController *cvc = [[SongTableViewController alloc] init];
+        return cvc;
+    }
+    else{
+        SearchLibraryMusicVC *searchVC = [[SearchLibraryMusicVC alloc] init];
+        return searchVC;
+    }
 }
 
 #pragma mark - ViewPagerDelegate
@@ -89,5 +121,15 @@
     
     return color;
 }
-
+-(void)rightBtnAction:(UIButton *)sender{
+    [self.navigationController.view addSubview:searchView];
+    [UIView animateWithDuration:0.5 animations:^{
+        [searchView setFrame:CGRectMake(0, 20, SCREEN_WIDTH, 40)];
+        [searchBar becomeFirstResponder];
+        [searchBar setFrame:CGRectMake(5, 10, SCREEN_WIDTH-60, 20)];
+    } completion:^(BOOL finished) {
+        
+    }];
+    
+}
 @end

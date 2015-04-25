@@ -34,7 +34,6 @@
     if (self) {
         // Initialization code
        
-        self.backgroundColor = [UIColor whiteColor];//[UIColor colorWithRed:232.f/255.f green:184.f/255.f blue:10.f/255.f alpha:1.f];
         
         //后台播放音频设置
         AVAudioSession *session = [AVAudioSession sharedInstance];

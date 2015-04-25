@@ -133,6 +133,7 @@
 		F29290261ADFB1B70086E8D4 /* UIImage+KVNImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = F29290241ADFB1B70086E8D4 /* UIImage+KVNImageEffects.m */; };
 		F29290291ADFC74B0086E8D4 /* phoneForResetVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F29290281ADFC74B0086E8D4 /* phoneForResetVC.m */; };
 		F292902C1ADFCA9B0086E8D4 /* messageForResetVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F292902B1ADFCA9B0086E8D4 /* messageForResetVC.m */; };
+		F29A17021AEA98B600200EAE /* SearchLibraryMusicVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F29A17011AEA98B600200EAE /* SearchLibraryMusicVC.m */; };
 		F29BEEAB1AE0B4AA00172538 /* KVNProgressView.xib in Resources */ = {isa = PBXBuildFile; fileRef = F29BEEAA1AE0B4AA00172538 /* KVNProgressView.xib */; };
 		F2A5E2061AD90D8000FD8B3E /* muzzik.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A5E2051AD90D8000FD8B3E /* muzzik.m */; };
 		F2A5E2091AD90F9F00FD8B3E /* MuzzikUser.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A5E2081AD90F9F00FD8B3E /* MuzzikUser.m */; };
@@ -141,7 +142,6 @@
 		F2A62EE81AE956A700FAAA01 /* MusicCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A62EE71AE956A700FAAA01 /* MusicCell.m */; };
 		F2A62EEB1AE9F6D900FAAA01 /* ChooseMusicVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A62EEA1AE9F6D900FAAA01 /* ChooseMusicVC.m */; };
 		F2A62EEE1AE9F70B00FAAA01 /* ScrollVCBase.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A62EED1AE9F70B00FAAA01 /* ScrollVCBase.m */; };
-		F2A62EF11AEA955300FAAA01 /* SearchLibraryMusicVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A62EF01AEA955300FAAA01 /* SearchLibraryMusicVC.m */; };
 		F2AD135A1AE2DEE6001BBEA1 /* NetTypeHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = F2AD13591AE2DEE6001BBEA1 /* NetTypeHelper.m */; };
 		F2B703671AC67EBF005F0903 /* TencentOpenApi_IOS_Bundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F2B703651AC67EBF005F0903 /* TencentOpenApi_IOS_Bundle.bundle */; };
 		F2B703681AC67EBF005F0903 /* TencentOpenAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2B703661AC67EBF005F0903 /* TencentOpenAPI.framework */; };
@@ -428,6 +428,8 @@
 		F29290281ADFC74B0086E8D4 /* phoneForResetVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = phoneForResetVC.m; sourceTree = "<group>"; };
 		F292902A1ADFCA9B0086E8D4 /* messageForResetVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = messageForResetVC.h; sourceTree = "<group>"; };
 		F292902B1ADFCA9B0086E8D4 /* messageForResetVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = messageForResetVC.m; sourceTree = "<group>"; };
+		F29A17001AEA98B600200EAE /* SearchLibraryMusicVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchLibraryMusicVC.h; sourceTree = "<group>"; };
+		F29A17011AEA98B600200EAE /* SearchLibraryMusicVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchLibraryMusicVC.m; sourceTree = "<group>"; };
 		F29BEEAA1AE0B4AA00172538 /* KVNProgressView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = KVNProgressView.xib; sourceTree = "<group>"; };
 		F2A5E2041AD90D8000FD8B3E /* muzzik.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = muzzik.h; sourceTree = "<group>"; };
 		F2A5E2051AD90D8000FD8B3E /* muzzik.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = muzzik.m; sourceTree = "<group>"; };
@@ -443,8 +445,6 @@
 		F2A62EEA1AE9F6D900FAAA01 /* ChooseMusicVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChooseMusicVC.m; sourceTree = "<group>"; };
 		F2A62EEC1AE9F70B00FAAA01 /* ScrollVCBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScrollVCBase.h; sourceTree = "<group>"; };
 		F2A62EED1AE9F70B00FAAA01 /* ScrollVCBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScrollVCBase.m; sourceTree = "<group>"; };
-		F2A62EEF1AEA955300FAAA01 /* SearchLibraryMusicVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchLibraryMusicVC.h; sourceTree = "<group>"; };
-		F2A62EF01AEA955300FAAA01 /* SearchLibraryMusicVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchLibraryMusicVC.m; sourceTree = "<group>"; };
 		F2AD13581AE2DEE6001BBEA1 /* NetTypeHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetTypeHelper.h; sourceTree = "<group>"; };
 		F2AD13591AE2DEE6001BBEA1 /* NetTypeHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetTypeHelper.m; sourceTree = "<group>"; };
 		F2B703651AC67EBF005F0903 /* TencentOpenApi_IOS_Bundle.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = TencentOpenApi_IOS_Bundle.bundle; sourceTree = "<group>"; };
@@ -1038,8 +1038,8 @@
 				F2A62EED1AE9F70B00FAAA01 /* ScrollVCBase.m */,
 				F2A62EE31AE94FDE00FAAA01 /* SongTableViewController.h */,
 				F2A62EE41AE94FDE00FAAA01 /* SongTableViewController.m */,
-				F2A62EEF1AEA955300FAAA01 /* SearchLibraryMusicVC.h */,
-				F2A62EF01AEA955300FAAA01 /* SearchLibraryMusicVC.m */,
+				F29A17001AEA98B600200EAE /* SearchLibraryMusicVC.h */,
+				F29A17011AEA98B600200EAE /* SearchLibraryMusicVC.m */,
 				F2A62EE61AE956A700FAAA01 /* MusicCell.h */,
 				F2A62EE71AE956A700FAAA01 /* MusicCell.m */,
 			);
@@ -1236,7 +1236,7 @@
 				E1FA12E61AB18252005EDA1D /* FSParseRssPodcastFeedRequest.m in Sources */,
 				E1FA12E21AB18252005EDA1D /* FSAudioController.m in Sources */,
 				E11246791AAAB20B0014D461 /* UIImageView+HighlightedWebCache.m in Sources */,
-				F2A62EF11AEA955300FAAA01 /* SearchLibraryMusicVC.m in Sources */,
+				F29A17021AEA98B600200EAE /* SearchLibraryMusicVC.m in Sources */,
 				E112466C1AAAB20B0014D461 /* MKAnnotationView+WebCache.m in Sources */,
 				E11246761AAAB20B0014D461 /* UIImage+GIF.m in Sources */,
 				E11246451AAAB1F20014D461 /* ASIDownloadCache.m in Sources */,
@@ -1409,6 +1409,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1444,6 +1445,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (

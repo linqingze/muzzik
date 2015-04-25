@@ -96,7 +96,8 @@
     [rightBtn addTarget:self action:@selector(rightBtnAction:) forControlEvents:(UIControlEventTouchUpInside)];
     self.navigationItem.rightBarButtonItem = rightItem;
     self.rightBtn = rightBtn;
-    [self.navigationController.navigationBar setBackgroundColor:[UIColor blackColor]];
+    [self.navigationController.navigationBar setBackgroundColor:Color_NavigationBar];
+    [self.navigationController.navigationBar setBarTintColor:Color_NavigationBar];
     [self.navigationController.navigationBar setTranslucent:NO];
 }
 

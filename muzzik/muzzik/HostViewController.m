@@ -51,9 +51,6 @@
     [self.navigationController.navigationBar setHidden:NO];
 
 }
-- (BOOL)prefersStatusBarHidden
-{        return isHiddenStatusBar;
-}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
