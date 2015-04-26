@@ -36,7 +36,7 @@
     _userImage.layer.masksToBounds = YES;
     //    _userImage.layer.borderColor = [UIColor whiteColor].CGColor;
     //    _userImage.layer.borderWidth = 2.0f;
-    [self.contentView addSubview:_userImage];
+    [self addSubview:_userImage];
     _userName = [[UILabel alloc] initWithFrame:CGRectMake(75, 30, 100, 20)];
   //  [_userName setTextColor:Color_LightGray];
     [_userName setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Time]];

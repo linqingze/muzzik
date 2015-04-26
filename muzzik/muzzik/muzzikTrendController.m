@@ -32,7 +32,7 @@
     UITableView *MytableView;
     BOOL isPlaying;
     UIButton *newButton;
-    
+    NSString *lastId;
 }
 
 @end
@@ -48,7 +48,7 @@
    // [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     _musicplayer = [musicPlayer shareClass];
     [self.view setBackgroundColor:[UIColor whiteColor]];
-    MytableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-40)];
+    MytableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     [MytableView  setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     MytableView.dataSource = self;
     MytableView.delegate = self;
@@ -72,19 +72,61 @@
 - (void)refreshHeader
 {
    // [self updateSomeThing];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [MytableView reloadData];
-        [MytableView headerEndRefreshing];
-    });
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_Trending]]];
+    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:Limit_Constant forKey:Parameter_Limit] Method:GetMethod auth:NO];
+    __weak ASIHTTPRequest *weakrequest = request;
+    [request setCompletionBlock :^{
+        NSLog(@"%@",[weakrequest responseString]);
+        NSData *data = [weakrequest responseData];
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+        if (dic) {
+            muzzik *muzzikToy = [muzzik new];
+            self.muzziks = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+            muzzikToy = [self.muzziks lastObject];
+            lastId = muzzikToy.muzzik_id;
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [MytableView reloadData];
+                [MytableView headerEndRefreshing];
+            });
+            
+        }
+    }];
+    [request setFailedBlock:^{
+        NSLog(@"%@,%@",[weakrequest responseHeaders],[weakrequest responseString]);
+        [KVNProgress showErrorWithStatus:@"网络请求超时"];
+    }];
+    [request startAsynchronous];
+
 }
 
 - (void)refreshFooter
 {
    // [self updateSomeThing];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [MytableView reloadData];
-        [MytableView footerEndRefreshing];
-    });
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_Trending]]];
+    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:lastId,Parameter_tail,Limit_Constant,Parameter_Limit, nil] Method:GetMethod auth:NO];
+    __weak ASIHTTPRequest *weakrequest = request;
+    [request setCompletionBlock :^{
+        NSLog(@"%@",[weakrequest responseString]);
+        NSData *data = [weakrequest responseData];
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+        if (dic) {
+            muzzik *muzzikToy = [muzzik new];
+            [self.muzziks addObjectsFromArray:[muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]]];
+            muzzikToy = [self.muzziks lastObject];
+            lastId = muzzikToy.muzzik_id;
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [MytableView reloadData];
+                [MytableView footerEndRefreshing];
+            });
+            
+        }
+    }];
+    [request setFailedBlock:^{
+        NSLog(@"%@,%@",[weakrequest responseHeaders],[weakrequest responseString]);
+        [KVNProgress showErrorWithStatus:@"网络请求超时"];
+    }];
+    [request startAsynchronous];
+
 }
 
 
@@ -100,13 +142,13 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self.view setNeedsLayout];
-
+   // MytableView add
 
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-
+   // [MytableView removeKeyPath];
     needsLoad = NO;
 }
 
@@ -248,6 +290,7 @@
             }
                 [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempMuzzik.MuzzikUser.avatar]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                     [UIView animateWithDuration:0.5 animations:^{
+                        NSLog(@"%@",[NSString stringWithFormat:@"%@%@",BaseURL_image,tempMuzzik.MuzzikUser.avatar]);
                         [cell.userImage setAlpha:1];
                     }];
                     
@@ -388,9 +431,9 @@
                 muzzik *localMuzzik = self.muzziks[index];
                 localMuzzik.ismoved = [[dic objectForKey:@"ismoved"] boolValue];
                 if ([[dic objectForKey:@"ismoved"] boolValue]) {
-                    localMuzzik.moveds = [NSString stringWithFormat:@"%d",[localMuzzik.moveds integerValue]-1];
+                    localMuzzik.moveds = [NSString stringWithFormat:@"%ld",[localMuzzik.moveds integerValue]-1];
                 }else{
-                   localMuzzik.moveds = [NSString stringWithFormat:@"%d",[localMuzzik.moveds integerValue]-1];
+                   localMuzzik.moveds = [NSString stringWithFormat:@"%ld",[localMuzzik.moveds integerValue]-1];
                 }
                 NSIndexPath *indexPath=[NSIndexPath indexPathForRow:index inSection:0];
                 [MytableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];
@@ -400,7 +443,7 @@
             }
         }];
         [requestForm setFailedBlock:^{
-            [KVNProgress showErrorWithStatus:@"网络请求超时"];
+            NSLog(@"%@",[weakrequest error]);
         }];
         [requestForm startAsynchronous];
     }
@@ -443,15 +486,18 @@
 }
 -(void)reloadMuzzikSource{
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_Trending]]];
-    [request addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:NO];
+    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:Limit_Constant forKey:Parameter_Limit] Method:GetMethod auth:NO];
     __weak ASIHTTPRequest *weakrequest = request;
     [request setCompletionBlock :^{
-        NSLog(@"%@",[weakrequest responseString]);
+    //    NSLog(@"%@",weakrequest.originalURL);
+     //   NSLog(@"%@",[weakrequest responseString]);
         NSData *data = [weakrequest responseData];
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         if (dic) {
             muzzik *muzzikToy = [muzzik new];
             self.muzziks = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+            muzzikToy = [self.muzziks lastObject];
+            lastId = muzzikToy.muzzik_id;
             [MytableView reloadData];
             
         }

@@ -41,6 +41,7 @@
 #define URL_Get_Moved_music     @"api/user/movedMusic"
 #define URL_Get_suggest_muzzik  @"api/muzzik/suggest"
 #define URL_Set_Notify          @"api/notify/set"
+#define URL_UnMoved             @"api/music/moved/"
 //#define URL_
 
 
@@ -137,4 +138,13 @@
 #define PostMethod             @"1"
 #define GetMethod              @"2"
 #define PutMethod              @"3"
+#define DeleteMethod           @"4"
+
+
+#pragma request parameter
+#define Parameter_Limit         @"limit"
+#define Parameter_tail          @"tail"
+#define Limit_Constant          @"20"
+
+
 #endif

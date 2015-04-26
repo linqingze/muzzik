@@ -51,24 +51,14 @@
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    [self.tableView addHeaderWithTarget:self action:@selector(refreshHeader)];
     [self.tableView addFooterWithTarget:self action:@selector(refreshFooter)];
     
     
 }
-- (void)refreshHeader
-{
-    // [self updateSomeThing];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self.tableView reloadData];
-        [self.tableView headerEndRefreshing];
-    });
-}
-
 - (void)refreshFooter
 {
     // [self updateSomeThing];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self.tableView reloadData];
         [self.tableView footerEndRefreshing];
     });

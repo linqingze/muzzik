@@ -290,29 +290,35 @@ static NSOperationQueue *sharedQueue = nil;
             for (NSString *dicKey in [dic allKeys]) {
                 requestString  = [requestString stringByAppendingString:[NSString stringWithFormat:@"%@=%@&",dicKey,[dic objectForKey:dicKey]]];
             }
-            requestString = [requestString substringToIndex:[requestString length]-2];
+            requestString = [requestString substringToIndex:[requestString length]-1];
             [self setURL:[NSURL URLWithString:requestString]];
-            [self setRequestMethod:@"GET"];
         }
-        
+        [self setRequestMethod:@"GET"];
     }else if([method isEqualToString:PostMethod]){
         if (dic) {
             NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dic options:NSJSONWritingPrettyPrinted error:nil];
             NSMutableData *tempJsonData = [NSMutableData dataWithData:jsonData];
             
             [self setPostBody:tempJsonData];
-            [self setRequestMethod:@"POST"];
+            
         }
-    }else{
+        [self setRequestMethod:@"POST"];
+    }else if([method isEqualToString:PutMethod]){
         if (dic) {
             NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dic options:NSJSONWritingPrettyPrinted error:nil];
             NSMutableData *tempJsonData = [NSMutableData dataWithData:jsonData];
             
             [self setPostBody:tempJsonData];
-            [self setRequestMethod:@"PUT"];
+            
         }
+        [self setRequestMethod:@"PUT"];
     }
-    
+    else if([method isEqualToString:DeleteMethod]){
+        if (dic) {
+            
+        }
+     [self setRequestMethod:@"DELETE"];   
+    }
     
 }
 

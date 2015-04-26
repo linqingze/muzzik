@@ -21,11 +21,19 @@
     BOOL isHiddenStatusBar;
 }
 @property (nonatomic) BOOL hasMiao;
-
+@property (nonatomic) muzzikTrendController *muzzikvc;
 @end
 
 @implementation HostViewController
-
+-(muzzikTrendController *)muzzikvc{
+    if (!_muzzikvc) {
+        _muzzikvc = [[muzzikTrendController alloc] init];
+        AppDelegate *mydelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+        mydelegate.viewcontroller = _muzzikvc;
+        _muzzikvc.homeNav = self;
+    }
+    return _muzzikvc;
+}
 - (void)viewDidLoad {
     
     self.dataSource = self;
@@ -142,11 +150,8 @@
     userInfo *user = [userInfo shareClass];
     if ([user.token length]>0) {
         if (index ==0) {
-            muzzikTrendController *muzzikVC = [[muzzikTrendController alloc] init];
-            AppDelegate *mydelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-            mydelegate.viewcontroller = muzzikVC;
-            muzzikVC.homeNav = self;
-            return muzzikVC;
+           
+            return self.muzzikvc;
         }
         else if (index ==1) {
             TopicVC *topicvc = [[TopicVC alloc] init];
@@ -154,27 +159,17 @@
             return topicvc;
         }
         else if (index ==2) {
-            muzzikTrendController *muzzikVC = [[muzzikTrendController alloc] init];
-            muzzikVC.homeNav = self;
-            return muzzikVC;
+            return self.muzzikvc;
         }
         else if (index ==3) {
-            muzzikTrendController *muzzikVC = [[muzzikTrendController alloc] init];
-            muzzikVC.homeNav = self;
-            return muzzikVC;
+           return self.muzzikvc;
         }
         else{
-            muzzikTrendController *muzzikVC = [[muzzikTrendController alloc] init];
-            muzzikVC.homeNav = self;
-            return muzzikVC;
+            return self.muzzikvc;
         }
     }else{
         if (index ==0) {
-            muzzikTrendController *muzzikVC = [[muzzikTrendController alloc] init];
-            AppDelegate *mydelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-            mydelegate.viewcontroller = muzzikVC;
-            muzzikVC.homeNav = self;
-            return muzzikVC;
+            return self.muzzikvc;
         }
         else if (index ==1) {
             TopicVC *topicvc = [[TopicVC alloc] init];
@@ -182,9 +177,7 @@
             return topicvc;
         }
         else{
-            muzzikTrendController *muzzikVC = [[muzzikTrendController alloc] init];
-            muzzikVC.homeNav = self;
-            return muzzikVC;
+            return self.muzzikvc;
         }
     }
 

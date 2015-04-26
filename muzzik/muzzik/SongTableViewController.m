@@ -13,6 +13,7 @@
 @interface SongTableViewController (){
     NSInteger indexOfMuzzik;
     BOOL isSearch;
+    NSString *lastID;
 }
 @property(nonatomic,retain)NSMutableArray *movedMusicArray;
 @property(nonatomic,retain)NSMutableArray *searchArray;
@@ -32,15 +33,18 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
     [self.tableView registerClass:[MusicCell class] forCellReuseIdentifier:@"MusicCell"];
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Get_Moved_music]]];
-    [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:@"500",@"limit",@"",@"search" ,nil] Method:GetMethod auth:YES];
+    [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit ,nil] Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = requestForm;
     [requestForm setCompletionBlock :^{
         NSLog(@"%@",[weakrequest responseString]);
         NSLog(@"%d",[weakrequest responseStatusCode]);
         if ([weakrequest responseStatusCode] == 200) {
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
-            self.movedMusicArray = [[muzzik new] makeMuzziksByMusicArray:[dic objectForKey:@"music"]];
+            muzzik *tempMuzzik = [muzzik new];
+            self.movedMusicArray = [tempMuzzik makeMuzziksByMusicArray:[dic objectForKey:@"music"]];
+            tempMuzzik = [self.movedMusicArray lastObject];
             
+            lastID = tempMuzzik.music.music_id;
             [self.tableView reloadData];
         }
         else{
@@ -53,27 +57,43 @@
         [userInfo checkLoginWithVC:self];
     }];
     [requestForm startAsynchronous];
-    [self.tableView addHeaderWithTarget:self action:@selector(refreshHeader)];
     [self.tableView addFooterWithTarget:self action:@selector(refreshFooter)];
     
     
-}
-- (void)refreshHeader
-{
-    // [self updateSomeThing];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self.tableView reloadData];
-        [self.tableView headerEndRefreshing];
-    });
 }
 
 - (void)refreshFooter
 {
     // [self updateSomeThing];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self.tableView reloadData];
-        [self.tableView footerEndRefreshing];
-    });
+    ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Get_Moved_music]]];
+    [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,lastID,Parameter_tail ,nil] Method:GetMethod auth:YES];
+    __weak ASIHTTPRequest *weakrequest = requestForm;
+    [requestForm setCompletionBlock :^{
+        NSLog(@"%@",[weakrequest responseString]);
+        NSLog(@"%d",[weakrequest responseStatusCode]);
+        if ([weakrequest responseStatusCode] == 200) {
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
+            muzzik *tempMuzzik = [muzzik new];
+            [self.movedMusicArray addObjectsFromArray:[tempMuzzik makeMuzziksByMusicArray:[dic objectForKey:@"music"]]];
+            tempMuzzik = [self.movedMusicArray lastObject];
+            
+            lastID = tempMuzzik.muzzik_id;
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [self.tableView reloadData];
+                [self.tableView footerEndRefreshing];
+            });
+        }
+        else{
+            //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+        }
+    }];
+    [requestForm setFailedBlock:^{
+        NSLog(@"%@",[weakrequest error]);
+        NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
+        [userInfo checkLoginWithVC:self];
+    }];
+    [requestForm startAsynchronous];
+
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -174,7 +194,26 @@
 }
 
 -(void)deleleMuzzikWithIndex:(NSInteger)index{
-    
+    muzzik *tempMuzzik = self.movedMusicArray[index];
+    ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@%@",BaseURL,URL_UnMoved,tempMuzzik.music.music_id]]];
+    [requestForm addBodyDataSourceWithJsonByDic:nil Method:DeleteMethod auth:YES];
+    __weak ASIHTTPRequest *weakrequest = requestForm;
+    [requestForm setCompletionBlock :^{
+        NSLog(@"%@",[weakrequest responseString]);
+        NSLog(@"%d",[weakrequest responseStatusCode]);
+        if ([weakrequest responseStatusCode] == 200) {
+            
+        }
+        else{
+            //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+        }
+    }];
+    [requestForm setFailedBlock:^{
+        NSLog(@"%@",[weakrequest error]);
+        NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
+        [userInfo checkLoginWithVC:self];
+    }];
+    [requestForm startAsynchronous];
 }
 -(void)playnextMuzzikUpdate{
     if ([musicPlayer shareClass].listType == MovedList) {

@@ -265,7 +265,26 @@
             if ([[dic allKeys] containsObject:@"token"]) {
                 user.token = [dic objectForKey:@"token"];
             }
-            [self.navigationController popViewControllerAnimated:YES];
+            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Set_Notify]]];
+            [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:user.deviceToken,@"deviceToken",@"APN",@"type", nil] Method:PostMethod auth:YES];
+            __weak ASIHTTPRequest *weakrequest = requestForm;
+            [requestForm setCompletionBlock :^{
+                NSLog(@"%@",[weakrequest responseString]);
+                NSLog(@"%d",[weakrequest responseStatusCode]);
+                if ([weakrequest responseStatusCode] == 200) {
+                    [self.navigationController popViewControllerAnimated:YES];
+                    NSLog(@"register ok");
+                }
+                else{
+                    //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+                }
+            }];
+            [requestForm setFailedBlock:^{
+                NSLog(@"%@",[weakrequest error]);
+            }];
+            [requestForm startAsynchronous];
+            
+            
         }
     }];
     [requestForm setFailedBlock:^{
@@ -303,7 +322,26 @@
                         user.gender = [dic objectForKey:@"gender"];
                         user.avatar = [dic objectForKey:@"avatar"];
                         user.name = [dic objectForKey:@"name"];
-                        [self.navigationController popViewControllerAnimated:YES];
+                        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Set_Notify]]];
+                        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:user.deviceToken,@"deviceToken",@"APN",@"type", nil] Method:PostMethod auth:YES];
+                        __weak ASIHTTPRequest *weakrequest = requestForm;
+                        [requestForm setCompletionBlock :^{
+                            NSLog(@"%@",[weakrequest responseString]);
+                            NSLog(@"%d",[weakrequest responseStatusCode]);
+                            if ([weakrequest responseStatusCode] == 200) {
+                                
+                                NSLog(@"register ok");
+                                [self.navigationController popViewControllerAnimated:YES];
+                            }
+                            else{
+                                //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+                            }
+                        }];
+                        [requestForm setFailedBlock:^{
+                            NSLog(@"%@",[weakrequest error]);
+                        }];
+                        [requestForm startAsynchronous];
+                        
                         
                     }
                     else{
@@ -346,7 +384,25 @@
             user.gender = [dic objectForKey:@"gender"];
             user.avatar = [dic objectForKey:@"avatar"];
             user.name = [dic objectForKey:@"name"];
-            [self.navigationController popViewControllerAnimated:YES];
+            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Set_Notify]]];
+            [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:user.deviceToken,@"deviceToken",@"APN",@"type", nil] Method:PostMethod auth:YES];
+            __weak ASIHTTPRequest *weakrequest = requestForm;
+            [requestForm setCompletionBlock :^{
+                NSLog(@"%@",[weakrequest responseString]);
+                NSLog(@"%d",[weakrequest responseStatusCode]);
+                if ([weakrequest responseStatusCode] == 200) {
+                    [self.navigationController popViewControllerAnimated:YES];
+                    NSLog(@"register ok");
+                }
+                else{
+                    //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+                }
+            }];
+            [requestForm setFailedBlock:^{
+                NSLog(@"%@",[weakrequest error]);
+            }];
+            [requestForm startAsynchronous];
+            
             
         }
         else{
