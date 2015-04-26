@@ -48,6 +48,7 @@
 
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
+    self.isLoaded = YES;
     [self.navigationController.navigationBar setHidden:NO];
 
 }
@@ -190,18 +191,6 @@
 }
 #pragma mark - ViewPagerDelegate
 
-- (UIColor *)viewPager:(ViewPagerController *)viewPager colorForComponent:(ViewPagerComponent)component withDefault:(UIColor *)color {
-    
-    switch (component) {
-        case ViewPagerIndicator:
-            return [[UIColor redColor] colorWithAlphaComponent:0.64];
-            break;
-        default:
-            break;
-    }
-    
-    return color;
-}
 #pragma -mark Player
 -(void)checkShowMusicView{
     if ([[musicPlayer shareClass].MusicArray count]>0) {

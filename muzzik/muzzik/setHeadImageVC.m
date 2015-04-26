@@ -122,8 +122,7 @@
     }else{
         ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@%@",BaseURL,URL_Upload_Image]]];
         
-        [requestForm addBodyDataSourceWithJsonByDic:nil];
-        [requestForm setRequestMethod:@"GET"];
+        [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:NO];
         __weak ASIHTTPRequest *weakrequest = requestForm;
         [requestForm setCompletionBlock :^{
             NSLog(@"%@    %@",[weakrequest originalURL],[weakrequest requestHeaders]);
@@ -150,7 +149,7 @@
                 [interRequest setCompletionBlock:^{
                     NSDictionary *keydic = [NSJSONSerialization JSONObjectWithData:[form responseData] options:NSJSONReadingMutableContainers error:nil];
                     ASIHTTPRequest *updateImageRequest = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL,URL_Update_Profile]]];
-                    [updateImageRequest addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:[keydic objectForKey:@"key"],@"avatar", nil]];
+                    [updateImageRequest addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:[keydic objectForKey:@"key"],@"avatar", nil] Method:PostMethod auth:YES];
                     __weak ASIHTTPRequest *WeakImageRequest = updateImageRequest;
                     [updateImageRequest setCompletionBlock:^{
                         if ([WeakImageRequest responseStatusCode]==200) {

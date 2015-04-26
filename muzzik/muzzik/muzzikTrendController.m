@@ -20,6 +20,7 @@
 #import "CXAHyperlinkLabel.h"
 #import "ChooseMusicVC.h"
 #import "LoginViewController.h"
+#import "UIScrollView+DXRefresh.h"
 #define length_to_left 10
 #define length_to_right 10
 #define length_to_top 10
@@ -27,7 +28,7 @@
 @interface muzzikTrendController (){
     int numberOfProducts;
     BOOL needsLoad;
-    ASIHTTPRequest *myrequest;
+
     UITableView *MytableView;
     BOOL isPlaying;
     UIButton *newButton;
@@ -59,14 +60,34 @@
     newButton.layer.cornerRadius = 28;
     newButton.clipsToBounds = YES;
     
-   
+
     
     [newButton addTarget:self action:@selector(newOrLogin) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:newButton];
-    //Tecent info
+    [MytableView addHeaderWithTarget:self action:@selector(refreshHeader)];
+    [MytableView addFooterWithTarget:self action:@selector(refreshFooter)];
 
     
 }
+- (void)refreshHeader
+{
+   // [self updateSomeThing];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [MytableView reloadData];
+        [MytableView headerEndRefreshing];
+    });
+}
+
+- (void)refreshFooter
+{
+   // [self updateSomeThing];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [MytableView reloadData];
+        [MytableView footerEndRefreshing];
+    });
+}
+
+
 -(void)viewDidLayoutSubviews{
     userInfo *user = [userInfo shareClass];
     if ([user.token length]>0) {
@@ -79,7 +100,7 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self.view setNeedsLayout];
-    myrequest.delegate = self;
+
 
 }
 
@@ -87,8 +108,6 @@
     [super viewWillDisappear:animated];
 
     needsLoad = NO;
-    [myrequest cancel];
-    myrequest.delegate = nil;
 }
 
 
@@ -302,7 +321,8 @@
     if ([user.token length]>0) {
         //new po
         ChooseMusicVC *choosevc = [[ChooseMusicVC alloc] init];
-        [self.homeNav.navigationController pushViewController:choosevc animated:YES];
+        UINavigationController *nac = [[UINavigationController alloc] initWithRootViewController:choosevc];
+        [self.homeNav presentViewController:nac animated:YES completion:nil];
     }
     else{
         LoginViewController *loginVC = [[LoginViewController alloc] init];
@@ -357,8 +377,7 @@
         else{
             dic = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"ismoved"];
         }
-        [requestForm addBodyDataSourceWithJsonByDic:dic];
-        [requestForm setRequestMethod:@"POST"];
+        [requestForm addBodyDataSourceWithJsonByDic:dic Method:PostMethod auth:YES];
         //NSLog(@"json:%@,dic:%@",tempJsonData,dic);
         __weak ASIHTTPRequest *weakrequest = requestForm;
         [requestForm setCompletionBlock :^{
@@ -390,10 +409,9 @@
 -(void)repostActionWithMuzzik_id:(NSString *)muzzik_id atIndex:(NSInteger) index{
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik",BaseURL]]];
     [requestForm setRequestMethod:@"PUT"];
-    NSDictionary *dictionary = [NSDictionary dictionaryWithObject:muzzik_id forKey:@"repost"];
-    [requestForm addBodyDataSourceWithJsonByDic:dictionary];
-    //[requestForm setPostValue:@"true" forKey:@"ismoved"];
     
+    NSDictionary *dictionary = [NSDictionary dictionaryWithObject:muzzik_id forKey:@"repost"];
+    [requestForm addBodyDataSourceWithJsonByDic:dictionary Method:PutMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = requestForm;
     [requestForm setCompletionBlock :^{
         NSLog(@"%@",[weakrequest requestHeaders]);
@@ -402,7 +420,7 @@
         if ([weakrequest responseStatusCode] == 200) {
              muzzik *localMuzzik = self.muzziks[index];
             [KVNProgress showSuccessWithStatus:@"转发成功"];
-            localMuzzik.reposts = [NSString stringWithFormat:@"%d",[localMuzzik.reposts integerValue]+1];
+            localMuzzik.reposts = [NSString stringWithFormat:@"%ld",[localMuzzik.reposts integerValue]+1];
             NSIndexPath *indexPath=[NSIndexPath indexPathForRow:index inSection:0];
             [MytableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];
         }
@@ -425,11 +443,7 @@
 }
 -(void)reloadMuzzikSource{
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_Trending]]];
-    // [request setRequestMethod:@"PUT"];
-    userInfo *user = [userInfo shareClass];
-    if ([user.token length]>0) {
-        [request addRequestHeader:@"X-Auth-Token" value:user.token];
-    }
+    [request addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:NO];
     __weak ASIHTTPRequest *weakrequest = request;
     [request setCompletionBlock :^{
         NSLog(@"%@",[weakrequest responseString]);

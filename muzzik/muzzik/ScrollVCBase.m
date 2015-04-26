@@ -8,9 +8,9 @@
 
 #import "ScrollVCBase.h"
 
-#define kDefaultTabHeight 44.0 // Default tab height
+#define kDefaultTabHeight 30 // Default tab height
 #define kDefaultTabOffset 56.0 // Offset of the second and further tabs' from left
-#define kDefaultTabWidth 128.0
+
 
 #define kDefaultTabLocation 1.0 // 1.0: Top, 0.0: Bottom
 
@@ -46,31 +46,15 @@
     
     UIBezierPath *bezierPath;
     
-    // Draw top line
-    bezierPath = [UIBezierPath bezierPath];
-    [bezierPath moveToPoint:CGPointMake(0.0, 0.0)];
-    [bezierPath addLineToPoint:CGPointMake(rect.size.width, 0.0)];
-    [[UIColor colorWithWhite:197.0/255.0 alpha:0.75] setStroke];
-    [bezierPath setLineWidth:1.0];
-    [bezierPath stroke];
-    
-    // Draw bottom line
-    bezierPath = [UIBezierPath bezierPath];
-    [bezierPath moveToPoint:CGPointMake(0.0, rect.size.height)];
-    [bezierPath addLineToPoint:CGPointMake(rect.size.width, rect.size.height)];
-    [[UIColor colorWithWhite:197.0/255.0 alpha:0.75] setStroke];
-    [bezierPath setLineWidth:1.0];
-    [bezierPath stroke];
-    
     // Draw an indicator line if tab is selected
     if (self.selected) {
         
         bezierPath = [UIBezierPath bezierPath];
         
         // Draw the indicator
-        [bezierPath moveToPoint:CGPointMake(0.0, rect.size.height - 1.0)];
-        [bezierPath addLineToPoint:CGPointMake(rect.size.width, rect.size.height - 1.0)];
-        [bezierPath setLineWidth:5.0];
+        [bezierPath moveToPoint:CGPointMake(rect.size.width/2-21, rect.size.height - 1.0)];
+        [bezierPath addLineToPoint:CGPointMake(rect.size.width/2+21, rect.size.height - 1.0)];
+        [bezierPath setLineWidth:4.0];
         [self.indicatorColor setStroke];
         [bezierPath stroke];
     }
@@ -213,7 +197,8 @@
     // Set to-be-inactive tab unselected
     activeTabView = [self tabViewAtIndex:self.activeTabIndex];
     activeTabView.selected = NO;
-    
+    UILabel * label = activeTabView.subviews[0];
+    [label setTextColor:Color_text_gray];
     // Set to-be-active tab selected
     activeTabView = [self tabViewAtIndex:activeTabIndex];
     activeTabView.selected = YES;
@@ -231,7 +216,8 @@
     
     UIView *tabView = [self tabViewAtIndex:self.activeTabIndex];
     CGRect frame = tabView.frame;
-    
+    UILabel * nowLabel = tabView.subviews[0];
+    [nowLabel setTextColor:[UIColor whiteColor]];
     if (self.centerCurrentTab) {
         
         frame.origin.x += (frame.size.width / 2);
@@ -260,7 +246,7 @@
     // Default settings
     _tabHeight = kDefaultTabHeight;
     _tabOffset = kDefaultTabOffset;
-    _tabWidth = kDefaultTabWidth;
+    _tabWidth = SCREEN_WIDTH/2;
     
     _tabLocation = kDefaultTabLocation;
     
@@ -269,9 +255,9 @@
     _centerCurrentTab = kDefaultCenterCurrentTab;
     
     // Default colors
-    _indicatorColor = Color_IndicatorColor;
+    _indicatorColor = Color_Orange;
     _tabsViewBackgroundColor = Color_NavigationBar;
-    _contentViewBackgroundColor = kDefaultContentViewBackgroundColor;
+    _contentViewBackgroundColor = Color_NavigationBar;
     
     // pageViewController
     _pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll
@@ -293,7 +279,7 @@
     if ([self.delegate respondsToSelector:@selector(viewPager:valueForOption:withDefault:)]) {
         _tabHeight = [self.delegate viewPager:self valueForOption:ViewPagerOptionTabHeight withDefault:kDefaultTabHeight];
         _tabOffset = [self.delegate viewPager:self valueForOption:ViewPagerOptionTabOffset withDefault:kDefaultTabOffset];
-        _tabWidth = [self.delegate viewPager:self valueForOption:ViewPagerOptionTabWidth withDefault:kDefaultTabWidth];
+        _tabWidth = [self.delegate viewPager:self valueForOption:ViewPagerOptionTabWidth withDefault:SCREEN_WIDTH/2];
         
         _tabLocation = [self.delegate viewPager:self valueForOption:ViewPagerOptionTabLocation withDefault:kDefaultTabLocation];
         
@@ -304,9 +290,9 @@
     
     // Get colors if provided
     if ([self.delegate respondsToSelector:@selector(viewPager:colorForComponent:withDefault:)]) {
-        _indicatorColor = [self.delegate viewPager:self colorForComponent:ViewPagerIndicator withDefault:Color_IndicatorColor];
+        _indicatorColor = [self.delegate viewPager:self colorForComponent:ViewPagerIndicator withDefault:Color_Orange];
         _tabsViewBackgroundColor = [self.delegate viewPager:self colorForComponent:ViewPagerTabsView withDefault:Color_NavigationBar];
-        _contentViewBackgroundColor = [self.delegate viewPager:self colorForComponent:ViewPagerContent withDefault:kDefaultContentViewBackgroundColor];
+        _contentViewBackgroundColor = [self.delegate viewPager:self colorForComponent:ViewPagerContent withDefault:Color_NavigationBar];
     }
     
     // Empty tabs and contents

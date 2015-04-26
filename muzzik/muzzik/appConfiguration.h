@@ -16,7 +16,7 @@
 
 #define URL_Lyric_Me            @"http://geci.me/api/lyric/"
 #define BaseURL                 @"http://117.121.26.174/"
-//#define BaseURL                 @"http://192.168.1.112:3000/"
+//#define BaseURL                 @"http://192.168.1.110:3000/"
 #define BaseURL_audio           @"http://7bvaim.com1.z0.glb.clouddn.com/"
 #define BaseURL_image           @"http://7bvarm.com1.z0.glb.clouddn.com/"
 
@@ -40,7 +40,7 @@
 #define URL_Reset_Pwd           @"api/user/resetPassword"
 #define URL_Get_Moved_music     @"api/user/movedMusic"
 #define URL_Get_suggest_muzzik  @"api/muzzik/suggest"
-
+#define URL_Set_Notify          @"api/notify/set"
 //#define URL_
 
 
@@ -53,12 +53,15 @@
 //#define URL_Login @"http://192.168.1.112:3000/api/user/login"
 
 #pragma -mark App_Color
-#define Color_underLine [UIColor colorWithRed:227.0/255.0 green:227.0/255.0 blue:227.0/255.0 alpha:1]
-#define Color_scarlet [UIColor colorWithRed:171.0/255.0 green:33.0/255.0 blue:31.0/255.0 alpha:1]
-#define Color_For_Background [UIColor colorWithRed:248.0/255.0 green:248.0/255.0 blue:248.0/255.0 alpha:1]
-#define Color_For_bubble [UIColor colorWithRed:255.0/255.0 green:125.0/255.0 blue:105.0/255.0 alpha:1]
-#define Color_NavigationBar [UIColor colorWithHexString:@"555555"]
-#define Color_IndicatorColor [UIColor colorWithHexString:@"b2cc3a"]
+#define Color_underLine           [UIColor colorWithRed:227.0/255.0 green:227.0/255.0 blue:227.0/255.0 alpha:1]
+#define Color_scarlet             [UIColor colorWithRed:171.0/255.0 green:33.0/255.0 blue:31.0/255.0 alpha:1]
+#define Color_For_Background      [UIColor colorWithRed:248.0/255.0 green:248.0/255.0 blue:248.0/255.0 alpha:1]
+#define Color_For_bubble          [UIColor colorWithRed:255.0/255.0 green:125.0/255.0 blue:105.0/255.0 alpha:1]
+#define Color_NavigationBar       [UIColor colorWithHexString:@"201f2a"]
+#define Color_Orange              [UIColor colorWithHexString:@"f26a3d"]
+#define Color_text_gray           [UIColor colorWithHexString:@"666c80"]
+#define Color_search_background   [UIColor colorWithHexString:@"323444"]
+
 
 #pragma -mark Notification string
 #define String_StatusNotifiation                   @"StatusNotifiation"
@@ -128,4 +131,10 @@
 #define LibraryList            3
 #define TempList               4
 
+
+
+#pragma -mark HTTP constant
+#define PostMethod             @"1"
+#define GetMethod              @"2"
+#define PutMethod              @"3"
 #endif

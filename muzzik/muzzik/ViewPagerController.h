@@ -60,7 +60,7 @@ typedef NS_ENUM(NSUInteger, ViewPagerComponent) {
 //activeTabIndex
 @property (nonatomic) NSUInteger activeTabIndex;
 @property NSMutableArray *contents;
-
+@property (nonatomic,assign) BOOL isLoaded;
 #pragma mark Methods
 // Reload all tabs and contents
 - (void)reloadData;

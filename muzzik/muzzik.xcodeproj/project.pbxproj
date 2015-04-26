@@ -149,6 +149,7 @@
 		F2F0FC8C1ADD8B7100668103 /* TeachViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F0FC8A1ADD8B7100668103 /* TeachViewController.m */; };
 		F2F0FC8D1ADD8B7100668103 /* TeachViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = F2F0FC8B1ADD8B7100668103 /* TeachViewController.xib */; };
 		F2F0FC901ADE0E9100668103 /* checkVerifyCode.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F0FC8F1ADE0E9100668103 /* checkVerifyCode.m */; };
+		F2F7EE0A1AEC99A100265596 /* UIScrollView+DXRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F7EE091AEC99A100265596 /* UIScrollView+DXRefresh.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -456,6 +457,8 @@
 		F2F0FC8B1ADD8B7100668103 /* TeachViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TeachViewController.xib; sourceTree = "<group>"; };
 		F2F0FC8E1ADE0E9100668103 /* checkVerifyCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = checkVerifyCode.h; sourceTree = "<group>"; };
 		F2F0FC8F1ADE0E9100668103 /* checkVerifyCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = checkVerifyCode.m; sourceTree = "<group>"; };
+		F2F7EE081AEC99A100265596 /* UIScrollView+DXRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+DXRefresh.h"; sourceTree = "<group>"; };
+		F2F7EE091AEC99A100265596 /* UIScrollView+DXRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+DXRefresh.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -610,6 +613,7 @@
 		E112461E1AAAB0F60014D461 /* 3plus-in */ = {
 			isa = PBXGroup;
 			children = (
+				F2F7EE071AEC998800265596 /* Refresh */,
 				F26167331ADEE3A300E1B11E /* ZHPickView.h */,
 				F26167341ADEE3A300E1B11E /* ZHPickView.m */,
 				F26131251ADE23CE0042F1D4 /* shaker */,
@@ -1046,6 +1050,15 @@
 			name = "发po分享";
 			sourceTree = "<group>";
 		};
+		F2F7EE071AEC998800265596 /* Refresh */ = {
+			isa = PBXGroup;
+			children = (
+				F2F7EE081AEC99A100265596 /* UIScrollView+DXRefresh.h */,
+				F2F7EE091AEC99A100265596 /* UIScrollView+DXRefresh.m */,
+			);
+			name = Refresh;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1237,6 +1250,7 @@
 				E1FA12E21AB18252005EDA1D /* FSAudioController.m in Sources */,
 				E11246791AAAB20B0014D461 /* UIImageView+HighlightedWebCache.m in Sources */,
 				F29A17021AEA98B600200EAE /* SearchLibraryMusicVC.m in Sources */,
+				F2F7EE0A1AEC99A100265596 /* UIScrollView+DXRefresh.m in Sources */,
 				E112466C1AAAB20B0014D461 /* MKAnnotationView+WebCache.m in Sources */,
 				E11246761AAAB20B0014D461 /* UIImage+GIF.m in Sources */,
 				E11246451AAAB1F20014D461 /* ASIDownloadCache.m in Sources */,

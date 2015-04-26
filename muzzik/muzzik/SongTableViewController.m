@@ -9,20 +9,30 @@
 #import "SongTableViewController.h"
 #import "MusicCell.h"
 #import "musicPlayer.h"
+#import "UIScrollView+DXRefresh.h"
 @interface SongTableViewController (){
     NSInteger indexOfMuzzik;
+    BOOL isSearch;
 }
-@property(nonatomic,copy)NSMutableArray *movedMusicArray;
+@property(nonatomic,retain)NSMutableArray *movedMusicArray;
+@property(nonatomic,retain)NSMutableArray *searchArray;
+
 @end
 
 @implementation SongTableViewController
-
+-(NSMutableArray *)searchArray{
+    if (!_searchArray) {
+        _searchArray = [NSMutableArray array];
+    }
+    return _searchArray;
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
     [self.tableView registerClass:[MusicCell class] forCellReuseIdentifier:@"MusicCell"];
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Get_Moved_music]]];
-    [requestForm addBodyDataSourceWithJsonByDic:nil];
+    [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:@"500",@"limit",@"",@"search" ,nil] Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = requestForm;
     [requestForm setCompletionBlock :^{
         NSLog(@"%@",[weakrequest responseString]);
@@ -43,13 +53,34 @@
         [userInfo checkLoginWithVC:self];
     }];
     [requestForm startAsynchronous];
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
+    [self.tableView addHeaderWithTarget:self action:@selector(refreshHeader)];
+    [self.tableView addFooterWithTarget:self action:@selector(refreshFooter)];
     
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    
+}
+- (void)refreshHeader
+{
+    // [self updateSomeThing];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.tableView reloadData];
+        [self.tableView headerEndRefreshing];
+    });
 }
 
+- (void)refreshFooter
+{
+    // [self updateSomeThing];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.tableView reloadData];
+        [self.tableView footerEndRefreshing];
+    });
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    self.keeper.activityVC = self;
+
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -67,13 +98,13 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 
     // Return the number of rows in the section.
-    return [self.movedMusicArray count];
+    return isSearch ?[self.searchArray count]:[self.movedMusicArray count];
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     MusicCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MusicCell" forIndexPath:indexPath];
-    muzzik *localMuzzik = self.movedMusicArray[indexPath.row];
+    muzzik *localMuzzik = isSearch ?self.searchArray[indexPath.row]:self.movedMusicArray[indexPath.row];
     cell.songName.text = localMuzzik.music.name;
     cell.Artist.text = localMuzzik.music.artist;
     cell.index = indexPath.row;
@@ -135,9 +166,9 @@
 -(void)playMuzzikWithIndex:(NSInteger)index{
     musicPlayer *player = [musicPlayer shareClass];
     player.listType = MovedList;
-    player.MusicArray = self.movedMusicArray;
+    player.MusicArray = [self.searchArray count]>0 ?self.searchArray:self.movedMusicArray;
     player.index = index;
-    [player playSongWithSongModel:self.movedMusicArray[index]];
+    [player playSongWithSongModel:isSearch ?self.searchArray[index]:self.movedMusicArray[index]];
     
     
 }
@@ -152,5 +183,21 @@
     
     
 }
+-(void)updateDataSource:(NSString *)searchText{
+    
+    [self.searchArray removeAllObjects];
+    if ([searchText length]>0) {
+        isSearch = YES;
+        for (muzzik *tempMuzzik in self.movedMusicArray) {
+            if ([[tempMuzzik.music.name lowercaseString] containsString:[searchText lowercaseString]] || [[tempMuzzik.music.artist lowercaseString] containsString:[searchText lowercaseString]]) {
+                [self.searchArray addObject:tempMuzzik];
+            }
+        }
+    }else{
+        isSearch = NO;
+    }
+    [self.tableView reloadData];
+}
+
 
 @end

@@ -8,10 +8,12 @@
 
 #import "SearchLibraryMusicVC.h"
 #import "MusicCell.h"
+#import "UIScrollView+DXRefresh.h"
 @interface SearchLibraryMusicVC (){
     NSInteger indexOfMuzzik;
 }
-@property(nonatomic,copy)NSMutableArray *movedMusicArray;
+@property(nonatomic,retain)NSMutableArray *movedMusicArray;
+@property(nonatomic,retain)NSMutableArray *searchArray;
 
 @end
 
@@ -20,6 +22,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
     [self.tableView registerClass:[MusicCell class] forCellReuseIdentifier:@"MusicCell"];
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Get_suggest_muzzik]]];
@@ -48,6 +51,33 @@
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    [self.tableView addHeaderWithTarget:self action:@selector(refreshHeader)];
+    [self.tableView addFooterWithTarget:self action:@selector(refreshFooter)];
+    
+    
+}
+- (void)refreshHeader
+{
+    // [self updateSomeThing];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.tableView reloadData];
+        [self.tableView headerEndRefreshing];
+    });
+}
+
+- (void)refreshFooter
+{
+    // [self updateSomeThing];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.tableView reloadData];
+        [self.tableView footerEndRefreshing];
+    });
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    self.keeper.activityVC = self;
+    
 }
 
 - (void)didReceiveMemoryWarning {

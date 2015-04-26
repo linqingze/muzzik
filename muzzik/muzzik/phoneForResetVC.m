@@ -42,8 +42,7 @@
 -(void)textFieldDidEndEditing:(UITextField *)textField{
     if (textField == phoneText && [textField.text length]>0) {
         ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_check_phone]]];
-        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:phoneText.text forKey:@"phone"]];
-        [requestForm setRequestMethod:@"POST"];
+        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:phoneText.text forKey:@"phone"] Method:PostMethod auth:NO];
         __weak ASIHTTPRequest *weakrequest = requestForm;
         [requestForm setCompletionBlock :^{
             NSLog(@"%@",[weakrequest responseString]);
@@ -66,8 +65,7 @@
 -(void)summitAction{
     if (isOk) {
         ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_GetVerifiCode]]];
-        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:phoneText.text forKey:@"phone"]];
-        [requestForm setRequestMethod:@"POST"];
+        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:phoneText.text forKey:@"phone"] Method:PostMethod auth:NO];
         __weak ASIHTTPRequest *weakrequest = requestForm;
         [requestForm setCompletionBlock :^{
             NSLog(@"%@",[weakrequest responseString]);

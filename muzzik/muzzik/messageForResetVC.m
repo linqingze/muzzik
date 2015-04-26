@@ -81,8 +81,7 @@
     else{
          NSString *passwordInMD5 = [[NSString stringWithFormat:@"%@Muzzik%@",self.phoneNumber,passwordText.text] md5Encrypt];
         ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Reset_Pwd]]];
-        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:self.phoneNumber,@"phone",passwordInMD5,@"hashedPassword",checkcode.text,@"code", nil]];
-        [requestForm setRequestMethod:@"POST"];
+        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:self.phoneNumber,@"phone",passwordInMD5,@"hashedPassword",checkcode.text,@"code", nil] Method:PostMethod auth:NO];
         __weak ASIHTTPRequest *weakrequest = requestForm;
         [requestForm setCompletionBlock :^{
             NSLog(@"%@",[weakrequest responseString]);

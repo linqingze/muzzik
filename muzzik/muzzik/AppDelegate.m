@@ -28,7 +28,6 @@
     [UMSocialWechatHandler setWXAppId:ID_WeiChat_APP appSecret:Secret_WeiChat_APP url:@"http://www.umeng.com/social"];
     [WeiboSDK enableDebugMode:NO];
     [WeiboSDK registerApp:Key_WeiBo];
-    [self startSdkWith:kAppId appKey:kAppKey appSecret:kAppSecret];
     NSDictionary * dic = [MuzzikItem messageFromLocal];
     userInfo *user = [userInfo shareClass];
     user.uid = [dic objectForKey:@"_id"];
@@ -36,20 +35,34 @@
     user.gender = [dic objectForKey:@"gender"];
     user.avatar = [dic objectForKey:@"avatar"];
     user.name = [dic objectForKey:@"name"];
-#ifdef __IPHONE_8_0
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
+    if (IOS_8_OR_LATER) {
+        UIMutableUserNotificationAction *action = [[UIMutableUserNotificationAction alloc] init];
+        action.identifier = @"action";//按钮的标示
+        action.title=@"Accept";//按钮的标题
+        action.activationMode = UIUserNotificationActivationModeForeground;//当点击的时候启动程序
+        //    action.authenticationRequired = YES;
+        //    action.destructive = YES;
         
-        UIUserNotificationSettings *uns = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeAlert|UIUserNotificationTypeBadge|UIUserNotificationTypeSound) categories:nil];
-        [[UIApplication sharedApplication] registerForRemoteNotifications];
-        [[UIApplication sharedApplication] registerUserNotificationSettings:uns];
-    } else {
+        UIMutableUserNotificationAction *action2 = [[UIMutableUserNotificationAction alloc] init];
+        action2.identifier = @"action2";
+        action2.title=@"Reject";
+        action2.activationMode = UIUserNotificationActivationModeBackground;//当点击的时候不启动程序，在后台处理
+        action.authenticationRequired = YES;//需要解锁才能处理，如果action.activationMode = UIUserNotificationActivationModeForeground;则这个属性被忽略；
+        action.destructive = YES;
+        
+        //2.创建动作(按钮)的类别集合
+        UIMutableUserNotificationCategory *categorys = [[UIMutableUserNotificationCategory alloc] init];
+        categorys.identifier = @"alert";//这组动作的唯一标示,推送通知的时候也是根据这个来区分
+        [categorys setActions:@[action,action2] forContext:(UIUserNotificationActionContextMinimal)];
+        
+        //3.创建UIUserNotificationSettings，并设置消息的显示类类型
+        UIUserNotificationSettings *notiSettings = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeAlert | UIRemoteNotificationTypeSound) categories:[NSSet setWithObjects:categorys, nil]];
+        [application registerUserNotificationSettings:notiSettings];
+        
+    }else{
         UIRemoteNotificationType apn_type = (UIRemoteNotificationType)(UIRemoteNotificationTypeAlert|UIRemoteNotificationTypeSound|UIRemoteNotificationTypeBadge);
         [[UIApplication sharedApplication] registerForRemoteNotificationTypes:apn_type];
     }
-#else
-    UIRemoteNotificationType apn_type = (UIRemoteNotificationType)(UIRemoteNotificationTypeAlert|UIRemoteNotificationTypeSound|UIRemoteNotificationTypeBadge);
-    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:apn_type];
-#endif
     NSDictionary* message = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
     if (message) {
         NSString *payloadMsg = [message objectForKey:@"payload"];
@@ -57,8 +70,8 @@
         NSLog(@"%@%@",payloadMsg,record);
     }
     
-    [[UIApplication sharedApplication] cancelAllLocalNotifications];
-    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+//    [[UIApplication sharedApplication] cancelAllLocalNotifications];
+//    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     
     [self registNetWorkChangeNot];
     
@@ -92,7 +105,7 @@
         payloadMsg = [[NSString alloc] initWithBytes:data.bytes
                                               length:data.length
                                             encoding:NSUTF8StringEncoding];
-    NSLog(@"payload:%@",payloadMsg);
+    NSLog(@"payload:%@",[payloadMsg stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]);
     }
 }
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -195,7 +208,7 @@
 }
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)pToken {
     
-    NSString *token = [[_deviceToken description] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]];
+    NSString *token = [[pToken description] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]];
     _deviceToken = [token stringByReplacingOccurrencesOfString:@" " withString:@""];
     NSLog(@"deviceToken:%@", _deviceToken);
     
@@ -235,7 +248,7 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-    [self startSdkWith:_appID appKey:_appKey appSecret:_appSecret];
+    [self startSdkWith:kAppId appKey:kAppKey appSecret:kAppSecret];
     [Globle shareGloble].isApplicationEnterBackground = NO;
 }
 
@@ -313,7 +326,28 @@
     
     return [_gexinPusher setTags:aTags];
 }
+- (void)GexinSdkDidRegisterClient:(NSString *)clientId{
 
+    NSLog(@"lqz:%@",clientId);
+    ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Set_Notify]]];
+    [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:clientId forKey:@"clientid"] Method:PostMethod auth:YES];
+    __weak ASIHTTPRequest *weakrequest = requestForm;
+    [requestForm setCompletionBlock :^{
+        NSLog(@"%@",[weakrequest responseString]);
+        NSLog(@"%d",[weakrequest responseStatusCode]);
+        if ([weakrequest responseStatusCode] == 200) {
+
+            NSLog(@"register ok");
+        }
+        else{
+            //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+        }
+    }];
+    [requestForm setFailedBlock:^{
+        NSLog(@"%@",[weakrequest error]);
+    }];
+    [requestForm startAsynchronous];
+}
 - (NSString *)sendMessage:(NSData *)body error:(NSError **)error {
     if (![self checkSdkInstance]) {
         return nil;

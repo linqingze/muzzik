@@ -76,8 +76,7 @@
         if ([birthText.text length] == 0) {
             [dic removeObjectForKey:@"birthday"];
         }
-        [requestForm addBodyDataSourceWithJsonByDic:dic];
-        [requestForm setRequestMethod:@"POST"];
+        [requestForm addBodyDataSourceWithJsonByDic:dic Method:PostMethod auth:YES];
         __weak ASIHTTPRequest *weakrequest = requestForm;
         [requestForm setCompletionBlock :^{
              NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];

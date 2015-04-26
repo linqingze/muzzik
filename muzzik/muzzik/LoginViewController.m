@@ -234,8 +234,7 @@
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Login]]];
     NSString *passwordInMD5 = [[NSString stringWithFormat:@"%@Muzzik%@",phoneText.text,passwordText.text] md5Encrypt];
     NSLog(@"%@",passwordInMD5);
-    [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:phoneText.text,@"phone",passwordInMD5,@"hashedPassword",nil]];
-    [requestForm setRequestMethod:@"POST"];
+    [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:phoneText.text,@"phone",passwordInMD5,@"hashedPassword",nil] Method:PostMethod auth:NO];
     __weak ASIHTTPRequest *weakrequest = requestForm;
     [requestForm setCompletionBlock :^{
         loginButton.userInteractionEnabled = YES;

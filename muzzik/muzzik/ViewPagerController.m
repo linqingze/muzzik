@@ -97,6 +97,7 @@
     CGRect frame;
     frame = _tabsView.frame;
     frame.origin.x = 0.0;
+    
     frame.origin.y = navHeight;
     frame.size.width = self.view.bounds.size.width;
     frame.size.height = self.tabHeight;
@@ -363,7 +364,7 @@
     // Add tabsView
 
     [_tabsView removeFromSuperview];
-    _tabsView = [[UIScrollView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.frame.size.width, self.tabHeight-20)];
+    _tabsView = [[UIScrollView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.frame.size.width, self.tabHeight)];
     _tabsView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     _tabsView.backgroundColor = self.tabsViewBackgroundColor;
     _tabsView.showsHorizontalScrollIndicator = NO;
@@ -373,12 +374,17 @@
     [self.view addSubview:_musicView];
     // Add tab views to _tabsView
     CGFloat contentSizeWidth = 0;
+    CGFloat belta = 0;
+    if (self.isLoaded) {
+        belta = 20;
+    }
     for (int i = 0; i < _tabCount; i++) {
         
         UIView *tabView = [self tabViewAtIndex:i];
         
         CGRect frame = tabView.frame;
         frame.origin.x = contentSizeWidth;
+        frame.origin.y = belta;
         frame.size.width = self.tabWidth;
         tabView.frame = frame;
         
@@ -391,7 +397,7 @@
         [tabView addGestureRecognizer:tapGestureRecognizer];
     }
     
-    _tabsView.contentSize = CGSizeMake(contentSizeWidth, self.tabHeight-20);
+    _tabsView.contentSize = CGSizeMake(contentSizeWidth, self.tabHeight);
     
     // Add contentView
     _contentView = [self.view viewWithTag:kPageViewTag];

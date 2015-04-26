@@ -897,7 +897,7 @@ typedef void (^ASIDataBlock)(NSData *data);
 // Requests will stop the runloop when they complete
 // If you have multiple requests sharing the thread you'll need to restart the runloop when this happens
 + (NSThread *)threadForRequest:(ASIHTTPRequest *)request;
--(void) addBodyDataSourceWithJsonByDic:(NSDictionary *)dic;
+-(void) addBodyDataSourceWithJsonByDic:(NSDictionary *)dic Method:(NSString *)method auth:(BOOL) auth;
 #pragma mark ===
 
 @property (retain) NSString *username;

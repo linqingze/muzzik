@@ -40,8 +40,7 @@
 }
 -(void)textFieldDidEndEditing:(UITextField *)textField{
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@%@",BaseURL,URL_check_phone]]];
-    [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:nameText.text forKey:@"name"]];
-    [requestForm setRequestMethod:@"POST"];
+    [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:nameText.text forKey:@"phone"] Method:PostMethod auth:NO];
     __weak ASIHTTPRequest *weakrequest = requestForm;
     [requestForm setCompletionBlock :^{
          NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
@@ -78,8 +77,7 @@
         if (isOk) {
             
             ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@%@",BaseURL,URL_Update_Profile]]];
-            [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:nameText.text forKey:@"name"]];
-            [requestForm setRequestMethod:@"POST"];
+            [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:nameText.text forKey:@"name"] Method:PostMethod auth:YES];
             __weak ASIHTTPRequest *weakrequest = requestForm;
             [requestForm setCompletionBlock :^{
                 NSLog(@"%@",[weakrequest responseString]);

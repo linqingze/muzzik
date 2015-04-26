@@ -274,23 +274,46 @@ static NSOperationQueue *sharedQueue = nil;
 
 	}
 }
--(void) addBodyDataSourceWithJsonByDic:(NSDictionary *)dic{
-    [self setUseCookiePersistence:NO];
-    userInfo *user = [userInfo shareClass];
-    if ([user.token length]>0) {
-        [self addRequestHeader:@"X-Auth-Token" value:user.token];
-    }
-    
+-(void) addBodyDataSourceWithJsonByDic:(NSDictionary *)dic Method:(NSString *)method auth:(BOOL) auth{
     [self addRequestHeader:@"Content-Type" value:@"application/json;encoding=utf-8"];
     [self addRequestHeader:@"Accept" value:@"application/json"];
-    if (dic !=nil) {
-        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dic options:NSJSONWritingPrettyPrinted error:nil];
-        NSMutableData *tempJsonData = [NSMutableData dataWithData:jsonData];
+    if (auth) {
+        userInfo *user = [userInfo shareClass];
+        [self setUseCookiePersistence:NO];
+        if ([user.token length]>0) {
+            [self addRequestHeader:@"X-Auth-Token" value:user.token];
+        }
+    }
+    if ([method isEqualToString:GetMethod]) {
+        if (dic) {
+            NSString *requestString = [NSString stringWithFormat:@"%@?",self.url.description];
+            for (NSString *dicKey in [dic allKeys]) {
+                requestString  = [requestString stringByAppendingString:[NSString stringWithFormat:@"%@=%@&",dicKey,[dic objectForKey:dicKey]]];
+            }
+            requestString = [requestString substringToIndex:[requestString length]-2];
+            [self setURL:[NSURL URLWithString:requestString]];
+            [self setRequestMethod:@"GET"];
+        }
         
-        [self setPostBody:tempJsonData];
+    }else if([method isEqualToString:PostMethod]){
+        if (dic) {
+            NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dic options:NSJSONWritingPrettyPrinted error:nil];
+            NSMutableData *tempJsonData = [NSMutableData dataWithData:jsonData];
+            
+            [self setPostBody:tempJsonData];
+            [self setRequestMethod:@"POST"];
+        }
+    }else{
+        if (dic) {
+            NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dic options:NSJSONWritingPrettyPrinted error:nil];
+            NSMutableData *tempJsonData = [NSMutableData dataWithData:jsonData];
+            
+            [self setPostBody:tempJsonData];
+            [self setRequestMethod:@"PUT"];
+        }
     }
     
-
+    
 }
 
 - (id)initWithURL:(NSURL *)newURL

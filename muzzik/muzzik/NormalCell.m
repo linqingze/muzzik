@@ -137,7 +137,7 @@
             [self.likeButton setImage:[UIImage imageNamed:@"yellowlikeImage"] forState:UIControlStateNormal];
         }
         if (self.isPlaying) {
-            [self.playButton setImage:[UIImage imageNamed:@"yellowlikeImage"] forState:UIControlStateNormal];
+            [self.playButton setImage:[UIImage imageNamed:@"yellowstopImage"] forState:UIControlStateNormal];
         }else{
             [self.playButton setImage:[UIImage imageNamed:@"yellowplayImage"] forState:UIControlStateNormal];
         }
@@ -151,7 +151,7 @@
             [self.likeButton setImage:[UIImage imageNamed:@"bluelikeImage"] forState:UIControlStateNormal];
         }
         if (self.isPlaying) {
-            [self.playButton setImage:[UIImage imageNamed:@"bluelikeImage"] forState:UIControlStateNormal];
+            [self.playButton setImage:[UIImage imageNamed:@"bluestopImage"] forState:UIControlStateNormal];
         }else{
             [self.playButton setImage:[UIImage imageNamed:@"blueplayImage"] forState:UIControlStateNormal];
         }
@@ -164,7 +164,7 @@
             [self.likeButton setImage:[UIImage imageNamed:@"redlikeImage"] forState:UIControlStateNormal];
         }
         if (self.isPlaying) {
-            [self.playButton setImage:[UIImage imageNamed:@"redlikeImage"] forState:UIControlStateNormal];
+            [self.playButton setImage:[UIImage imageNamed:@"redstopImage"] forState:UIControlStateNormal];
         }else{
             [self.playButton setImage:[UIImage imageNamed:@"redplayImage"] forState:UIControlStateNormal];
         }

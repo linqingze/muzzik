@@ -42,8 +42,7 @@
 }
 -(void)getVerifyCode{
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_GetVerifiCode]]];
-    [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:self.phoneNumber forKey:@"phone"]];
-    [requestForm setRequestMethod:@"POST"];
+    [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:self.phoneNumber forKey:@"phone"] Method:PostMethod auth:NO];
     __weak ASIHTTPRequest *weakrequest = requestForm;
     [requestForm setCompletionBlock :^{
          NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
@@ -65,9 +64,8 @@
     [self.navigationController pushViewController:setname animated:YES];
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_register]]];
     NSString *passwordInMD5 = [[NSString stringWithFormat:@"%@Muzzik%@",self.phoneNumber,self.passWord] md5Encrypt];
-    NSLog(@"%@",passwordInMD5);
-    [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:self.phoneNumber,@"phone",passwordInMD5,@"hashedPassword",checkcode.text,@"code",nil]];
-    [requestForm setRequestMethod:@"POST"];
+    
+    [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:self.phoneNumber,@"phone",passwordInMD5,@"hashedPassword",checkcode.text,@"code",nil] Method:PostMethod auth:NO];
     __weak ASIHTTPRequest *weakrequest = requestForm;
     [requestForm setCompletionBlock :^{
         NSLog(@"%@",[weakrequest responseString]);

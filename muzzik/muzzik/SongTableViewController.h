@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@interface SongTableViewController : UITableViewController
-
+#import "ChooseMusicVC.h"
+@interface SongTableViewController : UITableViewController<searchSource>
+@property (nonatomic,weak) ChooseMusicVC *keeper;
 -(void) playMuzzikWithIndex:(NSInteger) index;
 -(void) deleleMuzzikWithIndex:(NSInteger) index;
 @end
