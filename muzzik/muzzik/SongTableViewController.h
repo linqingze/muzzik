@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "ChooseMusicVC.h"
-@interface SongTableViewController : UITableViewController<searchSource>
+@interface SongTableViewController : UITableViewController<searchSource,UIAlertViewDelegate>
 @property (nonatomic,weak) ChooseMusicVC *keeper;
 -(void) playMuzzikWithIndex:(NSInteger) index;
 -(void) deleleMuzzikWithIndex:(NSInteger) index;
+@property (nonatomic,retain) NSMutableDictionary *shareDic;
 @end

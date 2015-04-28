@@ -42,6 +42,10 @@
 #define URL_Get_suggest_muzzik  @"api/muzzik/suggest"
 #define URL_Set_Notify          @"api/notify/set"
 #define URL_UnMoved             @"api/music/moved/"
+#define URL_Music_Search        @"api/music"
+#define URL_Friends_get         @"api/user/friends"
+#define URL_RecentContact       @"api/user/recentContact"
+#define URL_Get_Topic           @"api/topic"
 //#define URL_
 
 
@@ -62,6 +66,30 @@
 #define Color_Orange              [UIColor colorWithHexString:@"f26a3d"]
 #define Color_text_gray           [UIColor colorWithHexString:@"666c80"]
 #define Color_search_background   [UIColor colorWithHexString:@"323444"]
+#define Color_Active_Button_1     [UIColor colorWithHexString:@"f26a3d"]
+#define Color_Active_Button_2     [UIColor colorWithHexString:@"ff794d"]
+#define Color_Theme_1             [UIColor colorWithHexString:@"201f2a"]
+#define Color_Theme_2             [UIColor colorWithHexString:@"323444"]
+#define Color_Theme_3             [UIColor colorWithHexString:@"3b4051"]
+#define Color_Theme_4             [UIColor colorWithHexString:@"545969"]
+#define Color_Theme_5             [UIColor colorWithHexString:@"666c80"]
+#define Color_Action_Button_1     [UIColor colorWithHexString:@"fea42c"]
+#define Color_Action_Button_2     [UIColor colorWithHexString:@"04a0bf"]
+#define Color_Action_Button_3     [UIColor colorWithHexString:@"f26d7d"]
+#define Color_Text_1              [UIColor colorWithHexString:@"555555"]
+#define Color_Text_2              [UIColor colorWithHexString:@"777777"]
+#define Color_Text_3              [UIColor colorWithHexString:@"999999"]
+#define Color_Text_4              [UIColor colorWithHexString:@"bbbbbb"]
+#define Color_line_1              [UIColor colorWithHexString:@"dddddd"]
+#define Color_line_2              [UIColor colorWithHexString:@"f8f8f8"]
+#define Color_Additional_1        [UIColor colorWithHexString:@"b98dd9"]
+#define Color_Additional_2        [UIColor colorWithHexString:@"30bfa7"]
+#define Color_Additional_3        [UIColor colorWithHexString:@"e64e6f"]
+#define Color_Additional_4        [UIColor colorWithHexString:@"366ab3"]
+#define Color_Additional_5        [UIColor colorWithHexString:@"a8acbb"]
+
+
+
 
 
 #pragma -mark Notification string
@@ -129,9 +157,10 @@
 
 #define SquareList             1
 #define MovedList              2
-#define LibraryList            3
+#define userList               3
 #define TempList               4
-
+#define feedList               5
+#define recommendList          6
 
 
 #pragma -mark HTTP constant
@@ -145,6 +174,6 @@
 #define Parameter_Limit         @"limit"
 #define Parameter_tail          @"tail"
 #define Limit_Constant          @"20"
-
+#define Parameter_page          @"page"
 
 #endif

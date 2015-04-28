@@ -545,7 +545,6 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 }
 
 
-
 +(void) showNotifyOnView:(UIView *)view text:(NSString *)text{
     
 }

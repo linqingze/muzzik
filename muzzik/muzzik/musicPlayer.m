@@ -5,7 +5,6 @@
 //  Created by 林清泽 on 15/3/9.
 //  Copyright (c) 2015年 muzziker. All rights reserved.
 //
-#import "NetTypeHelper.h"
 #import "musicPlayer.h"
 #import "UIImageView+WebCache.h"
 #import "appConfiguration.h"

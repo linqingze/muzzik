@@ -369,7 +369,8 @@
     }
     else{
         LoginViewController *loginVC = [[LoginViewController alloc] init];
-        [self.homeNav.navigationController pushViewController:loginVC animated:YES];
+        UINavigationController *nac = [[UINavigationController alloc] initWithRootViewController:loginVC];
+        [self.homeNav presentViewController:nac animated:YES completion:nil];
     }
 }
 -(void)rightBtnAction:(UIButton *)sender{
@@ -490,7 +491,7 @@
     __weak ASIHTTPRequest *weakrequest = request;
     [request setCompletionBlock :^{
     //    NSLog(@"%@",weakrequest.originalURL);
-     //   NSLog(@"%@",[weakrequest responseString]);
+        NSLog(@"%@",[weakrequest responseString]);
         NSData *data = [weakrequest responseData];
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         if (dic) {

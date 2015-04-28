@@ -72,9 +72,9 @@
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction:)];
     [leftBtn addGestureRecognizer:tap];
     
-    UILongPressGestureRecognizer *longGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressAction:)];
-    longGesture.minimumPressDuration = 1.0f;
-    [leftBtn addGestureRecognizer:longGesture];
+//    UILongPressGestureRecognizer *longGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressAction:)];
+//    longGesture.minimumPressDuration = 1.0f;
+//    [leftBtn addGestureRecognizer:longGesture];
     
     UIButton *rightBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
     UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:rightBtn];

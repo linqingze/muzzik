@@ -8,10 +8,6 @@
 
 #import "RepostCell.h"
 #import "appConfiguration.h"
-#define Cell_width self.frame.size.width
-#define Cell_height self.frame.size.height
-#define height_for_image Cell_width*3/4
-#define height_for_rest (self.frame.size.height-self.frame.size.width*3/4)
 
 @implementation RepostCell
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier

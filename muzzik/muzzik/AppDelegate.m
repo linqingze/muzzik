@@ -16,7 +16,6 @@
 #import "ASIHTTPRequest.h"
 #import "userInfo.h"
 #import "HostViewController.h"
-#import "NetTypeHelper.h"
 @interface AppDelegate ()
 
 @end
@@ -75,8 +74,6 @@
     
 //    [[UIApplication sharedApplication] cancelAllLocalNotifications];
 //    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
-    
-    [self registNetWorkChangeNot];
     
     
     
@@ -265,6 +262,8 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+#pragma  -mark 个推Delegate
+
 - (void)startSdkWith:(NSString *)appID appKey:(NSString *)appKey appSecret:(NSString *)appSecret
 {
     if (!_gexinPusher) {
@@ -440,43 +439,11 @@
         
     }
 }
-#pragma -mark 网络状态
-- (void)registNetWorkChangeNot
-{
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(checkNetworkStatus:)
-                                                 name:kReachabilityChangedNotification object:nil];
-    Reachability *NetReachable = [Reachability reachabilityWithHostName:@"www.baidu.com"];
-    [NetReachable startNotifier];
-}
 
 - (void)removeNetWorkChangeNot
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kReachabilityChangedNotification object:nil];
 }
 
-- (void)checkNetworkStatus:(NSNotification *)not
-{
-    Reachability *NetReachable = not.object;
-    NetworkStatus NetStatus = [NetReachable currentReachabilityStatus];
-    switch (NetStatus) {
-        case NotReachable:
-        {
-            [NetTypeHelper shareClass].nNetType = NotNet;
-        }
-            break;
-        case ReachableViaWiFi:
-        {
-            [NetTypeHelper shareClass].nNetType = WifiNet;
-        }
-            break;
-        case ReachableViaWWAN:
-        {
-            [NetTypeHelper shareClass].nNetType = OtherNet;
-        }
-            break;
-        default:
-            break;
-    }
-}
+
 @end

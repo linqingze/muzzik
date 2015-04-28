@@ -31,8 +31,7 @@
     [self.view addSubview:tipsLabel];
 
     UIButton *nextButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-67, SCREEN_HEIGHT-133, 54, 52)];
-    [nextButton setBackgroundImage:[UIImage imageNamed:@"backgroundImage"] forState:UIControlStateNormal];
-    [nextButton setImage:[UIImage imageNamed:@"nextImage"] forState:UIControlStateNormal];
+    [nextButton setImage:[UIImage imageNamed:Image_Next] forState:UIControlStateNormal];
     [self.view addSubview: nextButton];
     [nextButton addTarget:self action:@selector(summitAction) forControlEvents:UIControlEventTouchUpInside];
     UITapGestureRecognizer *tapOnview = [[UITapGestureRecognizer alloc] initWithTarget:self.view action:@selector(endEditing:)];

@@ -142,7 +142,6 @@
 		F2A62EE81AE956A700FAAA01 /* MusicCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A62EE71AE956A700FAAA01 /* MusicCell.m */; };
 		F2A62EEB1AE9F6D900FAAA01 /* ChooseMusicVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A62EEA1AE9F6D900FAAA01 /* ChooseMusicVC.m */; };
 		F2A62EEE1AE9F70B00FAAA01 /* ScrollVCBase.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A62EED1AE9F70B00FAAA01 /* ScrollVCBase.m */; };
-		F2AD135A1AE2DEE6001BBEA1 /* NetTypeHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = F2AD13591AE2DEE6001BBEA1 /* NetTypeHelper.m */; };
 		F2B703671AC67EBF005F0903 /* TencentOpenApi_IOS_Bundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F2B703651AC67EBF005F0903 /* TencentOpenApi_IOS_Bundle.bundle */; };
 		F2B703681AC67EBF005F0903 /* TencentOpenAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2B703661AC67EBF005F0903 /* TencentOpenAPI.framework */; };
 		F2B81FF11ADD6C6A00012ED6 /* MuzzikItem.m in Sources */ = {isa = PBXBuildFile; fileRef = F2B81FF01ADD6C6A00012ED6 /* MuzzikItem.m */; };
@@ -150,6 +149,25 @@
 		F2F0FC8D1ADD8B7100668103 /* TeachViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = F2F0FC8B1ADD8B7100668103 /* TeachViewController.xib */; };
 		F2F0FC901ADE0E9100668103 /* checkVerifyCode.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F0FC8F1ADE0E9100668103 /* checkVerifyCode.m */; };
 		F2F7EE0A1AEC99A100265596 /* UIScrollView+DXRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F7EE091AEC99A100265596 /* UIScrollView+DXRefresh.m */; };
+		F2F7EE0D1AED333C00265596 /* SearchMusicCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F7EE0C1AED333C00265596 /* SearchMusicCell.m */; };
+		F2F7EE141AED60A400265596 /* shareBaseController.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F7EE131AED60A400265596 /* shareBaseController.m */; };
+		F2F7EE1A1AED69B600265596 /* MessageStepViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F7EE191AED69B600265596 /* MessageStepViewController.m */; };
+		F2F7EE1E1AEE094300265596 /* emojiCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F7EE1D1AEE094300265596 /* emojiCollectionCell.m */; };
+		F2F7EE251AEE213200265596 /* BATableView.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F7EE211AEE213200265596 /* BATableView.m */; };
+		F2F7EE261AEE213200265596 /* BATableViewIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F7EE231AEE213200265596 /* BATableViewIndex.m */; };
+		F2F7EE271AEE213200265596 /* flotageBackgroud@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F2F7EE241AEE213200265596 /* flotageBackgroud@2x.png */; };
+		F2F7EE2A1AEE22B900265596 /* MuzzikObject.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F7EE291AEE22B900265596 /* MuzzikObject.m */; };
+		F2F7EE3B1AEE23E400265596 /* ChineseToPinyinResource.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F7EE301AEE23E400265596 /* ChineseToPinyinResource.m */; };
+		F2F7EE3C1AEE23E400265596 /* HanyuPinyinOutputFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F7EE321AEE23E400265596 /* HanyuPinyinOutputFormat.m */; };
+		F2F7EE3D1AEE23E400265596 /* NSString+PinYin4Cocoa.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F7EE341AEE23E400265596 /* NSString+PinYin4Cocoa.m */; };
+		F2F7EE3E1AEE23E400265596 /* PinyinFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F7EE371AEE23E400265596 /* PinyinFormatter.m */; };
+		F2F7EE3F1AEE23E400265596 /* PinyinHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F7EE391AEE23E400265596 /* PinyinHelper.m */; };
+		F2F7EE401AEE23E400265596 /* unicode_to_hanyu_pinyin.txt in Resources */ = {isa = PBXBuildFile; fileRef = F2F7EE3A1AEE23E400265596 /* unicode_to_hanyu_pinyin.txt */; };
+		F2F7EE431AEE241A00265596 /* FriendVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F7EE421AEE241A00265596 /* FriendVC.m */; };
+		F2F7EE461AEE24B700265596 /* TransfromTime.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F7EE451AEE24B700265596 /* TransfromTime.m */; };
+		F2F7EE4C1AEE676F00265596 /* TopicHotVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F7EE4B1AEE676F00265596 /* TopicHotVC.m */; };
+		F2F7EE4F1AEE80CA00265596 /* TopicModel.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F7EE4E1AEE80CA00265596 /* TopicModel.m */; };
+		F2F7EE521AEEABC100265596 /* AtfreindCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F7EE511AEEABC100265596 /* AtfreindCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -446,8 +464,6 @@
 		F2A62EEA1AE9F6D900FAAA01 /* ChooseMusicVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChooseMusicVC.m; sourceTree = "<group>"; };
 		F2A62EEC1AE9F70B00FAAA01 /* ScrollVCBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScrollVCBase.h; sourceTree = "<group>"; };
 		F2A62EED1AE9F70B00FAAA01 /* ScrollVCBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScrollVCBase.m; sourceTree = "<group>"; };
-		F2AD13581AE2DEE6001BBEA1 /* NetTypeHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetTypeHelper.h; sourceTree = "<group>"; };
-		F2AD13591AE2DEE6001BBEA1 /* NetTypeHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetTypeHelper.m; sourceTree = "<group>"; };
 		F2B703651AC67EBF005F0903 /* TencentOpenApi_IOS_Bundle.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = TencentOpenApi_IOS_Bundle.bundle; sourceTree = "<group>"; };
 		F2B703661AC67EBF005F0903 /* TencentOpenAPI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TencentOpenAPI.framework; sourceTree = "<group>"; };
 		F2B81FEF1ADD6C6A00012ED6 /* MuzzikItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MuzzikItem.h; sourceTree = "<group>"; };
@@ -459,6 +475,44 @@
 		F2F0FC8F1ADE0E9100668103 /* checkVerifyCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = checkVerifyCode.m; sourceTree = "<group>"; };
 		F2F7EE081AEC99A100265596 /* UIScrollView+DXRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+DXRefresh.h"; sourceTree = "<group>"; };
 		F2F7EE091AEC99A100265596 /* UIScrollView+DXRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+DXRefresh.m"; sourceTree = "<group>"; };
+		F2F7EE0B1AED333C00265596 /* SearchMusicCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchMusicCell.h; sourceTree = "<group>"; };
+		F2F7EE0C1AED333C00265596 /* SearchMusicCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchMusicCell.m; sourceTree = "<group>"; };
+		F2F7EE121AED60A400265596 /* shareBaseController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = shareBaseController.h; sourceTree = "<group>"; };
+		F2F7EE131AED60A400265596 /* shareBaseController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = shareBaseController.m; sourceTree = "<group>"; };
+		F2F7EE181AED69B600265596 /* MessageStepViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageStepViewController.h; sourceTree = "<group>"; };
+		F2F7EE191AED69B600265596 /* MessageStepViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageStepViewController.m; sourceTree = "<group>"; };
+		F2F7EE1B1AEDEA5300265596 /* StringConstantConfigure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StringConstantConfigure.h; sourceTree = "<group>"; };
+		F2F7EE1C1AEE094300265596 /* emojiCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = emojiCollectionCell.h; sourceTree = "<group>"; };
+		F2F7EE1D1AEE094300265596 /* emojiCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = emojiCollectionCell.m; sourceTree = "<group>"; };
+		F2F7EE201AEE213200265596 /* BATableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BATableView.h; sourceTree = "<group>"; };
+		F2F7EE211AEE213200265596 /* BATableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BATableView.m; sourceTree = "<group>"; };
+		F2F7EE221AEE213200265596 /* BATableViewIndex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BATableViewIndex.h; sourceTree = "<group>"; };
+		F2F7EE231AEE213200265596 /* BATableViewIndex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BATableViewIndex.m; sourceTree = "<group>"; };
+		F2F7EE241AEE213200265596 /* flotageBackgroud@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "flotageBackgroud@2x.png"; sourceTree = "<group>"; };
+		F2F7EE281AEE22B900265596 /* MuzzikObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MuzzikObject.h; sourceTree = "<group>"; };
+		F2F7EE291AEE22B900265596 /* MuzzikObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MuzzikObject.m; sourceTree = "<group>"; };
+		F2F7EE2F1AEE23E400265596 /* ChineseToPinyinResource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChineseToPinyinResource.h; sourceTree = "<group>"; };
+		F2F7EE301AEE23E400265596 /* ChineseToPinyinResource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChineseToPinyinResource.m; sourceTree = "<group>"; };
+		F2F7EE311AEE23E400265596 /* HanyuPinyinOutputFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HanyuPinyinOutputFormat.h; sourceTree = "<group>"; };
+		F2F7EE321AEE23E400265596 /* HanyuPinyinOutputFormat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HanyuPinyinOutputFormat.m; sourceTree = "<group>"; };
+		F2F7EE331AEE23E400265596 /* NSString+PinYin4Cocoa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+PinYin4Cocoa.h"; sourceTree = "<group>"; };
+		F2F7EE341AEE23E400265596 /* NSString+PinYin4Cocoa.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+PinYin4Cocoa.m"; sourceTree = "<group>"; };
+		F2F7EE351AEE23E400265596 /* PinYin4Objc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PinYin4Objc.h; sourceTree = "<group>"; };
+		F2F7EE361AEE23E400265596 /* PinyinFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PinyinFormatter.h; sourceTree = "<group>"; };
+		F2F7EE371AEE23E400265596 /* PinyinFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PinyinFormatter.m; sourceTree = "<group>"; };
+		F2F7EE381AEE23E400265596 /* PinyinHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PinyinHelper.h; sourceTree = "<group>"; };
+		F2F7EE391AEE23E400265596 /* PinyinHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PinyinHelper.m; sourceTree = "<group>"; };
+		F2F7EE3A1AEE23E400265596 /* unicode_to_hanyu_pinyin.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = unicode_to_hanyu_pinyin.txt; sourceTree = "<group>"; };
+		F2F7EE411AEE241A00265596 /* FriendVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendVC.h; sourceTree = "<group>"; };
+		F2F7EE421AEE241A00265596 /* FriendVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendVC.m; sourceTree = "<group>"; };
+		F2F7EE441AEE24B700265596 /* TransfromTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TransfromTime.h; sourceTree = "<group>"; };
+		F2F7EE451AEE24B700265596 /* TransfromTime.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TransfromTime.m; sourceTree = "<group>"; };
+		F2F7EE4A1AEE676F00265596 /* TopicHotVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopicHotVC.h; sourceTree = "<group>"; };
+		F2F7EE4B1AEE676F00265596 /* TopicHotVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopicHotVC.m; sourceTree = "<group>"; };
+		F2F7EE4D1AEE80CA00265596 /* TopicModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopicModel.h; sourceTree = "<group>"; };
+		F2F7EE4E1AEE80CA00265596 /* TopicModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopicModel.m; sourceTree = "<group>"; };
+		F2F7EE501AEEABC100265596 /* AtfreindCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AtfreindCell.h; sourceTree = "<group>"; };
+		F2F7EE511AEEABC100265596 /* AtfreindCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AtfreindCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -538,6 +592,7 @@
 				E159C31F1AC11F76007D2254 /* ViewPagerController.m */,
 				E1B230481AB6E6FA004E50DA /* muzzik-PrefixHeader.pch */,
 				E11246921AAABFED0014D461 /* appConfiguration.h */,
+				F2F7EE1B1AEDEA5300265596 /* StringConstantConfigure.h */,
 				E11246021AAAAE4B0014D461 /* Images.xcassets */,
 				E11246041AAAAE4B0014D461 /* LaunchScreen.xib */,
 				E11245F51AAAAE4B0014D461 /* Supporting Files */,
@@ -613,6 +668,8 @@
 		E112461E1AAAB0F60014D461 /* 3plus-in */ = {
 			isa = PBXGroup;
 			children = (
+				F2F7EE2E1AEE23C700265596 /* ChinaToEnglish */,
+				F2F7EE1F1AEE20E600265596 /* BATalbleView */,
 				F2F7EE071AEC998800265596 /* Refresh */,
 				F26167331ADEE3A300E1B11E /* ZHPickView.h */,
 				F26167341ADEE3A300E1B11E /* ZHPickView.m */,
@@ -817,8 +874,8 @@
 			children = (
 				E16716231AAD77830068AE98 /* userInfo.h */,
 				E16716241AAD77830068AE98 /* userInfo.m */,
-				F2AD13581AE2DEE6001BBEA1 /* NetTypeHelper.h */,
-				F2AD13591AE2DEE6001BBEA1 /* NetTypeHelper.m */,
+				F2F7EE281AEE22B900265596 /* MuzzikObject.h */,
+				F2F7EE291AEE22B900265596 /* MuzzikObject.m */,
 				F2B81FEF1ADD6C6A00012ED6 /* MuzzikItem.h */,
 				F2B81FF01ADD6C6A00012ED6 /* MuzzikItem.m */,
 				E1FA12A71AB148B1005EDA1D /* RFRadioView.h */,
@@ -1029,6 +1086,8 @@
 				F2A5E2081AD90F9F00FD8B3E /* MuzzikUser.m */,
 				F2A5E20A1AD9106E00FD8B3E /* music.h */,
 				F2A5E20B1AD9106E00FD8B3E /* music.m */,
+				F2F7EE4D1AEE80CA00265596 /* TopicModel.h */,
+				F2F7EE4E1AEE80CA00265596 /* TopicModel.m */,
 			);
 			name = model;
 			sourceTree = "<group>";
@@ -1036,6 +1095,7 @@
 		F2E8F11C1AE9121E0000509B /* 发po分享 */ = {
 			isa = PBXGroup;
 			children = (
+				F2F7EE111AED607300265596 /* shareNac */,
 				F2A62EE91AE9F6D900FAAA01 /* ChooseMusicVC.h */,
 				F2A62EEA1AE9F6D900FAAA01 /* ChooseMusicVC.m */,
 				F2A62EEC1AE9F70B00FAAA01 /* ScrollVCBase.h */,
@@ -1046,6 +1106,18 @@
 				F29A17011AEA98B600200EAE /* SearchLibraryMusicVC.m */,
 				F2A62EE61AE956A700FAAA01 /* MusicCell.h */,
 				F2A62EE71AE956A700FAAA01 /* MusicCell.m */,
+				F2F7EE0B1AED333C00265596 /* SearchMusicCell.h */,
+				F2F7EE0C1AED333C00265596 /* SearchMusicCell.m */,
+				F2F7EE181AED69B600265596 /* MessageStepViewController.h */,
+				F2F7EE191AED69B600265596 /* MessageStepViewController.m */,
+				F2F7EE1C1AEE094300265596 /* emojiCollectionCell.h */,
+				F2F7EE1D1AEE094300265596 /* emojiCollectionCell.m */,
+				F2F7EE411AEE241A00265596 /* FriendVC.h */,
+				F2F7EE421AEE241A00265596 /* FriendVC.m */,
+				F2F7EE501AEEABC100265596 /* AtfreindCell.h */,
+				F2F7EE511AEEABC100265596 /* AtfreindCell.m */,
+				F2F7EE4A1AEE676F00265596 /* TopicHotVC.h */,
+				F2F7EE4B1AEE676F00265596 /* TopicHotVC.m */,
 			);
 			name = "发po分享";
 			sourceTree = "<group>";
@@ -1057,6 +1129,48 @@
 				F2F7EE091AEC99A100265596 /* UIScrollView+DXRefresh.m */,
 			);
 			name = Refresh;
+			sourceTree = "<group>";
+		};
+		F2F7EE111AED607300265596 /* shareNac */ = {
+			isa = PBXGroup;
+			children = (
+				F2F7EE121AED60A400265596 /* shareBaseController.h */,
+				F2F7EE131AED60A400265596 /* shareBaseController.m */,
+			);
+			name = shareNac;
+			sourceTree = "<group>";
+		};
+		F2F7EE1F1AEE20E600265596 /* BATalbleView */ = {
+			isa = PBXGroup;
+			children = (
+				F2F7EE201AEE213200265596 /* BATableView.h */,
+				F2F7EE211AEE213200265596 /* BATableView.m */,
+				F2F7EE221AEE213200265596 /* BATableViewIndex.h */,
+				F2F7EE231AEE213200265596 /* BATableViewIndex.m */,
+				F2F7EE241AEE213200265596 /* flotageBackgroud@2x.png */,
+			);
+			name = BATalbleView;
+			sourceTree = "<group>";
+		};
+		F2F7EE2E1AEE23C700265596 /* ChinaToEnglish */ = {
+			isa = PBXGroup;
+			children = (
+				F2F7EE441AEE24B700265596 /* TransfromTime.h */,
+				F2F7EE451AEE24B700265596 /* TransfromTime.m */,
+				F2F7EE2F1AEE23E400265596 /* ChineseToPinyinResource.h */,
+				F2F7EE301AEE23E400265596 /* ChineseToPinyinResource.m */,
+				F2F7EE311AEE23E400265596 /* HanyuPinyinOutputFormat.h */,
+				F2F7EE321AEE23E400265596 /* HanyuPinyinOutputFormat.m */,
+				F2F7EE331AEE23E400265596 /* NSString+PinYin4Cocoa.h */,
+				F2F7EE341AEE23E400265596 /* NSString+PinYin4Cocoa.m */,
+				F2F7EE351AEE23E400265596 /* PinYin4Objc.h */,
+				F2F7EE361AEE23E400265596 /* PinyinFormatter.h */,
+				F2F7EE371AEE23E400265596 /* PinyinFormatter.m */,
+				F2F7EE381AEE23E400265596 /* PinyinHelper.h */,
+				F2F7EE391AEE23E400265596 /* PinyinHelper.m */,
+				F2F7EE3A1AEE23E400265596 /* unicode_to_hanyu_pinyin.txt */,
+			);
+			name = ChinaToEnglish;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1158,7 +1272,9 @@
 				F22557671ACA9FC900223E33 /* UMSCommentDetailController.xib in Resources */,
 				F22557681ACA9FC900223E33 /* UMSCommentInputController.xib in Resources */,
 				F225576F1ACA9FC900223E33 /* UMSocialSDKResourcesNew.bundle in Resources */,
+				F2F7EE401AEE23E400265596 /* unicode_to_hanyu_pinyin.txt in Resources */,
 				E11246031AAAAE4B0014D461 /* Images.xcassets in Resources */,
+				F2F7EE271AEE213200265596 /* flotageBackgroud@2x.png in Resources */,
 				F225576A1ACA9FC900223E33 /* UMShareEditViewController.xib in Resources */,
 				E16716331AAECF720068AE98 /* InfoPilst.strings in Resources */,
 				F225576C1ACA9FC900223E33 /* UMSLoginViewController.xib in Resources */,
@@ -1185,6 +1301,7 @@
 				E1FA12C71AB1499F005EDA1D /* DataSourceWrapper.m in Sources */,
 				E1B230461AB6E3F1004E50DA /* NSString+CXAHyperlinkParser.m in Sources */,
 				E11246781AAAB20B0014D461 /* UIImage+WebP.m in Sources */,
+				F2F7EE3C1AEE23E400265596 /* HanyuPinyinOutputFormat.m in Sources */,
 				F2641F231AD9A652003BECDD /* NSString+MD5.m in Sources */,
 				E1B2303B1AB5BF22004E50DA /* FMDatabasePool.m in Sources */,
 				E11246431AAAB1F20014D461 /* ASIDataCompressor.m in Sources */,
@@ -1217,22 +1334,33 @@
 				F29290291ADFC74B0086E8D4 /* phoneForResetVC.m in Sources */,
 				E1FA12A91AB148B1005EDA1D /* FMLrcView.m in Sources */,
 				E11246441AAAB1F20014D461 /* ASIDataDecompressor.m in Sources */,
+				F2F7EE3E1AEE23E400265596 /* PinyinFormatter.m in Sources */,
 				E1FA13411AB1911D005EDA1D /* audio_stream.cpp in Sources */,
 				E112466E1AAAB20B0014D461 /* SDImageCache.m in Sources */,
 				E1FA13461AB195E0005EDA1D /* Globle.m in Sources */,
+				F2F7EE4F1AEE80CA00265596 /* TopicModel.m in Sources */,
 				F2A5E20C1AD9106E00FD8B3E /* music.m in Sources */,
 				E1FA12C81AB1499F005EDA1D /* HttpDataSource.m in Sources */,
+				F2F7EE461AEE24B700265596 /* TransfromTime.m in Sources */,
 				E1B230391AB5BF22004E50DA /* FMDatabase.m in Sources */,
 				E159C3211AC11F76007D2254 /* ViewPagerController.m in Sources */,
 				E1B230451AB6E3F1004E50DA /* NSAttributedString+CXACoreTextFrameSize.m in Sources */,
+				F2F7EE1A1AED69B600265596 /* MessageStepViewController.m in Sources */,
 				E1B2303A1AB5BF22004E50DA /* FMDatabaseAdditions.m in Sources */,
 				E11246481AAAB1F20014D461 /* ASIInputStream.m in Sources */,
+				F2F7EE431AEE241A00265596 /* FriendVC.m in Sources */,
+				F2F7EE141AED60A400265596 /* shareBaseController.m in Sources */,
 				E11246491AAAB1F20014D461 /* ASINetworkQueue.m in Sources */,
+				F2F7EE2A1AEE22B900265596 /* MuzzikObject.m in Sources */,
 				F2641F201AD988CC003BECDD /* registerVC.m in Sources */,
 				E1FA12C41AB1499F005EDA1D /* AutoRecoveringHttpDataSource.m in Sources */,
+				F2F7EE3B1AEE23E400265596 /* ChineseToPinyinResource.m in Sources */,
+				F2F7EE0D1AED333C00265596 /* SearchMusicCell.m in Sources */,
 				E112466F1AAAB20B0014D461 /* SDWebImageCompat.m in Sources */,
 				E1FA12D01AB14CEF005EDA1D /* NSDate+Additions.m in Sources */,
+				F2F7EE4C1AEE676F00265596 /* TopicHotVC.m in Sources */,
 				E112468F1AAAB2CD0014D461 /* NormalCell.m in Sources */,
+				F2F7EE521AEEABC100265596 /* AtfreindCell.m in Sources */,
 				E112466D1AAAB20B0014D461 /* NSData+ImageContentType.m in Sources */,
 				E1B230401AB6E348004E50DA /* CXAHyperlinkLabel.m in Sources */,
 				E112469A1AAAC02A0014D461 /* AMScrollingNavbarViewController.m in Sources */,
@@ -1244,6 +1372,7 @@
 				F26167351ADEE3A300E1B11E /* ZHPickView.m in Sources */,
 				E112467A1AAAB20B0014D461 /* UIImageView+WebCache.m in Sources */,
 				E1FA13431AB1911D005EDA1D /* id3_parser.cpp in Sources */,
+				F2F7EE3D1AEE23E400265596 /* NSString+PinYin4Cocoa.m in Sources */,
 				E112469B1AAAC02A0014D461 /* BaseNagationViewController.m in Sources */,
 				E11246911AAAB2CD0014D461 /* TopicHeaderView.m in Sources */,
 				E1FA12E61AB18252005EDA1D /* FSParseRssPodcastFeedRequest.m in Sources */,
@@ -1251,10 +1380,13 @@
 				E11246791AAAB20B0014D461 /* UIImageView+HighlightedWebCache.m in Sources */,
 				F29A17021AEA98B600200EAE /* SearchLibraryMusicVC.m in Sources */,
 				F2F7EE0A1AEC99A100265596 /* UIScrollView+DXRefresh.m in Sources */,
+				F2F7EE261AEE213200265596 /* BATableViewIndex.m in Sources */,
+				F2F7EE3F1AEE23E400265596 /* PinyinHelper.m in Sources */,
 				E112466C1AAAB20B0014D461 /* MKAnnotationView+WebCache.m in Sources */,
 				E11246761AAAB20B0014D461 /* UIImage+GIF.m in Sources */,
 				E11246451AAAB1F20014D461 /* ASIDownloadCache.m in Sources */,
 				E11246741AAAB20B0014D461 /* SDWebImagePrefetcher.m in Sources */,
+				F2F7EE251AEE213200265596 /* BATableView.m in Sources */,
 				F2A5E2061AD90D8000FD8B3E /* muzzik.m in Sources */,
 				E11246751AAAB20B0014D461 /* UIButton+WebCache.m in Sources */,
 				E11246771AAAB20B0014D461 /* UIImage+MultiFormat.m in Sources */,
@@ -1264,10 +1396,10 @@
 				E159C3201AC11F76007D2254 /* HostViewController.m in Sources */,
 				2FD6611B1AB71DA600781180 /* playListController.m in Sources */,
 				E1FA12C51AB1499F005EDA1D /* CoreFoundationDataSource.m in Sources */,
+				F2F7EE1E1AEE094300265596 /* emojiCollectionCell.m in Sources */,
 				F2F0FC8C1ADD8B7100668103 /* TeachViewController.m in Sources */,
 				E1FA12E71AB18252005EDA1D /* FSPlaylistItem.m in Sources */,
 				F2A62EEE1AE9F70B00FAAA01 /* ScrollVCBase.m in Sources */,
-				F2AD135A1AE2DEE6001BBEA1 /* NetTypeHelper.m in Sources */,
 				E1FA13491AB1ABDD005EDA1D /* Reachability.m in Sources */,
 				F21EA1CA1ACECC6200F5ED32 /* TopicVC.m in Sources */,
 				E112467B1AAAB20B0014D461 /* UIView+WebCacheOperation.m in Sources */,

@@ -18,6 +18,7 @@
 #import "UIColor+HexColor.h"
 #import "KVNProgress.h"
 #import "muzzik.h"
+#import "StringConstantConfigure.h"
 #endif
 #define muzzik_muzzik_PrefixHeader_pch
 
