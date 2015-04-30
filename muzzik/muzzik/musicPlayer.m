@@ -75,52 +75,17 @@ static NSMutableArray *playList;
     
     // Do any additional setup after loading the view.
 }
--(BOOL)isLocalMP3
-{
-    if ([self.muzzikDB open]) {
-        NSString *dbCreate = [[NSUserDefaults standardUserDefaults] stringForKey:Is_Table_Create];
-        if (![dbCreate isEqualToString:@"yes"]) {
-            [self.muzzikDB executeUpdate:@"CREATE TABLE SongList (songname text, artist text, music_id text, songkey text,filepath text,lastplay text , playtimes text)"];
-            [[NSUserDefaults standardUserDefaults] setObject:@"yes" forKey:Is_Table_Create];
-        }
-
-    }
-
-        FMResultSet *rs = [self.muzzikDB executeQuery:@"SELECT * FROM SongList"];
-        
-        
-        
-        // 遍历结果集
-        
-        while ([rs next]) {
-            if ([[rs stringForColumn:@"songkey"] isEqualToString:_localMuzzik.music.key]) {
-                [rs close];
-                [self.muzzikDB close];
-                return YES;
-            }
-            NSLog(@"song:%@,filepath:%@",[rs stringForColumn:@"SongName"],[rs stringForColumn:@"filepath"]);
-            
-        }
-        
-        [rs close];
-        [self.muzzikDB close];
-    return NO;
-}
-//-(NSString *)localMP3path
-//{
-//    NSString *filePath = [DocumentsPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mp3",localMuzzik.music.music_id]];
-//    return filePath;
-//}
 -(void)playSongWithSongModel:(muzzik *)playMuzzik{
     
     
     globle = [Globle shareGloble];
 
-    if ([self isLocalMP3]) {
+    if ([MuzzikItem isLocalMusicContainKey:playMuzzik.music.key]) {
         NSString *path = [[[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:@"music"] stringByAppendingPathComponent:playMuzzik.music.key];
         _radioView.musicUrl = [NSURL URLWithString:[NSString stringWithFormat:@"file://%@",path]];
     }
     else{
+        //wifi条件下缓存
         _radioView.musicUrl = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_audio,playMuzzik.music.key]];
         if ([[Reachability reachabilityForLocalWiFi] currentReachabilityStatus] == kReachableViaWiFi) {
             [self downLoadFileWithModel:_localMuzzik];
@@ -290,34 +255,9 @@ static NSMutableArray *playList;
         [request setAllowResumeForFileDownloads:YES];
         __weak ASIHTTPRequest *weakrequest = request;
         [request setCompletionBlock :^{
-            if (![self.muzzikDB open]) {
-                NSLog(@"Could not open db.");
-                return ;
-            }
-            NSString *dbCreate = [[NSUserDefaults standardUserDefaults] stringForKey:Is_Table_Create];
-            if (![dbCreate isEqualToString:@"yes"]) {
-                [self.muzzikDB executeUpdate:@"CREATE TABLE SongList (songname text, artist text, music_id text, songkey text,filepath text,lastplay text , playtimes text)"];
-                [[NSUserDefaults standardUserDefaults] setObject:@"yes" forKey:Is_Table_Create];
-            }
-            if ([weakrequest responseStatusCode] == 200) {
-                [self.muzzikDB executeUpdate:@"INSERT INTO SongList (songname, artist, music_id, songkey,filepath,lastplay,playtimes) VALUES (?,?,?,?,?,?,?)",model.music.name, model.music.artist, model.music.music_id, model.music.key,savePath,[NSString stringWithFormat:@"%f",[NSDate timeIntervalSinceReferenceDate]],@"0"];
-//                FMResultSet *rs = [self.muzzikDB executeQuery:@"SELECT * FROM SongList"];
-//                
-//                
-//                
-//                // 遍历结果集
-//                
-//                while ([rs next]) {
-//                    NSLog(@"song:%@,filepath:%@",[rs stringForColumn:@"SongName"],[rs stringForColumn:@"filepath"]);
-//                    
-//                }
-                
-                //[rs close];
-                [self.muzzikDB close];
-            }
-            else{
-                //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-            }
+             if ([weakrequest responseStatusCode] == 200) {
+                 [MuzzikItem addMusicAddressToLocal:savePath Key:model.music.key];
+             }
         }];
         [request setFailedBlock:^{
             NSLog(@"%@%@",[weakrequest responseString],[weakrequest responseData]);

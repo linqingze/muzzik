@@ -25,7 +25,6 @@
 #define URL_WeiBo_redirectURI   @"http://muzziker.com"
 #define URL_QQ_AUTH             @"auth/qq?access_token="
 #define URL_WeiBo_AUTH          @"auth/weibo?access_token="
-//#define URL_WeiChat_AUTH        @"auth/weixin?access_token="
 #define URL_WeiChat_AUTH        @"auth/weixin/callback?result=json&code="
 #define URL_Muzzik_Trending     @"api/muzzik/trending"
 
@@ -46,6 +45,7 @@
 #define URL_Friends_get         @"api/user/friends"
 #define URL_RecentContact       @"api/user/recentContact"
 #define URL_Get_Topic           @"api/topic"
+#define URL_Muzzik_new          @"api/muzzik"
 //#define URL_
 
 

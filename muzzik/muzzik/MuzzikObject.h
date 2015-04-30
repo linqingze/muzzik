@@ -11,5 +11,8 @@
 @interface MuzzikObject : NSObject
 @property (nonatomic,retain) music *music;
 @property (nonatomic,copy) NSString *message;
+@property (nonatomic,copy) NSString *imageKey;
+@property (nonatomic,retain)NSMutableArray *lyricArray;
+@property (nonatomic,assign) BOOL isPrivate;
 +(MuzzikObject *) shareClass;
 @end

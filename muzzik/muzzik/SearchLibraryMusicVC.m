@@ -156,6 +156,7 @@
     else{
         tempMuzzik = [self.movedMusicArray objectAtIndex:indexPath.row];
     }
+    [MuzzikItem getLyricByMusic:tempMuzzik.music];
     MuzzikObject *mobject = [MuzzikObject shareClass];
     if (mobject.music) {
         mobject.music = tempMuzzik.music;

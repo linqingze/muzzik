@@ -10,6 +10,8 @@
 #import "FSPlaylistItem.h"
 #import "UIView+Additions.h"
 //#import "Globle.h"
+#import "Cell.h"
+#import "LineLayout.h"
 #import "FMLrcView.h"
 #import "UIImageView+WebCache.h"
 #import "FSAudioStream.h"
@@ -79,18 +81,19 @@
         [attentionButton addTarget:self action:@selector(attentionAction) forControlEvents:UIControlEventTouchUpInside];
         [attentionButton setImage:[UIImage imageNamed:@"followImage"] forState:UIControlStateNormal];
         [detailView addSubview:attentionButton];
-        nickLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 90, SCREEN_WIDTH, 20)];
+        nickLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 90, SCREEN_WIDTH, 30)];
         [nickLabel setTextColor:[UIColor whiteColor]];
+        [nickLabel setFont:[UIFont fontWithName:Font_Next_Bold size:14]];
         nickLabel.textAlignment = NSTextAlignmentCenter;
         [detailView addSubview:nickLabel];
-        pagecontrol = [[UIPageControl alloc] initWithFrame:CGRectMake(0, 115, SCREEN_WIDTH, 10)];
+        pagecontrol = [[UIPageControl alloc] initWithFrame:CGRectMake(0, 125, SCREEN_WIDTH, 10)];
         //page control
         [pagecontrol setCurrentPageIndicatorTintColor:[UIColor colorWithHexString:@"a8acbb"]];
         [pagecontrol setPageIndicatorTintColor:[UIColor colorWithHexString:@"3b4051"]];
         [detailView addSubview:pagecontrol];
         //[pagecontrol setBackgroundColor:[UIColor whiteColor]];
         pagecontrol.numberOfPages = 2;
-        Scroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 115, SCREEN_WIDTH, 100)];
+        Scroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 135, SCREEN_WIDTH, 100)];
         Scroll.delegate = self;
         [Scroll setPagingEnabled:YES];
         [Scroll setContentSize:CGSizeMake(SCREEN_WIDTH*2, 100)];
@@ -101,11 +104,16 @@
         message.numberOfLines = 0;
         message.textColor = [UIColor whiteColor];
         [Scroll addSubview:message];
-        lyricPicker = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 100)];
-        lyricPicker.delegate = self;
-        //[lyricPicker setBackgroundColor:[UIColor whiteColor]];
-        lyricPicker.dataSource = self;
-        [Scroll addSubview:lyricPicker];
+        LineLayout *lineout = [[LineLayout alloc] init];
+        lyricCollectionview = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 100) collectionViewLayout:lineout];
+        [Scroll addSubview:lyricCollectionview];
+        lyricCollectionview.delegate = self;
+        lyricCollectionview.dataSource = self;
+        [lyricCollectionview setBackgroundColor:[UIColor clearColor]];
+        [lyricCollectionview registerClass:[Cell class] forCellWithReuseIdentifier:@"MY_CELL"];
+        
+        
+        
         _progress = [[UISlider alloc] initWithFrame:CGRectMake(15, 260, SCREEN_WIDTH-65, 20)];
         _progress.continuous = NO;
         
@@ -424,7 +432,10 @@
     
 }
 -(void)scrolllyric:(NSDictionary *)dic{
-    [lyricPicker selectRow:[self.lyricArray indexOfObject:dic] inComponent:0 animated:YES];
+    if ([self.lyricArray containsObject:dic]) {
+        [lyricCollectionview scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:[self.lyricArray indexOfObject:dic] inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+    }
+    
 }
 -(void)stopEverything
 {
@@ -576,13 +587,15 @@
         }
         return NSOrderedSame;
     }]];
-    [lyricPicker reloadAllComponents];
-    for (int i= 0; i<self.lyricArray.count; i++) {
-        if ([[[self.lyricArray[i] allObjects] objectAtIndex:0] length]>2) {
-            [lyricPicker selectRow:i inComponent:0 animated:NO];
-            break;
+    NSArray *larray = [NSArray arrayWithArray:self.lyricArray];
+    for (int i = larray.count-1; i>0; i--) {
+        NSDictionary *dic = larray[i];
+        NSLog(@"%d",[[[dic allValues][0] stringByTrimmingCharactersInSet:[NSCharacterSet symbolCharacterSet]] length]);
+        if ([[[dic allValues][0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length] == 0 ) {
+            [self.lyricArray removeObjectAtIndex:[larray indexOfObject:dic]];
         }
     }
+    [lyricCollectionview reloadData];
     return nil;
 }
 
@@ -671,34 +684,16 @@
     [self updateControls];
 }
 #pragma -mark  picker委托方法
--(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component{
+- (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section;
+{
     return self.lyricArray.count;
 }
-- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view
-{
-    
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, SCREEN_WIDTH-20, 30)];
-    label.numberOfLines = 0;
-    label.lineBreakMode = NSLineBreakByWordWrapping;
-    [label setFont:[UIFont systemFontOfSize:14]];
-    [label setTextColor:[UIColor colorWithHexString:@"a8acbb"]];
-    label.textAlignment = NSTextAlignmentCenter;
-    label.text = [[[self.lyricArray objectAtIndex:row] allValues] objectAtIndex:0];
-    return label;
-}
--(CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component{
-    return 30.0;
-}
--(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
-{
-    return 1;
-}
 
--(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
+- (UICollectionViewCell *)collectionView:(UICollectionView *)cv cellForItemAtIndexPath:(NSIndexPath *)indexPath;
 {
-//    NSString *timeString = [[[self.lyricArray objectAtIndex:row] allKeys] objectAtIndex:0];
-//    NSArray * timearry = [timeStr]
-//    audioPlayer seekToTime:
+    Cell *cell = [cv dequeueReusableCellWithReuseIdentifier:@"MY_CELL" forIndexPath:indexPath];
+    cell.label.text =[_lyricArray[indexPath.row] allObjects][0];
+    return cell;
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)sView

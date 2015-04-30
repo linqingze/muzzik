@@ -7,7 +7,7 @@
 //
 
 #import "MuzzikItem.h"
-
+#import "MuzzikObject.h"
 @implementation MuzzikItem
 static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 +(MuzzikItem *) shareClass{
@@ -396,6 +396,198 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     return nil;
     
 }
+#pragma -mark local music
++(BOOL)isLocalMusicContainKey:(NSString *)key{
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:[userDefault dictionaryForKey:@"localMusic"]];
+    for (NSString *localKey in [dic allKeys]) {
+        if ([localKey isEqualToString:key]) {
+            return YES;
+        }
+    }
+    
+    return NO;
+}
++ (void)addMusicAddressToLocal:(NSString *) address Key:(NSString *)key
+{
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:[userDefault dictionaryForKey:@"localMusic"]];
+    if ([[dic allKeys] count] == 0) {
+        dic = [NSMutableDictionary dictionary];
+    }
+    [dic setObject:address forKey:key];
+    [userDefault setObject:dic forKey:@"localMusic"];
+    [userDefault synchronize];
+}
+
+#pragma -mark local Lyric
++(BOOL)isLocalLyricContainKey:(NSString *)key{
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:[userDefault dictionaryForKey:@"localLyric"]];
+    for (NSString *localKey in [dic allKeys]) {
+        if ([localKey isEqualToString:key]) {
+            return YES;
+        }
+    }
+
+    return NO;
+}
++ (void)addLyricAddressToLocal:(NSString *) address Key:(NSString *)key
+{
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:[userDefault dictionaryForKey:@"localLyric"]];
+    if ([[dic allKeys] count] == 0) {
+        dic = [NSMutableDictionary dictionary];
+    }
+    [dic setObject:address forKey:key];
+    [userDefault setObject:dic forKey:@"localLyric"];
+    [userDefault synchronize];
+}
+
+#pragma -mark local Picture
++(BOOL)isLocaPictureContainKey:(NSString *)key{
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:[userDefault dictionaryForKey:@"localPicture"]];
+    for (NSString *localKey in [dic allKeys]) {
+        if ([localKey isEqualToString:key]) {
+            return YES;
+        }
+    }
+    
+    return NO;
+}
++ (void)addPictureAddressToLocal:(NSString *) address Key:(NSString *)key
+{
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:[userDefault dictionaryForKey:@"localPicture"]];
+    if ([[dic allKeys] count] == 0) {
+        dic = [NSMutableDictionary dictionary];
+    }
+    [dic setObject:address forKey:key];
+    [userDefault setObject:dic forKey:@"localPicture"];
+    [userDefault synchronize];
+}
+#pragma -mark 获取歌词
++(void)getLyricByMusic:(music *)localMusic{
+    MuzzikObject *mobject = [MuzzikObject shareClass];
+    ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString :[[NSString stringWithFormat:@"%@%@/%@",URL_Lyric_Me,localMusic.name,localMusic.artist] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+    [requestForm setUseCookiePersistence:NO];
+    __weak ASIHTTPRequest *weakrequest = requestForm;
+    [requestForm setCompletionBlock :^{
+        NSLog(@"%@",[weakrequest responseString]);
+        NSLog(@"URL:%@     status:%d",[weakrequest originalURL],[weakrequest responseStatusCode]);
+        if ([weakrequest responseStatusCode] == 200) {
+            [weakrequest originalURL];
+            NSData *data = [weakrequest responseData];
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data  options:NSJSONReadingMutableContainers error:nil];
+            if ([[dic objectForKey:@"count"] longValue]>0) {
+                ASIHTTPRequest *lyricRequest = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[[[[dic objectForKey:@"result"] objectAtIndex:0] objectForKey:@"lrc"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+                __weak ASIHTTPRequest *lrcRequest = lyricRequest;
+                [lyricRequest setCompletionBlock:^{
+                    NSString *lyric =  [[NSString alloc] initWithData:[lrcRequest responseData]   encoding:NSUTF8StringEncoding];
+                    
+                    mobject.lyricArray = [MuzzikItem parseLrcLine:lyric];
+
+                    NSLog(@"%@",[lrcRequest responseString]);
+                    NSLog(@"URL:%@     status:%d",[lrcRequest originalURL],[lrcRequest responseStatusCode]);
+                }];
+                [lyricRequest setFailedBlock:^{
+                    NSLog(@"%@",lrcRequest.error);
+                }];
+                [lyricRequest startAsynchronous];
+            }
+            else{
+                ASIHTTPRequest *requestForm1 = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString :[[NSString stringWithFormat:@"%@%@",URL_Lyric_Me,localMusic.name] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+                [requestForm1 setUseCookiePersistence:NO];
+                __weak ASIHTTPRequest *weakrequest1 = requestForm1;
+                [requestForm1 setCompletionBlock :^{
+                    NSLog(@"%@",[weakrequest1 responseString]);
+                    NSLog(@"URL:%@     status:%d",[weakrequest1 originalURL],[weakrequest1 responseStatusCode]);
+                    if ([weakrequest1 responseStatusCode] == 200) {
+                        [weakrequest1 originalURL];
+                        NSData *data = [weakrequest1 responseData];
+                        NSDictionary *dic1 = [NSJSONSerialization JSONObjectWithData:data  options:NSJSONReadingMutableContainers error:nil];
+                        if ([[dic1 objectForKey:@"count"] longValue]>0) {
+                            ASIHTTPRequest *lyricRequest1 = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[[[[dic1 objectForKey:@"result"] objectAtIndex:0] objectForKey:@"lrc"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+                            __weak ASIHTTPRequest *lrcRequest1 = lyricRequest1;
+                            [lyricRequest1 setCompletionBlock:^{
+                                NSString *lyric =  [[NSString alloc] initWithData:[lrcRequest1 responseData]   encoding:NSUTF8StringEncoding];
+                                mobject.lyricArray = [MuzzikItem parseLrcLine:lyric];
+                            }];
+                            [lyricRequest1 setFailedBlock:^{
+                                NSLog(@"%@",lrcRequest1.error);
+                            }];
+                            [lyricRequest1 startAsynchronous];
+                        }
+                        else{
+                            
+                        }
+                        
+                    }
+                    else{
+                        //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+                    }
+                }];
+                [requestForm1 setFailedBlock:^{
+                    NSLog(@"URL:%@     status:%d",[weakrequest originalURL],[weakrequest responseStatusCode]);
+                    NSLog(@"  kkk%@",[weakrequest error]);
+                }];
+                [requestForm1 startAsynchronous];
+            }
+            
+        }
+        else{
+            //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+        }
+    }];
+    [requestForm setFailedBlock:^{
+        NSLog(@"URL:%@     status:%d",[weakrequest originalURL],[weakrequest responseStatusCode]);
+        NSLog(@"  kkk%@",[weakrequest error]);
+    }];
+    [requestForm startAsynchronous];
+}
+
++(NSMutableArray*) parseLrcLine:(NSString *)sourceLineText
+{
+    NSMutableArray *lyricArray = [NSMutableArray array];
+    if (!sourceLineText || sourceLineText.length <= 0)
+        return nil;
+    NSArray *array = [sourceLineText componentsSeparatedByString:@"\n"];
+    for (int i = 0; i < array.count; i++) {
+        NSString *tempStr = [array objectAtIndex:i];
+        NSArray *lineArray = [tempStr componentsSeparatedByString:@"]"];
+        for (int j = 0; j < [lineArray count]-1; j ++) {
+            
+            if ([lineArray[j] length] > 8) {
+                NSString *str1 = [tempStr substringWithRange:NSMakeRange(3, 1)];
+                NSString *str2 = [tempStr substringWithRange:NSMakeRange(6, 1)];
+                if ([str1 isEqualToString:@":"] && [str2 isEqualToString:@"."]) {
+                    NSString *lrcStr = [lineArray lastObject];
+                    NSString *timeStr = [[lineArray objectAtIndex:j] substringWithRange:NSMakeRange(1, 8)];//分割区间求歌词时间
+                    //把时间 和 歌词 加入词典
+                    NSDictionary *dic = [NSDictionary dictionaryWithObject:lrcStr forKey:[timeStr substringToIndex:5]];
+                    [lyricArray addObject:dic];
+                }
+            }
+        }
+    }
+    lyricArray = [NSMutableArray arrayWithArray:[lyricArray sortedArrayUsingComparator: ^(id obj1, id obj2) {
+        NSDictionary *dic1 = (NSDictionary *)obj1;
+        NSDictionary *dic2 = (NSDictionary *)obj2;
+        // [[dic1 allKeys] objectAtIndex:0]
+        if ([[[dic1 allKeys] objectAtIndex:0] compare:[[dic2 allKeys] objectAtIndex:0] options:NSCaseInsensitiveSearch]==NSOrderedAscending) {
+            return NSOrderedAscending;//递减
+        }
+        if ([[[dic1 allKeys] objectAtIndex:0] compare:[[dic2 allKeys] objectAtIndex:0] options:NSCaseInsensitiveSearch]==NSOrderedDescending){
+            return NSOrderedDescending;
+        }
+        return NSOrderedSame;
+    }]];
+
+    return lyricArray;
+}
+
+
 -(NSAttributedString *)formatAttrItem:(NSString *)content font:(UIFont *)font color:(UIColor *)color
 {
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
@@ -549,6 +741,24 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     
 }
 +(void) showView:(UILabel *)view Text:(NSString *)string pointY:(CGFloat) pointY{
+    
+}
+
+
+
++(UIImage*)convertViewToImage:(UIView*)v{
+    
+    
+    
+    UIGraphicsBeginImageContext(v.bounds.size);
+    
+    [v.layer renderInContext:UIGraphicsGetCurrentContext()];
+    
+    UIImage*image = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    return image;
     
 }
 @end

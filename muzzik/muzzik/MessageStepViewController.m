@@ -11,6 +11,7 @@
 #import "FriendVC.h"
 #import "TopicHotVC.h"
 #import "ChooseMusicVC.h"
+#import "choosImageVC.h"
 @interface MessageStepViewController ()<UITextViewDelegate>{
     UILabel *charaterLabel;
     UIView *actionView;
@@ -21,6 +22,7 @@
     UILabel *songName;
     UILabel *artist;
     BOOL isPrivate;
+    UITextField *_textfield;
 }
 @end
 
@@ -48,11 +50,11 @@
     charaterLabel.font = [UIFont boldSystemFontOfSize:9];
     [self.view addSubview:charaterLabel];
     [self.view addSubview:privateButton];
-    placeHolder = [[UILabel alloc] initWithFrame:CGRectMake(17, 85, 200, 20)];
+    placeHolder = [[UILabel alloc] initWithFrame:CGRectMake(17, 65, 200, 20)];
     placeHolder.text = @"这一刻你想到了什么...";
     placeHolder.textColor = Color_Text_2;
     placeHolder.font = [UIFont boldSystemFontOfSize:15];
-    textview = [[UITextView alloc] initWithFrame:CGRectMake(13, 80, SCREEN_WIDTH-26, SCREEN_WIDTH-26)];
+    textview = [[UITextView alloc] initWithFrame:CGRectMake(13, 60, SCREEN_WIDTH-26, SCREEN_WIDTH-60)];
     textview.delegate = self;
     textview.textColor = Color_Text_2;
     textview.font = [UIFont systemFontOfSize:15];
@@ -62,7 +64,7 @@
     [self.view addSubview:placeHolder];
     
     
-    [MuzzikItem addLineOnView:self.view heightPoint:SCREEN_WIDTH+54 toLeft:13 toRight:13 withColor:Color_line_1];
+    [MuzzikItem addLineOnView:self.view heightPoint:SCREEN_WIDTH toLeft:13 toRight:13 withColor:Color_line_1];
     UIButton *changSongButton = [[UIButton alloc] initWithFrame:CGRectMake(13,CGRectGetMaxY(textview.frame)+20, 40, 40)];
     [changSongButton setImage:[UIImage imageNamed:Image_add_Song] forState:UIControlStateNormal];
     [changSongButton addTarget:self action:@selector(changsongAction) forControlEvents:UIControlEventTouchUpInside];
@@ -77,7 +79,7 @@
     artist.font = [UIFont boldSystemFontOfSize:17];
     [self.view addSubview:artist];
     
-    UIButton *nextButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-67, SCREEN_HEIGHT-133, 54, 52)];
+    UIButton *nextButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-67, SCREEN_HEIGHT-113, 54, 52)];
     [nextButton setImage:[UIImage imageNamed:Image_Next] forState:UIControlStateNormal];
     [self.view addSubview: nextButton];
     [nextButton addTarget:self action:@selector(nextAction) forControlEvents:UIControlEventTouchUpInside];
@@ -130,7 +132,11 @@
     [self.navigationController pushViewController:topicvc animated:YES];
 }
 -(void) nextAction{
-    
+    MuzzikObject *mobject = [MuzzikObject shareClass];
+    mobject.message = textview.text;
+    mobject.isPrivate = isPrivate;
+    choosImageVC *chooseimgevc = [[choosImageVC alloc] init];
+    [self.navigationController pushViewController:chooseimgevc animated:YES];
 }
 -(void) changsongAction{
     ChooseMusicVC *choosevc = [[ChooseMusicVC alloc] init];

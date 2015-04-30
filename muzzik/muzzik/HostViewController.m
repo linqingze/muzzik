@@ -92,30 +92,30 @@
         lview = [[UIView alloc] initWithFrame:CGRectMake(index*SCREEN_WIDTH/5.0, 0, SCREEN_WIDTH/5.0, 40)];
         if (index ==0) {
             self.tabWidth = SCREEN_WIDTH/5.0;
-            UIImageView *iview = [[UIImageView alloc] initWithFrame:CGRectMake(lview.frame.size.width/2-9, lview.frame.size.height/2-20, 18, 18)];
+            UIImageView *iview = [[UIImageView alloc] initWithFrame:CGRectMake(lview.frame.size.width/2-9, lview.frame.size.height/2-9, 18, 18)];
             iview.tag = 10000;
             iview.image = [UIImage imageNamed:@"homeImage"];
             [lview addSubview:iview];
         }
         else if (index ==1) {
-            UIImageView *iview = [[UIImageView alloc] initWithFrame:CGRectMake(lview.frame.size.width/2-9, lview.frame.size.height/2-20, 18, 18)];
+            UIImageView *iview = [[UIImageView alloc] initWithFrame:CGRectMake(lview.frame.size.width/2-9, lview.frame.size.height/2-9, 18, 18)];
             iview.tag = 10001;
             iview.image = [UIImage imageNamed:@"recommendImage"];
             [lview addSubview:iview];    }
         else if (index ==2) {
-            UIImageView *iview = [[UIImageView alloc] initWithFrame:CGRectMake(lview.frame.size.width/2-9, lview.frame.size.height/2-20, 18, 18)];
+            UIImageView *iview = [[UIImageView alloc] initWithFrame:CGRectMake(lview.frame.size.width/2-9, lview.frame.size.height/2-9, 18, 18)];
             iview.tag = 10002;
             iview.image = [UIImage imageNamed:@"profileImage"];
             [lview addSubview:iview];
         }
         else if (index ==3) {
-            UIImageView *iview = [[UIImageView alloc] initWithFrame:CGRectMake(lview.frame.size.width/2-9, lview.frame.size.height/2-20, 18, 18)];
+            UIImageView *iview = [[UIImageView alloc] initWithFrame:CGRectMake(lview.frame.size.width/2-9, lview.frame.size.height/2-9, 18, 18)];
             iview.tag = 10003;
             iview.image = [UIImage imageNamed:@"notiImage"];
             [lview addSubview:iview];
         }
         else{
-            UIImageView *iview = [[UIImageView alloc] initWithFrame:CGRectMake(lview.frame.size.width/2-9, lview.frame.size.height/2-20, 18, 18)];
+            UIImageView *iview = [[UIImageView alloc] initWithFrame:CGRectMake(lview.frame.size.width/2-9, lview.frame.size.height/2-9, 18, 18)];
             iview.image = [UIImage imageNamed:@"searchImage"];
             iview.tag = 1004;
             [lview addSubview:iview];
@@ -124,18 +124,18 @@
         self.tabWidth = SCREEN_WIDTH/3.0;
         lview = [[UIView alloc] initWithFrame:CGRectMake(index*SCREEN_WIDTH/3.0, 0, SCREEN_WIDTH/3.0, 40)];
         if (index ==0) {
-            UIImageView *iview = [[UIImageView alloc] initWithFrame:CGRectMake(lview.frame.size.width/2-9, lview.frame.size.height/2-20, 18, 18)];
+            UIImageView *iview = [[UIImageView alloc] initWithFrame:CGRectMake(lview.frame.size.width/2-9, lview.frame.size.height/2-9, 18, 18)];
             iview.tag = 10000;
             iview.image = [UIImage imageNamed:@"homeImage"];
             [lview addSubview:iview];
         }
         else if (index ==1) {
-            UIImageView *iview = [[UIImageView alloc] initWithFrame:CGRectMake(lview.frame.size.width/2-9, lview.frame.size.height/2-20, 18, 18)];
+            UIImageView *iview = [[UIImageView alloc] initWithFrame:CGRectMake(lview.frame.size.width/2-9, lview.frame.size.height/2-9, 18, 18)];
             iview.tag = 10001;
             iview.image = [UIImage imageNamed:@"recommendImage"];
             [lview addSubview:iview];    }
         else{
-            UIImageView *iview = [[UIImageView alloc] initWithFrame:CGRectMake(lview.frame.size.width/2-9, lview.frame.size.height/2-20, 18, 18)];
+            UIImageView *iview = [[UIImageView alloc] initWithFrame:CGRectMake(lview.frame.size.width/2-9, lview.frame.size.height/2-9, 18, 18)];
             iview.image = [UIImage imageNamed:@"searchImage"];
             iview.tag = 1004;
             [lview addSubview:iview];

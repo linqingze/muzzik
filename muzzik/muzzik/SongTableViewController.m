@@ -162,6 +162,7 @@
         tempMuzzik = [self.movedMusicArray objectAtIndex:indexPath.row];
     }
     MuzzikObject *mobject = [MuzzikObject shareClass];
+    [MuzzikItem getLyricByMusic:tempMuzzik.music];
     if (mobject.music) {
         mobject.music = tempMuzzik.music;
        [self.keeper.navigationController popViewControllerAnimated:YES];

@@ -8,6 +8,7 @@
 #import "setHeadImageVC.h"
 #import "ASIFormDataRequest.h"
 #import "setGenderVC.h"
+#import "TWPhotoPickerController.h"
 @implementation setHeadImageVC
 -(void)viewDidLoad{
     [super viewDidLoad];
@@ -27,7 +28,7 @@
     UILabel *add1 = [[UILabel alloc] initWithFrame:CGRectMake(0, SCREEN_WIDTH/2+49, SCREEN_WIDTH, 15)];
     [add1 setTextColor:[UIColor colorWithHexString:@"777777"]];
     [add1 setFont:[UIFont systemFontOfSize:12]];
-    [add1 setText:@"（上传清晰头像，占祥更好的自己）"];
+    [add1 setText:@"（上传清晰头像，展示更好的自己）"];
     add1.textAlignment = NSTextAlignmentCenter;
     [headerView addSubview:add1];
     
@@ -56,36 +57,8 @@
     [nextButton addTarget:self action:@selector(summitAction) forControlEvents:UIControlEventTouchUpInside];
 }
 -(void) getPicture{
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"相机", @"从相册选取", nil];
-    [sheet showInView:self.view.window];
-}
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if(buttonIndex==actionSheet.cancelButtonIndex){
-        return;
-    }
-    
-    UIImagePickerControllerSourceType type = UIImagePickerControllerSourceTypePhotoLibrary;
-    
-    if([UIImagePickerController isSourceTypeAvailable:type]){
-        if(buttonIndex==0 && [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]){
-            type = UIImagePickerControllerSourceTypeCamera;
-        }
-        
-        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-        picker.allowsEditing = NO;
-        picker.delegate   = self;
-        picker.sourceType = type;
-        
-        [self presentViewController:picker animated:YES completion:nil];
-    }
-}
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
-{
-    NSString *mediaType = [info objectForKey:UIImagePickerControllerMediaType];
-    if ([mediaType isEqualToString:@"public.image"]){
-        // UIImage *selectedImage = [info objectForKey:UIImagePickerControllerOriginalImage];
-        UIImage *image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
+    TWPhotoPickerController *photoPicker = [[TWPhotoPickerController alloc] init];
+    photoPicker.cropBlock = ^(UIImage *image) {
         userImage = image;
         [headImage setImage:image];
         notifyLabel.alpha = 0;
@@ -93,12 +66,9 @@
         [UIView animateWithDuration:0.3 animations:^{
             [notifyLabel setAlpha:1];
         }];
-    }
-    [picker dismissViewControllerAnimated:YES completion:nil];
-
-    
+    };
+    [self presentViewController:photoPicker animated:YES completion:NULL];
 }
-
 -(NSAttributedString *)formatAttrItem:(NSString *)content color:(UIColor *)color font:(UIFont *)font
 {
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
@@ -121,7 +91,7 @@
     }else{
         ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@%@",BaseURL,URL_Upload_Image]]];
         
-        [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:NO];
+        [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
         __weak ASIHTTPRequest *weakrequest = requestForm;
         [requestForm setCompletionBlock :^{
             NSLog(@"%@    %@",[weakrequest originalURL],[weakrequest requestHeaders]);
@@ -141,7 +111,7 @@
                // interRequest addRequestHeader:@: value:<#(NSString *)#>
                 [interRequest setPostValue:[[dic objectForKey:@"data"] objectForKey:@"token"] forKey:@"token"];
                 NSData *imageData = UIImageJPEGRepresentation(userImage, 0.75);
-                [interRequest addData:imageData  withFileName:@"thumimage.jpg" andContentType:@"image/jpeg" forKey:@"file"];
+                [interRequest addData:imageData forKey:@"file"];
                 __weak ASIFormDataRequest *form = interRequest;
                 [interRequest buildRequestHeaders];
                 NSLog(@"header:%@",interRequest.requestHeaders);

@@ -7,10 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "WXApi.h"
 #import "GexinSdk.h"
 #import "WeiboSDK.h"
 #import "muzzikTrendController.h"
 #import "Reachability.h"
+#import "LoginViewController.h"
 typedef enum {
     SdkStatusStoped,
     SdkStatusStarting,
@@ -18,10 +20,11 @@ typedef enum {
 } SdkStatus;
 
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate,GexinSdkDelegate,WeiboSDKDelegate>{
+@interface AppDelegate : UIResponder <UIApplicationDelegate,GexinSdkDelegate,WeiboSDKDelegate,WXApiDelegate,sendMsgToWeChatViewDelegate>{
      NSString *_deviceToken;
 }
 @property (nonatomic) muzzikTrendController *viewcontroller;
+@property (nonatomic) LoginViewController *loginVC;
 @property (strong, nonatomic) UIWindow *window;
 @property (strong, nonatomic) GexinSdk *gexinPusher;
 @property (strong, nonatomic) NSString *wbtoken;
@@ -44,5 +47,7 @@ typedef enum {
 
 - (void)bindAlias:(NSString *)aAlias;
 - (void)unbindAlias:(NSString *)aAlias;
+-(void) downLoadLyricByMusic:(music *)music;
+- (void) sendImageContent:(UIImage *)image;
 @end
 

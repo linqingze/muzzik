@@ -8,7 +8,7 @@
 
 #import "ViewPagerController.h"
 #import "appConfiguration.h"
-#define kDefaultTabHeight 60.0 // Default tab height
+#define kDefaultTabHeight 40.0 // Default tab height
 #define kDefaultTabOffset 90.0 // Offset of the second and further tabs' from left
 #define kDefaultTabWidth 128.0
 
@@ -375,9 +375,9 @@
     // Add tab views to _tabsView
     CGFloat contentSizeWidth = 0;
     CGFloat belta = 0;
-    if (self.isLoaded) {
-        belta = 20;
-    }
+//    if (self.isLoaded) {
+//        belta = 20;
+//    }
     for (int i = 0; i < _tabCount; i++) {
         
         UIView *tabView = [self tabViewAtIndex:i];

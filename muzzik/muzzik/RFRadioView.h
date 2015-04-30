@@ -20,7 +20,7 @@
 -(void)radioView:(RFRadioView *)view playListButton:(UIButton *)btn;
 -(void)radioView:(RFRadioView *)view downLoadButton:(UIButton *)btn;
 @end
-@interface RFRadioView : UIView<AudioPlayerDelegate,UIPickerViewDataSource,UIPickerViewDelegate,UIScrollViewDelegate>
+@interface RFRadioView : UIView<AudioPlayerDelegate,UICollectionViewDelegate,UICollectionViewDataSource,UIScrollViewDelegate>
 {
     
     NSTimer *_progressUpdateTimer;
@@ -66,7 +66,7 @@
     UILabel *nickLabel;
     UIPageControl *pagecontrol;
     UIScrollView *Scroll;
-    UIPickerView *lyricPicker;
+    UICollectionView *lyricCollectionview;
 //    UILabel *timeLabel;
     UIButton *commentButton;
     UIButton *movedButton;

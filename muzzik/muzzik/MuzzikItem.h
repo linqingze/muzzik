@@ -37,7 +37,15 @@
 + (void)removeMessageFromLocal:(NSString *)string;
 +(NSString *)getStringForKey:(NSString *)key;
 + (NSDictionary *)messageFromLocal;
++(BOOL)isLocalMusicContainKey:(NSString *)key;
++(BOOL)isLocalLyricContainKey:(NSString *)key;
++(BOOL)isLocaPictureContainKey:(NSString *)key;
 
++ (void)addMusicAddressToLocal:(NSString *) address Key:(NSString *)key;
++ (void)addLyricAddressToLocal:(NSString *) address Key:(NSString *)key;
++ (void)addPictureAddressToLocal:(NSString *) address Key:(NSString *)key;
+
++(void)getLyricByMusic:(music *)localMusic;
 
 + (BOOL) saveImageToCacheDir:(NSString *)directoryPath Image:(UIImage *)image imageName:(NSString *)imageName ImageType:(NSString *)imageType;
 +(NSData*) loadImageData:(NSString *)directoryPath Name:(NSString *)imageName;
@@ -45,4 +53,6 @@
 +(void)addLineOnView:(UIView *)view heightPoint:(CGFloat)height toLeft:(CGFloat)left toRight:(CGFloat)right withColor:(UIColor*)color;
 +(void)addLabelOnView:(UIView *)view localPoint:(CGFloat)local toLeft:(CGFloat)left toRight:(CGFloat)right height:(CGFloat)height withColor:(UIColor*)color font:(UIFont*)font text:(NSString *) text;
 +(NSAttributedString *)formatAttrItem:(NSString *)content color:(UIColor *)color font:(UIFont *)font;
+
++(UIImage*)convertViewToImage:(UIView*)v;
 @end

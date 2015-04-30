@@ -19,10 +19,21 @@
 #define Image_Next               @"next"
 #define Image_done               @"done"
 #define Image_back               @"backImage"
-
+#define Image_textwhiteImage     @"textwhiteImage"
+#define Image_textblackImage     @"textblackImage"
+#define Image_addedpicImage      @"addedpicImage"
+#define Image_SwitchingImage     @"SwitchingImage"
+#define Image_Textcover          @"Textcover"
+#define Image_Cover              @"Cover"
 
 #define Parameter_Id              @"_id"
 #define Parameter_avatar          @"avatar"
 #define Parameter_Gender          @"gender"
 #define Parameter_name            @"name"
+#define Parameter_message         @"message"
+#define Parameter_image_key       @"image"
+#define Parameter_private         @"private"
+#define Parameter_reply_id        @"reply"
+#define Parameter_repost_id       @"repost"
+
 #endif

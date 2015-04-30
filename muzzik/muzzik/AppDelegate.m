@@ -5,8 +5,7 @@
 //  Created by 林清泽 on 15/3/7.
 //  Copyright (c) 2015年 muzziker. All rights reserved.
 //
-#import "UMSocialWechatHandler.h"
-#import "UMSocial.h"
+#import "WXApi.h"
 #import "WeiboSDK.h"
 #import "AppDelegate.h"
 #import "muzzikTrendController.h"
@@ -23,8 +22,7 @@
 @implementation AppDelegate
  
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    [UMSocialData setAppKey:UMAPPKEY];
-    [UMSocialWechatHandler setWXAppId:ID_WeiChat_APP appSecret:Secret_WeiChat_APP url:@"http://www.umeng.com/social"];
+    [WXApi registerApp:ID_WeiChat_APP];
     [WeiboSDK enableDebugMode:NO];
     [WeiboSDK registerApp:Key_WeiBo];
     NSDictionary * dic = [MuzzikItem messageFromLocal];
@@ -162,9 +160,9 @@
     }else if([TencentOAuth HandleOpenURL:url]){
          return [TencentOAuth HandleOpenURL:url];
     }
-    else if( [UMSocialSnsService handleOpenURL:url wxApiDelegate:nil])
+    else if( [WXApi handleOpenURL:url delegate:self])
     {
-        return  [UMSocialSnsService handleOpenURL:url wxApiDelegate:nil];
+        return  [WXApi handleOpenURL:url delegate:self];
     }
     return [WeiboSDK handleOpenURL:url delegate:self];
 }
@@ -178,9 +176,9 @@
     }else if([TencentOAuth HandleOpenURL:url]){
         return [TencentOAuth HandleOpenURL:url];
     }
-    else if( [UMSocialSnsService handleOpenURL:url wxApiDelegate:nil])
+    else if( [WXApi handleOpenURL:url delegate:self])
     {
-        return  [UMSocialSnsService handleOpenURL:url wxApiDelegate:nil];
+        return  [WXApi handleOpenURL:url delegate:self];
     }
 
     return [WeiboSDK handleOpenURL:url delegate:self];
@@ -444,6 +442,106 @@
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kReachabilityChangedNotification object:nil];
 }
+
+
+#pragma -mark weichat
+
+//- (void)sendAuthRequest
+//{
+//    SendAuthReq* req = [[[SendAuthReq alloc] init] autorelease];
+//    req.scope = @"snsapi_message,snsapi_userinfo,snsapi_friend,snsapi_contact"; // @"post_timeline,sns"
+//    req.state = @"xxx";
+//    req.openID = @"0c806938e2413ce73eef92cc3";
+//    
+//    [WXApi sendAuthReq:req viewController:self.viewController delegate:self];
+//}
+- (void)sendAuthRequest
+{
+    SendAuthReq* req = [[SendAuthReq alloc] init];
+    req.scope = @"snsapi_userinfo"; // @"post_timeline,sns"
+    req.state = @"123";
+    
+    [WXApi sendAuthReq:req viewController:self.loginVC delegate:self];
+}
+
+-(void) onResp:(BaseResp*)resp
+{
+    if([resp isKindOfClass:[SendMessageToWXResp class]])
+    {
+        NSString *strTitle = [NSString stringWithFormat:@"发送媒体消息结果"];
+        NSString *strMsg = [NSString stringWithFormat:@"errcode:%d", resp.errCode];
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:strTitle message:strMsg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+        [alert show];
+    }
+    else if([resp isKindOfClass:[SendAuthResp class]])
+    {
+        SendAuthResp *temp = (SendAuthResp*)resp;
+        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@%@",BaseURL,URL_WeiChat_AUTH,temp.code]]];
+        
+        __weak ASIHTTPRequest *weakrequest = requestForm;
+        [requestForm setCompletionBlock :^{
+            //  NSLog(@"%@",[weakrequest responseString]);
+            //  NSLog(@"%d",[weakrequest responseStatusCode]);
+            if ([weakrequest responseStatusCode] == 200) {
+                NSData *data = [weakrequest responseData];
+                NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data  options:NSJSONReadingMutableContainers error:nil];
+                [MuzzikItem addMessageToLocal:dic];
+                userInfo *user = [userInfo shareClass];
+                user.uid = [dic objectForKey:@"_id"];
+                user.token = [dic objectForKey:@"token"];
+                user.gender = [dic objectForKey:@"gender"];
+                user.avatar = [dic objectForKey:@"avatar"];
+                user.name = [dic objectForKey:@"name"];
+            
+        
+            }
+        }];
+        [requestForm setFailedBlock:^{
+            [KVNProgress showErrorWithStatus:@"网络加载超时"];
+        }];
+        [requestForm startAsynchronous];
+    }
+    else if ([resp isKindOfClass:[AddCardToWXCardPackageResp class]])
+    {
+        AddCardToWXCardPackageResp* temp = (AddCardToWXCardPackageResp*)resp;
+        NSMutableString* cardStr = [[NSMutableString alloc] init];
+        for (WXCardItem* cardItem in temp.cardAry) {
+            [cardStr appendString:[NSString stringWithFormat:@"cardid:%@ cardext:%@ cardstate:%lu\n",cardItem.cardId,cardItem.extMsg,cardItem.cardState]];
+        }
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"add card resp" message:cardStr delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+        [alert show];
+    }
+}
+
+- (void) sendImageContent:(UIImage *)image
+{
+    WXMediaMessage *message = [WXMediaMessage message];
+    [message setThumbImage:image];
+    
+    WXImageObject *ext = [WXImageObject object];
+    ext.imageData = UIImagePNGRepresentation(image);
+    message.mediaObject = ext;
+    message.mediaTagName = @"WECHAT_TAG_JUMP_APP";
+    message.messageExt = @"这是第三方带的测试字段";
+    message.messageAction = @"<action>dotalist</action>";
+    
+    SendMessageToWXReq* req = [[SendMessageToWXReq alloc] init];
+    req.bText = NO;
+    req.message = message;
+    req.scene = WXSceneTimeline;
+    
+    [WXApi sendReq:req];
+}
+
+
+
+//#pragma -mark 辅助方法
+//-(void) downLoadLyricByMusic:(music *)music{
+//    
+//}
+
+
 
 
 @end

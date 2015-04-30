@@ -8,8 +8,7 @@
 #define scaleHeight 190.0/278.0
 #import "LoginViewController.h"
 #import "UIColor+HexColor.h"
-#import "UMSocialSnsPlatformManager.h"
-#import "UMSocialAccountManager.h"
+#import "AppDelegate.h"
 #import <TencentOpenAPI/TencentOAuth.h>
 #import "ASIHTTPRequest.h"
 #import "WeiboSDK.h"
@@ -205,6 +204,9 @@
     weiboButton.layer.cornerRadius = 3;
     weiboButton.clipsToBounds = YES;
     [self.view addSubview:weiboButton];
+    AppDelegate *appdelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    appdelegate.loginVC = self;
+    self.delegate = appdelegate;
     
     
 }
@@ -292,44 +294,51 @@
 
 
 -(void) WeiChatlogin{
-        UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:UMShareToWechatSession];
-        snsPlatform.loginClickHandler(self,[UMSocialControllerService defaultControllerService],YES,^(UMSocialResponseEntity *response){
-            if (response.responseCode == UMSResponseCodeSuccess) {
+    if (_delegate)
+    {
+        [_delegate sendAuthRequest];
+    }
     
-                UMSocialAccountEntity *snsAccount = [[UMSocialAccountManager socialAccountDictionary]valueForKey:UMShareToWechatSession];
     
-                NSLog(@"username is %@, uid is %@, token is %@ url is %@",snsAccount.userName,snsAccount.usid,snsAccount.accessToken,snsAccount.iconURL);
-                ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@%@",BaseURL,URL_WeiChat_AUTH,snsAccount.accessToken]]];
-                [requestForm setUseCookiePersistence:NO];
-                __weak ASIHTTPRequest *weakrequest = requestForm;
-                [requestForm setCompletionBlock :^{
-                    NSLog(@"%@",[weakrequest responseString]);
-                    NSLog(@"%d",[weakrequest responseStatusCode]);
-                    if ([weakrequest responseStatusCode] == 200) {
-                        NSData *data = [weakrequest responseData];
-                        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data  options:NSJSONReadingMutableContainers error:nil];
-                        [MuzzikItem addMessageToLocal:dic];
-                        userInfo *user = [userInfo shareClass];
-                        user.uid = [dic objectForKey:@"_id"];
-                        user.token = [dic objectForKey:@"token"];
-                        user.gender = [dic objectForKey:@"gender"];
-                        user.avatar = [dic objectForKey:@"avatar"];
-                        user.name = [dic objectForKey:@"name"];
-                        [self.navigationController popViewControllerAnimated:YES];
-                        
-                    }
-                    else{
-                        //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-                    }
-                }];
-                [requestForm setFailedBlock:^{
-                    NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-                    [userInfo checkLoginWithVC:self];
-                }];
-                [requestForm startAsynchronous];
-            }
-            
-        });
+    
+//        UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:UMShareToWechatSession];
+//        snsPlatform.loginClickHandler(self,[UMSocialControllerService defaultControllerService],YES,^(UMSocialResponseEntity *response){
+//            if (response.responseCode == UMSResponseCodeSuccess) {
+//    
+//                UMSocialAccountEntity *snsAccount = [[UMSocialAccountManager socialAccountDictionary]valueForKey:UMShareToWechatSession];
+//    
+//                NSLog(@"username is %@, uid is %@, token is %@ url is %@",snsAccount.userName,snsAccount.usid,snsAccount.accessToken,snsAccount.iconURL);
+//                ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@%@",BaseURL,URL_WeiChat_AUTH,snsAccount.accessToken]]];
+//                [requestForm setUseCookiePersistence:NO];
+//                __weak ASIHTTPRequest *weakrequest = requestForm;
+//                [requestForm setCompletionBlock :^{
+//                    NSLog(@"%@",[weakrequest responseString]);
+//                    NSLog(@"%d",[weakrequest responseStatusCode]);
+//                    if ([weakrequest responseStatusCode] == 200) {
+//                        NSData *data = [weakrequest responseData];
+//                        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data  options:NSJSONReadingMutableContainers error:nil];
+//                        [MuzzikItem addMessageToLocal:dic];
+//                        userInfo *user = [userInfo shareClass];
+//                        user.uid = [dic objectForKey:@"_id"];
+//                        user.token = [dic objectForKey:@"token"];
+//                        user.gender = [dic objectForKey:@"gender"];
+//                        user.avatar = [dic objectForKey:@"avatar"];
+//                        user.name = [dic objectForKey:@"name"];
+//                        [self.navigationController popViewControllerAnimated:YES];
+//                        
+//                    }
+//                    else{
+//                        //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+//                    }
+//                }];
+//                [requestForm setFailedBlock:^{
+//                    NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
+//                    [userInfo checkLoginWithVC:self];
+//                }];
+//                [requestForm startAsynchronous];
+//            }
+//            
+//        });
 }
 #pragma -mark QQlogin
 -(void) QQlogin{
