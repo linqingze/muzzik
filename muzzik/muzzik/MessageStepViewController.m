@@ -12,6 +12,7 @@
 #import "TopicHotVC.h"
 #import "ChooseMusicVC.h"
 #import "choosImageVC.h"
+#import "HPGrowingTextView.h"
 @interface MessageStepViewController ()<UITextViewDelegate>{
     UILabel *charaterLabel;
     UIView *actionView;
@@ -59,6 +60,7 @@
     textview.textColor = Color_Text_2;
     textview.font = [UIFont systemFontOfSize:15];
     textview.tintColor = Color_Active_Button_1;
+    textview.returnKeyType = UIReturnKeyDone;
     
     [self.view addSubview:textview];
     [self.view addSubview:placeHolder];
@@ -95,10 +97,10 @@
         songName.text = mobject.music.name;
         artist.text = mobject.music.artist;
     }
-    if ([mobject.message length]>0) {
+    if ([mobject.tempmessage length]>0) {
         [placeHolder setHidden:YES];
-        textview.text = [textview.text stringByAppendingString:mobject.message];
-        mobject.message = nil;
+        textview.text = [textview.text stringByAppendingString:mobject.tempmessage];
+        mobject.tempmessage = nil;
     }
 }
 
@@ -108,14 +110,17 @@
         [placeHolder setHidden:NO];
     }else{
         [placeHolder setHidden:YES];
+        if ([[textview.text substringFromIndex:textview.text.length-1] isEqualToString:@"\n"] ) {
+            textview.text =[textview.text substringToIndex:textview.text.length-1];
+            [textview resignFirstResponder];
+        }
     }
     if (textview.text.length>140) {
-        textview.text =[textview.text substringToIndex:textview.text.length-1];
+        textview.text =[textview.text substringToIndex:140];
     }
     charaterLabel.text = [NSString stringWithFormat:@"%d",140 - textview.text.length ];
-   
+    
 }
-
 #pragma -mark action
 -(void) changePrivateAction{
     if (!isPrivate) {
@@ -171,7 +176,7 @@
     }
     MuzzikObject *mobject = [MuzzikObject shareClass];
     mobject.music = nil;
-    mobject.message = @"";
+    mobject.tempmessage = @"";
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 /*

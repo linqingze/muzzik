@@ -107,6 +107,8 @@
 		E1FA13431AB1911D005EDA1D /* id3_parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1FA133E1AB1911D005EDA1D /* id3_parser.cpp */; };
 		E1FA13461AB195E0005EDA1D /* Globle.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FA13451AB195E0005EDA1D /* Globle.m */; };
 		E1FA13491AB1ABDD005EDA1D /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FA13481AB1ABDD005EDA1D /* Reachability.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F218144F1AF234CE00AA06AA /* HPGrowingTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = F218144C1AF234CE00AA06AA /* HPGrowingTextView.m */; };
+		F21814501AF234CE00AA06AA /* HPTextViewInternal.m in Sources */ = {isa = PBXBuildFile; fileRef = F218144E1AF234CE00AA06AA /* HPTextViewInternal.m */; };
 		F21EA1CA1ACECC6200F5ED32 /* TopicVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F21EA1C91ACECC6200F5ED32 /* TopicVC.m */; };
 		F26131241ADE1C200042F1D4 /* setNameVc.m in Sources */ = {isa = PBXBuildFile; fileRef = F26131231ADE1C200042F1D4 /* setNameVc.m */; };
 		F26131281ADE23DB0042F1D4 /* AFViewShaker.m in Sources */ = {isa = PBXBuildFile; fileRef = F26131271ADE23DB0042F1D4 /* AFViewShaker.m */; };
@@ -392,6 +394,10 @@
 		E1FA13451AB195E0005EDA1D /* Globle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Globle.m; sourceTree = "<group>"; };
 		E1FA13471AB1ABDD005EDA1D /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		E1FA13481AB1ABDD005EDA1D /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		F218144B1AF234CE00AA06AA /* HPGrowingTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HPGrowingTextView.h; sourceTree = "<group>"; };
+		F218144C1AF234CE00AA06AA /* HPGrowingTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HPGrowingTextView.m; sourceTree = "<group>"; };
+		F218144D1AF234CE00AA06AA /* HPTextViewInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HPTextViewInternal.h; sourceTree = "<group>"; };
+		F218144E1AF234CE00AA06AA /* HPTextViewInternal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HPTextViewInternal.m; sourceTree = "<group>"; };
 		F21EA1C81ACECC6200F5ED32 /* TopicVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopicVC.h; sourceTree = "<group>"; };
 		F21EA1C91ACECC6200F5ED32 /* TopicVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopicVC.m; sourceTree = "<group>"; };
 		F26131221ADE1C200042F1D4 /* setNameVc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = setNameVc.h; sourceTree = "<group>"; };
@@ -661,6 +667,7 @@
 		E112461E1AAAB0F60014D461 /* 3plus-in */ = {
 			isa = PBXGroup;
 			children = (
+				F218144A1AF234B500AA06AA /* HPGrowingTextView */,
 				F2A7F9941AF00A0B000FCC57 /* FixableText */,
 				F2A7F97E1AEF7896000FCC57 /* InstagramPicker */,
 				F2A7F96C1AEF539B000FCC57 /* WeiChat */,
@@ -994,6 +1001,17 @@
 				E1FA133F1AB1911D005EDA1D /* id3_parser.h */,
 			);
 			name = Astreamer;
+			sourceTree = "<group>";
+		};
+		F218144A1AF234B500AA06AA /* HPGrowingTextView */ = {
+			isa = PBXGroup;
+			children = (
+				F218144B1AF234CE00AA06AA /* HPGrowingTextView.h */,
+				F218144C1AF234CE00AA06AA /* HPGrowingTextView.m */,
+				F218144D1AF234CE00AA06AA /* HPTextViewInternal.h */,
+				F218144E1AF234CE00AA06AA /* HPTextViewInternal.m */,
+			);
+			name = HPGrowingTextView;
 			sourceTree = "<group>";
 		};
 		F21EA1C71ACECB8A00F5ED32 /* 热门 */ = {
@@ -1372,6 +1390,7 @@
 				F2F7EE4C1AEE676F00265596 /* TopicHotVC.m in Sources */,
 				E112468F1AAAB2CD0014D461 /* NormalCell.m in Sources */,
 				F2A7F99A1AF00A38000FCC57 /* IQLabelView.m in Sources */,
+				F21814501AF234CE00AA06AA /* HPTextViewInternal.m in Sources */,
 				F2F7EE521AEEABC100265596 /* AtfreindCell.m in Sources */,
 				E112466D1AAAB20B0014D461 /* NSData+ImageContentType.m in Sources */,
 				F2A7F98A1AEF810E000FCC57 /* ChooseLyricVC.m in Sources */,
@@ -1399,6 +1418,7 @@
 				E11246761AAAB20B0014D461 /* UIImage+GIF.m in Sources */,
 				E11246451AAAB1F20014D461 /* ASIDownloadCache.m in Sources */,
 				E11246741AAAB20B0014D461 /* SDWebImagePrefetcher.m in Sources */,
+				F218144F1AF234CE00AA06AA /* HPGrowingTextView.m in Sources */,
 				F2F7EE251AEE213200265596 /* BATableView.m in Sources */,
 				F2A5E2061AD90D8000FD8B3E /* muzzik.m in Sources */,
 				E11246751AAAB20B0014D461 /* UIButton+WebCache.m in Sources */,

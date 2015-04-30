@@ -193,7 +193,7 @@
         message = [message stringByAppendingString:[NSString stringWithFormat:@"@%@ ",muzzikuser.name]];
     }
 
-    muzzikobject.message = message;
+    muzzikobject.tempmessage = message;
     [self.navigationController popViewControllerAnimated:YES];
 }
 /*

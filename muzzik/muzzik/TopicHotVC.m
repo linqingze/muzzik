@@ -206,9 +206,9 @@
             tempTopic = [TopicArray objectAtIndex:indexPath.row];
         }
         
-        mobject.message = [NSString stringWithFormat:@"#%@#",tempTopic.name];
+        mobject.tempmessage = [NSString stringWithFormat:@"#%@#",tempTopic.name];
     }else{
-        mobject.message = [NSString stringWithFormat:@"#%@#",searchBar.text];
+        mobject.tempmessage = [NSString stringWithFormat:@"#%@#",searchBar.text];
     }
     
     [self.navigationController popViewControllerAnimated:YES];
