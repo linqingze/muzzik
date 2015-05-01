@@ -70,8 +70,8 @@
         NSLog(@"%@%@",payloadMsg,record);
     }
     
-//    [[UIApplication sharedApplication] cancelAllLocalNotifications];
-//    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+    [[UIApplication sharedApplication] cancelAllLocalNotifications];
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     
     
     
@@ -189,8 +189,8 @@
 
 
 -(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
-    [[UIApplication sharedApplication] cancelAllLocalNotifications];
-    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+//    [[UIApplication sharedApplication] cancelAllLocalNotifications];
+//    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     
     // [4-EXT]:处理APN
     NSString *payloadMsg = [userInfo objectForKey:@"payload"];
@@ -224,8 +224,8 @@
     
     // 处理推送消息
     
-    [[UIApplication sharedApplication] cancelAllLocalNotifications];
-    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+//    [[UIApplication sharedApplication] cancelAllLocalNotifications];
+//    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     
     // [4-EXT]:处理APN
     NSString *payloadMsg = [userInfo objectForKey:@"payload"];
@@ -330,7 +330,25 @@
 }
 - (void)GexinSdkDidRegisterClient:(NSString *)clientId{
 
-    NSLog(@"lqz:%@",clientId);
+    ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Set_Notify]]];
+    [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:clientId forKey:@"clientid"] Method:PostMethod auth:YES];
+    __weak ASIHTTPRequest *weakrequest = requestForm;
+    [requestForm setCompletionBlock :^{
+        NSLog(@"%@",[weakrequest responseString]);
+        NSLog(@"%d",[weakrequest responseStatusCode]);
+        if ([weakrequest responseStatusCode] == 200) {
+            
+            NSLog(@"register ok");
+        }
+        else{
+            //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+        }
+    }];
+    [requestForm setFailedBlock:^{
+        NSLog(@"%@",[weakrequest error]);
+    }];
+    [requestForm startAsynchronous];
+
     
 }
 - (NSString *)sendMessage:(NSData *)body error:(NSError **)error {
