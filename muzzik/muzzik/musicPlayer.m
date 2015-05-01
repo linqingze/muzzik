@@ -17,8 +17,7 @@
 #import "Reachability.h"
 static NSMutableArray *playList;
 @interface musicPlayer()<RFRadioViewDelegate>{
-    
-    BOOL isPause;
+
 }
 
 @end
@@ -129,11 +128,11 @@ static NSMutableArray *playList;
 }
 -(void)play{
     if (globle.isPlaying == YES) {
-        if (isPause) {
+        if (globle.isPause) {
             [[AudioPlayer shareClass] resume];
-            isPause = !isPause;
+            globle.isPause = !globle.isPause;
         }else{
-            isPause = !isPause;
+            globle.isPause = !globle.isPause;
             [[AudioPlayer shareClass] pause];
         }
         

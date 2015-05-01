@@ -103,7 +103,7 @@
 {
    // [self updateSomeThing];
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_Trending]]];
-    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:lastId,Parameter_tail,Limit_Constant,Parameter_Limit, nil] Method:GetMethod auth:NO];
+    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:lastId,Parameter_from,Limit_Constant,Parameter_Limit, nil] Method:GetMethod auth:NO];
     __weak ASIHTTPRequest *weakrequest = request;
     [request setCompletionBlock :^{
         NSLog(@"%@",[weakrequest responseString]);
@@ -112,8 +112,7 @@
         if (dic) {
             muzzik *muzzikToy = [muzzik new];
             [self.muzziks addObjectsFromArray:[muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]]];
-            muzzikToy = [self.muzziks lastObject];
-            lastId = muzzikToy.muzzik_id;
+            lastId = [dic objectForKey:@"tail"];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [MytableView reloadData];
                 [MytableView footerEndRefreshing];
@@ -214,7 +213,7 @@
 //}
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-
+    Globle *glob = [Globle shareGloble];
     if (self.muzziks.count>0) {
         muzzik *tempMuzzik = [self.muzziks objectAtIndex:indexPath.row];
         if ([tempMuzzik.type isEqualToString:@"repost"]) {
@@ -223,7 +222,7 @@
                 [cell.userImage setAlpha:0];
                 cell.hasLoad = YES;
             }
-            if ([tempMuzzik.music.key isEqualToString:self.musicplayer.localMuzzik.music.key]) {
+            if ([tempMuzzik.music.key isEqualToString:self.musicplayer.localMuzzik.music.key] &&!glob.isPause) {
                 cell.isPlaying = YES;
             }else{
                 cell.isPlaying = NO;
@@ -242,7 +241,6 @@
             cell.muzzikMessage.delegate = self;
             CGSize msize = [cell.muzzikMessage sizeThatFits:CGSizeMake(SCREEN_WIDTH-110, 2000)];
             [cell.muzzikMessage setFrame:CGRectMake(cell.muzzikMessage.frame.origin.x, cell.muzzikMessage.frame.origin.y, msize.width, msize.height)];
-            NSLog(@"%f",cell.muzzikMessage.frame.size.height);
             [cell.musicPlayView setFrame:CGRectMake(0, 70+cell.muzzikMessage.bounds.size.height, SCREEN_WIDTH, cell.musicPlayView.frame.size.height)];
             cell.musicArtist.text =tempMuzzik.music.artist;
             cell.musicName.text = tempMuzzik.music.name;
@@ -277,13 +275,14 @@
             return  cell;
             
         }
-        else if ([tempMuzzik.type isEqualToString:@"normal"]) {
+       // if ([tempMuzzik.type isEqualToString:@"normal"])
+        else  {
                 NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
             if (!cell.hasLoad) {
                 [cell.userImage setAlpha:0];
                 cell.hasLoad = YES;
             }
-            if ([tempMuzzik.music.key isEqualToString:self.musicplayer.localMuzzik.music.key]) {
+            if ([tempMuzzik.music.key isEqualToString:self.musicplayer.localMuzzik.music.key]&&!glob.isPause) {
                 cell.isPlaying = YES;
             }else{
                 cell.isPlaying = NO;
@@ -303,7 +302,7 @@
             cell.muzzikMessage.delegate = self;
             CGSize msize = [cell.muzzikMessage sizeThatFits:CGSizeMake(SCREEN_WIDTH-110, 2000)];
             [cell.muzzikMessage setFrame:CGRectMake(cell.muzzikMessage.frame.origin.x, cell.muzzikMessage.frame.origin.y, msize.width, msize.height)];
-            NSLog(@"%f",cell.muzzikMessage.frame.size.height);
+     
             [cell.musicPlayView setFrame:CGRectMake(0, 70+cell.muzzikMessage.bounds.size.height, SCREEN_WIDTH, cell.musicPlayView.frame.size.height)];
             cell.musicArtist.text = tempMuzzik.music.artist;
             cell.musicName.text = tempMuzzik.music.name;
@@ -336,8 +335,6 @@
                 [cell.shares setTitle:@"分享数" forState:UIControlStateNormal];
             }
                 return  cell;
-        }else{
-            return nil;
         }
         
         }
@@ -347,16 +344,32 @@
 }
 
 -(NSString *)transformMessage:(NSString *)message withTopics:(NSArray *)topics andColorString:(NSString *)colorstring{
-    //<a href='http://store.apple.com'>link to apple store</a>
-    //<font face='HelveticaNeue-CondensedBold' size=20 color='#CCFF00'>
+    message = [message stringByReplacingOccurrencesOfString:@"＃" withString:@"#"];
+    NSArray *array = [message componentsSeparatedByString:@"#"];
+    for (NSDictionary *dic in topics) {
+        for (NSString *messageString in array) {
+            if ([[messageString lowercaseString] containsString:[dic objectForKey:@"name"]]) {
+                NSRange rang = [message rangeOfString:messageString];
+                NSRange newrang = NSMakeRange(rang.location-1, rang.length+2);
+                message = [message stringByReplacingOccurrencesOfString:[message substringWithRange:newrang] withString:[NSString stringWithFormat:@"<a href='#%@'>%@</a>",[dic objectForKey:@"_id"],[message substringWithRange:newrang]]];
+                break;
+            }
+        }
+    }
+    
+    
+    return message;
+}
+-(NSString *)transformMessage:(NSString *)message withAt:(NSArray *)topics andColorString:(NSString *)colorstring{
     NSMutableString *temp = [NSMutableString stringWithString:message];
     if ([topics count]>0) {
         for (NSDictionary *dic in topics) {
-            temp = [NSMutableString stringWithFormat:@"%@",[temp stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"#%@#",[dic objectForKey:@"name"]] withString:[NSString stringWithFormat:@"<a href='%@'>#%@#</a>",[dic objectForKey:@"_id"],[dic objectForKey:@"name"]]]];
+            temp = [NSMutableString stringWithFormat:@"%@",[temp stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"@%@",[dic objectForKey:@"name"]] withString:[NSString stringWithFormat:@"<a href='@%@'>@%@</a>",[dic objectForKey:@"_id"],[dic objectForKey:@"name"]]]];
         }
     }
     return temp;
 }
+
 
 #pragma -mark Button_action
 -(void) newOrLogin{
@@ -379,7 +392,7 @@
 
 - (void)rtLabel:(id)rtLabel didSelectLinkWithURL:(NSURL*)url
 {
-   
+    NSLog(@"URL:%@",url);
 }
 
 -(void)playListAction{
@@ -487,7 +500,7 @@
 }
 -(void)reloadMuzzikSource{
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_Trending]]];
-    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:Limit_Constant forKey:Parameter_Limit] Method:GetMethod auth:NO];
+    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:@"20" forKey:Parameter_Limit] Method:GetMethod auth:NO];
     __weak ASIHTTPRequest *weakrequest = request;
     [request setCompletionBlock :^{
     //    NSLog(@"%@",weakrequest.originalURL);

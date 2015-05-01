@@ -291,10 +291,11 @@
 }
 -(void)playButtonEvent
 {
-    if (isPlaying) {
-        isPlaying = NO;
+    Globle *glob = [Globle shareGloble];
+    if (glob.isPlaying) {
+        glob.isPlaying = NO;
     }else{
-        isPlaying = YES;
+        glob.isPlaying = YES;
     }
     if (audioPlayer.state == AudioPlayerStatePaused){
         [audioPlayer resume];
@@ -313,34 +314,34 @@
         backImageView.layer.timeOffset = pausedTime;
 
     }
-    [_playButton setImage:isPlaying?[UIImage imageNamed:@"pasue.png"]:[UIImage imageNamed:@"play.png"] forState:UIControlStateNormal];
-    [_playButton setImage:isPlaying?[UIImage imageNamed:@"pasueHight.png"]:[UIImage imageNamed:@"playHight.png"] forState:UIControlStateHighlighted];
-}
--(void)playBackButtonEvent
-{
-    isPlayBack+=1;
-    NSString * name = nil;
-    NSString * title = nil;
-    switch (isPlayBack) {
-        case 0:
-            name = @"order.png";
-            title = @"顺序播放";
-            break;
-        case 1:
-            name = @"random.png";
-            title = @"随机播放";
-            break;
-        case 2:
-            name = @"lock.png";
-            title = @"单曲播放";
-            isPlayBack=-1;
-            break;
-        default:
-            break;
-    }
-    [_playbackButton setImage:[UIImage imageNamed:name] forState:UIControlStateNormal];
+    [playButton setImage:glob.isPlaying?[UIImage imageNamed:@"stopImage"]:[UIImage imageNamed:@"playImage"] forState:UIControlStateNormal];
 
 }
+//-(void)playBackButtonEvent
+//{
+//    isPlayBack+=1;
+//    NSString * name = nil;
+//    NSString * title = nil;
+//    switch (isPlayBack) {
+//        case 0:
+//            name = @"order.png";
+//            title = @"顺序播放";
+//            break;
+//        case 1:
+//            name = @"random.png";
+//            title = @"随机播放";
+//            break;
+//        case 2:
+//            name = @"lock.png";
+//            title = @"单曲播放";
+//            isPlayBack=-1;
+//            break;
+//        default:
+//            break;
+//    }
+//    [_playbackButton setImage:[UIImage imageNamed:name] forState:UIControlStateNormal];
+//
+//}
 
 -(void)preButtonEvent:(UIButton *)btn
 {
@@ -439,8 +440,9 @@
 }
 -(void)stopEverything
 {
+    Globle *glob = [Globle shareGloble];
     self.downLoadButton.enabled = NO;
-    isPlaying = NO;
+    glob.isPlaying = NO;
     [audioPlayer stop];
 #warning 处理歌词
 }
@@ -545,11 +547,14 @@
             }
         }
         
-       
+        [self stopEverything];
+        [self startMusic];
+        [self startTimer];
+    }else{
+        musicPlayer *player = [musicPlayer shareClass];
+        [player play];
     }
-    [self stopEverything];
-    [self startMusic];
-    [self startTimer];
+
 }
 -(NSString*) parseLrcLine:(NSString *)sourceLineText
 {
@@ -625,21 +630,21 @@
 
 -(void) updateControls
 {
+    Globle *glob = [Globle shareGloble];
     if (audioPlayer.state == AudioPlayerStateStopped) {
-        if (isPlaying) {
+        if (glob.isPlaying) {
             [_delegate radioView:self musicStop:isPlayBack];
         }
-        isPlaying = NO;
+        glob.isPlaying = NO;
     }else if (audioPlayer.state == AudioPlayerStateReady){
     }else if (audioPlayer.state == AudioPlayerStateRunning){
     }else if (audioPlayer.state == AudioPlayerStatePlaying){
-        isPlaying = YES;
+        glob.isPlaying = YES;
 
     }else if (audioPlayer.state == AudioPlayerStateError){
 
     }
-    [_playButton setImage:isPlaying?[UIImage imageNamed:@"pasue.png"]:[UIImage imageNamed:@"play.png"] forState:UIControlStateNormal];
-    [_playButton setImage:isPlaying?[UIImage imageNamed:@"pasueHight.png"]:[UIImage imageNamed:@"playHight.png"] forState:UIControlStateHighlighted];
+    [playButton setImage:glob.isPause?[UIImage imageNamed:@"playImage"]:[UIImage imageNamed:@"stopImage"] forState:UIControlStateNormal];
 }
 -(void) updatePlaybackProgress
 {
@@ -706,5 +711,10 @@
 #pragma -mark progress change
 -(void)progressChange:(UISlider *) progressSlider{
     [audioPlayer seekToTime:progressSlider.value];
+}
+
+-(void)playAction{
+    musicPlayer *player = [musicPlayer shareClass];
+    [player play];
 }
 @end

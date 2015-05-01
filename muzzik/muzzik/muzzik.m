@@ -18,7 +18,7 @@
         newmuzzik.date = [dic objectForKey:@"date"];
         newmuzzik.message = [dic objectForKey:@"message"];
         newmuzzik.image = [dic objectForKey:@"image"];
-        newmuzzik.topics = [dic objectForKey:@"tpoics"];
+        newmuzzik.topics = [dic objectForKey:@"topics"];
         newmuzzik.users = [dic objectForKey:@"users"];
         newmuzzik.type = [dic objectForKey:@"type"];
         newmuzzik.onlytext = [[dic objectForKey:@"onlytext"] boolValue];

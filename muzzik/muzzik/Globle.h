@@ -14,6 +14,7 @@ extern NSString * FMRFRadioViewSetSongInformationNotification;
 @interface Globle : NSObject
 @property (nonatomic,assign) BOOL isPlaying;
 @property (nonatomic,assign) BOOL isApplicationEnterBackground;
+@property (nonatomic,assign) BOOL isPause;
 -(void)copySqlitePath;
 +(Globle*)shareGloble;
 //-(NSMutableArray *)loadSinger;
