@@ -15,6 +15,7 @@
 #import "ASIHTTPRequest.h"
 #import "userInfo.h"
 #import "HostViewController.h"
+#import "UMessage.h"
 @interface AppDelegate ()
 
 @end
@@ -32,36 +33,36 @@
     user.gender = [dic objectForKey:@"gender"];
     user.avatar = [dic objectForKey:@"avatar"];
     user.name = [dic objectForKey:@"name"];
+    
+    //set AppKey and AppSecret
+    [UMessage startWithAppkey:UMAPPKEY launchOptions:launchOptions];
+    
+    
     if (IOS_8_OR_LATER) {
-        UIMutableUserNotificationAction *action = [[UIMutableUserNotificationAction alloc] init];
-        action.identifier = @"action";//按钮的标示
-        action.title=@"Accept";//按钮的标题
-        action.activationMode = UIUserNotificationActivationModeForeground;//当点击的时候启动程序
-        //    action.authenticationRequired = YES;
-        //    action.destructive = YES;
+        UIMutableUserNotificationAction *action1 = [[UIMutableUserNotificationAction alloc] init];
+        action1.identifier = @"action1_identifier";
+        action1.title=@"Accept";
+        action1.activationMode = UIUserNotificationActivationModeForeground;//当点击的时候启动程序
         
-        UIMutableUserNotificationAction *action2 = [[UIMutableUserNotificationAction alloc] init];
-        action2.identifier = @"action2";
+        UIMutableUserNotificationAction *action2 = [[UIMutableUserNotificationAction alloc] init];  //第二按钮
+        action2.identifier = @"action2_identifier";
         action2.title=@"Reject";
         action2.activationMode = UIUserNotificationActivationModeBackground;//当点击的时候不启动程序，在后台处理
-        action.authenticationRequired = YES;//需要解锁才能处理，如果action.activationMode = UIUserNotificationActivationModeForeground;则这个属性被忽略；
-        action.destructive = YES;
+        action2.authenticationRequired = YES;//需要解锁才能处理，如果action.activationMode = UIUserNotificationActivationModeForeground;则这个属性被忽略；
+        action2.destructive = YES;
         
-        //2.创建动作(按钮)的类别集合
         UIMutableUserNotificationCategory *categorys = [[UIMutableUserNotificationCategory alloc] init];
-        categorys.identifier = @"alert";//这组动作的唯一标示,推送通知的时候也是根据这个来区分
-        [categorys setActions:@[action,action2] forContext:(UIUserNotificationActionContextMinimal)];
+        categorys.identifier = @"category1";//这组动作的唯一标示
+        [categorys setActions:@[action1,action2] forContext:(UIUserNotificationActionContextDefault)];
         
-        //3.创建UIUserNotificationSettings，并设置消息的显示类类型
-        UIUserNotificationSettings *notiSettings = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeAlert | UIRemoteNotificationTypeSound) categories:[NSSet setWithObjects:categorys, nil]];
-         [[UIApplication sharedApplication] registerForRemoteNotifications];
-        [application registerUserNotificationSettings:notiSettings];
-       
-
+        UIUserNotificationSettings *userSettings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeBadge|UIUserNotificationTypeSound|UIUserNotificationTypeAlert
+                                                                                     categories:[NSSet setWithObject:categorys]];
+        [UMessage registerRemoteNotificationAndUserNotificationSettings:userSettings];
         
     }else{
-        UIRemoteNotificationType apn_type = (UIRemoteNotificationType)(UIRemoteNotificationTypeAlert|UIRemoteNotificationTypeSound|UIRemoteNotificationTypeBadge);
-        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:apn_type];
+        [UMessage registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge
+         |UIRemoteNotificationTypeSound
+         |UIRemoteNotificationTypeAlert];
     }
     NSDictionary* message = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
     if (message) {
@@ -96,23 +97,12 @@
     return YES;
 }
 
--(void)GexinSdkDidReceivePayload:(NSString *)payloadId fromApplication:(NSString *)appId{
-    NSData *data = [_gexinPusher retrivePayloadById:payloadId];
-    NSString *payloadMsg = nil;
-    if (data) {
-        payloadMsg = [[NSString alloc] initWithBytes:data.bytes
-                                              length:data.length
-                                            encoding:NSUTF8StringEncoding];
-    NSLog(@"payload:%@",[payloadMsg stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]);
-    }
-}
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-    [self stopSdk];
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     [Globle shareGloble].isApplicationEnterBackground = YES;
@@ -184,61 +174,22 @@
     return [WeiboSDK handleOpenURL:url delegate:self];
 }
 
-
-
-
-
--(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
-    [[UIApplication sharedApplication] cancelAllLocalNotifications];
-    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
-    
-    // [4-EXT]:处理APN
-    NSString *payloadMsg = [userInfo objectForKey:@"payload"];
-    
-    NSDictionary *aps = [userInfo objectForKey:@"aps"];
-    NSNumber *contentAvailable = aps == nil ? nil : [aps objectForKeyedSubscript:@"content-available"];
-    
-    NSString *record = [NSString stringWithFormat:@"[APN]%@, %@, [content-available: %@]", [NSDate date], [payloadMsg stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], contentAvailable];
-    NSLog(@"%@",record);
-    
-    completionHandler(UIBackgroundFetchResultNewData);
-
-}
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)pToken {
     
+    [UMessage registerDeviceToken:pToken];
     NSString *token = [[pToken description] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]];
     _deviceToken = [token stringByReplacingOccurrencesOfString:@" " withString:@""];
     NSLog(@"deviceToken:%@", _deviceToken);
-    userInfo *user = [userInfo shareClass];
-    user.deviceToken = _deviceToken;
     
-    // [3]:向个推服务器注册deviceToken
-    if (_gexinPusher) {
-        [_gexinPusher registerDeviceToken:_deviceToken];
-        
-    }
-    
+}
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
+{
+    [UMessage didReceiveRemoteNotification:userInfo];
 }
 
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo{
-    
-    // 处理推送消息
-    
-    [[UIApplication sharedApplication] cancelAllLocalNotifications];
-    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
-    
-    // [4-EXT]:处理APN
-    NSString *payloadMsg = [userInfo objectForKey:@"payload"];
-    NSString *record = [NSString stringWithFormat:@"[APN]%@, %@", [NSDate date], payloadMsg];
-    NSLog(@"receive:%@",record);
-    
-}
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
     
-    NSLog(@"Regist fail%@",error);
-    if (_gexinPusher) {
-        [_gexinPusher registerDeviceToken:@""];
-    }
+
     
 }
 
@@ -248,7 +199,7 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-    [self startSdkWith:kAppId appKey:kAppKey appSecret:kAppSecret];
+
     [Globle shareGloble].isApplicationEnterBackground = NO;
 }
 
@@ -260,102 +211,8 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
-#pragma  -mark 个推Delegate
 
-- (void)startSdkWith:(NSString *)appID appKey:(NSString *)appKey appSecret:(NSString *)appSecret
-{
-    if (!_gexinPusher) {
-        _sdkStatus = SdkStatusStoped;
-        
-        self.appID = appID;
-        self.appKey = appKey;
-        self.appSecret = appSecret;
-        
-        _clientId = nil;
-        
-        NSError *err = nil;
-        _gexinPusher = [GexinSdk createSdkWithAppId:_appID
-                                             appKey:_appKey
-                                          appSecret:_appSecret
-                                         appVersion:@"0.0.0"
-                                           delegate:self
-                                              error:&err];
-        if (!_gexinPusher) {
-            NSLog(@"%@",err);
-        } else {
-            _sdkStatus = SdkStatusStarting;
-        }
-        
-    }
-}
 
-- (void)stopSdk
-{
-    if (_gexinPusher) {
-        [_gexinPusher destroy];
-        _gexinPusher = nil;
-        
-        _sdkStatus = SdkStatusStoped;
-        
-        _clientId = nil;
-        
-    }
-}
-- (BOOL)checkSdkInstance
-{
-    if (!_gexinPusher) {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"错误" message:@"SDK未启动" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
-        [alertView show];
-        return NO;
-    }
-    return YES;
-}
-
-- (void)setDeviceToken:(NSString *)aToken
-{
-    if (![self checkSdkInstance]) {
-        return;
-    }
-    
-    [_gexinPusher registerDeviceToken:aToken];
-}
-
-- (BOOL)setTags:(NSArray *)aTags error:(NSError **)error
-{
-    if (![self checkSdkInstance]) {
-        return NO;
-    }
-    
-    return [_gexinPusher setTags:aTags];
-}
-- (void)GexinSdkDidRegisterClient:(NSString *)clientId{
-
-    NSLog(@"lqz:%@",clientId);
-    
-}
-- (NSString *)sendMessage:(NSData *)body error:(NSError **)error {
-    if (![self checkSdkInstance]) {
-        return nil;
-    }
-    
-    return [_gexinPusher sendMessage:body error:error];
-}
-
-- (void)bindAlias:(NSString *)aAlias {
-    if (![self checkSdkInstance]) {
-        return;
-    }
-    
-    return [_gexinPusher bindAlias:aAlias];
-}
-
-- (void)unbindAlias:(NSString *)aAlias {
-    if (![self checkSdkInstance]) {
-        return;
-    }
-    
-    return [_gexinPusher unbindAlias:aAlias];
-}
 #pragma -mark weibo
 - (void)didReceiveWeiboRequest:(WBBaseRequest *)request
 {

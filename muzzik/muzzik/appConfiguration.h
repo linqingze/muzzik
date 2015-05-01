@@ -110,7 +110,7 @@
 #define Font_Next_Regular        @"AvenirNext-Regular"
 #define Font_Next_medium         @"AvenirNext-Medium"
 #define Font_Next_Bold           @"AvenirNext-Bold"
-#define Font_Next_DemiBold           @"AvenirNext-DemiBold"
+#define Font_Next_DemiBold       @"AvenirNext-DemiBold"
 #define Font_Next_UltraLight     @"AvenirNext-UltraLight"
 
 #define DocumentsPath [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"]

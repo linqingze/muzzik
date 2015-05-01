@@ -108,6 +108,7 @@
 		E1FA13461AB195E0005EDA1D /* Globle.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FA13451AB195E0005EDA1D /* Globle.m */; };
 		E1FA13491AB1ABDD005EDA1D /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FA13481AB1ABDD005EDA1D /* Reachability.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		F20B68201AF340FE0058820D /* PlayListObject.m in Sources */ = {isa = PBXBuildFile; fileRef = F20B681F1AF340FE0058820D /* PlayListObject.m */; };
+		F20B68241AF347110058820D /* libUMessage_Sdk_1.1.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F20B68221AF347110058820D /* libUMessage_Sdk_1.1.0.a */; };
 		F218144F1AF234CE00AA06AA /* HPGrowingTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = F218144C1AF234CE00AA06AA /* HPGrowingTextView.m */; };
 		F21814501AF234CE00AA06AA /* HPTextViewInternal.m in Sources */ = {isa = PBXBuildFile; fileRef = F218144E1AF234CE00AA06AA /* HPTextViewInternal.m */; };
 		F21EA1CA1ACECC6200F5ED32 /* TopicVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F21EA1C91ACECC6200F5ED32 /* TopicVC.m */; };
@@ -397,6 +398,8 @@
 		E1FA13481AB1ABDD005EDA1D /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		F20B681E1AF340FE0058820D /* PlayListObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayListObject.h; sourceTree = "<group>"; };
 		F20B681F1AF340FE0058820D /* PlayListObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayListObject.m; sourceTree = "<group>"; };
+		F20B68221AF347110058820D /* libUMessage_Sdk_1.1.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libUMessage_Sdk_1.1.0.a; sourceTree = "<group>"; };
+		F20B68231AF347110058820D /* UMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMessage.h; sourceTree = "<group>"; };
 		F218144B1AF234CE00AA06AA /* HPGrowingTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HPGrowingTextView.h; sourceTree = "<group>"; };
 		F218144C1AF234CE00AA06AA /* HPGrowingTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HPGrowingTextView.m; sourceTree = "<group>"; };
 		F218144D1AF234CE00AA06AA /* HPTextViewInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HPTextViewInternal.h; sourceTree = "<group>"; };
@@ -533,6 +536,7 @@
 				E1FA12AD1AB14922005EDA1D /* AVFoundation.framework in Frameworks */,
 				E1FA13361AB18DAF005EDA1D /* Foundation.framework in Frameworks */,
 				E1FA13341AB18D9B005EDA1D /* UIKit.framework in Frameworks */,
+				F20B68241AF347110058820D /* libUMessage_Sdk_1.1.0.a in Frameworks */,
 				E1FA12F61AB185CA005EDA1D /* libxml2.dylib in Frameworks */,
 				E142A31A1AB834F3002BBCB0 /* libGexinSdk-1.1.1.a in Frameworks */,
 				E1FA12B31AB1495B005EDA1D /* QuartzCore.framework in Frameworks */,
@@ -670,6 +674,7 @@
 		E112461E1AAAB0F60014D461 /* 3plus-in */ = {
 			isa = PBXGroup;
 			children = (
+				F20B68211AF346FF0058820D /* UM_PUsh */,
 				F218144A1AF234B500AA06AA /* HPGrowingTextView */,
 				F2A7F9941AF00A0B000FCC57 /* FixableText */,
 				F2A7F97E1AEF7896000FCC57 /* InstagramPicker */,
@@ -1004,6 +1009,15 @@
 				E1FA133F1AB1911D005EDA1D /* id3_parser.h */,
 			);
 			name = Astreamer;
+			sourceTree = "<group>";
+		};
+		F20B68211AF346FF0058820D /* UM_PUsh */ = {
+			isa = PBXGroup;
+			children = (
+				F20B68221AF347110058820D /* libUMessage_Sdk_1.1.0.a */,
+				F20B68231AF347110058820D /* UMessage.h */,
+			);
+			name = UM_PUsh;
 			sourceTree = "<group>";
 		};
 		F218144A1AF234B500AA06AA /* HPGrowingTextView */ = {
