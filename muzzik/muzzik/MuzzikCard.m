@@ -30,12 +30,12 @@
     [self.cardTitle setTextColor:Color_Text_1];
     self.muzzikCardImage = [[UIImageView alloc] initWithFrame:CGRectMake(32, 28, ScreenWidth-80, ScreenWidth-80)];
     
-    self.userImage = [[UIImageView alloc] initWithFrame:CGRectMake( 32, ScreenWidth*3/4 - 32, ScreenWidth/4-20, ScreenWidth/4-20)];
+    self.userImage = [[UIButton alloc] initWithFrame:CGRectMake( 32, ScreenWidth*3/4 - 32, ScreenWidth/4-20, ScreenWidth/4-20)];
     self.userImage.layer.cornerRadius = ScreenWidth/8-10;
     self.userImage.clipsToBounds = YES;
     self.userImage.layer.borderColor = [UIColor whiteColor].CGColor;
     self.userImage.layer.borderWidth = 3.0f;
-    
+    [_userImage addTarget:self action:@selector(goToUser) forControlEvents:UIControlEventTouchUpInside];
     self.userName = [[UILabel alloc] initWithFrame:CGRectMake(ScreenWidth/4+20, ScreenWidth-52, ScreenWidth/2-70, ScreenWidth/8-10)];
     [self.userName setFont:[UIFont boldSystemFontOfSize:16]];
     [self.userName setTextColor:Color_Text_1];
@@ -140,7 +140,9 @@
     NSLog(@"move");
     [self.homeVc moveMuzzikWithId:self.muzzik_id isMoved:self.isMoved atIndex:self.index];
 }
-
+-(void)goToUser{
+    NSLog(@"%@",_songModel.MuzzikUser.user_id);
+}
 
 
 @end

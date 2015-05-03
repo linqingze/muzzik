@@ -14,7 +14,7 @@
 @property (nonatomic) UIImageView *muzzikCardLogo;
 @property (nonatomic) UIView *cardView;
 @property (nonatomic) UILabel *cardTitle;
-@property (nonatomic) UIImageView *userImage;                  //用户头像
+@property (nonatomic) UIButton *userImage;                  //用户头像
 @property (nonatomic) UILabel *userName;                       //用户名
 @property (nonatomic) UILabel *timeStamp;                      //时间
 @property (nonatomic) UIProgressView *progress;
@@ -35,5 +35,6 @@
 @property (nonatomic) BOOL hasLoad;
 @property (nonatomic) BOOL isReposted;
 @property (nonatomic) BOOL isPlaying;
+@property (nonatomic) NSString *RepostID;
 -(void) colorViewWithColorString:(NSString *) colorString;
 @end

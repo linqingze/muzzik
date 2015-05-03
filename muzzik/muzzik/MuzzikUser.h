@@ -13,6 +13,5 @@
 @property (nonatomic,copy) NSString *avatar;
 @property (nonatomic,copy) NSString *name;
 @property (nonatomic,copy) NSString *gender;
-@property (nonatomic,copy) NSString *repost_id;
 -(NSMutableArray*)makeMuzziksByUserArray:(NSMutableArray *)array;
 @end
