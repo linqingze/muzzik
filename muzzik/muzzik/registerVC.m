@@ -57,7 +57,7 @@
     [self.view addSubview:passwordText];
     
     visibleButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-30, 60, 20, 20)];
-    [visibleButton setImage:[UIImage imageNamed:@"visibleImage"] forState:UIControlStateNormal];
+    [visibleButton setImage:[UIImage imageNamed:Image_visibleImage_login] forState:UIControlStateNormal];
     [visibleButton addTarget:self action:@selector(setVisible) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:visibleButton];
     [visibleButton setHidden:YES];
@@ -133,9 +133,11 @@
 }
 -(void) setVisible{
     if (passwordText.secureTextEntry) {
+        [visibleButton setImage:[UIImage imageNamed:Image_invisibleImage_login] forState:UIControlStateNormal];
         [passwordText setSecureTextEntry:NO];
     }
     else{
+        [visibleButton setImage:[UIImage imageNamed:Image_visibleImage_login] forState:UIControlStateNormal];
         [passwordText setSecureTextEntry:YES];
     }
     

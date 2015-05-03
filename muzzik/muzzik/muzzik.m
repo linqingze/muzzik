@@ -29,6 +29,12 @@
         newmuzzik.moveds = [dic objectForKey:@"moveds"];
         newmuzzik.isprivate = [[dic objectForKey:@"private"] boolValue];
         newmuzzik.plays = [dic objectForKey:@"plays"];
+        newmuzzik.reposter = [MuzzikUser new];
+        newmuzzik.reposter.name = [[dic objectForKey:@"repostUser"] objectForKey:@"name"];
+        newmuzzik.reposter.user_id = [[dic objectForKey:@"repostUser"] objectForKey:@"_id"];
+        newmuzzik.reposter.avatar = [[dic objectForKey:@"repostUser"] objectForKey:@"avatar"];
+        newmuzzik.reposter.gender = [[dic objectForKey:@"repostUser"] objectForKey:@"gender"];
+        newmuzzik.reposter.repost_id = [[dic objectForKey:@"repostUser"] objectForKey:@"repostID"];
         newmuzzik.MuzzikUser = [MuzzikUser new];
         newmuzzik.MuzzikUser.avatar = [[dic objectForKey:@"user"] objectForKey:@"avatar"];
         newmuzzik.MuzzikUser.user_id = [[dic objectForKey:@"user"] objectForKey:@"_id"];
@@ -37,6 +43,7 @@
         newmuzzik.music = [music new];
         newmuzzik.music.music_id = [[dic objectForKey:@"music"] objectForKey:@"_id"];
          newmuzzik.music.artist = [[dic objectForKey:@"music"] objectForKey:@"artist"];
+        //NSLog(@"%@",[[dic objectForKey:@"music"] objectForKey:@"artist"]);
         newmuzzik.music.key = [[dic objectForKey:@"music"] objectForKey:@"key"];
        // newmuzzik.music.block = [[[dic objectForKey:@"music"] objectForKey:@"block"] boolValue];
         newmuzzik.music.name = [[dic objectForKey:@"music"] objectForKey:@"name"];

@@ -23,6 +23,7 @@
     NSInteger isPlayBack;
     
 }
+@property(weak,nonatomic) HostViewController *homeNav;
 @property(nonatomic) NSMutableArray *muzziks;
 @property(nonatomic) musicPlayer *musicplayer;
 @property(nonatomic) NSString *topicName;
@@ -32,6 +33,12 @@
 -(void)moveMuzzikWithId:(NSString *)muzzik_id isMoved:(BOOL) ismoved atIndex:(NSInteger) index;
 -(void)repostActionWithMuzzik_id:(NSString *)muzzik_id atIndex:(NSInteger) index;
 -(void)shareActionWithMuzzik_id:(NSString *)muzzik_id atIndex:(NSInteger) index;
-@property(weak,nonatomic) HostViewController *homeNav;
+
 -(void)reloadMuzzikSource;
+
+-(void) commentAtMuzzik:(NSString *)muzzik_id;
+-(void) showRepost:(NSString *)muzzik_id;
+-(void) showShare:(NSString *)muzzik_id;
+-(void) showComment:(NSString *)muzzik_id;
+-(void) showMoved:(NSString *)muzzik_id;
 @end

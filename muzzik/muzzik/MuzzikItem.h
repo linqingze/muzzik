@@ -55,4 +55,5 @@
 +(NSAttributedString *)formatAttrItem:(NSString *)content color:(UIColor *)color font:(UIFont *)font;
 
 +(UIImage*)convertViewToImage:(UIView*)v;
++ (NSString *)transtromTime:(NSString *)time;
 @end

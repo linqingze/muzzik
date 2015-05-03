@@ -391,25 +391,25 @@
 {
     NSMutableArray *URLs;
     NSMutableArray *URLRanges;
-    UIColor *color = [UIColor blackColor];
-    UIFont *font = [UIFont systemFontOfSize:Font_Size_Muzzik_Message];
+    UIColor *color = Color_Text_2;
+    UIFont *font = [UIFont systemFontOfSize:14];
     NSMutableParagraphStyle *mps = [[NSMutableParagraphStyle alloc] init];
     mps.lineSpacing = ceilf(font.pointSize * .5);
-    NSShadow *shadow = [[NSShadow alloc] init];
-    shadow.shadowColor = [UIColor whiteColor];
-    shadow.shadowOffset = CGSizeMake(0, 1);
+//    NSShadow *shadow = [[NSShadow alloc] init];
+//    shadow.shadowColor = [UIColor whiteColor];
+//    shadow.shadowOffset = CGSizeMake(0, 1);
     NSString *str = [NSString stringWithHTMLText:text baseURL:[NSURL URLWithString:BaseURL] URLs:&URLs URLRanges:&URLRanges];
     NSMutableAttributedString *mas = [[NSMutableAttributedString alloc] initWithString:str attributes:@
                                       {
                                           NSForegroundColorAttributeName : color,
                                           NSFontAttributeName            : font,
                                           NSParagraphStyleAttributeName  : mps,
-                                          NSShadowAttributeName          : shadow,
+//                                          NSShadowAttributeName          : shadow,
                                       }];
     [URLRanges enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
         [mas addAttributes:@
          {
-             NSForegroundColorAttributeName : [UIColor blueColor],
+             NSForegroundColorAttributeName : Color_Additional_4,
              NSUnderlineStyleAttributeName  : @(NSUnderlineStyleNone)
          } range:[obj rangeValue]];
     }];

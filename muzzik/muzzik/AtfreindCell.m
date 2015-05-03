@@ -28,5 +28,6 @@
     [self.label setFont:[UIFont boldSystemFontOfSize:14]];
     [self.label setTextColor:Color_Text_2];
     [self addSubview:self.label];
+    [MuzzikItem addLineOnView:self heightPoint:60 toLeft:13 toRight:13 withColor:Color_line_1];
 }
 @end

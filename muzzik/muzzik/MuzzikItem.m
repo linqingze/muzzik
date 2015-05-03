@@ -761,5 +761,48 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     return image;
     
 }
+#pragma -mark 时间转换
++ (NSString *)transtromTime:(NSString *)time
+{
+    //    NSString* timeStr = @"2011-01-26 17:40:50";
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateStyle:NSDateFormatterMediumStyle];
+    [formatter setTimeStyle:NSDateFormatterShortStyle];
+    [formatter setDateFormat:@"YYYY-MM-dd'T'HH:mm:ss.SSS'Z'"]; // ----------设置你想要的格式,hh与HH的区别:分别表示12小时制,24小时制
+    
+    //    NSTimeZone* timeZone = [NSTimeZone timeZoneWithName:@"Asia/Shanghai"];
+    //    [formatter setTimeZone:timeZone];
+    
+    NSDate *date = [formatter dateFromString:time];
+    NSLog(@"date : %@",date);
+    NSTimeInterval interval = fabs([date timeIntervalSinceNow]);
+    NSLog(@"interval : %f",interval);
+    
+    [formatter setDateFormat:@"HH:mm"];
+    if (interval>7*24*60*60) { //一周之外
+        //        str = [formatter stringFromDate:date];
+        //        NSRange range = [str rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet]];
+        //        range = NSMakeRange(0, range.location);
+        //        str = [str substringWithRange:range];
+        return @"N天前";
+        
+    }else if(interval>6*24*60*60){ //一天之外
+        return @"6天前";
+    }else if(interval>5*24*60*60){ //一天之外
+        return @"5天前";
+    }else if(interval>4*24*60*60){ //一天之外
+        return @"4天前";
+    }else if(interval>3*24*60*60){ //一天之外
+        return @"3天前";
+    }else if(interval>2*24*60*60){ //一天之外
+        return @"2天前";
+    }else if(interval>24*60*60){ //一天之外
+        return @"昨天";
+    }else {
+        return [formatter stringFromDate:date] ;
+    }
+}
+
+
 @end
 

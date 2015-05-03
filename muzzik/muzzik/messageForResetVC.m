@@ -41,8 +41,8 @@
     [passwordText setSecureTextEntry:YES];
     [self.view addSubview:passwordText];
     
-    UIButton *visibleButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-30, 60, 20, 20)];
-    [visibleButton setImage:[UIImage imageNamed:@"visibleImage"] forState:UIControlStateNormal];
+    visibleButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-30, 60, 20, 20)];
+    [visibleButton setImage:[UIImage imageNamed:Image_visibleImage_login] forState:UIControlStateNormal];
     [visibleButton addTarget:self action:@selector(setVisible) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:visibleButton];
     [MuzzikItem addLineOnView:self.view heightPoint:90 toLeft:13 toRight:13 withColor:Color_underLine];
@@ -62,9 +62,11 @@
 
 -(void) setVisible{
     if (passwordText.secureTextEntry) {
+        [visibleButton setImage:[UIImage imageNamed:Image_invisibleImage_login] forState:UIControlStateNormal];
         [passwordText setSecureTextEntry:NO];
     }
     else{
+        [visibleButton setImage:[UIImage imageNamed:Image_visibleImage_login] forState:UIControlStateNormal];
         [passwordText setSecureTextEntry:YES];
     }
     

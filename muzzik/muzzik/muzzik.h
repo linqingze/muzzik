@@ -14,6 +14,7 @@
 @property (nonatomic,copy) NSString *date;
 @property (nonatomic,assign) BOOL ismoved;
 @property (nonatomic,retain) MuzzikUser *MuzzikUser;
+@property (nonatomic,retain) MuzzikUser *reposter;
 @property (nonatomic,copy) NSString *message;
 @property (nonatomic,copy) NSString *image;
 @property (nonatomic,copy) NSArray *topics;

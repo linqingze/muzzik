@@ -11,79 +11,6 @@
 #import <AddressBook/AddressBook.h>
 @implementation TransfromTime
 
-- (NSString *)transtromTime:(NSString *)time
-{
-//    NSString* timeStr = @"2011-01-26 17:40:50";
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateStyle:NSDateFormatterMediumStyle];
-    [formatter setTimeStyle:NSDateFormatterShortStyle];
-    [formatter setDateFormat:@"YYYY-MM-dd HH:mm:ss"]; // ----------设置你想要的格式,hh与HH的区别:分别表示12小时制,24小时制
-    
-//    NSTimeZone* timeZone = [NSTimeZone timeZoneWithName:@"Asia/Shanghai"];
-//    [formatter setTimeZone:timeZone];
-    
-    NSDate *date = [formatter dateFromString:time];
-    NSLog(@"date : %@",date);
-    NSTimeInterval interval = fabs([date timeIntervalSinceNow]);
-    NSLog(@"interval : %f",interval);
-    
-    return  [self deventTime:interval time:time];
-}
-
-- (NSString *)deventTime:(NSTimeInterval)interval time:(NSString *)time;
-{
-    NSCalendar*calendar = [NSCalendar currentCalendar];
-    NSDateComponents *comps;
-    NSString *str;
-    
-    NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateStyle:NSDateFormatterMediumStyle];
-    [formatter setTimeStyle:NSDateFormatterShortStyle];
-    [formatter setDateFormat:@"YYYY-MM-dd HH:mm:ss"];
-    NSDate *date = [formatter dateFromString:time];
-    
-    if (interval>7*24*60*60) { //一周之外
-        str = [formatter stringFromDate:date];
-        NSRange range = [str rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet]];
-        range = NSMakeRange(0, range.location);
-        str = [str substringWithRange:range];
-        return str;
-        
-    }else if(interval>24*60*60){ //一天之外
-        
-        comps =[calendar components:(NSWeekCalendarUnit | NSWeekdayCalendarUnit |NSWeekdayOrdinalCalendarUnit)
-                           fromDate:date];
-        NSInteger weekday = [comps weekday]; // 星期几（注意，周日是“1”，周一是“2”。。。。）
-//        NSInteger week = [comps week]; // 今年的第几周
-//        NSInteger weekdayOrdinal = [comps weekdayOrdinal]; // 这个月的第几周
-        if (weekday == 1) {
-            str = [NSString stringWithFormat:@"星期日"];
-        }else if (weekday == 2) {
-            str = [NSString stringWithFormat:@"星期一"];
-        }else if (weekday == 3) {
-            str = [NSString stringWithFormat:@"星期二"];
-        }else if (weekday == 4) {
-            str = [NSString stringWithFormat:@"星期三"];
-        }else if (weekday == 5) {
-            str = [NSString stringWithFormat:@"星期四"];
-        }else if (weekday == 6) {
-            str = [NSString stringWithFormat:@"星期五"];
-        }else {
-            str = [NSString stringWithFormat:@"星期六"];
-        }
-        return str;
-        
-    }else if (interval>60*60) { //一小时以外
-        int time = (int)interval/(60*60);
-        return [NSString stringWithFormat:@"%d小时之前",time];
-    }else if (interval>60) {
-        int time = (int)interval/(60);
-        return [NSString stringWithFormat:@"%d分钟之前",time];
-    }else{
-        return [NSString stringWithFormat:@"刚刚"];
-    }
-    return nil;
-}
 
 //根据汉字获取按首字母
 - (NSMutableArray *)firstCharactor:(NSMutableArray *)arr
@@ -98,7 +25,7 @@
             if ([table containsString:[[pinyin substringToIndex:1] uppercaseString]]) {
                 [stringArr addObject:[NSDictionary dictionaryWithObjectsAndKeys:pinyin,@"pinyin",muzzikuser,@"user",[[pinyin substringToIndex:1] uppercaseString],@"firstcapital", nil]];
             }else{
-                [stringArr addObject:[NSDictionary dictionaryWithObjectsAndKeys:pinyin,@"pinyin",string,muzzikuser,@"user",@"#",@"firstcapital", nil]];
+                [stringArr addObject:[NSDictionary dictionaryWithObjectsAndKeys:pinyin,@"pinyin",muzzikuser,@"user",@"#",@"firstcapital", nil]];
             }
             
         }

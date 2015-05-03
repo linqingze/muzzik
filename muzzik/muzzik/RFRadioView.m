@@ -379,6 +379,8 @@
 }
 -(void)startMusic
 {
+    
+    NSLog(@"%@",self.playMuzzik.music.name);
     [audioPlayer play:self.musicUrl];
 }
 
@@ -447,14 +449,14 @@
 #warning 处理歌词
 }
 -(void)setPlayMuzzik:(muzzik *)playMuzzik{
-    NSLog(@"%@",[NSString stringWithFormat:@"%@%@/%@",URL_Lyric_Me,playMuzzik.music.name,playMuzzik.music.artist]);
+    NSLog(@"%@",[NSString stringWithFormat:@"%@/%@",playMuzzik.music.name,playMuzzik.music.artist]);
     if (![playMuzzik.muzzik_id isEqualToString:_playMuzzik.muzzik_id]) {
         ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString :[[NSString stringWithFormat:@"%@%@/%@",URL_Lyric_Me,playMuzzik.music.name,playMuzzik.music.artist] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
         [requestForm setUseCookiePersistence:NO];
         __weak ASIHTTPRequest *weakrequest = requestForm;
         [requestForm setCompletionBlock :^{
-            NSLog(@"%@",[weakrequest responseString]);
-            NSLog(@"URL:%@     status:%d",[weakrequest originalURL],[weakrequest responseStatusCode]);
+           // NSLog(@"%@",[weakrequest responseString]);
+            //NSLog(@"URL:%@     status:%d",[weakrequest originalURL],[weakrequest responseStatusCode]);
             if ([weakrequest responseStatusCode] == 200) {
                 [weakrequest originalURL];
                 NSData *data = [weakrequest responseData];
@@ -465,9 +467,9 @@
                     [lyricRequest setCompletionBlock:^{
                         NSString *lyric =  [[NSString alloc] initWithData:[lrcRequest responseData]   encoding:NSUTF8StringEncoding];
                         [self parseLrcLine:lyric];
-                        NSLog(@"%@",self.lyricArray);
-                        NSLog(@"%@",[lrcRequest responseString]);
-                        NSLog(@"URL:%@     status:%d",[lrcRequest originalURL],[lrcRequest responseStatusCode]);
+                       // NSLog(@"%@",self.lyricArray);
+                       // NSLog(@"%@",[lrcRequest responseString]);
+                       // NSLog(@"URL:%@     status:%d",[lrcRequest originalURL],[lrcRequest responseStatusCode]);
                     }];
                     [lyricRequest setFailedBlock:^{
                         NSLog(@"%@",lrcRequest.error);
@@ -479,8 +481,8 @@
                     [requestForm1 setUseCookiePersistence:NO];
                     __weak ASIHTTPRequest *weakrequest1 = requestForm1;
                     [requestForm1 setCompletionBlock :^{
-                        NSLog(@"%@",[weakrequest1 responseString]);
-                        NSLog(@"URL:%@     status:%d",[weakrequest1 originalURL],[weakrequest1 responseStatusCode]);
+                      //  NSLog(@"%@",[weakrequest1 responseString]);
+                       // NSLog(@"URL:%@     status:%d",[weakrequest1 originalURL],[weakrequest1 responseStatusCode]);
                         if ([weakrequest1 responseStatusCode] == 200) {
                             [weakrequest1 originalURL];
                             NSData *data = [weakrequest1 responseData];
@@ -491,9 +493,9 @@
                                 [lyricRequest1 setCompletionBlock:^{
                                     NSString *lyric =  [[NSString alloc] initWithData:[lrcRequest1 responseData]   encoding:NSUTF8StringEncoding];
                                     [self parseLrcLine:lyric];
-                                    NSLog(@"%@",self.lyricArray);
-                                    NSLog(@"%@",[lrcRequest1 responseString]);
-                                    NSLog(@"URL:%@     status:%d",[lrcRequest1 originalURL],[lrcRequest1 responseStatusCode]);
+                                   // NSLog(@"%@",self.lyricArray);
+                                  //  NSLog(@"%@",[lrcRequest1 responseString]);
+                                  //  NSLog(@"URL:%@     status:%d",[lrcRequest1 originalURL],[lrcRequest1 responseStatusCode]);
                                 }];
                                 [lyricRequest1 setFailedBlock:^{
                                     NSLog(@"%@",lrcRequest1.error);
@@ -595,7 +597,7 @@
     NSArray *larray = [NSArray arrayWithArray:self.lyricArray];
     for (int i = larray.count-1; i>0; i--) {
         NSDictionary *dic = larray[i];
-        NSLog(@"%d",[[[dic allValues][0] stringByTrimmingCharactersInSet:[NSCharacterSet symbolCharacterSet]] length]);
+       // NSLog(@"%d",[[[dic allValues][0] stringByTrimmingCharactersInSet:[NSCharacterSet symbolCharacterSet]] length]);
         if ([[[dic allValues][0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length] == 0 ) {
             [self.lyricArray removeObjectAtIndex:[larray indexOfObject:dic]];
         }
@@ -716,5 +718,6 @@
 -(void)playAction{
     musicPlayer *player = [musicPlayer shareClass];
     [player play];
+    [[NSNotificationCenter defaultCenter] postNotificationName:String_SetSongPlayNextNotification object:nil];
 }
 @end

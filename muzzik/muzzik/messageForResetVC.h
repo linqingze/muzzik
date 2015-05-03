@@ -12,6 +12,7 @@
     UITextField *checkcode;
     UITextField *passwordText;
     BOOL isOk;
+    UIButton *visibleButton;
 }
 @property (nonatomic) NSString *phoneNumber;
 

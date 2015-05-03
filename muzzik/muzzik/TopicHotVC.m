@@ -29,7 +29,7 @@
     [super viewDidLoad];
     page = 1;
     [self initNagationBar:@"选择话题" leftBtn:Constant_backImage rightBtn:Constant_searchImage];
-    topicTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
+    topicTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-44)];
     [self.view addSubview:topicTableView];
     topicTableView.delegate = self;
     topicTableView.dataSource = self;

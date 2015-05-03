@@ -11,7 +11,6 @@
 @interface TransfromTime : NSObject
 
 
-- (NSString *)transtromTime:(NSString *)time;
 
 - (NSMutableArray *)firstCharactor:(NSMutableArray *)arr;
 - (NSMutableArray *)arrayFromString:(NSMutableArray *)arr searchStr:(NSArray *)CapitalArr;

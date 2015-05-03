@@ -189,8 +189,8 @@
 
 
 -(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
-//    [[UIApplication sharedApplication] cancelAllLocalNotifications];
-//    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+    [[UIApplication sharedApplication] cancelAllLocalNotifications];
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     
     // [4-EXT]:处理APN
     NSString *payloadMsg = [userInfo objectForKey:@"payload"];
@@ -224,8 +224,8 @@
     
     // 处理推送消息
     
-//    [[UIApplication sharedApplication] cancelAllLocalNotifications];
-//    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+    [[UIApplication sharedApplication] cancelAllLocalNotifications];
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     
     // [4-EXT]:处理APN
     NSString *payloadMsg = [userInfo objectForKey:@"payload"];

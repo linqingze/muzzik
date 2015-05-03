@@ -58,7 +58,7 @@
     }
     searchBar.returnKeyType = UIReturnKeySearch;
     searchView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-150, 20, 0, 40)];
-    [searchView setFrame:CGRectMake(0, 20, SCREEN_WIDTH, 40)];
+    [searchView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 40)];
     cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-52, 6, 40, 28)];
     [cancelButton setBackgroundImage:[MuzzikItem createImageWithColor:Color_search_background] forState:UIControlStateNormal];
     [cancelButton setTitle:@"取消" forState:UIControlStateNormal];

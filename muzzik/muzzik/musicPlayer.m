@@ -78,26 +78,26 @@ static NSMutableArray *playList;
     
     
     globle = [Globle shareGloble];
-
-    if ([MuzzikItem isLocalMusicContainKey:playMuzzik.music.key]) {
-        NSString *path = [[[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:@"music"] stringByAppendingPathComponent:playMuzzik.music.key];
-        _radioView.musicUrl = [NSURL URLWithString:[NSString stringWithFormat:@"file://%@",path]];
-    }
-    else{
-        //wifi条件下缓存
-        _radioView.musicUrl = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_audio,playMuzzik.music.key]];
-        if ([[Reachability reachabilityForLocalWiFi] currentReachabilityStatus] == kReachableViaWiFi) {
-            [self downLoadFileWithModel:_localMuzzik];
-        }
-    }
+    _radioView.musicUrl = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_audio,playMuzzik.music.key]];
+//    if ([MuzzikItem isLocalMusicContainKey:playMuzzik.music.key]) {
+//        NSString *path = [[[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:@"music"] stringByAppendingPathComponent:playMuzzik.music.key];
+//        _radioView.musicUrl = [NSURL URLWithString:[NSString stringWithFormat:@"file://%@",path]];
+//    }
+//    else{
+//        //wifi条件下缓存
+//        _radioView.musicUrl = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_audio,playMuzzik.music.key]];
+//        if ([[Reachability reachabilityForLocalWiFi] currentReachabilityStatus] == kReachableViaWiFi) {
+//            [self downLoadFileWithModel:_localMuzzik];
+//        }
+//    }
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackgroundSetSongInformation:) name:String_SetSongInformationNotification object:nil];
     if (globle.isApplicationEnterBackground) {
         [self applicationDidEnterBackgroundSetSongInformation:nil];
     }
     _radioView.playMuzzik = playMuzzik;
     //[_radioView setRadioViewLrc];
-    globle.isPlaying = YES;
-    _localMuzzik = playMuzzik;
+   // globle.isPlaying = YES;
+    self.localMuzzik = playMuzzik;
     
     self.index = [self.MusicArray indexOfObject:playMuzzik];
     [[NSNotificationCenter defaultCenter] postNotificationName:String_SetSongPlayNextNotification object:nil];

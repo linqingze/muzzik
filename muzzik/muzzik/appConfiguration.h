@@ -46,8 +46,9 @@
 #define URL_RecentContact       @"api/user/recentContact"
 #define URL_Get_Topic           @"api/topic"
 #define URL_Muzzik_new          @"api/muzzik"
-//#define URL_
-
+#define URL_MovedUsers          @"api/user/byMovedMuzzik/"
+#define URL_RepostUsers         @"api/user/byRepostedMuzzik/"
+#define URL_ShareUsers          @"api/user/bySharedMuzzik/"
 
 
 

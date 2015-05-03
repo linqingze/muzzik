@@ -1,18 +1,19 @@
 //
-//  topicProductCell.h
-//  ShopUU
+//  MuzzikCard.h
+//  muzzik
 //
-//  Created by 林清泽 on 15/1/8.
-//  Copyright (c) 2015年 IOS. All rights reserved.
+//  Created by muzzik on 15/5/1.
+//  Copyright (c) 2015年 muzziker. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 #import "CXAHyperlinkLabel.h"
 #import "muzzikTrendController.h"
-@interface RepostCell : UITableViewCell
-@property (nonatomic) BOOL isPlaying;
-@property (nonatomic) UILabel *repostUserName;                 //转发用户名
-@property (nonatomic) UIImageView *repostImage;                //muzzik类型图标
+@interface MuzzikCard : UITableViewCell
+@property (nonatomic) UIImageView *muzzikCardImage;
+@property (nonatomic) UIImageView *muzzikCardLogo;
+@property (nonatomic) UIView *cardView;
+@property (nonatomic) UILabel *cardTitle;
 @property (nonatomic) UIImageView *userImage;                  //用户头像
 @property (nonatomic) UILabel *userName;                       //用户名
 @property (nonatomic) UILabel *timeStamp;                      //时间
@@ -25,16 +26,6 @@
 @property (nonatomic) UILabel *musicArtist;                    //音乐家
 @property (nonatomic) UIImageView *timeImage;                  //时间图标
 @property (nonatomic) UILabel *muzzikRepostText;               //转发文字
-@property (nonatomic) UIView *socialView;                      //社交图层
-@property (nonatomic) UIImageView *upperLine;
-@property (nonatomic) UIImageView *downLine;
-@property (nonatomic) UIButton *moves;
-@property (nonatomic) UIButton *reposts;
-@property (nonatomic) UIButton *shares;
-@property (nonatomic) UIButton *comments;
-@property (nonatomic) UIButton *repostButton;
-@property (nonatomic) UIButton *shareButton;
-@property (nonatomic) UIButton *commentButton;
 @property (nonatomic) NSString *colorName;
 @property (nonatomic,weak) muzzikTrendController *homeVc;
 @property (nonatomic) muzzik *songModel;
@@ -43,5 +34,6 @@
 @property (nonatomic) NSInteger index;
 @property (nonatomic) BOOL hasLoad;
 @property (nonatomic) BOOL isReposted;
+@property (nonatomic) BOOL isPlaying;
 -(void) colorViewWithColorString:(NSString *) colorString;
 @end

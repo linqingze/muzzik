@@ -35,7 +35,7 @@
     Fdictionary = [NSMutableDictionary dictionary];
     [self initNagationBar:@" @ 好友" leftBtn:Constant_backImage rightBtn:0];
     friendArray = [NSMutableArray array];
-    MytableView = [[BATableView alloc] initWithFrame:self.view.frame];
+    MytableView = [[BATableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-44)];
     MytableView.delegate = self;
     [self.view addSubview:MytableView];
     nextButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-67, SCREEN_HEIGHT-133, 54, 52)];
