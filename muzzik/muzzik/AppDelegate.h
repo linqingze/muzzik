@@ -20,7 +20,7 @@ typedef enum {
 } SdkStatus;
 
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate,GexinSdkDelegate,WeiboSDKDelegate,WXApiDelegate,sendMsgToWeChatViewDelegate>{
+@interface AppDelegate : UIResponder <UIApplicationDelegate,GexinSdkDelegate,WeiboSDKDelegate,WXApiDelegate>{
      NSString *_deviceToken;
 }
 @property (nonatomic) muzzikTrendController *viewcontroller;

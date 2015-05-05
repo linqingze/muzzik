@@ -231,6 +231,10 @@ static char DXRefreshFooterViewKey;
     [self.footer removeFromSuperview];
     self.footer = nil;
 }
+- (void)removeHeader{
+    [self.header removeFromSuperview];
+    self.header = nil;
+}
 
 @end
 

@@ -49,10 +49,10 @@
 #define URL_MovedUsers          @"api/user/byMovedMuzzik/"
 #define URL_RepostUsers         @"api/user/byRepostedMuzzik/"
 #define URL_ShareUsers          @"api/user/bySharedMuzzik/"
-
-
-
-
+#define URL_Users_search        @"api/user"
+#define URL_Topic_search        @"api/topic"
+#define URL_User_Follow         @"api/user/follow"                     //post 方法，auth，加id字段
+#define URL_user_Unfollow       @"api/user/unfollow"                   //同上
 //#define URL_check_phone @"http://192.168.1.112:3000/api/user/check"
 //#define URL_register @"http://192.168.1.112:3000/api/user/register"
 //#define URL_GetVerifiCode @"http://192.168.1.112:3000/api/user/verifiCode"

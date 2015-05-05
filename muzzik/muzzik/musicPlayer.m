@@ -90,18 +90,19 @@ static NSMutableArray *playList;
 //            [self downLoadFileWithModel:_localMuzzik];
 //        }
 //    }
+     _radioView.playMuzzik = playMuzzik;
+     self.localMuzzik = playMuzzik;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackgroundSetSongInformation:) name:String_SetSongInformationNotification object:nil];
     if (globle.isApplicationEnterBackground) {
         [self applicationDidEnterBackgroundSetSongInformation:nil];
     }
-    _radioView.playMuzzik = playMuzzik;
+   
     //[_radioView setRadioViewLrc];
    // globle.isPlaying = YES;
-    self.localMuzzik = playMuzzik;
+   
     
     self.index = [self.MusicArray indexOfObject:playMuzzik];
     [[NSNotificationCenter defaultCenter] postNotificationName:String_SetSongPlayNextNotification object:nil];
-    NSLog(@"%d",self.index);
 }
 
 
@@ -111,6 +112,7 @@ static NSMutableArray *playList;
         NSMutableDictionary * dict = [[NSMutableDictionary alloc] init];
         [dict setObject:_localMuzzik.music.name forKey:MPMediaItemPropertyTitle];
         [dict setObject:_localMuzzik.music.artist  forKey:MPMediaItemPropertyArtist];
+        NSLog(@"%f",[AudioPlayer shareClass].duration);
         [dict setObject:[NSNumber numberWithDouble:[AudioPlayer shareClass].duration] forKey:MPMediaItemPropertyPlaybackDuration];
         
         //音乐当前播放时间 在计时器中修改

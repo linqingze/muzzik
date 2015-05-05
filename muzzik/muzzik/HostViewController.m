@@ -150,8 +150,11 @@
     userInfo *user = [userInfo shareClass];
     if ([user.token length]>0) {
         if (index ==0) {
-           
-            return self.muzzikvc;
+           muzzikTrendController* muzzikvc = [[muzzikTrendController alloc] init];
+            AppDelegate *mydelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+            mydelegate.viewcontroller = muzzikvc;
+            muzzikvc.homeNav = self;
+            return muzzikvc;
         }
         else if (index ==1) {
             TopicVC *topicvc = [[TopicVC alloc] init];
@@ -162,10 +165,14 @@
             return self.muzzikvc;
         }
         else if (index ==3) {
-           return self.muzzikvc;
+            TopicVC *topicvc = [[TopicVC alloc] init];
+            
+            return topicvc;
         }
         else{
-            return self.muzzikvc;
+            TopicVC *topicvc = [[TopicVC alloc] init];
+            
+            return topicvc;
         }
     }else{
         if (index ==0) {

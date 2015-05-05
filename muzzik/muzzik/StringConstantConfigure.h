@@ -38,7 +38,12 @@
 #define Image_yellowretweetImage        @"yellowretweetImage"
 #define Image_redretweetImage           @"redretweetImage"
 #define Image_blueretweetImage          @"blueretweetImage"
-
+#define Image_searchImage_white         @"searchImage_white"
+#define Image_moreImage                 @"moreImage"
+#define Image_search_Oranger            @"search3Image"
+#define Image_followImageSQ             @"followImageSQ"
+#define Image_followedImageSQ           @"followedImageSQ"
+#define Image_followedeachotherImageSQ  @"followedeachotherImageSQ"
 
 
 #define Parameter_Id              @"_id"

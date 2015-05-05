@@ -82,6 +82,9 @@
     [_poImage setImage:[UIImage imageNamed:Image_yellowretweetImage]];
     [_musicPlayView addSubview:_poImage];
     
+    [self.userImage setAlpha:0];
+    [self.poImage setAlpha:0];
+    
     _reposts = [[UIButton alloc] initWithFrame:CGRectMake((SCREEN_WIDTH*1)/8.0, SCREEN_WIDTH*3/4+60, (SCREEN_WIDTH*3)/16.0, 40)];
     [_reposts setTitle:@"转发数" forState:UIControlStateNormal];
     [_reposts setTitleColor:Color_Additional_5 forState:UIControlStateNormal];

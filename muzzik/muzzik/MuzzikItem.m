@@ -681,7 +681,7 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 }
 
 +(void)addLineOnView:(UIView *)view heightPoint:(CGFloat)height toLeft:(CGFloat)left toRight:(CGFloat)right withColor:(UIColor *)color{
-    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(left, height, SCREEN_WIDTH-left-right, 1)];
+    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(left, height, view.frame.size.width-left-right, 1)];
     [lineView setBackgroundColor:color];
     [view addSubview:lineView];
 }

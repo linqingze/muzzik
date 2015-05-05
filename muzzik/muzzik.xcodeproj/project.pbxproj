@@ -106,9 +106,20 @@
 		E1FA13431AB1911D005EDA1D /* id3_parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1FA133E1AB1911D005EDA1D /* id3_parser.cpp */; };
 		E1FA13461AB195E0005EDA1D /* Globle.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FA13451AB195E0005EDA1D /* Globle.m */; };
 		E1FA13491AB1ABDD005EDA1D /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FA13481AB1ABDD005EDA1D /* Reachability.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F20B102F1AF674540067EBD3 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F20B102E1AF674540067EBD3 /* RootViewController.m */; };
+		F20B10321AF69D8D0067EBD3 /* searchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F20B10311AF69D8D0067EBD3 /* searchViewController.m */; };
+		F20B10361AF6B4A30067EBD3 /* UserHomePage.m in Sources */ = {isa = PBXBuildFile; fileRef = F20B10351AF6B4A30067EBD3 /* UserHomePage.m */; };
+		F20B10391AF6B4DE0067EBD3 /* NotificationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F20B10381AF6B4DE0067EBD3 /* NotificationVC.m */; };
 		F20B68201AF340FE0058820D /* PlayListObject.m in Sources */ = {isa = PBXBuildFile; fileRef = F20B681F1AF340FE0058820D /* PlayListObject.m */; };
 		F20B682A1AF39FC00058820D /* MuzzikCard.m in Sources */ = {isa = PBXBuildFile; fileRef = F20B68291AF39FC00058820D /* MuzzikCard.m */; };
 		F20B682D1AF3E39A0058820D /* MuzzikNoCardCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F20B682C1AF3E39A0058820D /* MuzzikNoCardCell.m */; };
+		F20FDD691AF74A05008A71C0 /* SearchForSong.m in Sources */ = {isa = PBXBuildFile; fileRef = F20FDD681AF74A05008A71C0 /* SearchForSong.m */; };
+		F20FDD6C1AF74B0C008A71C0 /* SearchForUser.m in Sources */ = {isa = PBXBuildFile; fileRef = F20FDD6B1AF74B0C008A71C0 /* SearchForUser.m */; };
+		F20FDD6F1AF74B24008A71C0 /* SearchForTopic.m in Sources */ = {isa = PBXBuildFile; fileRef = F20FDD6E1AF74B24008A71C0 /* SearchForTopic.m */; };
+		F20FDD721AF75074008A71C0 /* MusicAndArtistCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F20FDD711AF75074008A71C0 /* MusicAndArtistCell.m */; };
+		F20FDD751AF77ECE008A71C0 /* searchUserCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F20FDD741AF77ECE008A71C0 /* searchUserCell.m */; };
+		F20FDD781AF7B243008A71C0 /* SearchtopicCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F20FDD771AF7B243008A71C0 /* SearchtopicCell.m */; };
+		F20FDD7B1AF7F4DB008A71C0 /* AttentionUser.m in Sources */ = {isa = PBXBuildFile; fileRef = F20FDD7A1AF7F4DB008A71C0 /* AttentionUser.m */; };
 		F212A7691AF4D825005B14DD /* NormalNoCardCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F212A7681AF4D825005B14DD /* NormalNoCardCell.m */; };
 		F212A76C1AF4E52E005B14DD /* showUserVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F212A76B1AF4E52E005B14DD /* showUserVC.m */; };
 		F212A76F1AF5044A005B14DD /* DetaiMuzzikVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F212A76E1AF5044A005B14DD /* DetaiMuzzikVC.m */; };
@@ -397,12 +408,34 @@
 		E1FA13451AB195E0005EDA1D /* Globle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Globle.m; sourceTree = "<group>"; };
 		E1FA13471AB1ABDD005EDA1D /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		E1FA13481AB1ABDD005EDA1D /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		F20B102D1AF674540067EBD3 /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
+		F20B102E1AF674540067EBD3 /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
+		F20B10301AF69D8D0067EBD3 /* searchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = searchViewController.h; sourceTree = "<group>"; };
+		F20B10311AF69D8D0067EBD3 /* searchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = searchViewController.m; sourceTree = "<group>"; };
+		F20B10341AF6B4A30067EBD3 /* UserHomePage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserHomePage.h; sourceTree = "<group>"; };
+		F20B10351AF6B4A30067EBD3 /* UserHomePage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserHomePage.m; sourceTree = "<group>"; };
+		F20B10371AF6B4DE0067EBD3 /* NotificationVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationVC.h; sourceTree = "<group>"; };
+		F20B10381AF6B4DE0067EBD3 /* NotificationVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationVC.m; sourceTree = "<group>"; };
 		F20B681E1AF340FE0058820D /* PlayListObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayListObject.h; sourceTree = "<group>"; };
 		F20B681F1AF340FE0058820D /* PlayListObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayListObject.m; sourceTree = "<group>"; };
 		F20B68281AF39FC00058820D /* MuzzikCard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MuzzikCard.h; sourceTree = "<group>"; };
 		F20B68291AF39FC00058820D /* MuzzikCard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MuzzikCard.m; sourceTree = "<group>"; };
 		F20B682B1AF3E39A0058820D /* MuzzikNoCardCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MuzzikNoCardCell.h; sourceTree = "<group>"; };
 		F20B682C1AF3E39A0058820D /* MuzzikNoCardCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MuzzikNoCardCell.m; sourceTree = "<group>"; };
+		F20FDD671AF74A05008A71C0 /* SearchForSong.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchForSong.h; sourceTree = "<group>"; };
+		F20FDD681AF74A05008A71C0 /* SearchForSong.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchForSong.m; sourceTree = "<group>"; };
+		F20FDD6A1AF74B0C008A71C0 /* SearchForUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchForUser.h; sourceTree = "<group>"; };
+		F20FDD6B1AF74B0C008A71C0 /* SearchForUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchForUser.m; sourceTree = "<group>"; };
+		F20FDD6D1AF74B24008A71C0 /* SearchForTopic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchForTopic.h; path = ../SearchForTopic.h; sourceTree = "<group>"; };
+		F20FDD6E1AF74B24008A71C0 /* SearchForTopic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SearchForTopic.m; path = ../SearchForTopic.m; sourceTree = "<group>"; };
+		F20FDD701AF75074008A71C0 /* MusicAndArtistCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicAndArtistCell.h; sourceTree = "<group>"; };
+		F20FDD711AF75074008A71C0 /* MusicAndArtistCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MusicAndArtistCell.m; sourceTree = "<group>"; };
+		F20FDD731AF77ECE008A71C0 /* searchUserCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = searchUserCell.h; sourceTree = "<group>"; };
+		F20FDD741AF77ECE008A71C0 /* searchUserCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = searchUserCell.m; sourceTree = "<group>"; };
+		F20FDD761AF7B243008A71C0 /* SearchtopicCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchtopicCell.h; sourceTree = "<group>"; };
+		F20FDD771AF7B243008A71C0 /* SearchtopicCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchtopicCell.m; sourceTree = "<group>"; };
+		F20FDD791AF7F4DB008A71C0 /* AttentionUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AttentionUser.h; sourceTree = "<group>"; };
+		F20FDD7A1AF7F4DB008A71C0 /* AttentionUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AttentionUser.m; sourceTree = "<group>"; };
 		F212A7671AF4D825005B14DD /* NormalNoCardCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NormalNoCardCell.h; sourceTree = "<group>"; };
 		F212A7681AF4D825005B14DD /* NormalNoCardCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NormalNoCardCell.m; sourceTree = "<group>"; };
 		F212A76A1AF4E52E005B14DD /* showUserVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = showUserVC.h; sourceTree = "<group>"; };
@@ -594,11 +627,14 @@
 				E112461E1AAAB0F60014D461 /* 3plus-in */,
 				E112461D1AAAB0E50014D461 /* muzzik class */,
 				E11246231AAAB1740014D461 /* 首页 */,
-				E14F4A4B1ACD2B3700270903 /* 登录 */,
 				F21EA1C71ACECB8A00F5ED32 /* 热门 */,
-				E16285BE1ACFEBA800ACE713 /* 主题排行 */,
+				F20B10331AF6B41A0067EBD3 /* 我 */,
+				E16285BE1ACFEBA800ACE713 /* 通知 */,
+				E14F4A4B1ACD2B3700270903 /* 登录 */,
 				E11245F91AAAAE4B0014D461 /* AppDelegate.h */,
 				E11245FA1AAAAE4B0014D461 /* AppDelegate.m */,
+				F20B102D1AF674540067EBD3 /* RootViewController.h */,
+				F20B102E1AF674540067EBD3 /* RootViewController.m */,
 				E142A3131AB7E4C2002BBCB0 /* myDataBase.db */,
 				E159C31C1AC11F76007D2254 /* HostViewController.h */,
 				E159C31D1AC11F76007D2254 /* HostViewController.m */,
@@ -808,6 +844,7 @@
 			children = (
 				E11246861AAAB2CD0014D461 /* muzzikTrendController.h */,
 				E11246871AAAB2CD0014D461 /* muzzikTrendController.m */,
+				F20FDD661AF749B0008A71C0 /* search */,
 				F212A76A1AF4E52E005B14DD /* showUserVC.h */,
 				F212A76B1AF4E52E005B14DD /* showUserVC.m */,
 				F212A76D1AF5044A005B14DD /* DetaiMuzzikVC.h */,
@@ -886,11 +923,13 @@
 			name = "登录";
 			sourceTree = "<group>";
 		};
-		E16285BE1ACFEBA800ACE713 /* 主题排行 */ = {
+		E16285BE1ACFEBA800ACE713 /* 通知 */ = {
 			isa = PBXGroup;
 			children = (
+				F20B10371AF6B4DE0067EBD3 /* NotificationVC.h */,
+				F20B10381AF6B4DE0067EBD3 /* NotificationVC.m */,
 			);
-			name = "主题排行";
+			name = "通知";
 			sourceTree = "<group>";
 		};
 		E16716221AAD5EF90068AE98 /* user */ = {
@@ -1026,6 +1065,36 @@
 			name = Astreamer;
 			sourceTree = "<group>";
 		};
+		F20B10331AF6B41A0067EBD3 /* 我 */ = {
+			isa = PBXGroup;
+			children = (
+				F20B10341AF6B4A30067EBD3 /* UserHomePage.h */,
+				F20B10351AF6B4A30067EBD3 /* UserHomePage.m */,
+			);
+			name = "我";
+			sourceTree = "<group>";
+		};
+		F20FDD661AF749B0008A71C0 /* search */ = {
+			isa = PBXGroup;
+			children = (
+				F20B10301AF69D8D0067EBD3 /* searchViewController.h */,
+				F20B10311AF69D8D0067EBD3 /* searchViewController.m */,
+				F20FDD671AF74A05008A71C0 /* SearchForSong.h */,
+				F20FDD681AF74A05008A71C0 /* SearchForSong.m */,
+				F20FDD701AF75074008A71C0 /* MusicAndArtistCell.h */,
+				F20FDD711AF75074008A71C0 /* MusicAndArtistCell.m */,
+				F20FDD6A1AF74B0C008A71C0 /* SearchForUser.h */,
+				F20FDD6B1AF74B0C008A71C0 /* SearchForUser.m */,
+				F20FDD731AF77ECE008A71C0 /* searchUserCell.h */,
+				F20FDD741AF77ECE008A71C0 /* searchUserCell.m */,
+				F20FDD6D1AF74B24008A71C0 /* SearchForTopic.h */,
+				F20FDD6E1AF74B24008A71C0 /* SearchForTopic.m */,
+				F20FDD761AF7B243008A71C0 /* SearchtopicCell.h */,
+				F20FDD771AF7B243008A71C0 /* SearchtopicCell.m */,
+			);
+			name = search;
+			sourceTree = "<group>";
+		};
 		F218144A1AF234B500AA06AA /* HPGrowingTextView */ = {
 			isa = PBXGroup;
 			children = (
@@ -1064,6 +1133,8 @@
 			children = (
 				F2A5E2041AD90D8000FD8B3E /* muzzik.h */,
 				F2A5E2051AD90D8000FD8B3E /* muzzik.m */,
+				F20FDD791AF7F4DB008A71C0 /* AttentionUser.h */,
+				F20FDD7A1AF7F4DB008A71C0 /* AttentionUser.m */,
 				F2A5E2071AD90F9F00FD8B3E /* MuzzikUser.h */,
 				F2A5E2081AD90F9F00FD8B3E /* MuzzikUser.m */,
 				F2A5E20A1AD9106E00FD8B3E /* music.h */,
@@ -1373,8 +1444,10 @@
 				F20B682A1AF39FC00058820D /* MuzzikCard.m in Sources */,
 				E16716281AAD790F0068AE98 /* musicPlayer.m in Sources */,
 				E11246461AAAB1F20014D461 /* ASIFormDataRequest.m in Sources */,
+				F20FDD6C1AF74B0C008A71C0 /* SearchForUser.m in Sources */,
 				E16285BC1ACFE68000ACE713 /* ActivityUserCell.m in Sources */,
 				F292902C1ADFCA9B0086E8D4 /* messageForResetVC.m in Sources */,
+				F20FDD781AF7B243008A71C0 /* SearchtopicCell.m in Sources */,
 				E112469F1AAACE3C0014D461 /* topicCardCell.m in Sources */,
 				F2A62EEB1AE9F6D900FAAA01 /* ChooseMusicVC.m in Sources */,
 				F2A7F9931AEFFB0C000FCC57 /* TableViewCell.m in Sources */,
@@ -1382,6 +1455,7 @@
 				F29290201ADFB1A40086E8D4 /* KVNProgress.m in Sources */,
 				E1FA12E51AB18252005EDA1D /* FSParsePlaylistRequest.m in Sources */,
 				E11246721AAAB20B0014D461 /* SDWebImageDownloaderOperation.m in Sources */,
+				F20FDD691AF74A05008A71C0 /* SearchForSong.m in Sources */,
 				F26131281ADE23DB0042F1D4 /* AFViewShaker.m in Sources */,
 				E1FA12E31AB18252005EDA1D /* FSAudioStream.mm in Sources */,
 				F212A7691AF4D825005B14DD /* NormalNoCardCell.m in Sources */,
@@ -1402,6 +1476,8 @@
 				E1B230391AB5BF22004E50DA /* FMDatabase.m in Sources */,
 				E159C3211AC11F76007D2254 /* ViewPagerController.m in Sources */,
 				E1B230451AB6E3F1004E50DA /* NSAttributedString+CXACoreTextFrameSize.m in Sources */,
+				F20B102F1AF674540067EBD3 /* RootViewController.m in Sources */,
+				F20B10361AF6B4A30067EBD3 /* UserHomePage.m in Sources */,
 				F2F7EE1A1AED69B600265596 /* MessageStepViewController.m in Sources */,
 				E1B2303A1AB5BF22004E50DA /* FMDatabaseAdditions.m in Sources */,
 				E11246481AAAB1F20014D461 /* ASIInputStream.m in Sources */,
@@ -1423,6 +1499,7 @@
 				F2F7EE521AEEABC100265596 /* AtfreindCell.m in Sources */,
 				E112466D1AAAB20B0014D461 /* NSData+ImageContentType.m in Sources */,
 				F2A7F98A1AEF810E000FCC57 /* ChooseLyricVC.m in Sources */,
+				F20FDD6F1AF74B24008A71C0 /* SearchForTopic.m in Sources */,
 				E1B230401AB6E348004E50DA /* CXAHyperlinkLabel.m in Sources */,
 				E112469A1AAAC02A0014D461 /* AMScrollingNavbarViewController.m in Sources */,
 				E11246471AAAB1F20014D461 /* ASIHTTPRequest.m in Sources */,
@@ -1438,14 +1515,19 @@
 				F20B682D1AF3E39A0058820D /* MuzzikNoCardCell.m in Sources */,
 				E11246911AAAB2CD0014D461 /* TopicHeaderView.m in Sources */,
 				E1FA12E61AB18252005EDA1D /* FSParseRssPodcastFeedRequest.m in Sources */,
+				F20B10391AF6B4DE0067EBD3 /* NotificationVC.m in Sources */,
 				E1FA12E21AB18252005EDA1D /* FSAudioController.m in Sources */,
+				F20FDD751AF77ECE008A71C0 /* searchUserCell.m in Sources */,
 				E11246791AAAB20B0014D461 /* UIImageView+HighlightedWebCache.m in Sources */,
 				F29A17021AEA98B600200EAE /* SearchLibraryMusicVC.m in Sources */,
+				F20FDD721AF75074008A71C0 /* MusicAndArtistCell.m in Sources */,
 				F2F7EE0A1AEC99A100265596 /* UIScrollView+DXRefresh.m in Sources */,
 				F2F7EE261AEE213200265596 /* BATableViewIndex.m in Sources */,
 				F2F7EE3F1AEE23E400265596 /* PinyinHelper.m in Sources */,
+				F20B10321AF69D8D0067EBD3 /* searchViewController.m in Sources */,
 				E112466C1AAAB20B0014D461 /* MKAnnotationView+WebCache.m in Sources */,
 				E11246761AAAB20B0014D461 /* UIImage+GIF.m in Sources */,
+				F20FDD7B1AF7F4DB008A71C0 /* AttentionUser.m in Sources */,
 				E11246451AAAB1F20014D461 /* ASIDownloadCache.m in Sources */,
 				E11246741AAAB20B0014D461 /* SDWebImagePrefetcher.m in Sources */,
 				F218144F1AF234CE00AA06AA /* HPGrowingTextView.m in Sources */,

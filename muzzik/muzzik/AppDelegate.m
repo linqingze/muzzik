@@ -15,6 +15,7 @@
 #import "ASIHTTPRequest.h"
 #import "userInfo.h"
 #import "HostViewController.h"
+#import "RootViewController.h"
 @interface AppDelegate ()
 
 @end
@@ -83,10 +84,10 @@
     globle.isPlaying = YES;
     [ASIHTTPRequest clearSession];
     
-    HostViewController *hostVC = [[HostViewController alloc] init];
-    UINavigationController *nac = [[UINavigationController alloc] initWithRootViewController:hostVC];
+    RootViewController *rootvc = [[RootViewController alloc] init];
+   // HostViewController *hostVC = [[HostViewController alloc] init];
     //[nac.navigationBar setBarStyle:UIBarStyleBlack];
-    [self.window setRootViewController:nac];
+    [self.window setRootViewController:rootvc];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     //[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
@@ -133,6 +134,10 @@
         switch (receivedEvent.subtype) {
                 
             case UIEventSubtypeRemoteControlPause:
+                [player play];
+                NSLog(@"RemoteControlEvents: pause");
+                break;
+            case UIEventSubtypeRemoteControlTogglePlayPause:
                 [player play];
                 NSLog(@"RemoteControlEvents: pause");
                 break;

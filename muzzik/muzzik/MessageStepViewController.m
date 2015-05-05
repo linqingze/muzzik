@@ -93,6 +93,7 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     MuzzikObject *mobject = [MuzzikObject shareClass];
+    mobject.isMessageVCOpen = YES;
     if (mobject.music) {
         songName.text = mobject.music.name;
         artist.text = mobject.music.artist;
@@ -176,6 +177,7 @@
     }
     MuzzikObject *mobject = [MuzzikObject shareClass];
     mobject.music = nil;
+    mobject.isMessageVCOpen = NO;
     mobject.tempmessage = @"";
     [self dismissViewControllerAnimated:YES completion:nil];
 }

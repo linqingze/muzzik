@@ -230,6 +230,7 @@
 
 -(void) searchBarBack{
     isSearch = NO;
+    isNew = NO;
     searchBar.text = @"";
     searchBar.placeholder = @"";
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Get_Topic]]];

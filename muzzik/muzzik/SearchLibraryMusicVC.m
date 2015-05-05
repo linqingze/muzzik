@@ -158,7 +158,7 @@
     }
     [MuzzikItem getLyricByMusic:tempMuzzik.music];
     MuzzikObject *mobject = [MuzzikObject shareClass];
-    if (mobject.music) {
+    if (mobject.isMessageVCOpen) {
         mobject.music = tempMuzzik.music;
         [self.keeper.navigationController popViewControllerAnimated:YES];
     }else{

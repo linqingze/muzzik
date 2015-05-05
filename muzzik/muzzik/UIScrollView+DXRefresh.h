@@ -18,6 +18,7 @@
 - (void)footerBeginRefreshing;
 - (void)footerEndRefreshing;
 - (void)removeFooter;
+- (void)removeHeader;
 
 @end
 

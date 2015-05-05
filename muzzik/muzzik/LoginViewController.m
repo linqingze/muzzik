@@ -298,47 +298,7 @@
     {
         [_delegate sendAuthRequest];
     }
-    
-    
-    
-//        UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:UMShareToWechatSession];
-//        snsPlatform.loginClickHandler(self,[UMSocialControllerService defaultControllerService],YES,^(UMSocialResponseEntity *response){
-//            if (response.responseCode == UMSResponseCodeSuccess) {
-//    
-//                UMSocialAccountEntity *snsAccount = [[UMSocialAccountManager socialAccountDictionary]valueForKey:UMShareToWechatSession];
-//    
-//                NSLog(@"username is %@, uid is %@, token is %@ url is %@",snsAccount.userName,snsAccount.usid,snsAccount.accessToken,snsAccount.iconURL);
-//                ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@%@",BaseURL,URL_WeiChat_AUTH,snsAccount.accessToken]]];
-//                [requestForm setUseCookiePersistence:NO];
-//                __weak ASIHTTPRequest *weakrequest = requestForm;
-//                [requestForm setCompletionBlock :^{
-//                    NSLog(@"%@",[weakrequest responseString]);
-//                    NSLog(@"%d",[weakrequest responseStatusCode]);
-//                    if ([weakrequest responseStatusCode] == 200) {
-//                        NSData *data = [weakrequest responseData];
-//                        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data  options:NSJSONReadingMutableContainers error:nil];
-//                        [MuzzikItem addMessageToLocal:dic];
-//                        userInfo *user = [userInfo shareClass];
-//                        user.uid = [dic objectForKey:@"_id"];
-//                        user.token = [dic objectForKey:@"token"];
-//                        user.gender = [dic objectForKey:@"gender"];
-//                        user.avatar = [dic objectForKey:@"avatar"];
-//                        user.name = [dic objectForKey:@"name"];
-//                        [self.navigationController popViewControllerAnimated:YES];
-//                        
-//                    }
-//                    else{
-//                        //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-//                    }
-//                }];
-//                [requestForm setFailedBlock:^{
-//                    NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-//                    [userInfo checkLoginWithVC:self];
-//                }];
-//                [requestForm startAsynchronous];
-//            }
-//            
-//        });
+
 }
 #pragma -mark QQlogin
 -(void) QQlogin{

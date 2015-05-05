@@ -11,9 +11,10 @@
 @interface MuzzikObject : NSObject
 @property (nonatomic,retain) music *music;
 @property (nonatomic,copy) NSString *message;
-@property (nonatomic,copy) NSString *tempmessage;
+@property (nonatomic,copy) NSString *tempmessage;   //保存话题的选择的临时字段，添加到文本后，清空该字段数据。
 @property (nonatomic,copy) NSString *imageKey;
 @property (nonatomic,retain)NSMutableArray *lyricArray;
 @property (nonatomic,assign) BOOL isPrivate;
+@property (nonatomic,assign) BOOL isMessageVCOpen;    //信息选择界面是否已经开启，若是，选择音乐后会pop回该界面，否则push一个新的信息选择界面。
 +(MuzzikObject *) shareClass;
 @end

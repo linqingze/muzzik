@@ -9,7 +9,7 @@
 #import "ChooseMusicVC.h"
 #import "SongTableViewController.h"
 #import "SearchLibraryMusicVC.h"
-@interface ChooseMusicVC () <baseDataSource, baseDataSource,UISearchBarDelegate>{
+@interface ChooseMusicVC () <baseDelegate, baseDataSource,UISearchBarDelegate>{
     UIView *searchView;
     UISearchBar *searchBar;
     UIButton *cancelButton;

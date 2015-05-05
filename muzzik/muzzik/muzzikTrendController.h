@@ -12,7 +12,7 @@
 #import "AudioPlayer.h"
 #import "RFRadioView.h"
 #import "musicPlayer.h"
-#import "HostViewController.h"
+#import "RootViewController.h"
 #import "WXApiObject.h"
 
 
@@ -23,7 +23,7 @@
     NSInteger isPlayBack;
     
 }
-@property(weak,nonatomic) HostViewController *homeNav;
+@property(weak,nonatomic) RootViewController *homeNav;
 @property(nonatomic) NSMutableArray *muzziks;
 @property(nonatomic) musicPlayer *musicplayer;
 @property(nonatomic) NSString *topicName;

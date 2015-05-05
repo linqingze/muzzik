@@ -19,7 +19,6 @@
     }
     return self;
 }
-
 -(void)setup{
     [self setBackgroundColor:[UIColor whiteColor]];
     [self setSelectionStyle:UITableViewCellSelectionStyleNone];
@@ -27,6 +26,7 @@
     [_userImage addTarget:self action:@selector(goToUser) forControlEvents:UIControlEventTouchUpInside];
     _userImage.layer.cornerRadius = 25;
     _userImage.layer.masksToBounds = YES;
+    [self.userImage setAlpha:0];
     //    _userImage.layer.borderColor = [UIColor whiteColor].CGColor;
     //    _userImage.layer.borderWidth = 2.0f;
     [self addSubview:_userImage];

@@ -53,7 +53,7 @@
 
 @property UIPageViewController *pageViewController;
 @property (assign) id<UIScrollViewDelegate> origPageScrollViewDelegate;
-
+@property (nonatomic,retain) UIPageControl *pagecontrol;
 @property UIScrollView *tabsView;
 @property UIView *contentView;
 @property (nonatomic) RFRadioView *musicView;
@@ -89,8 +89,13 @@
     //[self.view setBackgroundColor:[UIColor blackColor]];
     _musicView = [musicPlayer shareClass].radioView;
     [_musicView setBackgroundColor:Color_NavigationBar];
+    _pagecontrol = [[UIPageControl alloc] initWithFrame:CGRectMake(0, 125, SCREEN_WIDTH, 10)];
+    //page control
+    [_pagecontrol setCurrentPageIndicatorTintColor:[UIColor colorWithHexString:@"a8acbb"]];
+    [_pagecontrol setPageIndicatorTintColor:[UIColor colorWithHexString:@"3b4051"]];
 
-    [self reloadData];
+
+   // [self reloadData];
 }
 - (void)viewWillLayoutSubviews {
     

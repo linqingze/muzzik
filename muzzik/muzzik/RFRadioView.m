@@ -450,7 +450,7 @@
 }
 -(void)setPlayMuzzik:(muzzik *)playMuzzik{
     NSLog(@"%@",[NSString stringWithFormat:@"%@/%@",playMuzzik.music.name,playMuzzik.music.artist]);
-    if (![playMuzzik.muzzik_id isEqualToString:_playMuzzik.muzzik_id]) {
+    if (!([playMuzzik.muzzik_id isEqualToString:_playMuzzik.muzzik_id]||([playMuzzik.muzzik_id length] == 0 &&[playMuzzik.music.music_id isEqualToString:_playMuzzik.music.music_id]))) {
         ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString :[[NSString stringWithFormat:@"%@%@/%@",URL_Lyric_Me,playMuzzik.music.name,playMuzzik.music.artist] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
         [requestForm setUseCookiePersistence:NO];
         __weak ASIHTTPRequest *weakrequest = requestForm;
@@ -639,10 +639,12 @@
         }
         glob.isPlaying = NO;
     }else if (audioPlayer.state == AudioPlayerStateReady){
+        
     }else if (audioPlayer.state == AudioPlayerStateRunning){
+        
     }else if (audioPlayer.state == AudioPlayerStatePlaying){
         glob.isPlaying = YES;
-
+        
     }else if (audioPlayer.state == AudioPlayerStateError){
 
     }
@@ -659,9 +661,7 @@
     
     [_progress setValue:audioPlayer.progress animated:YES];
     _currentPlaybackTime.attributedText =[self TimeformatFromSeconds:audioPlayer.progress total:audioPlayer.duration];
-    if (isLrc) {
-        [lrcView scrollViewMoveLabelWith:_currentPlaybackTime.text];
-    }
+  
 }
 -(void) updateValue:(UISlider *)sender{
     NSLog(@"%f",sender.value);

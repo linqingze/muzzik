@@ -21,6 +21,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     // Do any additional setup after loading the view from its nib.
 }
 
@@ -124,7 +125,9 @@
     }
     
 }
-
+-(BOOL)prefersStatusBarHidden{
+    return YES;
+}
 
 - (void)rightBtnAction:(UIButton *)sender
 {

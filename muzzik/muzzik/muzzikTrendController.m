@@ -53,7 +53,7 @@
    // [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     _musicplayer = [musicPlayer shareClass];
     [self.view setBackgroundColor:[UIColor whiteColor]];
-    MytableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
+    MytableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-44)];
     [MytableView  setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     MytableView.dataSource = self;
     MytableView.delegate = self;
@@ -150,12 +150,16 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self.view setNeedsLayout];
+    [MytableView addHeaderWithTarget:self action:@selector(refreshHeader)];
+    [MytableView addFooterWithTarget:self action:@selector(refreshFooter)];
    // MytableView add
 
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
+    [MytableView removeFooter];
+    [MytableView removeHeader];
    // [MytableView removeKeyPath];
     needsLoad = NO;
 }
@@ -195,15 +199,15 @@
 
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    CXAHyperlinkLabel *label = [[CXAHyperlinkLabel alloc] initWithFrame:CGRectMake(75, 0, SCREEN_WIDTH-110, 500)];
+    CXAHyperlinkLabel *label = [[CXAHyperlinkLabel alloc] initWithFrame:CGRectMake(75, 0, SCREEN_WIDTH-80, 500)];
     muzzik *tempMuzzik = [self.muzziks objectAtIndex:indexPath.row];
     [label setText:tempMuzzik.message];
-    CGSize msize = [label sizeThatFits:CGSizeMake(SCREEN_WIDTH-110, 2000)];
+    CGSize msize = [label sizeThatFits:CGSizeMake(SCREEN_WIDTH-80, 2000)];
     if ([tempMuzzik.image length]>0) {
         if ([tempMuzzik.type isEqualToString:@"normal"] ||[tempMuzzik.type isEqualToString:@"repost"]) {
             return 245+msize.height+SCREEN_WIDTH*3/4;
         }else if([tempMuzzik.type isEqualToString:@"muzzikCard"]){
-            return 144+SCREEN_WIDTH*7/8+msize.height;
+            return SCREEN_WIDTH*9/8+msize.height+36;
         }else if ([tempMuzzik.type isEqualToString:@"userCard"] ){
             return 60;
         }else {
@@ -223,7 +227,16 @@
     }
 }
 
-
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    if ([self.muzziks[indexPath.row] isKindOfClass:[muzzik class]]) {
+        muzzik *tempMuzzik = self.muzziks[indexPath.row];
+        DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
+        detail.muzzik_id = tempMuzzik.muzzik_id;
+        UINavigationController *nac = [[UINavigationController alloc] initWithRootViewController:detail];
+        [self presentViewController:nac animated:YES completion:nil];
+    }
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -238,7 +251,6 @@
             }else{
                 cell.isPlaying = NO;
             }
-            [cell.userImage setAlpha:0];
             [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempMuzzik.MuzzikUser.avatar]] forState:UIControlStateNormal completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                 [UIView animateWithDuration:0.5 animations:^{
                     [cell.userImage setAlpha:1];
@@ -297,7 +309,6 @@
             }else{
                 cell.isPlaying = NO;
             }
-            [cell.userImage setAlpha:0];
             [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempMuzzik.MuzzikUser.avatar]] forState:UIControlStateNormal completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                 [UIView animateWithDuration:0.5 animations:^{
                     [cell.userImage setAlpha:1];
@@ -361,14 +372,12 @@
             cell.cardTitle.text = tempMuzzik.title;
             cell.userName.text = tempMuzzik.MuzzikUser.name;
             cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.date];
-            [cell.userImage setAlpha:0];
             [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempMuzzik.MuzzikUser.avatar]] forState:UIControlStateNormal completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                 [UIView animateWithDuration:0.5 animations:^{
                     [cell.userImage setAlpha:1];
                 }];
                 
             }];
-            [cell.muzzikCardImage setAlpha:0];
             [cell.muzzikCardImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempMuzzik.image]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                 [UIView animateWithDuration:0.5 animations:^{
                     [cell.muzzikCardImage setAlpha:1];
@@ -402,14 +411,12 @@
             }else{
                 cell.isPlaying = NO;
             }
-            [cell.userImage setAlpha:0];
             [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempMuzzik.MuzzikUser.avatar]] forState:UIControlStateNormal completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                 [UIView animateWithDuration:0.5 animations:^{
                     [cell.userImage setAlpha:1];
                 }];
                 
             }];
-            [cell.poImage setAlpha:0];
             [cell.poImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempMuzzik.image]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                 [UIView animateWithDuration:0.5 animations:^{
                     [cell.poImage setAlpha:1];
@@ -468,15 +475,12 @@
             }else{
                 cell.isPlaying = NO;
             }
-            [cell.userImage setAlpha:0];
             [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempMuzzik.MuzzikUser.avatar]] forState:UIControlStateNormal completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                 [UIView animateWithDuration:0.5 animations:^{
                     [cell.userImage setAlpha:1];
                 }];
                 
             }];
-            NSLog(@"%@",[NSString stringWithFormat:@"%@%@",BaseURL_image,tempMuzzik.image]);
-            [cell.poImage setAlpha:0];
             //[cell.poImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempMuzzik.image]]];
             [cell.poImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempMuzzik.image]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                 [UIView animateWithDuration:0.5 animations:^{
@@ -539,14 +543,12 @@
             cell.cardTitle.text = tempMuzzik.title;
             cell.userName.text = tempMuzzik.MuzzikUser.name;
             cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.date];
-            [cell.userImage setAlpha:0];
             [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempMuzzik.MuzzikUser.avatar]] forState:UIControlStateNormal completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                 [UIView animateWithDuration:0.5 animations:^{
                     [cell.userImage setAlpha:1];
                 }];
                 
             }];
-            [cell.muzzikCardImage setAlpha:0];
             [cell.muzzikCardImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempMuzzik.image]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                 [UIView animateWithDuration:0.5 animations:^{
                     [cell.muzzikCardImage setAlpha:1];
@@ -561,9 +563,10 @@
     
             [cell.muzzikMessage setText: [self transformMessage:temp withTopics:tempMuzzik.topics andColorString:[NSString stringWithFormat:@"%@",tempMuzzik.color]]];
             cell.RepostID = tempMuzzik.repostID;
-            CGSize msize = [cell.muzzikMessage sizeThatFits:CGSizeMake(SCREEN_WIDTH-110, 2000)];
+            CGSize msize = [cell.muzzikMessage sizeThatFits:CGSizeMake(SCREEN_WIDTH-80, 2000)];
             [cell.muzzikMessage setFrame:CGRectMake(cell.muzzikMessage.frame.origin.x, cell.muzzikMessage.frame.origin.y, msize.width, msize.height)];
-            [cell.musicPlayView setFrame:CGRectMake(0, SCREEN_WIDTH*9/8+cell.muzzikMessage.bounds.size.height, SCREEN_WIDTH-16, cell.musicPlayView.frame.size.height)];
+            [cell.musicPlayView setFrame:CGRectMake(0, SCREEN_WIDTH*9/8+cell.muzzikMessage.bounds.size.height-40, SCREEN_WIDTH-16, cell.musicPlayView.frame.size.height)];
+            [cell.cardView setFrame:CGRectMake(8, 8, SCREEN_WIDTH-16, SCREEN_WIDTH*9/8+cell.muzzikMessage.bounds.size.height+20)];
             cell.musicArtist.text =tempMuzzik.music.artist;
             cell.musicName.text = tempMuzzik.music.name;
             return cell;
@@ -610,13 +613,14 @@
     if ([user.token length]>0) {
         //new po
         ChooseMusicVC *choosevc = [[ChooseMusicVC alloc] init];
-
-        [self.homeNav.navigationController pushViewController:choosevc animated:YES];
+        UINavigationController *nac = [[UINavigationController alloc] initWithRootViewController:choosevc];
+        [self presentViewController:nac animated:YES completion:nil];
 
     }
     else{
         LoginViewController *loginVC = [[LoginViewController alloc] init];
-        [self.homeNav.navigationController pushViewController:loginVC animated:YES];
+        UINavigationController *nac = [[UINavigationController alloc] initWithRootViewController:loginVC];
+        [self presentViewController:nac animated:YES completion:nil];
     }
 }
 -(void)rightBtnAction:(UIButton *)sender{
@@ -787,13 +791,15 @@
     showUserVC *showvc = [[showUserVC alloc] init];
     showvc.muzzik_id = muzzik_id;
     showvc.showType = @"repost";
-    [self.homeNav.navigationController pushViewController:showvc animated:YES];
+    UINavigationController *nac = [[UINavigationController alloc] initWithRootViewController:showvc];
+    [self presentViewController:nac animated:YES completion:nil];
 }
 -(void) showShare:(NSString *)muzzik_id{
     showUserVC *showvc = [[showUserVC alloc] init];
     showvc.muzzik_id = muzzik_id;
     showvc.showType = @"share";
-    [self.homeNav.navigationController pushViewController:showvc animated:YES];
+    UINavigationController *nac = [[UINavigationController alloc] initWithRootViewController:showvc];
+    [self presentViewController:nac animated:YES completion:nil];
 }
 -(void) showComment:(NSString *)muzzik_id{
     NSLog(@"commenn%@",muzzik_id);
@@ -802,7 +808,8 @@
     showUserVC *showvc = [[showUserVC alloc] init];
     showvc.muzzik_id = muzzik_id;
     showvc.showType = @"moved";
-    [self.homeNav.navigationController pushViewController:showvc animated:YES];
+    UINavigationController *nac = [[UINavigationController alloc] initWithRootViewController:showvc];
+    [self presentViewController:nac animated:YES completion:nil];
 }
 
 -(NSMutableArray *) searchUsers:(NSString *)message{
@@ -812,8 +819,6 @@
    //  || [[message substringWithRange:NSMakeRange(i, 1)] isEqualToString:@"＠"]
     int location = 0;
     for (int i = 0; i<message.length; i++) {
-         NSLog(@"%@",[message substringWithRange:NSMakeRange(i, 1)] );
-        NSLog(@"%d",[[message substringWithRange:NSMakeRange(i, 1)] isEqualToString:@""]);
         if ([[message substringWithRange:NSMakeRange(i, 1)] isEqualToString:@"@"]|| [[message substringWithRange:NSMakeRange(i, 1)] isEqualToString:@"＠"]) {
             GetAt = YES;
             location = i;
@@ -822,6 +827,8 @@
             GetAt = NO;
             [array addObject:[message substringWithRange:NSMakeRange(location, i-location)]];
             
+        }else if(i == message.length-1 && GetAt){
+            [array addObject:[message substringWithRange:NSMakeRange(location, i-location+1)]];
         }
     }
     
