@@ -19,6 +19,7 @@
 #import "KVNProgress.h"
 #import "muzzik.h"
 #import "StringConstantConfigure.h"
+#import "DeleGateMethodConfigure.h"
 #endif
 #define muzzik_muzzik_PrefixHeader_pch
 

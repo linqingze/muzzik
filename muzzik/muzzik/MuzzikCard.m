@@ -33,6 +33,7 @@
     self.userImage = [[UIButton alloc] initWithFrame:CGRectMake( 32, ScreenWidth*7/8 - 42, ScreenWidth/4-20, ScreenWidth/4-20)];
     self.userImage.layer.cornerRadius = ScreenWidth/8-10;
     self.userImage.layer.borderColor = [UIColor whiteColor].CGColor;
+    [_userImage addTarget:self action:@selector(goToUser) forControlEvents:UIControlEventTouchUpInside];
     self.userImage.layer.borderWidth = 2.0f;
     self.userImage.clipsToBounds = YES;
 
@@ -93,7 +94,7 @@
 }
 -(void)playMusicAction:(id) sender{
     NSLog(@"play");
-    [self.homeVc playSongWithSongModel:self.songModel];
+    [self.delegate playSongWithSongModel:self.songModel];
 }
 -(void) colorViewWithColorString:(NSString *) colorString{
     UIColor *color;
@@ -143,10 +144,10 @@
 }
 -(void)moveAction{
     NSLog(@"move");
-    [self.homeVc moveMuzzikWithId:self.muzzik_id isMoved:self.isMoved atIndex:self.index];
+    [self.delegate moveMuzzikWithId:self.muzzik_id isMoved:self.isMoved atIndex:self.index];
 }
 -(void)goToUser{
-    NSLog(@"%@",_songModel.MuzzikUser.user_id);
+    [self.delegate userDetail:self.songModel.MuzzikUser.user_id];
 }
 
 

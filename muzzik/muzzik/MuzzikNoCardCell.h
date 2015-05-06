@@ -13,7 +13,7 @@
 @property (nonatomic) UIImageView *muzzikCardLogo;
 @property (nonatomic) UIView *cardView;
 @property (nonatomic) UILabel *cardTitle;
-@property (nonatomic) UIImageView *userImage;                  //用户头像
+@property (nonatomic) UIButton *userImage;                  //用户头像
 @property (nonatomic) UILabel *userName;                       //用户名
 @property (nonatomic) UILabel *timeStamp;                      //时间
 @property (nonatomic) UIProgressView *progress;
@@ -26,7 +26,7 @@
 @property (nonatomic) UIImageView *timeImage;                  //时间图标
 @property (nonatomic) UILabel *muzzikRepostText;               //转发文字
 @property (nonatomic) NSString *colorName;
-@property (nonatomic,weak) muzzikTrendController *homeVc;
+@property (nonatomic,weak) id<CellDelegate> delegate;
 @property (nonatomic) muzzik *songModel;
 @property (nonatomic) NSString *muzzik_id;
 @property (nonatomic) BOOL isMoved;

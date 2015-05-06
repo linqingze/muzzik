@@ -26,6 +26,7 @@
 #import "DetaiMuzzikVC.h"
 #import "MuzzikCard.h"
 #import "MuzzikNoCardCell.h"
+#import "userDetailInfo.h"
 #define length_to_left 10
 #define length_to_right 10
 #define length_to_top 10
@@ -125,6 +126,9 @@
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [MytableView reloadData];
                 [MytableView footerEndRefreshing];
+                if ([[dic objectForKey:@"muzziks"] count]<[Limit_Constant integerValue] ) {
+                    [MytableView removeFooter];
+                }
             });
             
         }
@@ -276,7 +280,7 @@
             
             [cell colorViewWithColorString:[NSString stringWithFormat:@"%@",tempMuzzik.color]];
             cell.muzzik_id = tempMuzzik.muzzik_id;
-            cell.homeVc=self;
+            cell.delegate=self;
             if ([tempMuzzik.moveds integerValue]>0) {
                 [cell.moves setTitle:[NSString stringWithFormat:@"喜欢数%@",tempMuzzik.moveds] forState:UIControlStateNormal];
             }else{
@@ -336,7 +340,7 @@
             
             [cell colorViewWithColorString:[NSString stringWithFormat:@"%@",tempMuzzik.color]];
             cell.muzzik_id = tempMuzzik.muzzik_id;
-            cell.homeVc=self;
+            cell.delegate=self;
             if ([tempMuzzik.moveds integerValue]>0) {
                 [cell.moves setTitle:[NSString stringWithFormat:@"喜欢数%@",tempMuzzik.moveds] forState:UIControlStateNormal];
             }else{
@@ -442,7 +446,7 @@
             
             [cell colorViewWithColorString:[NSString stringWithFormat:@"%@",tempMuzzik.color]];
             cell.muzzik_id = tempMuzzik.muzzik_id;
-            cell.homeVc=self;
+            cell.delegate=self;
             if ([tempMuzzik.moveds integerValue]>0) {
                 [cell.moves setTitle:[NSString stringWithFormat:@"喜欢数%@",tempMuzzik.moveds] forState:UIControlStateNormal];
             }else{
@@ -507,7 +511,7 @@
             
             [cell colorViewWithColorString:[NSString stringWithFormat:@"%@",tempMuzzik.color]];
             cell.muzzik_id = tempMuzzik.muzzik_id;
-            cell.homeVc=self;
+            cell.delegate=self;
             if ([tempMuzzik.moveds integerValue]>0) {
                 [cell.moves setTitle:[NSString stringWithFormat:@"喜欢数%@",tempMuzzik.moveds] forState:UIControlStateNormal];
             }else{
@@ -768,11 +772,7 @@
 }
 
 -(void)playnextMuzzikUpdate{
-    if ([musicPlayer shareClass].listType == SquareList) {
-        [MytableView reloadData];
-    }
-    
-    
+    [MytableView reloadData];
 }
 -(void)playSongWithSongModel:(muzzik *)songModel{
     _musicplayer.listType = SquareList;
@@ -804,12 +804,21 @@
 -(void) showComment:(NSString *)muzzik_id{
     NSLog(@"commenn%@",muzzik_id);
 }
+
 -(void) showMoved:(NSString *)muzzik_id{
     showUserVC *showvc = [[showUserVC alloc] init];
     showvc.muzzik_id = muzzik_id;
     showvc.showType = @"moved";
     UINavigationController *nac = [[UINavigationController alloc] initWithRootViewController:showvc];
     [self presentViewController:nac animated:YES completion:nil];
+}
+
+-(void)userDetail:(NSString *)user_id{
+    userDetailInfo *detailuser = [[userDetailInfo alloc] init];
+    detailuser.uid = user_id;
+    UINavigationController *nac = [[UINavigationController alloc] initWithRootViewController:detailuser];
+    [self presentViewController:nac animated:YES completion:nil];
+    
 }
 
 -(NSMutableArray *) searchUsers:(NSString *)message{

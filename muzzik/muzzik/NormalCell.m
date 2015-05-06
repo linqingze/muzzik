@@ -144,7 +144,7 @@
 }
 -(void)playMusicAction:(id) sender{
     NSLog(@"play");
-    [self.homeVc playSongWithSongModel:self.songModel];
+    [self.delegate playSongWithSongModel:self.songModel];
 }
 -(void) colorViewWithColorString:(NSString *) colorString{
     UIColor *color;
@@ -197,34 +197,34 @@
 }
 -(void)moveAction{
     NSLog(@"move");
-    [self.homeVc moveMuzzikWithId:self.muzzik_id isMoved:self.isMoved atIndex:self.index];
+    [self.delegate moveMuzzikWithId:self.muzzik_id isMoved:self.isMoved atIndex:self.index];
 }
 -(void)repostAction{
-    [self.homeVc repostActionWithMuzzik_id:self.muzzik_id atIndex:self.index];
+    [self.delegate repostActionWithMuzzik_id:self.muzzik_id atIndex:self.index];
     NSLog(@"repost");
 }
 -(void)shareAction{
     NSLog(@"share");
-    [self.homeVc shareActionWithMuzzik_id:self.muzzik_id atIndex:self.index];
+    [self.delegate shareActionWithMuzzik_id:self.muzzik_id atIndex:self.index];
 }
 -(void)commentAction{
-    [self.homeVc commentAtMuzzik:self.muzzik_id];
+    [self.delegate commentAtMuzzik:self.muzzik_id];
 }
 -(void)pushComment{
-    [self.homeVc showComment:self.muzzik_id];
+    [self.delegate showComment:self.muzzik_id];
 }
 -(void)pushMove{
-    [self.homeVc showMoved:self.muzzik_id];
+    [self.delegate showMoved:self.muzzik_id];
 }
 -(void)pushShare{
-    [self.homeVc showShare:self.muzzik_id];
+    [self.delegate showShare:self.muzzik_id];
 }
 -(void)pushRepost{
-    [self.homeVc showRepost:self.muzzik_id];
+    [self.delegate showRepost:self.muzzik_id];
 }
 
 
 -(void)goToUser{
-    NSLog(@"%@",_songModel.MuzzikUser.user_id);
+    [self.delegate userDetail:self.songModel.MuzzikUser.user_id];
 }
 @end

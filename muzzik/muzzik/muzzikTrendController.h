@@ -18,7 +18,7 @@
 
 
 
-@interface muzzikTrendController : AMScrollingNavbarViewController<UITableViewDataSource,UITableViewDelegate,UICollectionViewDelegateFlowLayout,CXDelegate>{
+@interface muzzikTrendController : AMScrollingNavbarViewController<UITableViewDataSource,UITableViewDelegate,UICollectionViewDelegateFlowLayout,CXDelegate,CellDelegate>{
      AudioPlayer* audioPlayer;
     NSInteger isPlayBack;
     
@@ -28,17 +28,5 @@
 @property(nonatomic) musicPlayer *musicplayer;
 @property(nonatomic) NSString *topicName;
 @property(nonatomic) NSURL *imageURL;
--(void)playSongWithSongModel:(muzzik *)songModel;
--(void)downMusicWithModel:(muzzik *)model;
--(void)moveMuzzikWithId:(NSString *)muzzik_id isMoved:(BOOL) ismoved atIndex:(NSInteger) index;
--(void)repostActionWithMuzzik_id:(NSString *)muzzik_id atIndex:(NSInteger) index;
--(void)shareActionWithMuzzik_id:(NSString *)muzzik_id atIndex:(NSInteger) index;
 
--(void)reloadMuzzikSource;
-
--(void) commentAtMuzzik:(NSString *)muzzik_id;
--(void) showRepost:(NSString *)muzzik_id;
--(void) showShare:(NSString *)muzzik_id;
--(void) showComment:(NSString *)muzzik_id;
--(void) showMoved:(NSString *)muzzik_id;
 @end
