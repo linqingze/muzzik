@@ -34,9 +34,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self initNagationBar:0 leftBtn:0 rightBtn:0];
     nacView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 64)];
-    [nacView setBackgroundColor:[UIColor blackColor]];
-    [self.view addSubview:nacView];
+    [nacView setBackgroundColor:Color_NavigationBar];
+    
     _pagecontrol = [[UIPageControl alloc] initWithFrame:CGRectMake(0, 50, SCREEN_WIDTH, 10)];
     //page control
     
@@ -94,7 +95,7 @@
                                                                         options: options];
     self.pageViewController.delegate = self;
     self.pageViewController.dataSource = self;
-    [[_pageViewController view] setFrame:CGRectMake(0, 64, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
+    [[_pageViewController view] setFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
     
     
     muzzikvc = [[muzzikTrendController alloc] init];
@@ -136,6 +137,7 @@
 }
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    [self.navigationController.view addSubview:nacView];
     userInfo *user = [userInfo shareClass];
     if ([user.token length]>0) {
         pageControllers = @[muzzikvc,topicvc,userHome,notifyvc];
@@ -151,8 +153,8 @@
 
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-
-    
+    [nacView removeFromSuperview];
+ 
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -258,8 +260,7 @@
 
 -(void) searchAction{
     searchViewController *search = [[searchViewController alloc ] init];
-    UINavigationController *nac = [[UINavigationController alloc] initWithRootViewController:search];
-    [self presentViewController:nac animated:YES completion:nil];
+    [self.navigationController pushViewController:search animated:YES];
 }
 
 -(void) moreAction{
@@ -269,13 +270,13 @@
         [self.view addSubview:moreItemView];
         [UIView animateWithDuration:0.3 animations:^{
             [moreItemView setAlpha:1];
-            [moreItemView setFrame:CGRectMake(SCREEN_WIDTH-120, 64, 120, 100)];
+            [moreItemView setFrame:CGRectMake(SCREEN_WIDTH-120, 0, 120, 100)];
         }];
     }else{
         isOpen = !isOpen;
         [UIView animateWithDuration:0.3 animations:^{
             [moreItemView setAlpha:0];
-            [moreItemView setFrame:CGRectMake(SCREEN_WIDTH-120, 64, 120, 0)];
+            [moreItemView setFrame:CGRectMake(SCREEN_WIDTH-120, 0, 120, 0)];
         }completion:^(BOOL finished) {
             [moreItemView removeFromSuperview];
             [glassView removeFromSuperview];

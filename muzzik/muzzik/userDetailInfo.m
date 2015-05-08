@@ -179,8 +179,7 @@
         muzzik *tempMuzzik = self.muzziks[indexPath.row];
         DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
         detail.localmuzzik = tempMuzzik;
-        UINavigationController *nac = [[UINavigationController alloc] initWithRootViewController:detail];
-        [self presentViewController:nac animated:YES completion:nil];
+        [self.navigationController pushViewController:detail animated:YES];
     }
 }
 
@@ -785,15 +784,13 @@
     showUserVC *showvc = [[showUserVC alloc] init];
     showvc.muzzik_id = muzzik_id;
     showvc.showType = @"repost";
-    UINavigationController *nac = [[UINavigationController alloc] initWithRootViewController:showvc];
-    [self presentViewController:nac animated:YES completion:nil];
+    [self.navigationController pushViewController:showvc animated:YES];
 }
 -(void) showShare:(NSString *)muzzik_id{
     showUserVC *showvc = [[showUserVC alloc] init];
     showvc.muzzik_id = muzzik_id;
     showvc.showType = @"share";
-    UINavigationController *nac = [[UINavigationController alloc] initWithRootViewController:showvc];
-    [self presentViewController:nac animated:YES completion:nil];
+    [self.navigationController pushViewController:showvc animated:YES];
 }
 -(void) showComment:(NSString *)muzzik_id{
     NSLog(@"commenn%@",muzzik_id);
@@ -803,8 +800,7 @@
     showUserVC *showvc = [[showUserVC alloc] init];
     showvc.muzzik_id = muzzik_id;
     showvc.showType = @"moved";
-    UINavigationController *nac = [[UINavigationController alloc] initWithRootViewController:showvc];
-    [self presentViewController:nac animated:YES completion:nil];
+    [self.navigationController pushViewController:showvc animated:YES];
 }
 -(void)showSong:(NSString *)uid{
     

@@ -237,8 +237,7 @@
         muzzik *tempMuzzik = self.muzziks[indexPath.row];
         DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
         detail.localmuzzik = tempMuzzik;
-        UINavigationController *nac = [[UINavigationController alloc] initWithRootViewController:detail];
-        [self presentViewController:nac animated:YES completion:nil];
+        [self.navigationController pushViewController:detail animated:YES];
     }
 }
 
@@ -617,14 +616,12 @@
     if ([user.token length]>0) {
         //new po
         ChooseMusicVC *choosevc = [[ChooseMusicVC alloc] init];
-        UINavigationController *nac = [[UINavigationController alloc] initWithRootViewController:choosevc];
-        [self presentViewController:nac animated:YES completion:nil];
+        [self.navigationController pushViewController:choosevc animated:YES];
 
     }
     else{
         LoginViewController *loginVC = [[LoginViewController alloc] init];
-        UINavigationController *nac = [[UINavigationController alloc] initWithRootViewController:loginVC];
-        [self presentViewController:nac animated:YES completion:nil];
+        [self.navigationController pushViewController:loginVC animated:YES];
     }
 }
 -(void)rightBtnAction:(UIButton *)sender{
@@ -791,15 +788,13 @@
     showUserVC *showvc = [[showUserVC alloc] init];
     showvc.muzzik_id = muzzik_id;
     showvc.showType = @"repost";
-    UINavigationController *nac = [[UINavigationController alloc] initWithRootViewController:showvc];
-    [self presentViewController:nac animated:YES completion:nil];
+    [self.navigationController pushViewController:showvc animated:YES];
 }
 -(void) showShare:(NSString *)muzzik_id{
     showUserVC *showvc = [[showUserVC alloc] init];
     showvc.muzzik_id = muzzik_id;
     showvc.showType = @"share";
-    UINavigationController *nac = [[UINavigationController alloc] initWithRootViewController:showvc];
-    [self presentViewController:nac animated:YES completion:nil];
+    [self.navigationController pushViewController:showvc animated:YES];
 }
 -(void) showComment:(NSString *)muzzik_id{
     NSLog(@"commenn%@",muzzik_id);
@@ -809,15 +804,14 @@
     showUserVC *showvc = [[showUserVC alloc] init];
     showvc.muzzik_id = muzzik_id;
     showvc.showType = @"moved";
-    UINavigationController *nac = [[UINavigationController alloc] initWithRootViewController:showvc];
-    [self presentViewController:nac animated:YES completion:nil];
+    [self.navigationController pushViewController:showvc animated:YES];
 }
 
 -(void)userDetail:(NSString *)user_id{
     userDetailInfo *detailuser = [[userDetailInfo alloc] init];
     detailuser.uid = user_id;
-    UINavigationController *nac = [[UINavigationController alloc] initWithRootViewController:detailuser];
-    [self presentViewController:nac animated:YES completion:nil];
+    [self.navigationController pushViewController:detailuser animated:YES];
+
     
 }
 

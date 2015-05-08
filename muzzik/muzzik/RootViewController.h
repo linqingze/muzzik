@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@interface RootViewController : UIViewController
+#import "BaseNagationViewController.h"
+@interface RootViewController : BaseNagationViewController
 
 @property (strong, nonatomic) UIPageViewController *pageViewController;
 @property (nonatomic) RFRadioView *musicView;

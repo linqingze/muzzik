@@ -288,7 +288,7 @@
     [self.navigationController pushViewController:registervc animated:YES];
 }
 -(void)backTo{
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 

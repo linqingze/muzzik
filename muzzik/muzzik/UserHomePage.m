@@ -339,8 +339,7 @@
     ProfileSetting *setting = [[ProfileSetting alloc] init];
     setting.profileDic = self.profileDic;
     setting.header = headimage.image;
-    UINavigationController *nac = [[UINavigationController alloc] initWithRootViewController:setting];
-    [self presentViewController:nac animated:YES completion:nil];
+    [self.navigationController pushViewController:setting animated:YES];
 }
 
 -(void)showMuzziks{

@@ -85,9 +85,9 @@
     [ASIHTTPRequest clearSession];
     
     RootViewController *rootvc = [[RootViewController alloc] init];
-   // HostViewController *hostVC = [[HostViewController alloc] init];
-    //[nac.navigationBar setBarStyle:UIBarStyleBlack];
-    [self.window setRootViewController:rootvc];
+    UINavigationController *nac = [[UINavigationController alloc] initWithRootViewController:rootvc];
+
+    [self.window setRootViewController:nac];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     //[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
