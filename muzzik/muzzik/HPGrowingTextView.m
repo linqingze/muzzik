@@ -85,7 +85,7 @@
 #endif
 {
     // Initialization code
-    CGRect r = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width-50, self.frame.size.height);
+    CGRect r = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, self.frame.size.height);
     r.origin.y = 0;
     r.origin.x = 0;
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
@@ -128,7 +128,7 @@
 {
     [super layoutSubviews];
     
-	CGRect r = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width-50, self.frame.size.height);
+	CGRect r = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, self.frame.size.height);
 	r.origin.y = 0;
 	r.origin.x = contentInset.left;
     r.size.width -= contentInset.left + contentInset.right;
@@ -140,7 +140,7 @@
 {
     contentInset = inset;
     
-    CGRect r = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width-50, self.frame.size.height);;
+    CGRect r = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, self.frame.size.height);;
     r.origin.y = inset.top - inset.bottom;
     r.origin.x = inset.left;
     r.size.width -= inset.left + inset.right;

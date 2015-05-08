@@ -11,5 +11,5 @@
 @interface topicCell : UICollectionViewCell
 @property (nonatomic) UILabel *topicLabel;
 @property (nonatomic) NSString *topic_id;
-@property (nonatomic) NSString *topic_color;
+
 @end

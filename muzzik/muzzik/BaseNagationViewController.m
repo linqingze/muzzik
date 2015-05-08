@@ -24,7 +24,9 @@
     
     // Do any additional setup after loading the view from its nib.
 }
-
+-(void)viewDidAppear:(BOOL)animated{
+    self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+}
 - (void)initNagationBar:(id)title leftBtn:(NSInteger)leftImage rightBtn:(NSInteger)rightImge
 {
 
@@ -171,7 +173,7 @@
             btnImage = [UIImage imageNamed:@"筛选"];
             break;
         case 3:
-            btnImage = [UIImage imageNamed:@"确定"];
+            btnImage = [UIImage imageNamed:@"done"];
             break;
         case 4:
             btnImage = [UIImage imageNamed:@"searchImage_white"];

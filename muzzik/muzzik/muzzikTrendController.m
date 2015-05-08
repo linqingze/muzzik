@@ -54,7 +54,7 @@
    // [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     _musicplayer = [musicPlayer shareClass];
     [self.view setBackgroundColor:[UIColor whiteColor]];
-    MytableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-44)];
+    MytableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     [MytableView  setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     MytableView.dataSource = self;
     MytableView.delegate = self;
@@ -236,7 +236,7 @@
     if ([self.muzziks[indexPath.row] isKindOfClass:[muzzik class]]) {
         muzzik *tempMuzzik = self.muzziks[indexPath.row];
         DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
-        detail.muzzik_id = tempMuzzik.muzzik_id;
+        detail.localmuzzik = tempMuzzik;
         UINavigationController *nac = [[UINavigationController alloc] initWithRootViewController:detail];
         [self presentViewController:nac animated:YES completion:nil];
     }

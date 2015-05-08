@@ -29,7 +29,7 @@
      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
     page = 1;
     [self initNagationBar:@"Ta" leftBtn:Constant_backImage rightBtn:0];
-    MyTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-44)];
+    MyTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     self.musicplayer = [musicPlayer shareClass];
     [self.view addSubview:MyTableView];
     MyTableView.delegate = self;
@@ -178,7 +178,7 @@
     if ([self.muzziks[indexPath.row] isKindOfClass:[muzzik class]] && indexPath.row!=0) {
         muzzik *tempMuzzik = self.muzziks[indexPath.row];
         DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
-        detail.muzzik_id = tempMuzzik.muzzik_id;
+        detail.localmuzzik = tempMuzzik;
         UINavigationController *nac = [[UINavigationController alloc] initWithRootViewController:detail];
         [self presentViewController:nac animated:YES completion:nil];
     }

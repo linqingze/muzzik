@@ -24,9 +24,9 @@
 - (void)initNagationBar:(id)title leftBtn:(NSInteger)leftImage rightBtn:(NSInteger)rightImge
 {
     if ([title isKindOfClass:[NSString class]]) {
-        UILabel *headlabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 0, SCREEN_WIDTH-240, 30)];
+        UILabel *headlabel = [[UILabel alloc] initWithFrame:CGRectMake(120, 0, SCREEN_WIDTH-240, 30)];
         [headlabel setTextColor:[UIColor whiteColor]];
-        
+        headlabel.textAlignment = NSTextAlignmentCenter;
         [headlabel setText:title];
         headlabel.font = [UIFont boldSystemFontOfSize:15];
         [self.navigationItem setTitleView:headlabel];

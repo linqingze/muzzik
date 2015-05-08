@@ -62,7 +62,7 @@
 #define Image_profiletopicImage         @"profiletopicImage"
 #define Image_profiletweetImage         @"profiletweetImage"
 #define Image_settingImage              @"settingImage"
-
+#define Image_addpicImage               @"addpicImage"
 
 
 #define Parameter_Id              @"_id"

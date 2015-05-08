@@ -98,7 +98,7 @@
 
 - (UIView *)topView {
     if (_topView == nil) {
-        CGFloat handleHeight = 44.0f;
+        CGFloat handleHeight = 64.0f;
         CGRect rect = CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), CGRectGetWidth(self.view.bounds)+handleHeight*2);
         self.topView = [[UIView alloc] initWithFrame:rect];
         self.topView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
@@ -110,14 +110,14 @@
         navView.backgroundColor = [[UIColor colorWithRed:26.0/255 green:29.0/255 blue:33.0/255 alpha:1] colorWithAlphaComponent:.8f];
         [self.topView addSubview:navView];
         
-        rect = CGRectMake(0, 0, 60, CGRectGetHeight(navView.bounds));
+        rect = CGRectMake(0, 10, 60, CGRectGetHeight(navView.bounds));
         UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         backBtn.frame = rect;
         [backBtn setImage:[UIImage imageNamed:Image_back] forState:UIControlStateNormal];
         [backBtn addTarget:self action:@selector(backAction) forControlEvents:UIControlEventTouchUpInside];
         [navView addSubview:backBtn];
         
-        rect = CGRectMake((CGRectGetWidth(navView.bounds)-100)/2, 0, 100, CGRectGetHeight(navView.bounds));
+        rect = CGRectMake((CGRectGetWidth(navView.bounds)-100)/2, 10, 100, CGRectGetHeight(navView.bounds));
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:rect];
         titleLabel.text = @"选择照片";
         titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -126,7 +126,7 @@
         titleLabel.font = [UIFont boldSystemFontOfSize:18.0f];
         [navView addSubview:titleLabel];
         
-        rect = CGRectMake(CGRectGetWidth(navView.bounds)-80, 0, 80, CGRectGetHeight(navView.bounds));
+        rect = CGRectMake(CGRectGetWidth(navView.bounds)-80, 10, 80, CGRectGetHeight(navView.bounds));
         UIButton *cropBtn = [[UIButton alloc] initWithFrame:rect];
         [cropBtn setTitle:@"确定" forState:UIControlStateNormal];
         [cropBtn.titleLabel setFont:[UIFont systemFontOfSize:14.0f]];

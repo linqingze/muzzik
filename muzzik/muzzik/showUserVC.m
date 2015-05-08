@@ -34,7 +34,7 @@
         URLString = [NSString stringWithFormat:@"%@%@%@",BaseURL,URL_MovedUsers,_muzzik_id];
         [self initNagationBar:@"喜欢用户" leftBtn:Constant_backImage rightBtn:0];
     }
-    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-44)];
+    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     [self.view addSubview:_tableView];
     _tableView.delegate = self;
     _tableView.dataSource = self;

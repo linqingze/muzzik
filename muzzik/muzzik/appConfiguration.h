@@ -53,7 +53,7 @@
 #define URL_Topic_search        @"api/topic"
 #define URL_User_Follow         @"api/user/follow"                     //post 方法，auth，加id字段
 #define URL_user_Unfollow       @"api/user/unfollow"   //同上
-
+#define URL_Classify            @"api/common/musicGenre"
 
 
 

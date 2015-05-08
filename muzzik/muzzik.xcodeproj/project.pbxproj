@@ -162,7 +162,7 @@
 		F2B703671AC67EBF005F0903 /* TencentOpenApi_IOS_Bundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F2B703651AC67EBF005F0903 /* TencentOpenApi_IOS_Bundle.bundle */; };
 		F2B703681AC67EBF005F0903 /* TencentOpenAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2B703661AC67EBF005F0903 /* TencentOpenAPI.framework */; };
 		F2B81FF11ADD6C6A00012ED6 /* MuzzikItem.m in Sources */ = {isa = PBXBuildFile; fileRef = F2B81FF01ADD6C6A00012ED6 /* MuzzikItem.m */; };
-		F2EB60C41AF8BF34000B7579 /* DetailUser.m in Sources */ = {isa = PBXBuildFile; fileRef = F2EB60C31AF8BF34000B7579 /* DetailUser.m */; };
+		F2E933701AFD232600B2C6B4 /* CommentMuzzikCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2E9336F1AFD232600B2C6B4 /* CommentMuzzikCell.m */; };
 		F2EB60CC1AF91694000B7579 /* SKTag.m in Sources */ = {isa = PBXBuildFile; fileRef = F2EB60C71AF91694000B7579 /* SKTag.m */; };
 		F2EB60CD1AF91694000B7579 /* SKTagButton.m in Sources */ = {isa = PBXBuildFile; fileRef = F2EB60C91AF91694000B7579 /* SKTagButton.m */; };
 		F2EB60CE1AF91694000B7579 /* SKTagView.m in Sources */ = {isa = PBXBuildFile; fileRef = F2EB60CB1AF91694000B7579 /* SKTagView.m */; };
@@ -200,6 +200,11 @@
 		F2F7EE4C1AEE676F00265596 /* TopicHotVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F7EE4B1AEE676F00265596 /* TopicHotVC.m */; };
 		F2F7EE4F1AEE80CA00265596 /* TopicModel.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F7EE4E1AEE80CA00265596 /* TopicModel.m */; };
 		F2F7EE521AEEABC100265596 /* AtfreindCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F7EE511AEEABC100265596 /* AtfreindCell.m */; };
+		F2FBE8F41AFB3B870070831D /* ProfileSetting.m in Sources */ = {isa = PBXBuildFile; fileRef = F2FBE8F31AFB3B870070831D /* ProfileSetting.m */; };
+		F2FBE8F71AFB541E0070831D /* UserMuzzikVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2FBE8F61AFB541E0070831D /* UserMuzzikVC.m */; };
+		F2FBE8FA1AFB55F30070831D /* MuzzikTableVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2FBE8F91AFB55F30070831D /* MuzzikTableVC.m */; };
+		F2FBE8FD1AFB56C50070831D /* CommentTableVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2FBE8FC1AFB56C50070831D /* CommentTableVC.m */; };
+		F2FBE9031AFBBE6B0070831D /* ClassifySelectionVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2FBE9021AFBBE6B0070831D /* ClassifySelectionVC.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -532,8 +537,8 @@
 		F2B703661AC67EBF005F0903 /* TencentOpenAPI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TencentOpenAPI.framework; sourceTree = "<group>"; };
 		F2B81FEF1ADD6C6A00012ED6 /* MuzzikItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MuzzikItem.h; sourceTree = "<group>"; };
 		F2B81FF01ADD6C6A00012ED6 /* MuzzikItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MuzzikItem.m; sourceTree = "<group>"; };
-		F2EB60C21AF8BF34000B7579 /* DetailUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailUser.h; sourceTree = "<group>"; };
-		F2EB60C31AF8BF34000B7579 /* DetailUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailUser.m; sourceTree = "<group>"; };
+		F2E9336E1AFD232600B2C6B4 /* CommentMuzzikCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentMuzzikCell.h; sourceTree = "<group>"; };
+		F2E9336F1AFD232600B2C6B4 /* CommentMuzzikCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentMuzzikCell.m; sourceTree = "<group>"; };
 		F2EB60C61AF91694000B7579 /* SKTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTag.h; sourceTree = "<group>"; };
 		F2EB60C71AF91694000B7579 /* SKTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTag.m; sourceTree = "<group>"; };
 		F2EB60C81AF91694000B7579 /* SKTagButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTagButton.h; sourceTree = "<group>"; };
@@ -613,6 +618,16 @@
 		F2F7EE4E1AEE80CA00265596 /* TopicModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopicModel.m; sourceTree = "<group>"; };
 		F2F7EE501AEEABC100265596 /* AtfreindCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AtfreindCell.h; sourceTree = "<group>"; };
 		F2F7EE511AEEABC100265596 /* AtfreindCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AtfreindCell.m; sourceTree = "<group>"; };
+		F2FBE8F21AFB3B870070831D /* ProfileSetting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileSetting.h; sourceTree = "<group>"; };
+		F2FBE8F31AFB3B870070831D /* ProfileSetting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileSetting.m; sourceTree = "<group>"; };
+		F2FBE8F51AFB541E0070831D /* UserMuzzikVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserMuzzikVC.h; sourceTree = "<group>"; };
+		F2FBE8F61AFB541E0070831D /* UserMuzzikVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserMuzzikVC.m; sourceTree = "<group>"; };
+		F2FBE8F81AFB55F30070831D /* MuzzikTableVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MuzzikTableVC.h; sourceTree = "<group>"; };
+		F2FBE8F91AFB55F30070831D /* MuzzikTableVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MuzzikTableVC.m; sourceTree = "<group>"; };
+		F2FBE8FB1AFB56C50070831D /* CommentTableVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentTableVC.h; sourceTree = "<group>"; };
+		F2FBE8FC1AFB56C50070831D /* CommentTableVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentTableVC.m; sourceTree = "<group>"; };
+		F2FBE9011AFBBE6B0070831D /* ClassifySelectionVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClassifySelectionVC.h; sourceTree = "<group>"; };
+		F2FBE9021AFBBE6B0070831D /* ClassifySelectionVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClassifySelectionVC.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -770,6 +785,7 @@
 		E112461E1AAAB0F60014D461 /* 3plus-in */ = {
 			isa = PBXGroup;
 			children = (
+				F2FBE9041AFBFBEB0070831D /* timePicker */,
 				F2EB60C51AF9167C000B7579 /* SKTag */,
 				F218144A1AF234B500AA06AA /* HPGrowingTextView */,
 				F2A7F9941AF00A0B000FCC57 /* FixableText */,
@@ -778,11 +794,7 @@
 				F2F7EE2E1AEE23C700265596 /* ChinaToEnglish */,
 				F2F7EE1F1AEE20E600265596 /* BATalbleView */,
 				F2F7EE071AEC998800265596 /* Refresh */,
-				F26167331ADEE3A300E1B11E /* ZHPickView.h */,
-				F26167341ADEE3A300E1B11E /* ZHPickView.m */,
 				F26131251ADE23CE0042F1D4 /* shaker */,
-				E14F4A4F1ACD496E00270903 /* UIColor+HexColor.h */,
-				E14F4A501ACD496E00270903 /* UIColor+HexColor.m */,
 				E1E857A41ABD6EC2006B1BA6 /* libWeiboSDK */,
 				E142A3151AB834F3002BBCB0 /* dist */,
 				E1B2302D1AB5BF10004E50DA /* FMDB */,
@@ -902,6 +914,8 @@
 				F212A76B1AF4E52E005B14DD /* showUserVC.m */,
 				F212A76D1AF5044A005B14DD /* DetaiMuzzikVC.h */,
 				F212A76E1AF5044A005B14DD /* DetaiMuzzikVC.m */,
+				F2E9336E1AFD232600B2C6B4 /* CommentMuzzikCell.h */,
+				F2E9336F1AFD232600B2C6B4 /* CommentMuzzikCell.m */,
 				F2EB60F01AF9FA1F000B7579 /* userDetailInfo.h */,
 				F2EB60F11AF9FA1F000B7579 /* userDetailInfo.m */,
 				F2EB60F31AF9FF25000B7579 /* userHeadCell.h */,
@@ -1125,10 +1139,18 @@
 		F20B10331AF6B41A0067EBD3 /* 我 */ = {
 			isa = PBXGroup;
 			children = (
-				F2EB60C21AF8BF34000B7579 /* DetailUser.h */,
-				F2EB60C31AF8BF34000B7579 /* DetailUser.m */,
 				F20B10341AF6B4A30067EBD3 /* UserHomePage.h */,
 				F20B10351AF6B4A30067EBD3 /* UserHomePage.m */,
+				F2FBE8F51AFB541E0070831D /* UserMuzzikVC.h */,
+				F2FBE8F61AFB541E0070831D /* UserMuzzikVC.m */,
+				F2FBE8F81AFB55F30070831D /* MuzzikTableVC.h */,
+				F2FBE8F91AFB55F30070831D /* MuzzikTableVC.m */,
+				F2FBE8FB1AFB56C50070831D /* CommentTableVC.h */,
+				F2FBE8FC1AFB56C50070831D /* CommentTableVC.m */,
+				F2FBE8F21AFB3B870070831D /* ProfileSetting.h */,
+				F2FBE8F31AFB3B870070831D /* ProfileSetting.m */,
+				F2FBE9011AFBBE6B0070831D /* ClassifySelectionVC.h */,
+				F2FBE9021AFBBE6B0070831D /* ClassifySelectionVC.m */,
 			);
 			name = "我";
 			sourceTree = "<group>";
@@ -1356,6 +1378,8 @@
 		F2F7EE071AEC998800265596 /* Refresh */ = {
 			isa = PBXGroup;
 			children = (
+				E14F4A4F1ACD496E00270903 /* UIColor+HexColor.h */,
+				E14F4A501ACD496E00270903 /* UIColor+HexColor.m */,
 				F2F7EE081AEC99A100265596 /* UIScrollView+DXRefresh.h */,
 				F2F7EE091AEC99A100265596 /* UIScrollView+DXRefresh.m */,
 			);
@@ -1402,6 +1426,15 @@
 				F2F7EE3A1AEE23E400265596 /* unicode_to_hanyu_pinyin.txt */,
 			);
 			name = ChinaToEnglish;
+			sourceTree = "<group>";
+		};
+		F2FBE9041AFBFBEB0070831D /* timePicker */ = {
+			isa = PBXGroup;
+			children = (
+				F26167331ADEE3A300E1B11E /* ZHPickView.h */,
+				F26167341ADEE3A300E1B11E /* ZHPickView.m */,
+			);
+			name = timePicker;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1535,6 +1568,7 @@
 				F2EB60E81AF916D2000B7579 /* MASConstraint.m in Sources */,
 				F2A7F9851AEF78BD000FCC57 /* TWImageScrollView.m in Sources */,
 				F261312B1ADE4DD90042F1D4 /* setHeadImageVC.m in Sources */,
+				F2E933701AFD232600B2C6B4 /* CommentMuzzikCell.m in Sources */,
 				F2A62EE51AE94FDE00FAAA01 /* SongTableViewController.m in Sources */,
 				F20B68201AF340FE0058820D /* PlayListObject.m in Sources */,
 				E1FA12E41AB18252005EDA1D /* FSCheckContentTypeRequest.m in Sources */,
@@ -1553,6 +1587,7 @@
 				E16285BC1ACFE68000ACE713 /* ActivityUserCell.m in Sources */,
 				F292902C1ADFCA9B0086E8D4 /* messageForResetVC.m in Sources */,
 				F20FDD781AF7B243008A71C0 /* SearchtopicCell.m in Sources */,
+				F2FBE8F41AFB3B870070831D /* ProfileSetting.m in Sources */,
 				E112469F1AAACE3C0014D461 /* topicCardCell.m in Sources */,
 				F2A62EEB1AE9F6D900FAAA01 /* ChooseMusicVC.m in Sources */,
 				F2A7F9931AEFFB0C000FCC57 /* TableViewCell.m in Sources */,
@@ -1575,6 +1610,7 @@
 				E112466E1AAAB20B0014D461 /* SDImageCache.m in Sources */,
 				F2EB60F21AF9FA1F000B7579 /* userDetailInfo.m in Sources */,
 				F212A76F1AF5044A005B14DD /* DetaiMuzzikVC.m in Sources */,
+				F2FBE8FD1AFB56C50070831D /* CommentTableVC.m in Sources */,
 				E1FA13461AB195E0005EDA1D /* Globle.m in Sources */,
 				F2F7EE4F1AEE80CA00265596 /* TopicModel.m in Sources */,
 				F2A5E20C1AD9106E00FD8B3E /* music.m in Sources */,
@@ -1591,7 +1627,6 @@
 				E11246481AAAB1F20014D461 /* ASIInputStream.m in Sources */,
 				F2F7EE431AEE241A00265596 /* FriendVC.m in Sources */,
 				F2F7EE141AED60A400265596 /* shareBaseController.m in Sources */,
-				F2EB60C41AF8BF34000B7579 /* DetailUser.m in Sources */,
 				F2EB60CD1AF91694000B7579 /* SKTagButton.m in Sources */,
 				E11246491AAAB1F20014D461 /* ASINetworkQueue.m in Sources */,
 				F2A7F9861AEF78BD000FCC57 /* TWPhotoCollectionViewCell.m in Sources */,
@@ -1661,14 +1696,17 @@
 				F2F7EE1E1AEE094300265596 /* emojiCollectionCell.m in Sources */,
 				F2F0FC8C1ADD8B7100668103 /* TeachViewController.m in Sources */,
 				E1FA12E71AB18252005EDA1D /* FSPlaylistItem.m in Sources */,
+				F2FBE8FA1AFB55F30070831D /* MuzzikTableVC.m in Sources */,
 				F2A62EEE1AE9F70B00FAAA01 /* ScrollVCBase.m in Sources */,
 				F2A7F98F1AEFD343000FCC57 /* Cell.m in Sources */,
 				E1FA13491AB1ABDD005EDA1D /* Reachability.m in Sources */,
 				F21EA1CA1ACECC6200F5ED32 /* TopicVC.m in Sources */,
+				F2FBE8F71AFB541E0070831D /* UserMuzzikVC.m in Sources */,
 				E112467B1AAAB20B0014D461 /* UIView+WebCacheOperation.m in Sources */,
 				E1B2303D1AB5BF22004E50DA /* FMResultSet.m in Sources */,
 				E1FA12AA1AB148B1005EDA1D /* RFRadioView.m in Sources */,
 				F26167321ADEDD6300E1B11E /* setGenderVC.m in Sources */,
+				F2FBE9031AFBBE6B0070831D /* ClassifySelectionVC.m in Sources */,
 				E1B2303C1AB5BF22004E50DA /* FMDatabaseQueue.m in Sources */,
 				F2F0FC901ADE0E9100668103 /* checkVerifyCode.m in Sources */,
 				F2A7F99C1AF00A38000FCC57 /* UITextField+DynamicFontSize.m in Sources */,

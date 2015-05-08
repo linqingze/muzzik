@@ -169,10 +169,11 @@
     UIToolbar *toolbar=[[UIToolbar alloc] init];
     
     UIBarButtonItem *lefttem=[[UIBarButtonItem alloc] initWithTitle:@"取消" style:UIBarButtonItemStylePlain target:self action:@selector(remove)];
-    
+    [lefttem setTintColor:Color_Text_2];
     UIBarButtonItem *centerSpace=[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
     
     UIBarButtonItem *right=[[UIBarButtonItem alloc] initWithTitle:@"确定" style:UIBarButtonItemStylePlain target:self action:@selector(doneClick)];
+    [right setTintColor:Color_Text_2];
     toolbar.items=@[lefttem,centerSpace,right];
     return toolbar;
 }

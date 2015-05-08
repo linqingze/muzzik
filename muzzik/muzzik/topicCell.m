@@ -13,7 +13,7 @@
 -(instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self) {
-        self.topicLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, 5, 100, 20)];
+        self.topicLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, 5, 60, 20)];
         [self.topicLabel setFont:[UIFont systemFontOfSize:12]];
         [self addSubview:self.topicLabel];
     }

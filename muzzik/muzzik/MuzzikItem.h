@@ -56,4 +56,6 @@
 
 +(UIImage*)convertViewToImage:(UIView*)v;
 + (NSString *)transtromTime:(NSString *)time;
+
++(void) showNotifyOnView:(UIView *)view text:(NSString *)text;
 @end

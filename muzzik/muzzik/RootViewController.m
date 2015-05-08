@@ -34,17 +34,17 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    nacView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 44)];
+    nacView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 64)];
     [nacView setBackgroundColor:[UIColor blackColor]];
     [self.view addSubview:nacView];
-    _pagecontrol = [[UIPageControl alloc] initWithFrame:CGRectMake(0, 30, SCREEN_WIDTH, 10)];
+    _pagecontrol = [[UIPageControl alloc] initWithFrame:CGRectMake(0, 50, SCREEN_WIDTH, 10)];
     //page control
     
     [_pagecontrol setCurrentPageIndicatorTintColor:Color_Active_Button_1];
     [_pagecontrol setPageIndicatorTintColor:Color_Theme_3];
     
     [nacView addSubview:_pagecontrol];
-    titleLable = [[UILabel alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-50, 5, 100, 15)];
+    titleLable = [[UILabel alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-50, 25, 100, 15)];
     titleLable.text = @"广场";
     [titleLable setTextColor:[UIColor whiteColor]];
     [titleLable setFont:[UIFont boldSystemFontOfSize:15]];
@@ -75,11 +75,11 @@
     [MuzzikItem addLineOnView:moreItemView heightPoint:50 toLeft:10 toRight:10 withColor:Color_Text_1];
     
     
-    UIButton *searchButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 44, 44)];
+    UIButton *searchButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 20, 44, 44)];
     [searchButton setImage:[UIImage imageNamed:Image_searchImage_white] forState:UIControlStateNormal];
     [searchButton addTarget:self action:@selector(searchAction) forControlEvents:UIControlEventTouchUpInside];
     [nacView addSubview:searchButton];
-    UIButton *moreButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-44, 0, 44, 44)];
+    UIButton *moreButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-44, 20, 44, 44)];
     [moreButton setImage:[UIImage imageNamed:Image_moreImage] forState:UIControlStateNormal];
     [moreButton addTarget:self action:@selector(moreAction) forControlEvents:UIControlEventTouchUpInside];
     [nacView addSubview:moreButton];
@@ -94,7 +94,7 @@
                                                                         options: options];
     self.pageViewController.delegate = self;
     self.pageViewController.dataSource = self;
-    [[_pageViewController view] setFrame:CGRectMake(0, 44, SCREEN_WIDTH, SCREEN_HEIGHT-44)];
+    [[_pageViewController view] setFrame:CGRectMake(0, 64, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     
     
     muzzikvc = [[muzzikTrendController alloc] init];
@@ -269,13 +269,13 @@
         [self.view addSubview:moreItemView];
         [UIView animateWithDuration:0.3 animations:^{
             [moreItemView setAlpha:1];
-            [moreItemView setFrame:CGRectMake(SCREEN_WIDTH-120, 44, 120, 100)];
+            [moreItemView setFrame:CGRectMake(SCREEN_WIDTH-120, 64, 120, 100)];
         }];
     }else{
         isOpen = !isOpen;
         [UIView animateWithDuration:0.3 animations:^{
             [moreItemView setAlpha:0];
-            [moreItemView setFrame:CGRectMake(SCREEN_WIDTH-120, 44, 120, 0)];
+            [moreItemView setFrame:CGRectMake(SCREEN_WIDTH-120, 64, 120, 0)];
         }completion:^(BOOL finished) {
             [moreItemView removeFromSuperview];
             [glassView removeFromSuperview];

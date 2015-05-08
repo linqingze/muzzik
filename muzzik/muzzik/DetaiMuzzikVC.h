@@ -9,5 +9,6 @@
 #import "BaseNagationViewController.h"
 
 @interface DetaiMuzzikVC : BaseNagationViewController
-@property (nonatomic) NSString *muzzik_id;
+@property (nonatomic) muzzik *localmuzzik;
+@property(nonatomic) musicPlayer *musicplayer;
 @end

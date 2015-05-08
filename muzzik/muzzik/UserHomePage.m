@@ -8,6 +8,7 @@
 
 #import "UserHomePage.h"
 #import "UIImageView+WebCache.h"
+#import "ProfileSetting.h"
 @interface UserHomePage ()<UIScrollViewDelegate>{
     UIScrollView *mainscroll;
     UIImageView *headimage;
@@ -41,7 +42,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    mainscroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-44)];
+    mainscroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     mainscroll.bounces = YES;
     mainscroll.delegate = self;
     [self.view addSubview:mainscroll];
@@ -169,6 +170,7 @@
     [mainscroll setContentSize:CGSizeMake(SCREEN_WIDTH, SCREEN_WIDTH+SCREEN_WIDTH/320.0*204.0)];
     
 }
+
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     userInfo *user = [userInfo shareClass];
@@ -243,7 +245,7 @@
             [birthLabel setText:_date];
             [birthLabel setTextColor:Color_Text_4];
             [birthLabel setFont:[UIFont systemFontOfSize:12]];
-            [self.view addSubview:birthLabel];
+            [mainscroll addSubview:birthLabel];
             recordHeight = recordHeight-28;
             
         }
@@ -286,6 +288,7 @@
         
         
         if ([dicKeys containsObject:@"genres"] && [[_profileDic objectForKey:@"genres"] count]>0) {
+            [genresView removeFromSuperview];
             genresView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-10, SCREEN_WIDTH-88, SCREEN_WIDTH/2-6, 76)];
             [mainscroll addSubview: genresView];
             int local = SCREEN_WIDTH/2-6;
@@ -333,6 +336,11 @@
 
 -(void)editProfile{
     
+    ProfileSetting *setting = [[ProfileSetting alloc] init];
+    setting.profileDic = self.profileDic;
+    setting.header = headimage.image;
+    UINavigationController *nac = [[UINavigationController alloc] initWithRootViewController:setting];
+    [self presentViewController:nac animated:YES completion:nil];
 }
 
 -(void)showMuzziks{
