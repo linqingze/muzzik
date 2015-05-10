@@ -163,6 +163,7 @@
 		F2B703681AC67EBF005F0903 /* TencentOpenAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2B703661AC67EBF005F0903 /* TencentOpenAPI.framework */; };
 		F2B81FF11ADD6C6A00012ED6 /* MuzzikItem.m in Sources */ = {isa = PBXBuildFile; fileRef = F2B81FF01ADD6C6A00012ED6 /* MuzzikItem.m */; };
 		F2E933701AFD232600B2C6B4 /* CommentMuzzikCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2E9336F1AFD232600B2C6B4 /* CommentMuzzikCell.m */; };
+		F2E9A8F71AFFB21000F4F461 /* TopicDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = F2E9A8F61AFFB21000F4F461 /* TopicDetail.m */; };
 		F2EB60CC1AF91694000B7579 /* SKTag.m in Sources */ = {isa = PBXBuildFile; fileRef = F2EB60C71AF91694000B7579 /* SKTag.m */; };
 		F2EB60CD1AF91694000B7579 /* SKTagButton.m in Sources */ = {isa = PBXBuildFile; fileRef = F2EB60C91AF91694000B7579 /* SKTagButton.m */; };
 		F2EB60CE1AF91694000B7579 /* SKTagView.m in Sources */ = {isa = PBXBuildFile; fileRef = F2EB60CB1AF91694000B7579 /* SKTagView.m */; };
@@ -176,7 +177,6 @@
 		F2EB60EE1AF916D2000B7579 /* NSLayoutConstraint+MASDebugAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = F2EB60E31AF916D2000B7579 /* NSLayoutConstraint+MASDebugAdditions.m */; };
 		F2EB60EF1AF916D2000B7579 /* View+MASAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = F2EB60E51AF916D2000B7579 /* View+MASAdditions.m */; };
 		F2EB60F21AF9FA1F000B7579 /* userDetailInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = F2EB60F11AF9FA1F000B7579 /* userDetailInfo.m */; };
-		F2EB60F51AF9FF26000B7579 /* userHeadCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2EB60F41AF9FF25000B7579 /* userHeadCell.m */; };
 		F2F0FC8C1ADD8B7100668103 /* TeachViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F0FC8A1ADD8B7100668103 /* TeachViewController.m */; };
 		F2F0FC8D1ADD8B7100668103 /* TeachViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = F2F0FC8B1ADD8B7100668103 /* TeachViewController.xib */; };
 		F2F0FC901ADE0E9100668103 /* checkVerifyCode.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F0FC8F1ADE0E9100668103 /* checkVerifyCode.m */; };
@@ -539,6 +539,8 @@
 		F2B81FF01ADD6C6A00012ED6 /* MuzzikItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MuzzikItem.m; sourceTree = "<group>"; };
 		F2E9336E1AFD232600B2C6B4 /* CommentMuzzikCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentMuzzikCell.h; sourceTree = "<group>"; };
 		F2E9336F1AFD232600B2C6B4 /* CommentMuzzikCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentMuzzikCell.m; sourceTree = "<group>"; };
+		F2E9A8F51AFFB21000F4F461 /* TopicDetail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopicDetail.h; sourceTree = "<group>"; };
+		F2E9A8F61AFFB21000F4F461 /* TopicDetail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopicDetail.m; sourceTree = "<group>"; };
 		F2EB60C61AF91694000B7579 /* SKTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTag.h; sourceTree = "<group>"; };
 		F2EB60C71AF91694000B7579 /* SKTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTag.m; sourceTree = "<group>"; };
 		F2EB60C81AF91694000B7579 /* SKTagButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTagButton.h; sourceTree = "<group>"; };
@@ -570,8 +572,6 @@
 		F2EB60E61AF916D2000B7579 /* View+MASShorthandAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "View+MASShorthandAdditions.h"; sourceTree = "<group>"; };
 		F2EB60F01AF9FA1F000B7579 /* userDetailInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = userDetailInfo.h; sourceTree = "<group>"; };
 		F2EB60F11AF9FA1F000B7579 /* userDetailInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = userDetailInfo.m; sourceTree = "<group>"; };
-		F2EB60F31AF9FF25000B7579 /* userHeadCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = userHeadCell.h; sourceTree = "<group>"; };
-		F2EB60F41AF9FF25000B7579 /* userHeadCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = userHeadCell.m; sourceTree = "<group>"; };
 		F2EB60F61AFA1138000B7579 /* DeleGateMethodConfigure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeleGateMethodConfigure.h; sourceTree = "<group>"; };
 		F2F0FC891ADD8B7100668103 /* TeachViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeachViewController.h; sourceTree = "<group>"; };
 		F2F0FC8A1ADD8B7100668103 /* TeachViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TeachViewController.m; sourceTree = "<group>"; };
@@ -909,6 +909,8 @@
 			children = (
 				E11246861AAAB2CD0014D461 /* muzzikTrendController.h */,
 				E11246871AAAB2CD0014D461 /* muzzikTrendController.m */,
+				F2E9A8F51AFFB21000F4F461 /* TopicDetail.h */,
+				F2E9A8F61AFFB21000F4F461 /* TopicDetail.m */,
 				F20FDD661AF749B0008A71C0 /* search */,
 				F212A76A1AF4E52E005B14DD /* showUserVC.h */,
 				F212A76B1AF4E52E005B14DD /* showUserVC.m */,
@@ -918,8 +920,6 @@
 				F2E9336F1AFD232600B2C6B4 /* CommentMuzzikCell.m */,
 				F2EB60F01AF9FA1F000B7579 /* userDetailInfo.h */,
 				F2EB60F11AF9FA1F000B7579 /* userDetailInfo.m */,
-				F2EB60F31AF9FF25000B7579 /* userHeadCell.h */,
-				F2EB60F41AF9FF25000B7579 /* userHeadCell.m */,
 				E11246881AAAB2CD0014D461 /* NormalCell.h */,
 				E11246891AAAB2CD0014D461 /* NormalCell.m */,
 				F212A7671AF4D825005B14DD /* NormalNoCardCell.h */,
@@ -1554,6 +1554,7 @@
 				F2EB60EB1AF916D2000B7579 /* MASViewAttribute.m in Sources */,
 				E14F4A4E1ACD2B9800270903 /* LoginViewController.m in Sources */,
 				E1FA12D21AB14CEF005EDA1D /* UIView+Additions.m in Sources */,
+				F2E9A8F71AFFB21000F4F461 /* TopicDetail.m in Sources */,
 				E1FA12C71AB1499F005EDA1D /* DataSourceWrapper.m in Sources */,
 				E1B230461AB6E3F1004E50DA /* NSString+CXAHyperlinkParser.m in Sources */,
 				E11246781AAAB20B0014D461 /* UIImage+WebP.m in Sources */,
@@ -1642,7 +1643,6 @@
 				F2F7EE4C1AEE676F00265596 /* TopicHotVC.m in Sources */,
 				E112468F1AAAB2CD0014D461 /* NormalCell.m in Sources */,
 				F2A7F99A1AF00A38000FCC57 /* IQLabelView.m in Sources */,
-				F2EB60F51AF9FF26000B7579 /* userHeadCell.m in Sources */,
 				F21814501AF234CE00AA06AA /* HPTextViewInternal.m in Sources */,
 				F2F7EE521AEEABC100265596 /* AtfreindCell.m in Sources */,
 				E112466D1AAAB20B0014D461 /* NSData+ImageContentType.m in Sources */,

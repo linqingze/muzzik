@@ -20,6 +20,8 @@
 #import "muzzik.h"
 #import "StringConstantConfigure.h"
 #import "DeleGateMethodConfigure.h"
+#import "RFRadioView.h"
+#import "MuzzikObject.h"
 #endif
 #define muzzik_muzzik_PrefixHeader_pch
 

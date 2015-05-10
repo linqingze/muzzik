@@ -338,7 +338,7 @@
     // scroll to caret (needed on iOS7)
     if ([self respondsToSelector:@selector(snapshotViewAfterScreenUpdates:)])
     {
-        [self performSelector:@selector(resetScrollPositionForIOS7) withObject:nil afterDelay:0.1f];
+        [self performSelector:@selector(resetScrollPositionForIOS7) withObject:nil afterDelay:0.01f];
     }
     
     // Tell the delegate that the text view changed

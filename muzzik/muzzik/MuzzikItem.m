@@ -736,7 +736,67 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     return attrStr;
 }
 
-
++(void) showNotifyOnViewUpon:(UIView *)view text:(NSString *)text{
+    UILabel *alterLabel = [[UILabel alloc] init];
+    [alterLabel setFont:[UIFont boldSystemFontOfSize:14]];
+    [alterLabel setTextColor:Color_Text_1];
+    [alterLabel setBackgroundColor:Color_line_2];
+    alterLabel.text = text;
+    [alterLabel sizeToFit];
+    [alterLabel setFrame:CGRectMake(SCREEN_WIDTH/2-alterLabel.frame.size.width/2, 100, alterLabel.frame.size.width+20, alterLabel.frame.size.height+20)];
+    alterLabel.layer.cornerRadius = 5;
+    alterLabel.clipsToBounds = YES;
+    alterLabel.layer.shadowColor = [UIColor blackColor].CGColor;//shadowColor阴影颜色
+    alterLabel.layer.shadowOffset = CGSizeMake(0,0);//shadowOffset阴影偏移，默认(0, -3),这个跟shadowRadius配合使用
+    alterLabel.layer.shadowOpacity = 1;//阴影透明度，默认0
+    alterLabel.layer.shadowRadius = 3;//阴影半径，默认3
+    alterLabel.textAlignment = NSTextAlignmentCenter;
+    //路径阴影
+    UIBezierPath *path = [UIBezierPath bezierPath];
+    
+    float width = alterLabel.bounds.size.width;
+    float height = alterLabel.bounds.size.height;
+    float x = alterLabel.bounds.origin.x;
+    float y = alterLabel.bounds.origin.y;
+    float addWH = 10;
+    
+    CGPoint topLeft      = alterLabel.bounds.origin;
+    CGPoint topMiddle = CGPointMake(x+(width/2),y-addWH);
+    CGPoint topRight     = CGPointMake(x+width,y);
+    
+    CGPoint rightMiddle = CGPointMake(x+width+addWH,y+(height/2));
+    
+    CGPoint bottomRight  = CGPointMake(x+width,y+height);
+    CGPoint bottomMiddle = CGPointMake(x+(width/2),y+height+addWH);
+    CGPoint bottomLeft   = CGPointMake(x,y+height);
+    
+    
+    CGPoint leftMiddle = CGPointMake(x-addWH,y+(height/2));
+    
+    [path moveToPoint:topLeft];
+    //添加四个二元曲线
+    [path addQuadCurveToPoint:topRight
+                 controlPoint:topMiddle];
+    [path addQuadCurveToPoint:bottomRight
+                 controlPoint:rightMiddle];
+    [path addQuadCurveToPoint:bottomLeft
+                 controlPoint:bottomMiddle];
+    [path addQuadCurveToPoint:topLeft
+                 controlPoint:leftMiddle];
+    //设置阴影路径
+    alterLabel.layer.shadowPath = path.CGPath;
+    [alterLabel setAlpha:0];
+    [view addSubview:alterLabel];
+    [UIView animateWithDuration:0.4 animations:^{
+        [alterLabel setAlpha:1];
+    } completion:^(BOOL finished) {
+        [UIView animateWithDuration:2 animations:^{
+            [alterLabel setAlpha:0];
+        } completion:^(BOOL finished) {
+            [alterLabel removeFromSuperview];
+        }];
+    }];
+}
 +(void) showNotifyOnView:(UIView *)view text:(NSString *)text{
     UILabel *alterLabel = [[UILabel alloc] init];
     [alterLabel setFont:[UIFont boldSystemFontOfSize:14]];
@@ -822,45 +882,108 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 #pragma -mark 时间转换
 + (NSString *)transtromTime:(NSString *)time
 {
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
+    NSDate *localDate = [dateFormatter dateFromString:time];
+    NSTimeZone* sourceTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];//或GMT
+    //设置转换后的目标日期时区
+    NSTimeZone* destinationTimeZone = [NSTimeZone localTimeZone];
+    //得到源日期与世界标准时间的偏移量
+    NSInteger sourceGMTOffset = [sourceTimeZone secondsFromGMTForDate:localDate];
+    //目标日期与本地时区的偏移量
+    NSInteger destinationGMTOffset = [destinationTimeZone secondsFromGMTForDate:localDate];
+    //得到时间偏移量的差值
+    NSTimeInterval Tinterval = destinationGMTOffset - sourceGMTOffset;
+    //转为现在时间
+    NSDate* destinationDateNow = [[NSDate alloc] initWithTimeInterval:Tinterval sinceDate:localDate];
+    
     //    NSString* timeStr = @"2011-01-26 17:40:50";
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateStyle:NSDateFormatterMediumStyle];
     [formatter setTimeStyle:NSDateFormatterShortStyle];
     [formatter setDateFormat:@"YYYY-MM-dd'T'HH:mm:ss.SSS'Z'"]; // ----------设置你想要的格式,hh与HH的区别:分别表示12小时制,24小时制
-    
+    NSLocale *locale=[NSLocale systemLocale];
+    [formatter setLocale:locale];
     //    NSTimeZone* timeZone = [NSTimeZone timeZoneWithName:@"Asia/Shanghai"];
     //    [formatter setTimeZone:timeZone];
-    
-    NSDate *date = [formatter dateFromString:time];
-    NSLog(@"date : %@",date);
-    NSTimeInterval interval = fabs([date timeIntervalSinceNow]);
+    NSTimeInterval interval = fabs([destinationDateNow timeIntervalSinceNow]);
     NSLog(@"interval : %f",interval);
-    
+    NSString *timestring = [NSString stringWithFormat:@"%@",destinationDateNow];
+    NSArray *timearray = [timestring componentsSeparatedByString:@" "];
+    timestring = timearray[1];
+    timestring = [timestring substringToIndex:5];
+    NSDate *now = [NSDate date];
     [formatter setDateFormat:@"HH:mm"];
-    if (interval>7*24*60*60) { //一周之外
-        //        str = [formatter stringFromDate:date];
-        //        NSRange range = [str rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet]];
-        //        range = NSMakeRange(0, range.location);
-        //        str = [str substringWithRange:range];
-        return @"N天前";
-        
-    }else if(interval>6*24*60*60){ //一天之外
-        return @"6天前";
-    }else if(interval>5*24*60*60){ //一天之外
-        return @"5天前";
-    }else if(interval>4*24*60*60){ //一天之外
-        return @"4天前";
-    }else if(interval>3*24*60*60){ //一天之外
-        return @"3天前";
-    }else if(interval>2*24*60*60){ //一天之外
-        return @"2天前";
-    }else if(interval>24*60*60){ //一天之外
+    NSString *nowString = [formatter stringFromDate:now];
+    BOOL result = [nowString compare:timestring] == NSOrderedDescending;
+    if (interval<24*60*60 && result) {
+        return timestring;
+    }else if((interval<24*60*60 && !result) ||(interval<2*24*60*60 && result)){ //一天之外
         return @"昨天";
+    }else if((interval<2*24*60*60 && !result) ||(interval<3*24*60*60 && result)){ //一天之外
+        return @"2天前";
+    }else if((interval<3*24*60*60 && !result) ||(interval<4*24*60*60 && result)){ //一天之外
+        return @"3天前";
+    }else if((interval<4*24*60*60 && !result) ||(interval<5*24*60*60 && result)){ //一天之外
+        return @"4天前";
+    }else if((interval<5*24*60*60 && !result) ||(interval<6*24*60*60 && result)){ //一天之外
+        return @"5天前";
+    }else if((interval<6*24*60*60 && !result) ||(interval<7*24*60*60 && result)){ //一天之外
+        return @"6天前";
     }else {
-        return [formatter stringFromDate:date] ;
+        return @"N天前";
     }
 }
++(NSString *)transformMessage:(NSString *)message withTopics:(NSArray *)topics{
+    message = [message stringByReplacingOccurrencesOfString:@"＃" withString:@"#"];
+    message = [message stringByReplacingOccurrencesOfString:@"&" withString:@"&"];
+    NSArray *array = [message componentsSeparatedByString:@"#"];
+    for (NSDictionary *dic in topics) {
+        for (NSString *messageString in array) {
+            if ([[messageString lowercaseString] isEqualToString:[dic objectForKey:@"name"]]) {
+                NSRange rang = [message rangeOfString:[NSString stringWithFormat:@"#%@#",messageString]];
+                message = [message stringByReplacingOccurrencesOfString:[message substringWithRange:rang] withString:[NSString stringWithFormat:@" <a href='#%@'>%@</a>",[dic objectForKey:@"_id"],[message substringWithRange:rang]]];
+                break;
+            }
+        }
+    }
+    
+    
+    return message;
+}
++(NSString *)transformMessage:(NSString *)message withAt:(NSArray *)topics{
+    //  NSMutableString *temp = [NSMutableString stringWithString:message];
+    if ([topics count]>0) {
+        for (NSString *string in topics) {
+            NSLog(@"%d",[message containsString:string]);
+            message = [message stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%@",string] withString:[NSString stringWithFormat:@" <a href='%@'>%@</a>",string,string]];
+        }
+    }
+    return message;
+}
 
-
++(NSMutableArray *) searchUsers:(NSString *)message{
+    
+    NSMutableArray *array = [NSMutableArray array];
+    BOOL GetAt = NO;
+    //  || [[message substringWithRange:NSMakeRange(i, 1)] isEqualToString:@"＠"]
+    int location = 0;
+    for (int i = 0; i<message.length; i++) {
+        if ([[message substringWithRange:NSMakeRange(i, 1)] isEqualToString:@"@"]|| [[message substringWithRange:NSMakeRange(i, 1)] isEqualToString:@"＠"]) {
+            GetAt = YES;
+            location = i;
+            continue;
+        }else if (([[message substringWithRange:NSMakeRange(i, 1)] isEqualToString:@" "] || [[message substringWithRange:NSMakeRange(i, 1)] isEqualToString:@" "]) && GetAt){
+            GetAt = NO;
+            [array addObject:[message substringWithRange:NSMakeRange(location, i-location)]];
+            
+        }else if(i == message.length-1 && GetAt){
+            [array addObject:[message substringWithRange:NSMakeRange(location, i-location+1)]];
+        }
+    }
+    
+    
+    return array;
+}
 @end
 

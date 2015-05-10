@@ -347,6 +347,8 @@
                         }
                         if ([mobject.message length]>0) {
                             [requestDic setObject:mobject.message forKey:Parameter_message];
+                        }else{
+                            [requestDic setObject:@"I Love This Muzzik!" forKey:Parameter_message];
                         }
                         NSDictionary *musicDic = [NSDictionary dictionaryWithObjectsAndKeys:mobject.music.key,@"key",mobject.music.name,@"name",mobject.music.artist,@"artist", nil];
                         [requestDic setObject:musicDic forKey:@"music"];

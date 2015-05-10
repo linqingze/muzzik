@@ -58,4 +58,9 @@
 + (NSString *)transtromTime:(NSString *)time;
 
 +(void) showNotifyOnView:(UIView *)view text:(NSString *)text;
++(void) showNotifyOnViewUpon:(UIView *)view text:(NSString *)text;
+#pragma -mark 处理@和＃的显示和超链接
++(NSString *)transformMessage:(NSString *)message withTopics:(NSArray *)topics;
++(NSString *)transformMessage:(NSString *)message withAt:(NSArray *)topics;
++(NSMutableArray *) searchUsers:(NSString *)message;
 @end

@@ -21,5 +21,13 @@
     return [self shareClass];
 }
 
-
+-(void)clearObject{
+    self.music = nil;
+    self.message = nil;
+    self.tempmessage = nil;
+    self.imageKey = nil;
+    self.lyricArray = nil;
+    self.isPrivate = NO;
+    self.isMessageVCOpen = NO;
+}
 @end

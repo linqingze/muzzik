@@ -64,6 +64,18 @@
 #define Image_settingImage              @"settingImage"
 #define Image_addpicImage               @"addpicImage"
 
+#define Image_deletesongImage           @"deletesongImage"
+#define Image_detailaddedsongImage      @"detailaddedsongImage"
+#define Image_detailaddsongImage        @"detailaddsongImage"
+#define Image_detaildeleteImage         @"detaildeleteImage"
+#define Image_detailfollowedImage       @"detailfollowedImage"
+#define Image_detailfollowImage         @"detailfollowImage"
+#define Image_sendImage                 @"sendImage"
+#define Image_viewprofileImage          @"viewprofileImage"
+#define Image_detailretweetImage        @"detailretweetImage"
+#define Image_detailreplyImage          @"detailreplyImage"
+#define Image_detailshareImage          @"detailshareImage"
+
 
 #define Parameter_Id              @"_id"
 #define Parameter_avatar          @"avatar"

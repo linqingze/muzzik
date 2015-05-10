@@ -80,10 +80,10 @@
     schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(35, 0, SCREEN_WIDTH/2-50, 20)];
     descriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, SCREEN_WIDTH/2, SCREEN_WIDTH-32,0)];
     
-    messageView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN_WIDTH, SCREEN_WIDTH, SCREEN_WIDTH/320.0*204.0)];
+    messageView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN_WIDTH, SCREEN_WIDTH, SCREEN_WIDTH/320.0*184.0)];
     [messageView setBackgroundColor: [ UIColor whiteColor]];
     CGFloat scale = SCREEN_WIDTH/320.0;
-    CGFloat height = scale*204.0;
+    CGFloat height = scale*184.0;
     CGFloat width = SCREEN_WIDTH;
     UIButton *muzzikButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, width/3, height/2)];
     [muzzikButton setImage:[UIImage imageNamed:Image_profiletweetImage] forState:UIControlStateNormal];
@@ -167,7 +167,7 @@
     [messageView addSubview:linview3];
     
     [mainscroll addSubview: messageView];
-    [mainscroll setContentSize:CGSizeMake(SCREEN_WIDTH, SCREEN_WIDTH+SCREEN_WIDTH/320.0*204.0)];
+    [mainscroll setContentSize:CGSizeMake(SCREEN_WIDTH, SCREEN_WIDTH+SCREEN_WIDTH/320.0*184.0)];
     
 }
 

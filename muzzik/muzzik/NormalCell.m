@@ -56,7 +56,7 @@
     [_muzzikMessage setTextColor:Color_Text_2];
     [_muzzikMessage setFont:[UIFont systemFontOfSize:15]];
     [self.contentView addSubview:_muzzikMessage];
-    _musicPlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 75, SCREEN_WIDTH, 140)];
+    _musicPlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 75, SCREEN_WIDTH, 145)];
     [self.contentView addSubview:_musicPlayView];
     _progress = [[UIProgressView alloc] initWithFrame:CGRectMake(16, 0, SCREEN_WIDTH-32, 1)];
     [_progress setProgress:1];
@@ -195,6 +195,7 @@
     [_musicArtist setTextColor:color];
     [_musicName setTextColor:color];
 }
+
 -(void)moveAction{
     NSLog(@"move");
     [self.delegate moveMuzzikWithId:self.muzzik_id isMoved:self.isMoved atIndex:self.index];

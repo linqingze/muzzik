@@ -133,11 +133,11 @@
     
     _musicView = [musicPlayer shareClass].radioView;
     [_musicView setBackgroundColor:Color_NavigationBar];
-    [self.view addSubview:_musicView];
+    [self.navigationController.view addSubview:_musicView];
 }
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self.navigationController.view addSubview:nacView];
+    [self.navigationController.view insertSubview:nacView belowSubview:_musicView];
     userInfo *user = [userInfo shareClass];
     if ([user.token length]>0) {
         pageControllers = @[muzzikvc,topicvc,userHome,notifyvc];

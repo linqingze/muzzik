@@ -143,6 +143,7 @@
     NSLog(@"download");
     //[self.homeVc downMusicWithModel:self.songModel];
 }
+
 -(void)playMusicAction:(id) sender{
     NSLog(@"play");
     [self.delegate playSongWithSongModel:self.songModel];

@@ -5,7 +5,7 @@
 //  Created by kevin's mac on 14-8-1.
 //  Copyright (c) 2014年 IOS. All rights reserved.
 //
-
+#import "LoginViewController.h"
 #import "userInfo.h"
 
 @implementation userInfo
@@ -21,8 +21,8 @@
     return [self shareClass];
 }
 +(void)checkLoginWithVC:(UIViewController *)vc{
-    UIImage *image = [[UIImage alloc] init];
-    NSLog(@"check login");
+    LoginViewController *login = [[LoginViewController alloc] init];
+    [vc.navigationController pushViewController:login animated:YES];
 }
 
 -(id)init{

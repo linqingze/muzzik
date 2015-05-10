@@ -298,7 +298,69 @@ static IQLabelView *lastTouchedView;
         [_delegate labelViewDidClose:self];
     }
 }
-
+//- (void)panGestureAction:(UIPanGestureRecognizer *)pan
+//{
+//    // 手势开始时置位(手势事件开始过程中仅仅执行一回)
+//    if (pan.state == UIGestureRecognizerStateBegan)
+//    {
+//        // 设定响应的区域
+//        if (CGRectGetMinX(self.frame) >= 0  && CGRectGetMinY(self.frame) >= 0 && CGRectGetMaxY(self.frame)<=CGRectGetMaxY([self superview].frame)-MidHeight-64 && CGRectGetMaxX(self.frame)<=SCREEN_WIDTH)
+//        {
+//            allowPan = YES;
+//        }
+//    }
+//    
+//    // 手势持续(手势事件开始过程中执行多回)
+//    if (pan.state == UIGestureRecognizerStateChanged && allowPan == YES)
+//    {
+//        // 移动的操作
+//        CGPoint translation = [pan translationInView:self];
+//        self.center = CGPointMake(self.center.x + translation.x,
+//                                  self.center.y + translation.y);
+//        //判断左边超过区域
+//        if ((self.center.x-CGRectGetWidth(self.frame)/2)<0) {
+//            self.frame = CGRectMake(0, CGRectGetMinY(self.frame), CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
+//        }
+//        //判断上部超过区域
+//        if ((self.center.y-CGRectGetHeight(self.frame)/2)<0) {
+//            self.frame = CGRectMake(CGRectGetMinX(self.frame), 0, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
+//        }
+//        //判断上部和左边超过区域
+//        if ((self.center.x-CGRectGetWidth(self.frame)/2)<0 && (self.center.y-CGRectGetHeight(self.frame)/2)<0) {
+//            self.frame = CGRectMake(0, 0, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
+//        }
+//        //判断下部超过区域
+//        if ((self.center.y+CGRectGetHeight(self.frame)/2)>CGRectGetMaxY([self superview].frame)-MidHeight-64) {
+//            self.frame = CGRectMake(CGRectGetMinX(self.frame), CGRectGetMaxY([self superview].frame)-MidHeight-64-CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
+//        }
+//        //判断下部和左边超过区域
+//        if ((self.center.y+CGRectGetHeight(self.frame)/2)>CGRectGetMaxY([self superview].frame)-MidHeight-64 && (self.center.x-CGRectGetWidth(self.frame)/2)<0) {
+//            self.frame = CGRectMake(0, CGRectGetMaxY([self superview].frame)-MidHeight-64-CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
+//        }
+//        //判断右边超过区域
+//        if ((self.center.x+CGRectGetWidth(self.frame)/2)>SCREEN_WIDTH) {
+//            self.frame = CGRectMake(SCREEN_WIDTH-CGRectGetWidth(self.frame), CGRectGetMinY(self.frame), CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
+//        }
+//        //判断右边和上部超过区域
+//        if ((self.center.x+CGRectGetWidth(self.frame)/2)>SCREEN_WIDTH && (self.center.y-CGRectGetHeight(self.frame)/2)<0) {
+//            self.frame = CGRectMake(SCREEN_WIDTH-CGRectGetWidth(self.frame), 0, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
+//        }
+//        //判断右边和下部超过区域
+//        if ((self.center.x+CGRectGetWidth(self.frame)/2)>SCREEN_WIDTH && (self.center.y+CGRectGetHeight(self.frame)/2)>CGRectGetMaxY([self superview].frame)-MidHeight-64) {
+//            self.frame = CGRectMake(SCREEN_WIDTH-CGRectGetWidth(self.frame), CGRectGetMaxY([self superview].frame)-MidHeight-64-CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
+//        }
+//        
+//        [pan setTranslation:CGPointZero
+//                     inView:self];
+//    }
+//    // 手势结束后置位(手势事件开始过程中仅仅执行一回)
+//    if (pan.state == UIGestureRecognizerStateEnded)
+//    {
+//        self.point = self.smallImageview.center;
+//        allowPan = NO;
+//    }
+//    
+//}
 -(void)moveGesture:(UIPanGestureRecognizer *)recognizer
 {
     if (!_isShowingEditingHandles) {

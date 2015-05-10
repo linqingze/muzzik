@@ -34,7 +34,7 @@
     [_userName setTextColor:Color_Text_1];
     [_userName setFont:[UIFont fontWithName:Font_Next_medium size:14]];
     [self addSubview:_userName];
-    _message = [[CXAHyperlinkLabel alloc] initWithFrame:CGRectMake(66, 40, SCREEN_WIDTH-140, 20)];
+    _message = [[CXAHyperlinkLabel alloc] initWithFrame:CGRectMake(66, 40, SCREEN_WIDTH-140, 30)];
     [self addSubview:_message];
     
     _playButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-56, 40, 40, 40)];

@@ -156,15 +156,20 @@
     else{
         tempMuzzik = [self.movedMusicArray objectAtIndex:indexPath.row];
     }
-    [MuzzikItem getLyricByMusic:tempMuzzik.music];
     MuzzikObject *mobject = [MuzzikObject shareClass];
-    if (mobject.isMessageVCOpen) {
+    if ([self.keeper.comeInType isEqualToString:@"comment"]) {
         mobject.music = tempMuzzik.music;
         [self.keeper.navigationController popViewControllerAnimated:YES];
     }else{
-        mobject.music = tempMuzzik.music;
-        MessageStepViewController *msgVC = [[MessageStepViewController alloc] init];
-        [self.keeper.navigationController pushViewController:msgVC animated:YES];
+        [MuzzikItem getLyricByMusic:tempMuzzik.music];
+        if (mobject.isMessageVCOpen) {
+            mobject.music = tempMuzzik.music;
+            [self.keeper.navigationController popViewControllerAnimated:YES];
+        }else{
+            mobject.music = tempMuzzik.music;
+            MessageStepViewController *msgVC = [[MessageStepViewController alloc] init];
+            [self.keeper.navigationController pushViewController:msgVC animated:YES];
+        }
     }
 }
 

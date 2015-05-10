@@ -179,7 +179,8 @@
     mobject.music = nil;
     mobject.isMessageVCOpen = NO;
     mobject.tempmessage = @"";
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self.navigationController popToRootViewControllerAnimated:YES];
+    
 }
 /*
 #pragma mark - Navigation
