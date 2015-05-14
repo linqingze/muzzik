@@ -9,7 +9,7 @@
 #import "BaseNagationViewController.h"
 #import "AppConfiguration.h"
 
-@interface BaseNagationViewController ()
+@interface BaseNagationViewController ()<UIScrollViewDelegate>
 
 @property(nonatomic, retain)UIButton *leftBtn;
 @property(nonatomic, retain)UIButton *rightBtn;
@@ -21,7 +21,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     // Do any additional setup after loading the view from its nib.
 }
 -(void)viewDidAppear:(BOOL)animated{
@@ -215,6 +214,10 @@
     // Dispose of any resources that can be recreated.
 }
 
-
-
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    [self viewDidScroll:scrollView];
+}
+-(void)viewDidScroll:(UIScrollView *)scrollView{
+   
+}
 @end

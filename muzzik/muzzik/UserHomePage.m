@@ -9,9 +9,11 @@
 #import "UserHomePage.h"
 #import "UIImageView+WebCache.h"
 #import "ProfileSetting.h"
-@interface UserHomePage ()<UIScrollViewDelegate>{
-    UIScrollView *mainscroll;
-    UIImageView *headimage;
+#import "UserMuzzikVC.h"
+#import "MuzzikTableVC.h"
+@interface UserHomePage ()<UITableViewDelegate>{
+    UIView *mainView;
+    UITableView *mainTableView;
     UIButton *profileButton;
     UILabel *nameLabel;
     UIImageView *genderImage;
@@ -32,39 +34,40 @@
     UILabel *followCount;
     UILabel *fansCount;
     UILabel *songCount;
+    UIImageView *coverImage;
     
 }
-
-@property (nonatomic,retain) NSDictionary *profileDic;
 @end
 
 @implementation UserHomePage
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    mainscroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
-    mainscroll.bounces = YES;
-    mainscroll.delegate = self;
-    [self.view addSubview:mainscroll];
-    headimage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
-    [headimage setAlpha:0];
+    mainView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
+    mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
+    [self.view addSubview:mainTableView];
+    [self followScrollView:mainTableView];
+    mainTableView.delegate = self;
+    _headimage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
+    _headimage.contentMode = UIViewContentModeScaleAspectFill;
+    [_headimage setAlpha:0];
     profileButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-120, 16, 85, 23)];
     [profileButton setImage:[UIImage imageNamed:Image_editInformationImage] forState:UIControlStateNormal];
     [profileButton addTarget:self action:@selector(editProfile) forControlEvents:UIControlEventTouchUpInside];
-    
+    [mainTableView setTableHeaderView:mainView];
     
     nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, SCREEN_WIDTH/2, 30, 30)];
     [nameLabel setFont:[UIFont fontWithName:Font_Next_DemiBold size:24]];
     nameLabel.textColor = [UIColor whiteColor];
     
-    genderImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:Image_profilefemaleImage]];
-    UIImageView *coverImage = [[UIImageView alloc] initWithFrame:headimage.frame];
+    genderImage = [[UIImageView alloc] init];
+    coverImage = [[UIImageView alloc] initWithFrame:_headimage.frame];
     [coverImage setImage:[UIImage imageNamed:Image_prifilebgcover]];
-    [mainscroll addSubview:headimage];
-    [mainscroll addSubview:coverImage];
-    [mainscroll addSubview:nameLabel];
-    [mainscroll addSubview:genderImage];
-    [mainscroll addSubview:profileButton];
+    [mainView addSubview:_headimage];
+    [mainView addSubview:coverImage];
+    [mainView addSubview:nameLabel];
+    [mainView addSubview:genderImage];
+    [mainView addSubview:profileButton];
     
     
     constellationImage = [[UIImageView alloc] init];
@@ -80,7 +83,7 @@
     schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(35, 0, SCREEN_WIDTH/2-50, 20)];
     descriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, SCREEN_WIDTH/2, SCREEN_WIDTH-32,0)];
     
-    messageView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN_WIDTH, SCREEN_WIDTH, SCREEN_WIDTH/320.0*184.0)];
+    messageView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN_WIDTH, SCREEN_WIDTH, SCREEN_WIDTH/320.0*185.0)];
     [messageView setBackgroundColor: [ UIColor whiteColor]];
     CGFloat scale = SCREEN_WIDTH/320.0;
     CGFloat height = scale*184.0;
@@ -166,8 +169,8 @@
     [linview3 setBackgroundColor:Color_line_1];
     [messageView addSubview:linview3];
     
-    [mainscroll addSubview: messageView];
-    [mainscroll setContentSize:CGSizeMake(SCREEN_WIDTH, SCREEN_WIDTH+SCREEN_WIDTH/320.0*184.0)];
+    [mainView addSubview: messageView];
+    [mainView setFrame:CGRectMake(0,0,SCREEN_WIDTH, SCREEN_WIDTH+SCREEN_WIDTH/320.0*184.0)];
     
 }
 
@@ -199,8 +202,8 @@
     if (_profileDic) {
         NSArray *dicKeys = [_profileDic allKeys];
         if ([dicKeys containsObject:@"avatar"]) {
-            [headimage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,[_profileDic objectForKey:@"avatar"]]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                [headimage setAlpha:1];
+            [_headimage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,[_profileDic objectForKey:@"avatar"]]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                [_headimage setAlpha:1];
             }];
         }
         if ([dicKeys containsObject:@"name"]) {
@@ -219,12 +222,12 @@
         if ([dicKeys containsObject:@"astro"] && [[_profileDic objectForKey:@"astro"] length]>0) {
             constellationImage.frame = CGRectMake(16, recordHeight+5, 8, 8);
             [constellationImage setImage:[UIImage imageNamed:Image_profileconstellationImage]];
-            [mainscroll addSubview:constellationImage];
+            [mainView addSubview:constellationImage];
             constellationLabel.frame = CGRectMake(35, recordHeight, SCREEN_WIDTH/2-50, 20);
             [constellationLabel setText:[_profileDic objectForKey:@"astro"]];
             [constellationLabel setTextColor:Color_Text_4];
             [constellationLabel setFont:[UIFont systemFontOfSize:12]];
-            [mainscroll addSubview:constellationLabel];
+            [mainView addSubview:constellationLabel];
             recordHeight = recordHeight-28;
             
         }
@@ -240,35 +243,35 @@
             
             birthImage.frame = CGRectMake(16, recordHeight+5, 8, 8);
             [birthImage setImage:[UIImage imageNamed:Image_profilebirthImage]];
-            [mainscroll addSubview:birthImage];
+            [mainView addSubview:birthImage];
             birthLabel.frame = CGRectMake(35, recordHeight, SCREEN_WIDTH/2-50, 20);
             [birthLabel setText:_date];
             [birthLabel setTextColor:Color_Text_4];
             [birthLabel setFont:[UIFont systemFontOfSize:12]];
-            [mainscroll addSubview:birthLabel];
+            [mainView addSubview:birthLabel];
             recordHeight = recordHeight-28;
             
         }
         if ([dicKeys containsObject:@"company"] && [[_profileDic objectForKey:@"company"] length]>0) {
             companyImage.frame = CGRectMake(16, recordHeight+5, 8, 8);
             [companyImage setImage:[UIImage imageNamed:Image_profilejobImage]];
-            [mainscroll addSubview:companyImage];
+            [mainView addSubview:companyImage];
             companyLabel.frame = CGRectMake(35, recordHeight, SCREEN_WIDTH/2-50, 20);
             [companyLabel setText:[_profileDic objectForKey:@"company"]];
             [companyLabel setTextColor:Color_Text_4];
             [companyLabel setFont:[UIFont systemFontOfSize:12]];
-            [mainscroll addSubview:companyLabel];
+            [mainView addSubview:companyLabel];
             recordHeight = recordHeight-28;
             
         }else if([dicKeys containsObject:@"school"] && [[_profileDic objectForKey:@"school"] length]>0){
             schoolImage.frame = CGRectMake(16, recordHeight+5, 8, 8);
             [schoolImage setImage:[UIImage imageNamed:Image_profilejobImage]];
-            [mainscroll addSubview:schoolImage];
+            [mainView addSubview:schoolImage];
             schoolLabel.frame = CGRectMake(35, recordHeight, SCREEN_WIDTH/2-50, 20);
             [schoolLabel setText:[_profileDic objectForKey:@"school"]];
             [schoolLabel setTextColor:Color_Text_4];
             [schoolLabel setFont:[UIFont systemFontOfSize:12]];
-            [mainscroll addSubview:schoolLabel];
+            [mainView addSubview:schoolLabel];
             recordHeight = recordHeight-28;
         }
         if ([dicKeys containsObject:@"description"]) {
@@ -283,14 +286,14 @@
             [descriptionLabel setFont:[UIFont systemFontOfSize:12]];
             descriptionLabel.text = [_profileDic objectForKey:@"description"];
             [descriptionLabel setTextColor:[UIColor whiteColor]];
-            [mainscroll addSubview:descriptionLabel];
+            [mainView addSubview:descriptionLabel];
         }
         
         
         if ([dicKeys containsObject:@"genres"] && [[_profileDic objectForKey:@"genres"] count]>0) {
             [genresView removeFromSuperview];
             genresView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-10, SCREEN_WIDTH-88, SCREEN_WIDTH/2-6, 76)];
-            [mainscroll addSubview: genresView];
+            [mainView addSubview: genresView];
             int local = SCREEN_WIDTH/2-6;
             int localheight = 56;
             for (NSDictionary * dic in [_profileDic objectForKey:@"genres"]) {
@@ -327,6 +330,26 @@
     }
     
 }
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    NSLog(@"%f",scrollView.contentOffset.y);
+    CGFloat yOffset  = scrollView.contentOffset.y;
+    if (yOffset < 0 ) {
+        CGRect f = _headimage.frame;
+        f.origin.y = yOffset;
+        f.size.height =  SCREEN_WIDTH-yOffset;
+        _headimage.frame = f;
+        
+        CGRect cover = coverImage.frame;
+        cover.origin.y = yOffset;
+        cover.size.height =  SCREEN_WIDTH-yOffset;
+        coverImage.frame = cover;
+        
+        CGRect d = profileButton.frame;
+        d.origin.y = yOffset+16;
+        
+        profileButton.frame = d;
+    }
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -338,16 +361,19 @@
     
     ProfileSetting *setting = [[ProfileSetting alloc] init];
     setting.profileDic = self.profileDic;
-    setting.header = headimage.image;
+    setting.userhome = self;
     [self.navigationController pushViewController:setting animated:YES];
 }
 
 -(void)showMuzziks{
-    
+    UserMuzzikVC *uMuzzik = [[UserMuzzikVC alloc] init];
+    [self.navigationController pushViewController:uMuzzik animated:YES];
 }
 
 -(void)showMoveds{
-    
+    MuzzikTableVC *muzzikMoved = [[MuzzikTableVC alloc] init];
+    muzzikMoved.requstType = @"moved";
+    [self.navigationController pushViewController:muzzikMoved animated:YES];
 }
 
 -(void)showTopic{

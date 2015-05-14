@@ -7,7 +7,22 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@interface MuzzikTableVC : UITableViewController
-
+#import "AMScrollingNavbarViewController.h"
+#import "CXAHyperlinkLabel.h"
+#import "AudioPlayer.h"
+#import "musicPlayer.h"
+#import "WXApiObject.h"
+#import "UserMuzzikVC.h"
+@interface MuzzikTableVC : AMScrollingNavbarViewController<UITableViewDataSource,UITableViewDelegate,UICollectionViewDelegateFlowLayout,CXDelegate,CellDelegate>{
+    AudioPlayer* audioPlayer;
+    NSInteger isPlayBack;
+    
+}
+@property(nonatomic) NSMutableArray *muzziks;
+@property(nonatomic) musicPlayer *musicplayer;
+@property(nonatomic) NSString *topicName;
+@property(nonatomic) NSURL *imageURL;
+@property(nonatomic,copy)NSString *uid;
+@property(nonatomic,weak) UserMuzzikVC *keeper;
+@property(nonatomic,copy) NSString *requstType;
 @end

@@ -7,8 +7,8 @@
 //
 
 #import "BaseNagationViewController.h"
-
+#import "UserHomePage.h"
 @interface ProfileSetting : BaseNagationViewController
 @property (nonatomic,retain) NSDictionary *profileDic;
-@property (nonatomic,retain) UIImage *header;
+@property (nonatomic,weak) UserHomePage *userhome;
 @end

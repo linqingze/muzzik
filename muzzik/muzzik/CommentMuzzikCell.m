@@ -22,6 +22,14 @@
 
 -(void)setup{
     [self setSelectionStyle:UITableViewCellSelectionStyleNone];
+    _lineview = [[UIView alloc] initWithFrame:CGRectMake(16, 0, SCREEN_WIDTH-32, 1)];
+    [_lineview setBackgroundColor:Color_line_1];
+    [self addSubview:_lineview];
+    
+    _privateImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
+    [_privateImage setImage:[UIImage imageNamed:Image_detailinvisibleImage]];
+    [_privateImage setHidden:YES];
+    [self addSubview:_privateImage];
     _userImage = [[UIButton alloc] initWithFrame:CGRectMake(16, 15, 40, 40)];
     [_userImage addTarget:self action:@selector(goToUser) forControlEvents:UIControlEventTouchUpInside];
     _userImage.layer.cornerRadius = 20;
@@ -41,14 +49,22 @@
     [_playButton addTarget:self action:@selector(playMuzzik) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:_playButton];
     _songName = [[UILabel alloc] initWithFrame:CGRectMake(80, 12, SCREEN_WIDTH-150, 20)];
-    [_songName setFont:[UIFont fontWithName:Font_Next_Bold size:14]];
-
-    _artist = [[UILabel alloc] initWithFrame:CGRectMake(80, 31, SCREEN_WIDTH-150, 25)];
-    [_artist setFont:[UIFont fontWithName:Font_Next_Bold size:13]];
-    _timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-70, 20, 54, 20)];
+    [self addSubview:_songName];
+    _timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-76, 20, 45, 20)];
+    _timeLabel.textAlignment = NSTextAlignmentRight;
+    _timeImage = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-25, 25, 10, 10)];
+    [_timeImage setImage:[UIImage imageNamed:Image_timeImage]];
+    [self addSubview:_timeImage];
     [_timeLabel setFont:[UIFont systemFontOfSize:10]];
     [_timeLabel setTextColor:Color_Text_4];
     [self addSubview:_timeLabel];
     
 }
+-(void) playMuzzik{
+     [self.delegate playSongWithSongModel:self.MuzzikModel];
+}
+-(void) goToUser{
+    [self.delegate userDetail:self.MuzzikModel.MuzzikUser.user_id];
+}
+
 @end

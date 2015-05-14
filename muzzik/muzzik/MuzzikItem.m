@@ -915,20 +915,20 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     NSDate *now = [NSDate date];
     [formatter setDateFormat:@"HH:mm"];
     NSString *nowString = [formatter stringFromDate:now];
-    BOOL result = [nowString compare:timestring] == NSOrderedDescending;
-    if (interval<24*60*60 && result) {
+    BOOL result = [nowString compare:timestring] == NSOrderedAscending;
+    if (interval<24*60*60 && !result) {
         return timestring;
-    }else if((interval<24*60*60 && !result) ||(interval<2*24*60*60 && result)){ //一天之外
+    }else if((interval<24*60*60 && result) ||(interval<2*24*60*60 && !result)){ //一天之外
         return @"昨天";
-    }else if((interval<2*24*60*60 && !result) ||(interval<3*24*60*60 && result)){ //一天之外
+    }else if((interval<2*24*60*60 && result) ||(interval<3*24*60*60 && !result)){ //一天之外
         return @"2天前";
-    }else if((interval<3*24*60*60 && !result) ||(interval<4*24*60*60 && result)){ //一天之外
+    }else if((interval<3*24*60*60 && result) ||(interval<4*24*60*60 && !result)){ //一天之外
         return @"3天前";
-    }else if((interval<4*24*60*60 && !result) ||(interval<5*24*60*60 && result)){ //一天之外
+    }else if((interval<4*24*60*60 && result) ||(interval<5*24*60*60 && !result)){ //一天之外
         return @"4天前";
-    }else if((interval<5*24*60*60 && !result) ||(interval<6*24*60*60 && result)){ //一天之外
+    }else if((interval<5*24*60*60 && result) ||(interval<6*24*60*60 && !result)){ //一天之外
         return @"5天前";
-    }else if((interval<6*24*60*60 && !result) ||(interval<7*24*60*60 && result)){ //一天之外
+    }else if((interval<6*24*60*60 && result) ||(interval<7*24*60*60 && !result)){ //一天之外
         return @"6天前";
     }else {
         return @"N天前";

@@ -13,8 +13,8 @@
 
 @optional
 // The content for any tab. Return a view controller and ViewPager will use its view to show as content
--(void)commentAtMuzzik:(NSString *)muzzik_id;
--(void)showComment:(NSString *)muzzik_id;
+-(void)commentAtMuzzik:(muzzik *)localMuzzik;
+-(void)showComment:(muzzik *)localMuzzik;
 -(void)showShare:(NSString *)muzzik_id;
 -(void)showMoved:(NSString *)muzzik_id;
 -(void)showRepost:(NSString *)muzzik_id;

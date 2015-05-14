@@ -15,6 +15,10 @@
 @property(nonatomic ,retain) CXAHyperlinkLabel *message;
 @property(nonatomic ,retain) UIButton *playButton;
 @property(nonatomic ,retain) UILabel *songName;
-@property(nonatomic ,retain) UILabel *artist;
 @property(nonatomic ,retain) UILabel *timeLabel;
+@property (nonatomic,weak) id<CellDelegate> delegate;
+@property(nonatomic,retain)muzzik *MuzzikModel;
+@property (nonatomic,retain) UIImageView *timeImage;
+@property(nonatomic,retain) UIView *lineview;
+@property(nonatomic ,retain) UIImageView *privateImage;
 @end

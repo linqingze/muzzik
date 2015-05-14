@@ -82,7 +82,7 @@
             NSLog(@"%@",[weakrequest responseString]);
             NSLog(@"%d",[weakrequest responseStatusCode]);
             if ([weakrequest responseStatusCode] == 200 && [[dic objectForKey:@"result"] boolValue]) {
-                [KVNProgress showSuccessWithStatus:@"注册成功"];
+                [MuzzikItem showNotifyOnView:self.navigationController.view text:@"注册成功"];
                 [self dismissViewControllerAnimated:YES completion:nil];
                 //
             }

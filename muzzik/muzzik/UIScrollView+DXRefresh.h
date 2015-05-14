@@ -7,9 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "Globle.h"
 @interface UIScrollView (DXRefresh)
-
 - (void)addHeaderWithTarget:(id)target action:(SEL)action;
 - (void)headerBeginRefreshing;
 - (void)headerEndRefreshing;

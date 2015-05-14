@@ -146,8 +146,13 @@ static NSMutableArray *playList;
                 if (self.index>=[self.MusicArray count]) {
                     self.index = 0;
                 }
-                _localMuzzik = [self.MusicArray objectAtIndex:self.index];
-                [self playSongWithSongModel:_localMuzzik];
+                if ([self.MusicArray count]>1) {
+                    _localMuzzik = [self.MusicArray objectAtIndex:self.index];
+                    [self playSongWithSongModel:_localMuzzik];
+                }else{
+                    [[AudioPlayer shareClass] play:self.radioView.musicUrl];
+                }
+                
             }
                 break;
             case 1:
@@ -172,10 +177,16 @@ static NSMutableArray *playList;
 -(void)playNext{
     if ([self.MusicArray count]!=0) {
         self.index+=1;
-        if (self.index==[self.MusicArray count]) {
+        if (self.index==[self.MusicArray count] ) {
             self.index = 0;
         }
-        [self playSongWithSongModel:[self.MusicArray objectAtIndex:self.index]];
+        if ([self.MusicArray count]>1) {
+            [self playSongWithSongModel:[self.MusicArray objectAtIndex:self.index]];
+        }else{
+            [[AudioPlayer shareClass] stop];
+            
+        }
+        
     }
 
 }
@@ -263,7 +274,6 @@ static NSMutableArray *playList;
         [request setFailedBlock:^{
             NSLog(@"%@%@",[weakrequest responseString],[weakrequest responseData]);
             NSLog(@"%@",[weakrequest responseHeaders]);
-            [KVNProgress showErrorWithStatus:@"网络请求超时"];
         }];
         [request startAsynchronous];
     }

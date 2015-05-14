@@ -449,8 +449,13 @@
 #warning 处理歌词
 }
 -(void)setPlayMuzzik:(muzzik *)playMuzzik{
+    self.isOpen = YES;
+    [UIView animateWithDuration:0.3 animations:^{
+        [self setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 64)];
+    }];
     NSLog(@"%@",[NSString stringWithFormat:@"%@/%@",playMuzzik.music.name,playMuzzik.music.artist]);
-    if (!([playMuzzik.muzzik_id isEqualToString:_playMuzzik.muzzik_id]||([playMuzzik.muzzik_id length] == 0 &&[playMuzzik.music.music_id isEqualToString:_playMuzzik.music.music_id]))) {
+    if (!([playMuzzik.muzzik_id isEqualToString:_playMuzzik.muzzik_id]||([playMuzzik.muzzik_id length] == 0 &&[playMuzzik.music.music_id isEqualToString:_playMuzzik.music.music_id]))||([[musicPlayer shareClass].MusicArray count] ==1 && ![playMuzzik.muzzik_id isEqualToString:_playMuzzik.muzzik_id])) {
+        [Globle shareGloble].isPause = NO;
         ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString :[[NSString stringWithFormat:@"%@%@/%@",URL_Lyric_Me,playMuzzik.music.name,playMuzzik.music.artist] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
         [requestForm setUseCookiePersistence:NO];
         __weak ASIHTTPRequest *weakrequest = requestForm;
@@ -646,9 +651,10 @@
         glob.isPlaying = YES;
         
     }else if (audioPlayer.state == AudioPlayerStateError){
-
+         [_delegate radioView:self musicStop:isPlayBack];
+        glob.isPlaying = YES;
     }
-    [playButton setImage:glob.isPause?[UIImage imageNamed:@"playImage"]:[UIImage imageNamed:@"stopImage"] forState:UIControlStateNormal];
+    [playButton setImage:glob.isPlaying&&!glob.isPause?[UIImage imageNamed:@"stopImage"]:[UIImage imageNamed:@"playImage"] forState:UIControlStateNormal];
 }
 -(void) updatePlaybackProgress
 {

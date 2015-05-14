@@ -12,6 +12,7 @@
 #import "AppDelegate.h"
 #import "searchViewController.h"
 #import "UserHomePage.h"
+#import "settingSystemVC.h"
 #import "NotificationVC.h"
 @interface RootViewController ()<UIPageViewControllerDelegate,UIPageViewControllerDataSource,UIScrollViewDelegate>{
     NSArray *pageControllers;
@@ -64,7 +65,7 @@
     [draftBox.titleLabel setFont:[UIFont systemFontOfSize:16]];
     [draftBox setContentEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 40)];
     [moreItemView addSubview:draftBox];
-    
+    [draftBox addTarget:self action:@selector(DraftAction) forControlEvents:UIControlEventTouchUpInside];
     
     
     UIButton *settingButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 50, 120, 50)];
@@ -72,6 +73,7 @@
     [settingButton setTitleColor:Color_Text_4 forState:UIControlStateNormal];
     [settingButton.titleLabel setFont:[UIFont systemFontOfSize:16]];
     [settingButton setContentEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 56)];
+    [settingButton addTarget:self action:@selector(systemSetting) forControlEvents:UIControlEventTouchUpInside];
     [moreItemView addSubview:settingButton];
     [MuzzikItem addLineOnView:moreItemView heightPoint:50 toLeft:10 toRight:10 withColor:Color_Text_1];
     
@@ -101,7 +103,6 @@
     muzzikvc = [[muzzikTrendController alloc] init];
     AppDelegate *mydelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     mydelegate.viewcontroller = muzzikvc;
-    muzzikvc.homeNav = self;
     topicvc = [[TopicVC alloc] init];
     userHome = [[UserHomePage alloc] init];
     notifyvc = [[NotificationVC alloc] init];
@@ -260,7 +261,7 @@
 
 -(void) searchAction{
     searchViewController *search = [[searchViewController alloc ] init];
-    [self.navigationController pushViewController:search animated:YES];
+    [self.navigationController pushViewController:search animated:NO];
 }
 
 -(void) moreAction{
@@ -286,5 +287,16 @@
 
 -(void) closeView{
     [self moreAction];
+}
+-(void) DraftAction{
+   
+    
+}
+
+-(void)systemSetting{
+    settingSystemVC *setting = [[settingSystemVC alloc] init];
+    [self moreAction];
+    [self.navigationController pushViewController:setting animated:YES];
+    
 }
 @end

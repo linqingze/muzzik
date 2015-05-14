@@ -210,10 +210,10 @@
     [self.delegate shareActionWithMuzzik_id:self.muzzik_id atIndex:self.index];
 }
 -(void)commentAction{
-    [self.delegate commentAtMuzzik:self.muzzik_id];
+    [self.delegate commentAtMuzzik:self.songModel];
 }
 -(void)pushComment{
-    [self.delegate showComment:self.muzzik_id];
+    [self.delegate showComment:self.songModel];
 }
 -(void)pushMove{
     [self.delegate showMoved:self.muzzik_id];

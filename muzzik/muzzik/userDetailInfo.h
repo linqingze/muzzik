@@ -6,9 +6,9 @@
 //  Copyright (c) 2015年 muzziker. All rights reserved.
 //
 
-#import "BaseNagationViewController.h"
+#import "AMScrollingNavbarViewController.h"
 
-@interface userDetailInfo : BaseNagationViewController
+@interface userDetailInfo : AMScrollingNavbarViewController
 @property (nonatomic,copy) NSString *uid;
 @property(nonatomic) musicPlayer *musicplayer;
 @end

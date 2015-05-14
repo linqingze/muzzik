@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@interface UserHomePage : UIViewController
-
+#import "AMScrollingNavbarViewController.h"
+@interface UserHomePage : AMScrollingNavbarViewController
+@property (nonatomic,retain)UIImageView *headimage;
+@property (nonatomic,retain) NSDictionary *profileDic;
 @end

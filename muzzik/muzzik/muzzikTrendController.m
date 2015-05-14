@@ -28,10 +28,7 @@
 #import "MuzzikNoCardCell.h"
 #import "userDetailInfo.h"
 #import "TopicDetail.h"
-#define length_to_left 10
-#define length_to_right 10
-#define length_to_top 10
-#define length_to_buttom 10
+
 @interface muzzikTrendController (){
     int numberOfProducts;
     BOOL needsLoad;
@@ -66,8 +63,8 @@
     [MytableView registerClass:[MuzzikCard class] forCellReuseIdentifier:@"MuzzikCard"];
     [MytableView registerClass:[MuzzikNoCardCell class] forCellReuseIdentifier:@"MuzzikNoCardCell"];
     
+    [self followScrollView:MytableView];
     
- 
     newButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-70, SCREEN_HEIGHT-125, 55, 55)];
     newButton.layer.cornerRadius = 28;
     newButton.clipsToBounds = YES;
@@ -102,8 +99,7 @@
         }
     }];
     [request setFailedBlock:^{
-        NSLog(@"%@,%@",[weakrequest responseHeaders],[weakrequest responseString]);
-        [KVNProgress showErrorWithStatus:@"网络请求超时"];
+        NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
     }];
     [request startAsynchronous];
 
@@ -134,8 +130,7 @@
         }
     }];
     [request setFailedBlock:^{
-        NSLog(@"%@,%@",[weakrequest responseHeaders],[weakrequest responseString]);
-        [KVNProgress showErrorWithStatus:@"网络请求超时"];
+        NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
     }];
     [request startAsynchronous];
 
@@ -251,7 +246,7 @@
         if ([tempMuzzik.type isEqualToString:@"repost"] ){
             NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
             cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
-            if ([tempMuzzik.music.key isEqualToString:self.musicplayer.localMuzzik.music.key] &&!glob.isPause) {
+            if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.localMuzzik.muzzik_id] &&!glob.isPause) {
                 cell.isPlaying = YES;
             }else{
                 cell.isPlaying = NO;
@@ -261,7 +256,7 @@
                 [cell.userImage setAlpha:0];
                 [cell.poImage setAlpha:0];
             }
-            [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempMuzzik.MuzzikUser.avatar]] forState:UIControlStateNormal completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,tempMuzzik.MuzzikUser.avatar]] forState:UIControlStateNormal completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                 [UIView animateWithDuration:0.5 animations:^{
                     [cell.userImage setAlpha:1];
                 }];
@@ -282,7 +277,7 @@
             [cell.musicPlayView setFrame:CGRectMake(0, 95+cell.muzzikMessage.bounds.size.height, SCREEN_WIDTH, cell.musicPlayView.frame.size.height)];
             cell.musicArtist.text =tempMuzzik.music.artist;
             cell.musicName.text = tempMuzzik.music.name;
-            cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.date];
+            cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.repostDate];
             
             [cell colorViewWithColorString:[NSString stringWithFormat:@"%@",tempMuzzik.color]];
             cell.muzzik_id = tempMuzzik.muzzik_id;
@@ -314,7 +309,7 @@
         }else if([tempMuzzik.type isEqualToString:@"normal"]){
             NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
             cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
-            if ([tempMuzzik.music.key isEqualToString:self.musicplayer.localMuzzik.music.key] &&!glob.isPause) {
+            if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.localMuzzik.muzzik_id] &&!glob.isPause) {
                 cell.isPlaying = YES;
             }else{
                 cell.isPlaying = NO;
@@ -324,7 +319,7 @@
                 [cell.userImage setAlpha:0];
                 [cell.poImage setAlpha:0];
             }
-            [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempMuzzik.MuzzikUser.avatar]] forState:UIControlStateNormal completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,tempMuzzik.MuzzikUser.avatar]] forState:UIControlStateNormal completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                 [UIView animateWithDuration:0.5 animations:^{
                     [cell.userImage setAlpha:1];
                 }];
@@ -379,7 +374,7 @@
         }else if([tempMuzzik.type isEqualToString:@"muzzikCard"]){
             MuzzikCard *cell = [tableView dequeueReusableCellWithIdentifier:@"MuzzikCard" forIndexPath:indexPath];
             cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
-            if ([tempMuzzik.music.key isEqualToString:self.musicplayer.localMuzzik.music.key] &&!glob.isPause) {
+            if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.localMuzzik.muzzik_id] &&!glob.isPause) {
                 cell.isPlaying = YES;
             }else{
                 cell.isPlaying = NO;
@@ -391,13 +386,13 @@
                 [RefreshDic setObject:indexPath forKey:[NSString stringWithFormat:@"%d",indexPath.row]];
                 [cell.userImage setAlpha:0];
             }
-            [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempMuzzik.MuzzikUser.avatar]] forState:UIControlStateNormal completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,tempMuzzik.MuzzikUser.avatar]] forState:UIControlStateNormal completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                 [UIView animateWithDuration:0.5 animations:^{
                     [cell.userImage setAlpha:1];
                 }];
                 
             }];
-            [cell.muzzikCardImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempMuzzik.image]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            [cell.muzzikCardImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/600/h/600",BaseURL_image,tempMuzzik.image]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                 [UIView animateWithDuration:0.5 animations:^{
                     [cell.muzzikCardImage setAlpha:1];
                 }];
@@ -425,7 +420,7 @@
         if ([tempMuzzik.type isEqualToString:@"repost"] ){
             NormalNoCardCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalNoCardCell" forIndexPath:indexPath];
             cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
-            if ([tempMuzzik.music.key isEqualToString:self.musicplayer.localMuzzik.music.key] &&!glob.isPause) {
+           if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.localMuzzik.muzzik_id] &&!glob.isPause) {
                 cell.isPlaying = YES;
             }else{
                 cell.isPlaying = NO;
@@ -435,13 +430,13 @@
                 [cell.userImage setAlpha:0];
                 [cell.poImage setAlpha:0];
             }
-            [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempMuzzik.MuzzikUser.avatar]] forState:UIControlStateNormal completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,tempMuzzik.MuzzikUser.avatar]] forState:UIControlStateNormal completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                 [UIView animateWithDuration:0.5 animations:^{
                     [cell.userImage setAlpha:1];
                 }];
                 
             }];
-            [cell.poImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempMuzzik.image]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            [cell.poImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/600/h/600",BaseURL_image,tempMuzzik.image]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                 [UIView animateWithDuration:0.5 animations:^{
                     [cell.poImage setAlpha:1];
                 }];
@@ -462,7 +457,7 @@
             [cell.musicPlayView setFrame:CGRectMake(0, 95+cell.muzzikMessage.bounds.size.height, SCREEN_WIDTH, cell.musicPlayView.frame.size.height)];
             cell.musicArtist.text =tempMuzzik.music.artist;
             cell.musicName.text = tempMuzzik.music.name;
-            cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.date];
+            cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.repostDate];
             
             [cell colorViewWithColorString:[NSString stringWithFormat:@"%@",tempMuzzik.color]];
             cell.muzzik_id = tempMuzzik.muzzik_id;
@@ -494,7 +489,7 @@
         }else if([tempMuzzik.type isEqualToString:@"normal"]){
             NormalNoCardCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalNoCardCell" forIndexPath:indexPath];
             cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
-            if ([tempMuzzik.music.key isEqualToString:self.musicplayer.localMuzzik.music.key] &&!glob.isPause) {
+            if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.localMuzzik.muzzik_id] &&!glob.isPause) {
                 cell.isPlaying = YES;
             }else{
                 cell.isPlaying = NO;
@@ -504,14 +499,14 @@
                 [cell.userImage setAlpha:0];
                 [cell.poImage setAlpha:0];
             }
-            [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempMuzzik.MuzzikUser.avatar]] forState:UIControlStateNormal completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,tempMuzzik.MuzzikUser.avatar]] forState:UIControlStateNormal completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                 [UIView animateWithDuration:0.5 animations:^{
                     [cell.userImage setAlpha:1];
                 }];
                 
             }];
             //[cell.poImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempMuzzik.image]]];
-            [cell.poImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempMuzzik.image]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            [cell.poImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/600/h/600",BaseURL_image,tempMuzzik.image]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                 [UIView animateWithDuration:0.5 animations:^{
                     [cell.poImage setAlpha:1];
                 }];
@@ -564,7 +559,7 @@
         }else if([tempMuzzik.type isEqualToString:@"muzzikCard"]){
             MuzzikCard *cell = [tableView dequeueReusableCellWithIdentifier:@"MuzzikCard" forIndexPath:indexPath];
             cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
-            if ([tempMuzzik.music.key isEqualToString:self.musicplayer.localMuzzik.music.key] &&!glob.isPause) {
+            if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.localMuzzik.muzzik_id] &&!glob.isPause) {
                 cell.isPlaying = YES;
             }else{
                 cell.isPlaying = NO;
@@ -576,13 +571,13 @@
                 [RefreshDic setObject:indexPath forKey:[NSString stringWithFormat:@"%d",indexPath.row]];
                 [cell.userImage setAlpha:0];
             }
-            [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempMuzzik.MuzzikUser.avatar]] forState:UIControlStateNormal completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,tempMuzzik.MuzzikUser.avatar]] forState:UIControlStateNormal completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                 [UIView animateWithDuration:0.5 animations:^{
                     [cell.userImage setAlpha:1];
                 }];
                 
             }];
-            [cell.muzzikCardImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempMuzzik.image]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            [cell.muzzikCardImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/600/h/600",BaseURL_image,tempMuzzik.image]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                 [UIView animateWithDuration:0.5 animations:^{
                     [cell.muzzikCardImage setAlpha:1];
                 }];
@@ -672,14 +667,6 @@
 //    });
 
 }
--(void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset{
-    if (velocity.y>0) {
-        [self.homeNav hideMusicView];
-    }
-    else if (velocity.y<0 && [[musicPlayer shareClass].MusicArray count]>0){
-        [self.homeNav showMusicView];
-    }
-}
 
 -(void)pressWithUrl:(NSURL *)url AndRange:(NSRange)rang{
     
@@ -751,7 +738,7 @@
         NSLog(@"%d",[weakrequest responseStatusCode]);
         if ([weakrequest responseStatusCode] == 200) {
              muzzik *localMuzzik = self.muzziks[index];
-            [KVNProgress showSuccessWithStatus:@"转发成功"];
+            [MuzzikItem showNotifyOnView:self.view text:@"转发成功"];
             localMuzzik.reposts = [NSString stringWithFormat:@"%ld",[localMuzzik.reposts integerValue]+1];
             NSIndexPath *indexPath=[NSIndexPath indexPathForRow:index inSection:0];
             [MytableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];
@@ -761,12 +748,11 @@
             [userInfo checkLoginWithVC:self];
             //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
         }else if ([weakrequest responseStatusCode] == 400){
-            [KVNProgress showSuccessWithStatus:@"此Muzzik您已转发过"];
+           
         }
     }];
     [requestForm setFailedBlock:^{
-        NSLog(@"%@",[weakrequest responseString]);
-        [KVNProgress showErrorWithStatus:@"网络请求超时"];
+        NSLog(@"%@",[weakrequest error]);
     }];
     [requestForm startAsynchronous];
 }
@@ -801,8 +787,7 @@
         }
     }];
     [request setFailedBlock:^{
-        NSLog(@"%@,%@",[weakrequest responseHeaders],[weakrequest responseString]);
-         [KVNProgress showErrorWithStatus:@"网络请求超时"];
+        NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
     }];
     [request startAsynchronous];
 }
@@ -814,14 +799,14 @@
     _musicplayer.listType = SquareList;
     _musicplayer.MusicArray = self.muzziks;
     [_musicplayer playSongWithSongModel:songModel];
-    
-    
-    
-    [self.homeNav checkShowMusicView];
 }
 
--(void) commentAtMuzzik:(NSString *)muzzik_id{
-    NSLog(@"comment in%@",muzzik_id);
+-(void) commentAtMuzzik:(muzzik *)localMuzzik{
+    muzzik *tempMuzzik = localMuzzik;
+    DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
+    detail.localmuzzik = tempMuzzik;
+    detail.showType = Constant_Comment;
+    [self.navigationController pushViewController:detail animated:YES];
 }
 -(void) showRepost:(NSString *)muzzik_id{
     showUserVC *showvc = [[showUserVC alloc] init];
@@ -835,9 +820,14 @@
     showvc.showType = @"share";
     [self.navigationController pushViewController:showvc animated:YES];
 }
--(void) showComment:(NSString *)muzzik_id{
-    NSLog(@"commenn%@",muzzik_id);
+-(void)showComment:(muzzik *)localMuzzik{
+    muzzik *tempMuzzik = localMuzzik;
+    DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
+    detail.localmuzzik = tempMuzzik;
+    detail.showType = Constant_showComment;
+    [self.navigationController pushViewController:detail animated:YES];
 }
+
 
 -(void) showMoved:(NSString *)muzzik_id{
     showUserVC *showvc = [[showUserVC alloc] init];
@@ -855,7 +845,7 @@
 }
 
 -(NSMutableArray *) searchUsers:(NSString *)message{
-   
+    
     NSMutableArray *array = [NSMutableArray array];
     BOOL GetAt = NO;
    //  || [[message substringWithRange:NSMakeRange(i, 1)] isEqualToString:@"＠"]
@@ -865,7 +855,7 @@
             GetAt = YES;
             location = i;
             continue;
-        }else if (([[message substringWithRange:NSMakeRange(i, 1)] isEqualToString:@" "] || [[message substringWithRange:NSMakeRange(i, 1)] isEqualToString:@" "]) && GetAt){
+        }else if ([@"<>,.~!@＠#$¥%％^&*()，。：；;:.,‘“~～  》？《！＃＊……‘“”／/" containsString:[message substringWithRange:NSMakeRange(i, 1)]] && GetAt){
             GetAt = NO;
             [array addObject:[message substringWithRange:NSMakeRange(location, i-location)]];
             

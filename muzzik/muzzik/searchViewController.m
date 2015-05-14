@@ -124,7 +124,7 @@
 -(void) searchBarBack{
     [_searchBar resignFirstResponder];
     [_searchView removeFromSuperview];
-    [self.navigationController popViewControllerAnimated:YES];
+    [self.navigationController popViewControllerAnimated:NO];
 }
 
 

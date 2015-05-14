@@ -59,9 +59,14 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         self.refreshing = NO;
         [self.acv stopAnimating];
-        
         [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
-            self.scrollView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 0, 0.0f);
+            
+            if ([Globle shareGloble].isHeadView) {
+                self.scrollView.contentInset = UIEdgeInsetsMake(SCREEN_WIDTH/2, 0.0f, 0, 0.0f);
+            }else{
+                self.scrollView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 0, 0.0f);
+            }
+            
         } completion:^(BOOL finished) {
         }];
     });
@@ -121,7 +126,11 @@
             [self beginRefreshing];
             
             [UIView animateWithDuration:0.2 delay:0.2 options:UIViewAnimationOptionCurveEaseIn animations:^{
-                self.scrollView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, [DXRfreshFooter standHeight], 0.0f);
+                if ([Globle shareGloble].isHeadView) {
+                    self.scrollView.contentInset = UIEdgeInsetsMake(SCREEN_WIDTH/2, 0.0f, 0, 0.0f);
+                }else{
+                    self.scrollView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 0, 0.0f);
+                }
             } completion:^(BOOL finished) {
                 
             }];

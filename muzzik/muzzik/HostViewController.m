@@ -30,7 +30,6 @@
         _muzzikvc = [[muzzikTrendController alloc] init];
         AppDelegate *mydelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
         mydelegate.viewcontroller = _muzzikvc;
-        _muzzikvc.homeNav = self;
     }
     return _muzzikvc;
 }
@@ -153,7 +152,6 @@
            muzzikTrendController* muzzikvc = [[muzzikTrendController alloc] init];
             AppDelegate *mydelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
             mydelegate.viewcontroller = muzzikvc;
-            muzzikvc.homeNav = self;
             return muzzikvc;
         }
         else if (index ==1) {

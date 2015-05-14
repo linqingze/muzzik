@@ -13,8 +13,7 @@
 #import "AFViewShaker.h"
 #import "TWPhotoPickerController.h"
 #import "ASIFormDataRequest.h"
-@interface ProfileSetting ()<HPGrowingTextViewDelegate,UITextFieldDelegate,ZHPickViewDelegate>{
-    UIScrollView *mainscroll;
+@interface ProfileSetting ()<HPGrowingTextViewDelegate,UITextFieldDelegate,ZHPickViewDelegate,UITableViewDelegate>{
     UIButton *headimage;
     UITextField *NameText;
     HPGrowingTextView *decripText;
@@ -43,7 +42,8 @@
     BOOL changClass;
     BOOL changeGenres;
     UIImage *localImage;
-    
+    UITableView *mainTableView;
+    UIView *mainView;
 }
 @property(nonatomic,strong)ZHPickView *pickview;
 @property(nonatomic,copy) NSString *birthString;
@@ -54,18 +54,19 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    mainView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
+    mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
+    [self.view addSubview:mainTableView];
+    mainTableView.delegate = self;
     frameHeight = 152;
     [self initNagationBar:@"编辑个人资料" leftBtn:Constant_backImage rightBtn:0];
-    mainscroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
-    [self.view addSubview:mainscroll];
-    
     headimage = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-38, 16, 76, 76)];
-    [headimage setImage:[UIImage imageNamed:Image_addpicImage] forState:UIControlStateNormal];
+    [headimage setImage:[UIImage imageNamed:Image_settingavatarscover] forState:UIControlStateNormal];
     headimage.layer.cornerRadius = 38;
     headimage.clipsToBounds = YES;
-    [headimage setBackgroundImage:_header forState:UIControlStateNormal];
+    [headimage setBackgroundImage:self.userhome.headimage.image forState:UIControlStateNormal];
     [headimage addTarget:self action:@selector(changeHeadImage) forControlEvents:UIControlEventTouchUpInside];
-    [mainscroll addSubview:headimage];
+    [mainView addSubview:headimage];
     NameText = [[UITextField alloc] initWithFrame:CGRectMake(50, 92, SCREEN_WIDTH-100, 60)];
     [NameText setTextColor:Color_Text_1];
     [NameText setFont:[UIFont fontWithName:Font_Next_DemiBold size:20]];
@@ -74,8 +75,8 @@
     NameText.textAlignment = NSTextAlignmentCenter;
     NameText.text = [self.profileDic objectForKey:@"name"];
     [NameText setReturnKeyType:UIReturnKeyDone];
-    [mainscroll addSubview:NameText];
-    [MuzzikItem addLineOnView:mainscroll heightPoint:151 toLeft:13 toRight:13 withColor:Color_line_1];
+    [mainView addSubview:NameText];
+    [MuzzikItem addLineOnView:mainView heightPoint:151 toLeft:13 toRight:13 withColor:Color_line_1];
     
     decripText = [[HPGrowingTextView alloc] initWithFrame:CGRectMake(30, 152, SCREEN_WIDTH-60, 80)];
     decripText.placeholder = @"编辑个性签名";
@@ -87,11 +88,15 @@
     decripText.animateHeightChange = NO;
     [decripText setMaxHeight:120];
     [decripText setReturnKeyType:UIReturnKeyDone];
-    [mainscroll addSubview:decripText];
+    if ([[_profileDic allKeys] containsObject:@"description"] && [[self.profileDic objectForKey:@"description"] length]>0) {
+        decripText.text = [self.profileDic objectForKey:@"description"];
+    }
+    
+    [mainView addSubview:decripText];
     
     
-    belowView = [[UIView alloc] initWithFrame:CGRectMake(13, 193, SCREEN_WIDTH-26, 400)];
-    [mainscroll addSubview:belowView];
+    belowView = [[UIView alloc] initWithFrame:CGRectMake(13, 193, SCREEN_WIDTH-26, 260)];
+    [mainView addSubview:belowView];
     schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 30, 50)];
     schoolLabel.text = @"学校";
     schoolLabel.textColor = Color_Text_2;
@@ -102,6 +107,9 @@
     schoolText.font = [UIFont systemFontOfSize:15];
     schoolText.placeholder = @"填写学校";
     schoolText.delegate = self;
+    if ([[_profileDic allKeys] containsObject:@"school"] && [[self.profileDic objectForKey:@"school"] length]>0) {
+        schoolText.text = [self.profileDic objectForKey:@"school"];
+    }
     [schoolText setReturnKeyType:UIReturnKeyDone];
     [schoolText setValue:[UIFont boldSystemFontOfSize:15] forKeyPath:@"_placeholderLabel.font"];
     [belowView addSubview:schoolLabel];
@@ -112,12 +120,15 @@
     companyLabel.text = @"公司";
     companyLabel.textColor = Color_Text_2;
     [companyLabel setFont:[UIFont boldSystemFontOfSize:14]];
-    
+   
     companyText = [[UITextField alloc] initWithFrame:CGRectMake(60, 50, SCREEN_WIDTH-100,50)];
     companyText.textColor = Color_Text_1;
     companyText.font = [UIFont systemFontOfSize:15];
     companyText.placeholder = @"填写公司";
     companyText.delegate = self;
+    if ([[_profileDic allKeys] containsObject:@"company"] && [[self.profileDic objectForKey:@"company"] length]>0) {
+        companyText.text = [self.profileDic objectForKey:@"company"];
+    }
     [companyText setReturnKeyType:UIReturnKeyDone];
     [companyText setValue:[UIFont boldSystemFontOfSize:15] forKeyPath:@"_placeholderLabel.font"];
     [belowView addSubview:companyLabel];
@@ -128,12 +139,21 @@
     birthLabel.text = @"生日";
     birthLabel.textColor = Color_Text_2;
     [birthLabel setFont:[UIFont boldSystemFontOfSize:14]];
-    
+   
     birthText = [[UITextField alloc] initWithFrame:CGRectMake(60, 100, SCREEN_WIDTH-100,50)];
     birthText.textColor = Color_Text_1;
     birthText.font = [UIFont systemFontOfSize:15];
     birthText.placeholder = @"填选生日";
     birthText.delegate = self;
+    if ([[_profileDic allKeys] containsObject:@"birthday"] && [[self.profileDic objectForKey:@"birthday"] doubleValue]>0) {
+        double unixTimeStamp = [[NSString stringWithFormat:@"%@",[_profileDic objectForKey:@"birthday"]] doubleValue]/1000;
+        NSTimeInterval _interval=unixTimeStamp;
+        NSDate *date = [NSDate dateWithTimeIntervalSince1970:_interval];
+        NSDateFormatter *_formatter=[[NSDateFormatter alloc]init];
+        [_formatter setLocale:[NSLocale currentLocale]];
+        [_formatter setDateFormat:@"YYYY.MM.dd"];
+        birthText.text =[_formatter stringFromDate:date];
+    }
     [birthText setValue:[UIFont boldSystemFontOfSize:15] forKeyPath:@"_placeholderLabel.font"];
     [belowView addSubview:birthLabel];
     [belowView addSubview:birthText];
@@ -157,7 +177,14 @@
     [femaleButton addTarget:self action:@selector(setfemale) forControlEvents:UIControlEventTouchUpInside];
     [femaleButton setTitleColor:[UIColor colorWithHexString:@"555555"] forState:UIControlStateNormal];
     [femaleButton setImageEdgeInsets:UIEdgeInsetsMake(12, 0, 12, 60)];
-    
+    if ([[_profileDic allKeys] containsObject:@"gender"]) {
+        if ([[_profileDic objectForKey:@"gender"] isEqualToString:@"f"]) {
+            [femaleButton setImage:[UIImage imageNamed:Image_femaleselectedImage] forState:UIControlStateNormal];
+        }
+        else if([[_profileDic objectForKey:@"gender"] isEqualToString:@"m"]){
+            [maleButton setImage:[UIImage imageNamed:Image_maleselectedImage] forState:UIControlStateNormal];
+        }
+    }
     UIView *speView = [[UIView alloc] initWithFrame:CGRectMake(belowView.frame.size.width/2+15, 160, 1, 30)];
     [speView setBackgroundColor:Color_line_1];
     
@@ -184,17 +211,20 @@
     [classifyBiew addSubview: addClassifyLabel];
     [MuzzikItem addLineOnView:belowView heightPoint:1 toLeft:0 toRight:0 withColor:Color_line_1];
     [self.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(endEditOnView)]];
+    [mainTableView setTableHeaderView:mainView];
     // Do any additional setup after loading the view.
 }
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-    self.navigationController.interactivePopGestureRecognizer.enabled = NO;
 }
 - (void)growingTextView:(HPGrowingTextView *)growingTextView willChangeHeight:(float)height{
-    [growingTextView setFrame:CGRectMake(30, 152, SCREEN_WIDTH-60, height+20)];
+    [growingTextView setFrame:CGRectMake(30, 152, SCREEN_WIDTH-60, height)];
     frameHeight = 152+height;
-    [belowView setFrame:CGRectMake(13, 152+height, SCREEN_WIDTH-26, 200)];
+    [belowView setFrame:CGRectMake(13, 152+height, SCREEN_WIDTH-26, 260)];
+    [mainView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 152+height+260)];
+    [mainTableView setTableHeaderView:mainView];
+    [mainTableView reloadData];
 }
 
 - (void)growingTextViewDidChange:(HPGrowingTextView *)growingTextView{
@@ -211,6 +241,7 @@
 
 -(BOOL)textFieldShouldBeginEditing:(UITextField *)textField{
     if (textField == birthText) {
+        [self.view endEditing:YES];
          [_pickview remove];
         NSDate *date=[NSDate dateWithTimeIntervalSince1970:654150000];
         _pickview=[[ZHPickView alloc] initDatePickWithDate:date datePickerMode:UIDatePickerModeDate isHaveNavControler:NO];
@@ -389,7 +420,8 @@
                     __weak ASIHTTPRequest *WeakImageRequest = updateImageRequest;
                     [updateImageRequest setCompletionBlock:^{
                         if ([WeakImageRequest responseStatusCode]==200) {
-                            [self dismissViewControllerAnimated:YES completion:nil];
+                            self.userhome.headimage.image = localImage;
+                            [self.navigationController popViewControllerAnimated:YES];
                             
                         }
                     }];
@@ -421,7 +453,7 @@
         __weak ASIHTTPRequest *WeakImageRequest = updateImageRequest;
         [updateImageRequest setCompletionBlock:^{
             if ([WeakImageRequest responseStatusCode]==200) {
-                [self dismissViewControllerAnimated:YES completion:nil];
+                [self.navigationController popViewControllerAnimated:YES];
             }
         }];
         [updateImageRequest setFailedBlock:^{
@@ -453,10 +485,7 @@
     
     
 }
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-{
-    return 40.0f;
-}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

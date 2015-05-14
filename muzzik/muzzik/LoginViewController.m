@@ -5,7 +5,7 @@
 //  Created by 林清泽 on 15/4/2.
 //  Copyright (c) 2015年 muzziker. All rights reserved.
 //
-#define scaleHeight 190.0/278.0
+
 #import "LoginViewController.h"
 #import "UIColor+HexColor.h"
 #import "AppDelegate.h"
@@ -16,6 +16,7 @@
 #import "NSString+MD5.h"
 #import "phoneForResetVC.h"
 @interface LoginViewController ()<TencentSessionDelegate,TencentLoginDelegate,UITextFieldDelegate>{
+    CGFloat scaleHeight;
     UIImageView *backGroundImage;
     NSMutableArray *spaceArray;
     UITextField *phoneText;
@@ -31,11 +32,18 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+     [ASIHTTPRequest clearSession];
     spaceArray = [NSMutableArray arrayWithArray:@[@100.0,@22.0,@73.0,@10.0,@28.0,@13.0,@60.0,@15.0]];
-    
-    
-    if (SCREEN_TYPE_is_4S) {
+    scaleHeight = SCREEN_HEIGHT;
+    scaleHeight = SCREEN_WIDTH;
+    if (SCREEN_HEIGHT == 480) {
+        scaleHeight = (SCREEN_HEIGHT-290)/278.0;
+        [self changeSpaceArray];
+    }else if (SCREEN_HEIGHT == 736){
+        scaleHeight = (SCREEN_HEIGHT-350)/278.0;
+        [self changeSpaceArray];
+    }else if (SCREEN_HEIGHT == 667){
+        scaleHeight = (SCREEN_HEIGHT-320)/278.0;
         [self changeSpaceArray];
     }
     _permissions = [NSArray arrayWithObjects:
@@ -69,8 +77,10 @@
     
     int i = 0;
     CGFloat localPosition = 0;
-    backGroundImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bg.pic_hd"]];
-    UIImageView *coverImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bg_cover"]];
+    backGroundImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+    [backGroundImage setImage:[UIImage imageNamed:@"bgpic_hd"]];
+    UIImageView *coverImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+    [coverImage setImage:[UIImage imageNamed:@"bg_cover"]];
     [coverImage setAlpha:0.4];
     [self.view addSubview:backGroundImage];
     [self.view addSubview:coverImage];
@@ -242,6 +252,8 @@
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Login]]];
     NSString *passwordInMD5 = [[NSString stringWithFormat:@"%@Muzzik%@",phoneText.text,passwordText.text] md5Encrypt];
     NSLog(@"%@",passwordInMD5);
+    [requestForm setUseCookiePersistence:NO];
+   
     [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:phoneText.text,@"phone",passwordInMD5,@"hashedPassword",nil] Method:PostMethod auth:NO];
     __weak ASIHTTPRequest *weakrequest = requestForm;
     [requestForm setCompletionBlock :^{
@@ -250,7 +262,8 @@
         NSLog(@"%d",[weakrequest responseStatusCode]);
          NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
         if ([weakrequest responseStatusCode] == 200) {
-            [MuzzikItem addMessageToLocal:dic];
+            NSDictionary *fileDic = [NSDictionary dictionaryWithObjectsAndKeys:[dic objectForKey:@"_id"],@"_id",[dic objectForKey:@"token"],@"token",[dic objectForKey:@"gender"],@"gender",[dic objectForKey:@"avatar"],@"avatar",[dic objectForKey:@"name"],@"name", nil];
+            [MuzzikItem addMessageToLocal:fileDic];
             userInfo *user = [userInfo shareClass];
             if ([[dic allKeys] containsObject:@"token"]) {
                 user.token = [dic objectForKey:@"token"];
@@ -273,7 +286,25 @@
             if ([[dic allKeys] containsObject:@"token"]) {
                 user.token = [dic objectForKey:@"token"];
             }
-            [self dismissViewControllerAnimated:YES completion:nil];
+            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Set_Notify]]];
+            [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:user.deviceToken,@"deviceToken",@"APN",@"type", nil] Method:PostMethod auth:YES];
+            __weak ASIHTTPRequest *weakrequest = requestForm;
+            [requestForm setCompletionBlock :^{
+                NSLog(@"%@",[weakrequest responseString]);
+                NSLog(@"%d",[weakrequest responseStatusCode]);
+                if ([weakrequest responseStatusCode] == 200) {
+                    
+                    NSLog(@"register ok");
+                }
+                else{
+                    //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+                }
+            }];
+            [requestForm setFailedBlock:^{
+                NSLog(@"%@",[weakrequest error]);
+            }];
+            [requestForm startAsynchronous];
+            [self.navigationController popViewControllerAnimated:YES];
         }
     }];
     [requestForm setFailedBlock:^{
@@ -317,16 +348,36 @@
     [requestForm setCompletionBlock :^{
           NSLog(@"%@",[weakrequest responseString]);
           NSLog(@"%d",[weakrequest responseStatusCode]);
+        
         if ([weakrequest responseStatusCode] == 200) {
             NSData *data = [weakrequest responseData];
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data  options:NSJSONReadingMutableContainers error:nil];
-            [MuzzikItem addMessageToLocal:dic];
+            NSDictionary *fileDic = [NSDictionary dictionaryWithObjectsAndKeys:[dic objectForKey:@"_id"],@"_id",[dic objectForKey:@"token"],@"token",[dic objectForKey:@"gender"],@"gender",[dic objectForKey:@"avatar"],@"avatar",[dic objectForKey:@"name"],@"name", nil];
+            [MuzzikItem addMessageToLocal:fileDic];
             userInfo *user = [userInfo shareClass];
             user.uid = [dic objectForKey:@"_id"];
             user.token = [dic objectForKey:@"token"];
             user.gender = [dic objectForKey:@"gender"];
             user.avatar = [dic objectForKey:@"avatar"];
             user.name = [dic objectForKey:@"name"];
+            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Set_Notify]]];
+            [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:user.deviceToken,@"deviceToken",@"APN",@"type", nil] Method:PostMethod auth:YES];
+            __weak ASIHTTPRequest *weakrequest = requestForm;
+            [requestForm setCompletionBlock :^{
+                NSLog(@"%@",[weakrequest responseString]);
+                NSLog(@"%d",[weakrequest responseStatusCode]);
+                if ([weakrequest responseStatusCode] == 200) {
+                    
+                    NSLog(@"register ok");
+                }
+                else{
+                    //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+                }
+            }];
+            [requestForm setFailedBlock:^{
+                NSLog(@"%@",[weakrequest error]);
+            }];
+            [requestForm startAsynchronous];
             [self.navigationController popViewControllerAnimated:YES];
             
         }

@@ -16,16 +16,34 @@
 #import "userInfo.h"
 #import "HostViewController.h"
 #import "RootViewController.h"
+#import "settingSystemVC.h"
 @interface AppDelegate ()
 
 @end
 
 @implementation AppDelegate
- 
+- (void)registerRemoteNotification
+{
+#ifdef __IPHONE_8_0
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
+        
+        UIUserNotificationSettings *uns = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeAlert|UIUserNotificationTypeBadge|UIUserNotificationTypeSound) categories:nil];
+        [[UIApplication sharedApplication] registerForRemoteNotifications];
+        [[UIApplication sharedApplication] registerUserNotificationSettings:uns];
+    } else {
+        UIRemoteNotificationType apn_type = (UIRemoteNotificationType)(UIRemoteNotificationTypeAlert|UIRemoteNotificationTypeSound|UIRemoteNotificationTypeBadge);
+        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:apn_type];
+    }
+#else
+    UIRemoteNotificationType apn_type = (UIRemoteNotificationType)(UIRemoteNotificationTypeAlert|UIRemoteNotificationTypeSound|UIRemoteNotificationTypeBadge);
+    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:apn_type];
+#endif
+}
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [WXApi registerApp:ID_WeiChat_APP];
     [WeiboSDK enableDebugMode:NO];
     [WeiboSDK registerApp:Key_WeiBo];
+    [self startSdkWith:kAppId appKey:kAppKey appSecret:kAppSecret];
     NSDictionary * dic = [MuzzikItem messageFromLocal];
     userInfo *user = [userInfo shareClass];
     user.uid = [dic objectForKey:@"_id"];
@@ -33,37 +51,7 @@
     user.gender = [dic objectForKey:@"gender"];
     user.avatar = [dic objectForKey:@"avatar"];
     user.name = [dic objectForKey:@"name"];
-    if (IOS_8_OR_LATER) {
-        UIMutableUserNotificationAction *action = [[UIMutableUserNotificationAction alloc] init];
-        action.identifier = @"action";//按钮的标示
-        action.title=@"Accept";//按钮的标题
-        action.activationMode = UIUserNotificationActivationModeForeground;//当点击的时候启动程序
-        //    action.authenticationRequired = YES;
-        //    action.destructive = YES;
-        
-        UIMutableUserNotificationAction *action2 = [[UIMutableUserNotificationAction alloc] init];
-        action2.identifier = @"action2";
-        action2.title=@"Reject";
-        action2.activationMode = UIUserNotificationActivationModeBackground;//当点击的时候不启动程序，在后台处理
-        action.authenticationRequired = YES;//需要解锁才能处理，如果action.activationMode = UIUserNotificationActivationModeForeground;则这个属性被忽略；
-        action.destructive = YES;
-        
-        //2.创建动作(按钮)的类别集合
-        UIMutableUserNotificationCategory *categorys = [[UIMutableUserNotificationCategory alloc] init];
-        categorys.identifier = @"alert";//这组动作的唯一标示,推送通知的时候也是根据这个来区分
-        [categorys setActions:@[action,action2] forContext:(UIUserNotificationActionContextMinimal)];
-        
-        //3.创建UIUserNotificationSettings，并设置消息的显示类类型
-        UIUserNotificationSettings *notiSettings = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeAlert | UIRemoteNotificationTypeSound) categories:[NSSet setWithObjects:categorys, nil]];
-         [[UIApplication sharedApplication] registerForRemoteNotifications];
-        [application registerUserNotificationSettings:notiSettings];
-       
-
-        
-    }else{
-        UIRemoteNotificationType apn_type = (UIRemoteNotificationType)(UIRemoteNotificationTypeAlert|UIRemoteNotificationTypeSound|UIRemoteNotificationTypeBadge);
-        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:apn_type];
-    }
+    [self registerRemoteNotification];
     NSDictionary* message = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
     if (message) {
         NSString *payloadMsg = [message objectForKey:@"payload"];
@@ -71,8 +59,8 @@
         NSLog(@"%@%@",payloadMsg,record);
     }
     
- //   [[UIApplication sharedApplication] cancelAllLocalNotifications];
-  //  [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+    [[UIApplication sharedApplication] cancelAllLocalNotifications];
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     
     
     
@@ -98,6 +86,7 @@
 }
 
 -(void)GexinSdkDidReceivePayload:(NSString *)payloadId fromApplication:(NSString *)appId{
+    _payloadId =payloadId;
     NSData *data = [_gexinPusher retrivePayloadById:payloadId];
     NSString *payloadMsg = nil;
     if (data) {
@@ -194,8 +183,8 @@
 
 
 -(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
-    //[[UIApplication sharedApplication] cancelAllLocalNotifications];
-   // [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+    [[UIApplication sharedApplication] cancelAllLocalNotifications];
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     
     // [4-EXT]:处理APN
     NSString *payloadMsg = [userInfo objectForKey:@"payload"];
@@ -209,28 +198,25 @@
     completionHandler(UIBackgroundFetchResultNewData);
 
 }
-- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)pToken {
-    
-    NSString *token = [[pToken description] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]];
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken
+{
+    NSString *token = [[deviceToken description] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]];
     _deviceToken = [token stringByReplacingOccurrencesOfString:@" " withString:@""];
     NSLog(@"deviceToken:%@", _deviceToken);
     userInfo *user = [userInfo shareClass];
-    user.deviceToken = _deviceToken;
+    user.deviceToken =_deviceToken;
     
     // [3]:向个推服务器注册deviceToken
     if (_gexinPusher) {
         [_gexinPusher registerDeviceToken:_deviceToken];
-        
     }
-    
 }
-
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo{
     
     // 处理推送消息
     
-    //[[UIApplication sharedApplication] cancelAllLocalNotifications];
-    //[UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+    [[UIApplication sharedApplication] cancelAllLocalNotifications];
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     
     // [4-EXT]:处理APN
     NSString *payloadMsg = [userInfo objectForKey:@"payload"];
@@ -260,8 +246,6 @@
 - (void)applicationWillTerminate:(UIApplication *)application {
     NSLog(@"end");
     [ASIHTTPRequest clearSession];
-    ASIHTTPRequest *htt = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_Trending]]];
-    NSLog(@"%@",[htt requestHeaders]);
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
@@ -334,7 +318,8 @@
     return [_gexinPusher setTags:aTags];
 }
 - (void)GexinSdkDidRegisterClient:(NSString *)clientId{
-
+     _sdkStatus = SdkStatusStarted;
+    _clientId = clientId;
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Set_Notify]]];
     [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:clientId forKey:@"clientid"] Method:PostMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = requestForm;
@@ -414,7 +399,7 @@
         self.wbtoken = [(WBAuthorizeResponse *)response accessToken];
         self.wbCurrentUserID = [(WBAuthorizeResponse *)response userID];
         ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@%@",BaseURL,URL_WeiBo_AUTH,[(WBAuthorizeResponse *)response accessToken]]]];
-        
+        [requestForm setUseCookiePersistence:NO];
         __weak ASIHTTPRequest *weakrequest = requestForm;
         [requestForm setCompletionBlock :^{
             //  NSLog(@"%@",[weakrequest responseString]);
@@ -422,39 +407,49 @@
             if ([weakrequest responseStatusCode] == 200) {
                 NSData *data = [weakrequest responseData];
                 NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data  options:NSJSONReadingMutableContainers error:nil];
-                [MuzzikItem addMessageToLocal:dic];
+                NSDictionary *fileDic = [NSDictionary dictionaryWithObjectsAndKeys:[dic objectForKey:@"_id"],@"_id",[dic objectForKey:@"token"],@"token",[dic objectForKey:@"gender"],@"gender",[dic objectForKey:@"avatar"],@"avatar",[dic objectForKey:@"name"],@"name", nil];
+                [MuzzikItem addMessageToLocal:fileDic];
+                
                 userInfo *user = [userInfo shareClass];
                 user.uid = [dic objectForKey:@"_id"];
                 user.token = [dic objectForKey:@"token"];
                 user.gender = [dic objectForKey:@"gender"];
                 user.avatar = [dic objectForKey:@"avatar"];
                 user.name = [dic objectForKey:@"name"];
-                ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Set_Notify]]];
-                [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:user.deviceToken,@"deviceToken",@"APN",@"type", nil] Method:PostMethod auth:YES];
-                __weak ASIHTTPRequest *weakrequest = requestForm;
-                [requestForm setCompletionBlock :^{
-                    NSLog(@"%@",[weakrequest responseString]);
-                    NSLog(@"%d",[weakrequest responseStatusCode]);
-                    if ([weakrequest responseStatusCode] == 200) {
-                        
+                ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Set_Notify]]];
+                [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:user.deviceToken,@"deviceToken",@"APN",@"type", nil] Method:PostMethod auth:YES];
+                __weak ASIHTTPRequest *weakreq = request;
+                [request setCompletionBlock :^{
+                    NSLog(@"%@",[weakreq responseString]);
+                    NSLog(@"%d",[weakreq responseStatusCode]);
+                    if ([weakreq responseStatusCode] == 200) {
+                       
                         NSLog(@"register ok");
                     }
                     else{
                         //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
                     }
                 }];
-                [requestForm setFailedBlock:^{
-                    NSLog(@"%@",[weakrequest error]);
+                [request setFailedBlock:^{
+                    NSLog(@"%@",[weakreq error]);
                 }];
-                [requestForm startAsynchronous];
-                
+                [request startAsynchronous];
+                UINavigationController *nac = (UINavigationController *)self.window.rootViewController;
+                for (UIViewController *vc in nac.viewControllers) {
+                    if ([vc isKindOfClass:[settingSystemVC class]]) {
+                        settingSystemVC *settingvc = (settingSystemVC*)vc;
+                        [settingvc reloadTable];
+                        break;
+                    }
+                }
+                [nac popViewControllerAnimated:YES];
             }
             else{
                 //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
             }
         }];
         [requestForm setFailedBlock:^{
-            [KVNProgress showErrorWithStatus:@"网络加载超时"];
+            NSLog(@"%@",[weakrequest error]);
         }];
         [requestForm startAsynchronous];
         
@@ -501,27 +496,55 @@
     {
         SendAuthResp *temp = (SendAuthResp*)resp;
         ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@%@",BaseURL,URL_WeiChat_AUTH,temp.code]]];
+        [requestForm setUseCookiePersistence:NO];
         
         __weak ASIHTTPRequest *weakrequest = requestForm;
         [requestForm setCompletionBlock :^{
-            //  NSLog(@"%@",[weakrequest responseString]);
-            //  NSLog(@"%d",[weakrequest responseStatusCode]);
+              NSLog(@"%@",[weakrequest responseString]);
+              NSLog(@"%d",[weakrequest responseStatusCode]);
             if ([weakrequest responseStatusCode] == 200) {
                 NSData *data = [weakrequest responseData];
                 NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data  options:NSJSONReadingMutableContainers error:nil];
-                [MuzzikItem addMessageToLocal:dic];
+                NSDictionary *fileDic = [NSDictionary dictionaryWithObjectsAndKeys:[dic objectForKey:@"_id"],@"_id",[dic objectForKey:@"token"],@"token",[dic objectForKey:@"gender"],@"gender",[dic objectForKey:@"avatar"],@"avatar",[dic objectForKey:@"name"],@"name", nil];
+                [MuzzikItem addMessageToLocal:fileDic];
                 userInfo *user = [userInfo shareClass];
                 user.uid = [dic objectForKey:@"_id"];
                 user.token = [dic objectForKey:@"token"];
                 user.gender = [dic objectForKey:@"gender"];
                 user.avatar = [dic objectForKey:@"avatar"];
                 user.name = [dic objectForKey:@"name"];
-            
+                ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Set_Notify]]];
+                [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:user.deviceToken,@"deviceToken",@"APN",@"type", nil] Method:PostMethod auth:YES];
+                __weak ASIHTTPRequest *weakreq = request;
+                [request setCompletionBlock :^{
+                    NSLog(@"%@",[weakreq responseString]);
+                    NSLog(@"%d",[weakreq responseStatusCode]);
+                    if ([weakreq responseStatusCode] == 200) {
+                        
+                        NSLog(@"register ok");
+                    }
+                    else{
+                        //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+                    }
+                }];
+                [request setFailedBlock:^{
+                    NSLog(@"%@",[weakreq error]);
+                }];
+                [request startAsynchronous];
+                UINavigationController *nac = (UINavigationController *)self.window.rootViewController;
+                for (UIViewController *vc in nac.viewControllers) {
+                    if ([vc isKindOfClass:[settingSystemVC class]]) {
+                        settingSystemVC *settingvc = (settingSystemVC*)vc;
+                        [settingvc reloadTable];
+                        break;
+                    }
+                }
+                [nac popViewControllerAnimated:YES];
         
             }
         }];
         [requestForm setFailedBlock:^{
-            [KVNProgress showErrorWithStatus:@"网络加载超时"];
+           
         }];
         [requestForm startAsynchronous];
     }
@@ -530,7 +553,7 @@
         AddCardToWXCardPackageResp* temp = (AddCardToWXCardPackageResp*)resp;
         NSMutableString* cardStr = [[NSMutableString alloc] init];
         for (WXCardItem* cardItem in temp.cardAry) {
-            [cardStr appendString:[NSString stringWithFormat:@"cardid:%@ cardext:%@ cardstate:%lu\n",cardItem.cardId,cardItem.extMsg,cardItem.cardState]];
+            [cardStr appendString:[NSString stringWithFormat:@"cardid:%@ cardext:%@ cardstate:%u\n",cardItem.cardId,cardItem.extMsg,(unsigned int)cardItem.cardState]];
         }
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"add card resp" message:cardStr delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
         [alert show];

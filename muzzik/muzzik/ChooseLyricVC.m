@@ -328,7 +328,7 @@
                     [interRequest setPostFormat:ASIMultipartFormDataPostFormat];
                     [interRequest addRequestHeader:@"Host" value:@"upload.qiniu.com"];
                     [interRequest setPostValue:[[dic objectForKey:@"data"] objectForKey:@"token"] forKey:@"token"];
-                    NSData *imageData = UIImageJPEGRepresentation(Muzzikimage, 0.75);
+                    NSData *imageData = UIImageJPEGRepresentation(Muzzikimage, 1);
                     [interRequest addData:imageData forKey:@"file"];
                     __weak ASIFormDataRequest *form = interRequest;
                     [interRequest buildRequestHeaders];
@@ -357,12 +357,11 @@
                         [shareRequest setCompletionBlock:^{
                             NSLog(@"data:%@",[weakShare responseString]);
                             if ([weakShare responseStatusCode] == 200) {
-                                [self dismissViewControllerAnimated:YES completion:^{
-                                    mobject.imageKey = nil;
-                                    mobject.music = nil;
-                                    mobject.message = nil;
-                                    mobject.lyricArray = nil;
-                                }];
+                                mobject.imageKey = nil;
+                                mobject.music = nil;
+                                mobject.message = nil;
+                                mobject.lyricArray = nil;
+                                [self.navigationController popToRootViewControllerAnimated:YES];
                             }
                         }];
                         [shareRequest setFailedBlock:^{
@@ -409,12 +408,11 @@
             [shareRequest setCompletionBlock:^{
                 NSLog(@"data:%@",[weakShare responseString]);
                 if ([weakShare responseStatusCode] == 200) {
-                    [self dismissViewControllerAnimated:YES completion:^{
-                        mobject.imageKey = nil;
-                        mobject.music = nil;
-                        mobject.message = nil;
-                        mobject.lyricArray = nil;
-                    }];
+                    mobject.imageKey = nil;
+                    mobject.music = nil;
+                    mobject.message = nil;
+                    mobject.lyricArray = nil;
+                    [self.navigationController popToRootViewControllerAnimated:YES];
                 }
             }];
             [shareRequest setFailedBlock:^{

@@ -78,7 +78,7 @@
     UILabel *message;
     
 }
-@property (nonatomic) NSMutableArray *lyricArray;
+@property (nonatomic,retain) NSMutableArray *lyricArray;
 @property (nonatomic) BOOL IsShowDetail;
 @property (nonatomic) BOOL isOpen;
 @property (nonatomic,strong) FSPlaylistItem *selectedPlaylistItem;

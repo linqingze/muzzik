@@ -16,7 +16,6 @@
 #import "ASIHTTPRequest.h"
 #import "MuzzikItem.h"
 #import "UIColor+HexColor.h"
-#import "KVNProgress.h"
 #import "muzzik.h"
 #import "StringConstantConfigure.h"
 #import "DeleGateMethodConfigure.h"

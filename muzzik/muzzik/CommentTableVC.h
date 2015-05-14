@@ -7,7 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@interface CommentTableVC : UITableViewController
-
+#import "UserMuzzikVC.h"
+#import "AMScrollingNavbarViewController.h"
+@interface CommentTableVC :AMScrollingNavbarViewController
+@property (nonatomic,copy)NSString *uid;
+@property(nonatomic,weak) UserMuzzikVC *keeper;
 @end

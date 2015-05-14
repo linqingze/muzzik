@@ -54,8 +54,8 @@
 #define URL_User_Follow         @"api/user/follow"                     //post 方法，auth，加id字段
 #define URL_user_Unfollow       @"api/user/unfollow"   //同上
 #define URL_Classify            @"api/common/musicGenre"
-
-
+#define URL_Logout              @"api/user/logout"
+#define URL_Get_Feed            @"/api/muzzik/feeds"
 
 
 //#define URL_check_phone @"http://192.168.1.112:3000/api/user/check"
@@ -64,36 +64,35 @@
 //#define URL_Login @"http://192.168.1.112:3000/api/user/login"
 
 #pragma -mark App_Color
-#define Color_underLine           [UIColor colorWithRed:227.0/255.0 green:227.0/255.0 blue:227.0/255.0 alpha:1]
-#define Color_scarlet             [UIColor colorWithRed:171.0/255.0 green:33.0/255.0 blue:31.0/255.0 alpha:1]
-#define Color_For_Background      [UIColor colorWithRed:248.0/255.0 green:248.0/255.0 blue:248.0/255.0 alpha:1]
-#define Color_For_bubble          [UIColor colorWithRed:255.0/255.0 green:125.0/255.0 blue:105.0/255.0 alpha:1]
-#define Color_NavigationBar       [UIColor colorWithHexString:@"201f2a"]
-#define Color_Orange              [UIColor colorWithHexString:@"f26a3d"]
-#define Color_text_gray           [UIColor colorWithHexString:@"666c80"]
-#define Color_search_background   [UIColor colorWithHexString:@"323444"]
-#define Color_Active_Button_1     [UIColor colorWithHexString:@"f26a3d"]
-#define Color_Active_Button_2     [UIColor colorWithHexString:@"ff794d"]
-#define Color_Theme_1             [UIColor colorWithHexString:@"201f2a"]
-#define Color_Theme_2             [UIColor colorWithHexString:@"323444"]
-#define Color_Theme_3             [UIColor colorWithHexString:@"3b4051"]
-#define Color_Theme_4             [UIColor colorWithHexString:@"545969"]
-#define Color_Theme_5             [UIColor colorWithHexString:@"666c80"]
-#define Color_Action_Button_1     [UIColor colorWithHexString:@"fea42c"]
-#define Color_Action_Button_2     [UIColor colorWithHexString:@"04a0bf"]
-#define Color_Action_Button_3     [UIColor colorWithHexString:@"f26d7d"]
-#define Color_Text_1              [UIColor colorWithHexString:@"555555"]
-#define Color_Text_2              [UIColor colorWithHexString:@"777777"]
-#define Color_Text_3              [UIColor colorWithHexString:@"999999"]
-#define Color_Text_4              [UIColor colorWithHexString:@"bbbbbb"]
-#define Color_line_1              [UIColor colorWithHexString:@"dddddd"]
-#define Color_line_2              [UIColor colorWithHexString:@"f8f8f8"]
-#define Color_Additional_1        [UIColor colorWithHexString:@"b98dd9"]
-#define Color_Additional_2        [UIColor colorWithHexString:@"30bfa7"]
-#define Color_Additional_3        [UIColor colorWithHexString:@"e64e6f"]
-#define Color_Additional_4        [UIColor colorWithHexString:@"366ab3"]
-#define Color_Additional_5        [UIColor colorWithHexString:@"a8acbb"]
-
+#define Color_underLine             [UIColor colorWithRed:227.0/255.0 green:227.0/255.0 blue:227.0/255.0 alpha:1]
+#define Color_scarlet               [UIColor colorWithRed:171.0/255.0 green:33.0/255.0 blue:31.0/255.0 alpha:1]
+#define Color_For_Background        [UIColor colorWithRed:248.0/255.0 green:248.0/255.0 blue:248.0/255.0 alpha:1]
+#define Color_For_bubble            [UIColor colorWithRed:255.0/255.0 green:125.0/255.0 blue:105.0/255.0 alpha:1]
+#define Color_NavigationBar         [UIColor colorWithHexString:@"201f2a"]
+#define Color_Orange                [UIColor colorWithHexString:@"f26a3d"]
+#define Color_text_gray             [UIColor colorWithHexString:@"666c80"]
+#define Color_search_background     [UIColor colorWithHexString:@"323444"]
+#define Color_Active_Button_1       [UIColor colorWithHexString:@"f26a3d"]
+#define Color_Active_Button_2       [UIColor colorWithHexString:@"ff794d"]
+#define Color_Theme_1               [UIColor colorWithHexString:@"201f2a"]
+#define Color_Theme_2               [UIColor colorWithHexString:@"323444"]
+#define Color_Theme_3               [UIColor colorWithHexString:@"3b4051"]
+#define Color_Theme_4               [UIColor colorWithHexString:@"545969"]
+#define Color_Theme_5               [UIColor colorWithHexString:@"666c80"]
+#define Color_Action_Button_1       [UIColor colorWithHexString:@"fea42c"]
+#define Color_Action_Button_2       [UIColor colorWithHexString:@"04a0bf"]
+#define Color_Action_Button_3       [UIColor colorWithHexString:@"f26d7d"]
+#define Color_Text_1                [UIColor colorWithHexString:@"555555"]
+#define Color_Text_2                [UIColor colorWithHexString:@"777777"]
+#define Color_Text_3                [UIColor colorWithHexString:@"999999"]
+#define Color_Text_4                [UIColor colorWithHexString:@"bbbbbb"]
+#define Color_line_1                [UIColor colorWithHexString:@"dddddd"]
+#define Color_line_2                [UIColor colorWithHexString:@"f8f8f8"]
+#define Color_Additional_1          [UIColor colorWithHexString:@"b98dd9"]
+#define Color_Additional_2          [UIColor colorWithHexString:@"30bfa7"]
+#define Color_Additional_3          [UIColor colorWithHexString:@"e64e6f"]
+#define Color_Additional_4          [UIColor colorWithHexString:@"366ab3"]
+#define Color_Additional_5          [UIColor colorWithHexString:@"a8acbb"]
 
 
 
@@ -133,7 +132,7 @@
 #define Secret_WeiBo @"9f370076f566782489471837ced4f7ef"
 
 #define kAppId           @"3rIHoZnUS56Bu3H9X2FKm1"
-#define kAppKey          @"2871037752"
+#define kAppKey          @"M8W4PliA4EA2Oju4Zo0Z01"
 #define kAppSecret       @"uGD286iqV4AUBMY1JndC64"
 
 #pragma -mark string

@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "BaseNagationViewController.h"
+#import "AMScrollingNavbarViewController.h"
 #import "ViewPagerController.h"
 
 @protocol baseDataSource;
@@ -16,7 +16,7 @@
 
 
 
-@interface ScrollVCBase : BaseNagationViewController
+@interface ScrollVCBase : AMScrollingNavbarViewController
 
 @property id<baseDataSource> dataSource;
 @property id<baseDelegate> delegate;

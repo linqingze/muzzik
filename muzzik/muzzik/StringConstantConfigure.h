@@ -32,8 +32,8 @@
 #define Image_retweetImage              @"retweetImage"
 #define Image_replyImage                @"replyImage"
 #define Image_shareImage                @"shareImage"
-#define Image_visibleImage_login        @"visibleImageL"
-#define Image_invisibleImage_login      @"invisibleImageL"
+#define Image_visibleImage_login        @"loginvisibleImage"
+#define Image_invisibleImage_login      @"logininvisibleImage"
 #define Image_lineImage                 @"lineImage"
 #define Image_yellowretweetImage        @"yellowretweetImage"
 #define Image_redretweetImage           @"redretweetImage"
@@ -64,6 +64,7 @@
 #define Image_settingImage              @"settingImage"
 #define Image_addpicImage               @"addpicImage"
 
+#define Image_settingavatarscover       @"settingavatarscover"
 #define Image_deletesongImage           @"deletesongImage"
 #define Image_detailaddedsongImage      @"detailaddedsongImage"
 #define Image_detailaddsongImage        @"detailaddsongImage"
@@ -75,6 +76,21 @@
 #define Image_detailretweetImage        @"detailretweetImage"
 #define Image_detailreplyImage          @"detailreplyImage"
 #define Image_detailshareImage          @"detailshareImage"
+#define Image_settingonImage            @"settingonImage"
+#define Image_settingoffImage           @"settingoffImage"
+#define Image_detailgreyplay            @"detailgreyplay"
+#define Image_detailblueplay            @"detailblueplay"
+#define Image_detailredplay             @"detailredplay"
+#define Image_detailyellowplay          @"detailyellowplay"
+#define Image_detailinvisibleImage      @"detailinvisibleImage"
+#define Image_detailvisibleImage        @"detailvisibleImage"
+#define Image_maleselectedImage         @"maleselectedImage"
+#define Image_femaleselectedImage       @"femaleselectedImage"
+#define Image_detailstopblueImage       @"detailstopblueImage"
+#define Image_detailstoporangeImage     @"detailstoporangeImage"
+#define Image_detailstopredImage        @"detailstopredImage"
+#define Image_detailstopyellowImage     @"detailstopyellowImage"
+
 
 
 #define Parameter_Id              @"_id"
@@ -87,4 +103,8 @@
 #define Parameter_reply_id        @"reply"
 #define Parameter_repost_id       @"repost"
 
+
+
+#define Constant_Comment            @"Coment"
+#define Constant_showComment        @"showComment"
 #endif

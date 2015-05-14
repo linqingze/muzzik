@@ -7,7 +7,8 @@
 //
 
 #import "UserMuzzikVC.h"
-
+#import "MuzzikTableVC.h"
+#import "CommentTableVC.h"
 @interface UserMuzzikVC()<baseDelegate, baseDataSource>
 
 @end
@@ -26,7 +27,7 @@
     [super viewDidLoad];
     //[MuzzikItem addLineOnView:self.navigationController.view heightPoint:64 toLeft:0 toRight:0 withColor:Color_NavigationBar];
     [self.view setBackgroundColor:Color_NavigationBar];
-    [self initNagationBar:@"选歌" leftBtn:Constant_backImage rightBtn:Constant_searchImage];
+    [self initNagationBar:@"我的Muzzik" leftBtn:Constant_backImage rightBtn:Constant_searchImage];
     // Do any additional setup after loading the view.
 }
 - (NSUInteger)numberOfTabsForViewPager:(ScrollVCBase *)viewPager {
@@ -49,19 +50,19 @@
     return label;
 }
 
-//- (UIViewController *)viewPager:(ScrollVCBase *)viewPager contentViewControllerForTabAtIndex:(NSUInteger)index {
-//    
-//    if (index == 0) {
-//        SongTableViewController *svc = [[SongTableViewController alloc] init];
-//        svc.keeper = self;
-//        return svc;
-//    }
-//    else{
-//        SearchLibraryMusicVC *searchVC = [[SearchLibraryMusicVC alloc] init];
-//        searchVC.keeper = self;
-//        return searchVC;
-//    }
-//}
+- (UIViewController *)viewPager:(ScrollVCBase *)viewPager contentViewControllerForTabAtIndex:(NSUInteger)index {
+    
+    if (index == 0) {
+        MuzzikTableVC *muzzikTable = [[MuzzikTableVC alloc] init];
+        muzzikTable.keeper = self;
+        return muzzikTable;
+    }
+    else{
+        CommentTableVC *commentvc = [[CommentTableVC alloc] init];
+        commentvc.keeper = self;
+        return commentvc;
+    }
+}
 
 #pragma mark - ViewPagerDelegate
 - (CGFloat)viewPager:(ScrollVCBase *)viewPager valueForOption:(ViewPagerOption)option withDefault:(CGFloat)value {

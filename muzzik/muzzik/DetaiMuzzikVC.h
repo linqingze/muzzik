@@ -6,9 +6,10 @@
 //  Copyright (c) 2015年 muzziker. All rights reserved.
 //
 
-#import "BaseNagationViewController.h"
+#import "AMScrollingNavbarViewController.h"
 
-@interface DetaiMuzzikVC : BaseNagationViewController
-@property (nonatomic) muzzik *localmuzzik;
-@property(nonatomic) musicPlayer *musicplayer;
+@interface DetaiMuzzikVC : AMScrollingNavbarViewController
+@property (nonatomic,retain) muzzik *localmuzzik;
+@property(nonatomic,retain) musicPlayer *musicplayer;
+@property(nonatomic,copy) NSString *showType;          //区分普通进入，评论和看评论
 @end

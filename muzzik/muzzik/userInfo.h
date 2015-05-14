@@ -16,6 +16,7 @@
 @property (nonatomic) BOOL blocked;
 @property (nonatomic,copy) NSString *name;
 @property (nonatomic,copy) NSString *deviceToken;
+@property (nonatomic,copy) NSString *clientId;
 +(userInfo *) shareClass;
 +(void)checkLoginWithVC:(UIViewController *)vc;
 @end

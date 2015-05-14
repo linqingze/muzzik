@@ -12,7 +12,6 @@
 @interface AMScrollingNavbarViewController : BaseNagationViewController
 
 @property (strong, nonatomic) UIPanGestureRecognizer *panGesture;
-@property (strong, nonatomic) UIView *overView;
 
 /**-----------------------------------------------------------------------------
  * @name AMScrollingNavbarViewController

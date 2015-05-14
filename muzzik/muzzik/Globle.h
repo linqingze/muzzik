@@ -12,6 +12,7 @@
 extern NSString * FMRFRadioViewStatusNotifiation;
 extern NSString * FMRFRadioViewSetSongInformationNotification;
 @interface Globle : NSObject
+@property (nonatomic,assign) BOOL isHeadView;
 @property (nonatomic,assign) BOOL isPlaying;
 @property (nonatomic,assign) BOOL isApplicationEnterBackground;
 @property (nonatomic,assign) BOOL isPause;

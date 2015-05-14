@@ -275,7 +275,7 @@ static NSOperationQueue *sharedQueue = nil;
 	}
 }
 -(void) addBodyDataSourceWithJsonByDic:(NSDictionary *)dic Method:(NSString *)method auth:(BOOL) auth{
-    [self addRequestHeader:@"Content-Type" value:@"application/json;encoding=utf-8"];
+    
     [self addRequestHeader:@"Accept" value:@"application/json"];
     if (auth) {
         userInfo *user = [userInfo shareClass];
@@ -286,6 +286,7 @@ static NSOperationQueue *sharedQueue = nil;
     }
     if ([method isEqualToString:GetMethod]) {
         if (dic) {
+            [self addRequestHeader:@"Content-Type" value:@"application/json;encoding=utf-8"];
             NSString *requestString = [NSString stringWithFormat:@"%@?",self.url.description];
             for (NSString *dicKey in [dic allKeys]) {
                 requestString  = [requestString stringByAppendingString:[NSString stringWithFormat:@"%@=%@&",dicKey,[dic objectForKey:dicKey]]];
@@ -296,6 +297,7 @@ static NSOperationQueue *sharedQueue = nil;
         [self setRequestMethod:@"GET"];
     }else if([method isEqualToString:PostMethod]){
         if (dic) {
+            [self addRequestHeader:@"Content-Type" value:@"application/json;encoding=utf-8"];
             NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dic options:NSJSONWritingPrettyPrinted error:nil];
             NSMutableData *tempJsonData = [NSMutableData dataWithData:jsonData];
             
@@ -305,6 +307,7 @@ static NSOperationQueue *sharedQueue = nil;
         [self setRequestMethod:@"POST"];
     }else if([method isEqualToString:PutMethod]){
         if (dic) {
+            [self addRequestHeader:@"Content-Type" value:@"application/json;encoding=utf-8"];
             NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dic options:NSJSONWritingPrettyPrinted error:nil];
             NSMutableData *tempJsonData = [NSMutableData dataWithData:jsonData];
             
@@ -315,7 +318,7 @@ static NSOperationQueue *sharedQueue = nil;
     }
     else if([method isEqualToString:DeleteMethod]){
         if (dic) {
-            
+            [self addRequestHeader:@"Content-Type" value:@"application/json;encoding=utf-8"];
         }
      [self setRequestMethod:@"DELETE"];   
     }

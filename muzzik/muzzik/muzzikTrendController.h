@@ -23,10 +23,8 @@
     NSInteger isPlayBack;
     
 }
-@property(weak,nonatomic) RootViewController *homeNav;
 @property(nonatomic) NSMutableArray *muzziks;
 @property(nonatomic) musicPlayer *musicplayer;
 @property(nonatomic) NSString *topicName;
 @property(nonatomic) NSURL *imageURL;
-
 @end

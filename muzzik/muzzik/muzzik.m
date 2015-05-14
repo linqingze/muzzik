@@ -31,6 +31,7 @@
         newmuzzik.plays = [dic objectForKey:@"plays"];
         newmuzzik.repostID = [dic objectForKey:@"repostID"];
         newmuzzik.title = [dic objectForKey:@"title"];
+        newmuzzik.repostDate = [dic objectForKey:@"repostDate"];
         newmuzzik.reposter = [MuzzikUser new];
         newmuzzik.reposter.name = [[dic objectForKey:@"repostUser"] objectForKey:@"name"];
         newmuzzik.reposter.user_id = [[dic objectForKey:@"repostUser"] objectForKey:@"_id"];
