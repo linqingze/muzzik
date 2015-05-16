@@ -1333,6 +1333,14 @@
     choosevc.comeInType = @"comment";
     [self.navigationController pushViewController:choosevc animated:YES];
 }
+-(void)userDetail:(NSString *)user_id{
+    userDetailInfo *detailuser = [[userDetailInfo alloc] init];
+    detailuser.uid = user_id;
+    [self.navigationController pushViewController:detailuser animated:YES];
+    
+    
+}
+
 -(void)playnextMuzzikUpdate{
     Globle *glob = [Globle shareGloble];
     if ([[musicPlayer shareClass].localMuzzik.muzzik_id isEqualToString:self.localmuzzik.muzzik_id]&&!glob.isPause) {

@@ -142,6 +142,10 @@
     }];
     [requestForm startAsynchronous];
 }
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [topicTableView addFooterWithTarget:self action:@selector(refreshFooter)];
+}
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     [searchView removeFromSuperview];
@@ -260,13 +264,14 @@
         [searchView removeFromSuperview];
     }];
 }
-- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
 
+-(void)searchBarSearchButtonClicked:(UISearchBar *)localsearchBar{
+        [searchBar resignFirstResponder];
     [searchArray removeAllObjects];
-    if ([searchText length]>0) {
+    if ([localsearchBar.text length]>0) {
         isSearch = YES;
-        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Music_Search]]];
-        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[searchText stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] forKey:@"q"] Method:GetMethod auth:NO];
+        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Topic_search]]];
+        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[localsearchBar.text stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] forKey:@"q"] Method:GetMethod auth:YES];
         __weak ASIHTTPRequest *weakrequest = requestForm;
         [requestForm setCompletionBlock :^{
             NSLog(@"%@",[weakrequest responseString]);
@@ -277,7 +282,7 @@
                 searchArray = [[TopicModel new] makeTopicssByMuzzikArray:[dic objectForKey:@"music"]];
                 if ([searchArray count] == 0) {
                     isNew = YES;
-                    searchArray = [NSMutableArray arrayWithArray:@[[NSString stringWithFormat:@"添加新话题：#%@#",searchText]]];
+                    searchArray = [NSMutableArray arrayWithArray:@[[NSString stringWithFormat:@"添加新话题：#%@#",localsearchBar.text]]];
                 }else{
                     isNew = NO;
                 }
@@ -298,11 +303,6 @@
         isSearch = NO;
         [topicTableView reloadData];
     }
-
-}
--(void)searchBarSearchButtonClicked:(UISearchBar *)loclsearchBar{
-    NSLog(@"search%@",loclsearchBar.text);
-    [searchBar resignFirstResponder];
 
 }
 

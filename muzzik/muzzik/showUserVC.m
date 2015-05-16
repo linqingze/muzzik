@@ -124,7 +124,7 @@
     MuzzikUser *muzzikuser = userArray[indexPath.row];
     [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     [cell.headerImage setAlpha:0];
-    [cell.headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,muzzikuser.avatar]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+    [cell.headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,muzzikuser.avatar]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
         [cell.headerImage setAlpha:1];
     }];
     cell.label.text = muzzikuser.name;

@@ -36,6 +36,7 @@
     BOOL isPlaying;
     UIButton *newButton;
     NSString *lastId;
+    NSString *headId;
     int page;
 }
 @end
@@ -86,6 +87,7 @@
             muzzik *muzzikToy = [muzzik new];
             self.muzziks = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
             lastId = [dic objectForKey:@"tail"];
+            headId = [dic objectForKey:Parameter_from];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [MytableView reloadData];
                 [MytableView headerEndRefreshing];
@@ -774,9 +776,9 @@
     }
     if ([lastId length]>0) {
         
-        requestDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%d",self.muzziks.count],Parameter_Limit,lastId,Parameter_from, nil];
+        requestDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%d",self.muzziks.count],Parameter_Limit,lastId,Parameter_tail, nil];
     }else{
-        requestDic = [NSDictionary dictionaryWithObject:Limit_Constant forKey:Parameter_Limit];
+        requestDic = [NSDictionary dictionaryWithObject:@"20" forKey:Parameter_Limit];
         
     }
     [request addBodyDataSourceWithJsonByDic:requestDic Method:GetMethod auth:YES];
@@ -790,6 +792,7 @@
             muzzik *muzzikToy = [muzzik new];
             self.muzziks = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
             lastId = [dic objectForKey:@"tail"];
+            headId = [dic objectForKey:Parameter_from];
             [MytableView reloadData];
             
         }

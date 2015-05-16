@@ -11,6 +11,10 @@
 #import "ProfileSetting.h"
 #import "UserMuzzikVC.h"
 #import "MuzzikTableVC.h"
+#import "UsetTopicVC.h"
+#import "showUsersVC.h"
+#import "MoveMuzzikVC.h"
+#import "UserSongVC.h"
 @interface UserHomePage ()<UITableViewDelegate>{
     UIView *mainView;
     UITableView *mainTableView;
@@ -218,7 +222,7 @@
             }
         }
         
-        CGFloat recordHeight = 288;
+        CGFloat recordHeight = SCREEN_WIDTH-32;
         if ([dicKeys containsObject:@"astro"] && [[_profileDic objectForKey:@"astro"] length]>0) {
             constellationImage.frame = CGRectMake(16, recordHeight+5, 8, 8);
             [constellationImage setImage:[UIImage imageNamed:Image_profileconstellationImage]];
@@ -377,19 +381,25 @@
 }
 
 -(void)showTopic{
-    
+    UsetTopicVC *usertopic = [[UsetTopicVC alloc] init];
+    [self.navigationController pushViewController:usertopic animated:YES];
 }
 
 -(void)showFollow{
-    
+    showUsersVC *showuser = [[showUsersVC alloc] init];
+    showuser.showType = @"follows";
+    [self.navigationController pushViewController:showuser animated:YES];
 }
 
 -(void)showFans{
-    
+    showUsersVC *showuser = [[showUsersVC alloc] init];
+    showuser.showType = @"fans";
+    [self.navigationController pushViewController:showuser animated:YES];
 }
 
 -(void)showSong{
-    
+    UserSongVC* usersong = [[UserSongVC alloc] init];
+    [self.navigationController pushViewController:usersong animated:YES];
 }
 /*
 #pragma mark - Navigation

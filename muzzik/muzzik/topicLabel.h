@@ -16,4 +16,5 @@
 @interface topicLabel : UILabel
 @property (nonatomic,weak) id<TapLabelDelegate>delegate;
 @property (nonatomic,copy) NSString *tid;
+-(void)setText:(NSString *)text font:(UIFont *) font color:(long)color;
 @end

@@ -90,6 +90,16 @@
 #define Image_detailstoporangeImage     @"detailstoporangeImage"
 #define Image_detailstopredImage        @"detailstopredImage"
 #define Image_detailstopyellowImage     @"detailstopyellowImage"
+#define Image_timelineblueImage         @"timelineblueImage"
+#define Image_timelineredImage          @"timelineredImage"
+#define Image_timelineyellowImage       @"timelineyellowImage"
+#define Image_songlistpostweetImage     @"songlistpostweetImage"
+#define Image_recommendarrowImage       @"recommendarrowImage"
+#define Image_recommendwhitearrowImage  @"recommendwhitearrowImage"
+#define Image_recommendfollow           @"recommendfollow"
+#define Image_recommendfollowed         @"recommendfollowed"
+#define Image_recommendfollowedeachother    @"recommendfollowedeachother"
+
 
 
 

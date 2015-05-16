@@ -542,11 +542,11 @@
         songName.text = playMuzzik.music.name;
         if (playMuzzik.MuzzikUser) {
             nickLabel.text = playMuzzik.MuzzikUser.name;
-            [headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,playMuzzik.MuzzikUser.avatar]]];
+            [headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,playMuzzik.MuzzikUser.avatar]]];
         }else{
             userInfo *user = [userInfo shareClass];
             if ([user.token length]>0) {
-                [headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,user.avatar]]];
+                [headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,user.avatar]]];
                 nickLabel.text = user.name;
             }else{
                 nickLabel.text = @"Muzzik";

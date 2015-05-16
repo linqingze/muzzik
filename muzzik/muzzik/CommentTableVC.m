@@ -138,6 +138,11 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+-(void)userDetail:(NSString *)user_id{
+    userDetailInfo *detailuser = [[userDetailInfo alloc] init];
+    detailuser.uid = user_id;
+     [self.keeper.navigationController pushViewController:detailuser animated:YES];
+}
 
 #pragma -mark tableView Delegate
 

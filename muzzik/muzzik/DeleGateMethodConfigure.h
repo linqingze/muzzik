@@ -29,6 +29,8 @@
 -(void)showFollow:(NSString *)uid;
 -(void)showSong:(NSString *)uid;
 -(void)showFans:(NSString *)uid;
+-(void)attention:(NSInteger)index;
+-(void)newMuzzik:(muzzik *)localMzzik;
 @end
 
 #endif

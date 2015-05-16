@@ -8,10 +8,11 @@
 
 #import "SearchForUser.h"
 #import "searchUserCell.h"
-#import "UIImageView+WebCache.h"
+#import "UIButton+WebCache.h"
 #import "MuzzikObject.h"
 #import "AttentionUser.h"
-@interface SearchForUser (){
+#import "userDetailInfo.h"
+@interface SearchForUser ()<CellDelegate>{
     NSInteger indexOfMuzzik;
     BOOL isSearch;
     NSString *pageID;
@@ -71,10 +72,11 @@
     searchUserCell *cell = [tableView dequeueReusableCellWithIdentifier:@"searchUserCell" forIndexPath:indexPath];
     AttentionUser *muzzikuser = self.searchArray[indexPath.row];
     [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-    [cell.headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,muzzikuser.avatar]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+    [cell.headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,muzzikuser.avatar]] forState:UIControlStateNormal completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
         [cell.headerImage setAlpha:1];
     }];
-    cell.searchUser = self;
+    cell.delegate = self;
+    cell.muzzikUser = muzzikuser;
     cell.index = indexPath.row;
     cell.label.text = muzzikuser.name;
     if (muzzikuser.isFollow &&muzzikuser.isFans) {
@@ -187,5 +189,10 @@
         }];
         [requestForm startAsynchronous];
     }
+}
+-(void)userDetail:(NSString *)user_id{
+    userDetailInfo *detailuser = [[userDetailInfo alloc] init];
+    detailuser.uid = user_id;
+    [self.keeper.navigationController pushViewController:detailuser animated:YES];
 }
 @end

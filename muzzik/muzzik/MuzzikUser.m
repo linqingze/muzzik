@@ -19,7 +19,14 @@
         newUser.avatar = [dic objectForKey:Parameter_avatar];
         newUser.gender = [dic objectForKey:Parameter_Gender];
         newUser.name = [dic objectForKey:Parameter_name];
-
+        if ([[dic allKeys] containsObject:@"isFollow"]) {
+            newUser.isFollow = [[dic objectForKey:@"isFollow"] boolValue];
+        }
+        if ([[dic allKeys] containsObject:@"isFans"]) {
+            newUser.isFans = [[dic objectForKey:@"isFans"] boolValue];
+        }
+        
+        
         [users addObject:newUser];
     }
     return users;

@@ -6,8 +6,9 @@
 //  Copyright (c) 2015年 muzziker. All rights reserved.
 //
 
-#import "BaseNagationViewController.h"
+#import "AMScrollingNavbarViewController.h"
 
-@interface showUsersVC : BaseNagationViewController
-
+@interface showUsersVC : AMScrollingNavbarViewController
+@property (nonatomic,copy) NSString *showType;
+@property (nonatomic,copy) NSString *uid;
 @end

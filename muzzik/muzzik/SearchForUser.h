@@ -11,4 +11,5 @@
 @interface SearchForUser : UITableViewController<searchSource>
 @property (nonatomic,weak) searchViewController *keeper;
 -(void) attention:(NSInteger) index;
+-(void) goUser:(NSInteger) index;
 @end

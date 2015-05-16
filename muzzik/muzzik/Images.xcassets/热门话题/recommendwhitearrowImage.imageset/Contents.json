@@ -3,17 +3,17 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "黑返回向右.png"
+      "filename" : "recommendwhitearrowImage.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "黑返回向右@2x.png"
+      "filename" : "recommendwhitearrowImage@2x.png"
     },
     {
       "idiom" : "universal",
       "scale" : "3x",
-      "filename" : "黑返回向右@3x.png"
+      "filename" : "recommendwhitearrowImage@3x.png"
     }
   ],
   "info" : {

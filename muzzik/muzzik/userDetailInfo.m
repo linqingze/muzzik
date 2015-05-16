@@ -13,6 +13,8 @@
 #import "DetaiMuzzikVC.h"
 #import "UIImageView+WebCache.h"
 #import "UIScrollView+DXRefresh.h"
+#import "UserSongVC.h"
+#import "showUsersVC.h"
 @interface userDetailInfo ()<UITableViewDataSource,UITableViewDelegate,CXDelegate,CellDelegate>{
     NSMutableDictionary *RefreshDic;
     UITableView *MyTableView;
@@ -860,16 +862,24 @@
     showvc.showType = @"moved";
     [self.navigationController pushViewController:showvc animated:YES];
 }
--(void)showSong:(NSString *)uid{
-    
+-(void)showSong{
+    UserSongVC *usersongvc = [[UserSongVC alloc] init];
+    usersongvc.uid = self.uid;
+    [self.navigationController pushViewController:usersongvc animated:YES];
 }
 
--(void)showFans:(NSString *)uid{
-
+-(void)showFans{
+    showUsersVC *usersvc = [[showUsersVC alloc] init];
+    usersvc.showType = @"fans";
+    usersvc.uid = self.uid;
+    [self.navigationController pushViewController:usersvc animated:YES];
 }
 
--(void)showFollow:(NSString *)uid{
-    
+-(void)showFollow{
+    showUsersVC *usersvc = [[showUsersVC alloc] init];
+    usersvc.showType = @"follows";
+    usersvc.uid = self.uid;
+    [self.navigationController pushViewController:usersvc animated:YES];
 }
 
 
