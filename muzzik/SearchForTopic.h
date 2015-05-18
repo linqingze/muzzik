@@ -8,7 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "searchViewController.h"
-@interface SearchForTopic : UITableViewController<searchSource>
+#import "AMScrollingNavbarViewController.h"
+@interface SearchForTopic : AMScrollingNavbarViewController<searchSource,UITableViewDataSource,UITableViewDelegate>
 @property (nonatomic,weak) searchViewController *keeper;
 @property (nonatomic,retain) NSMutableDictionary *shareDic;
 -(void) poAction:(NSInteger)index;

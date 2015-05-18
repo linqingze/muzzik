@@ -46,6 +46,8 @@
     [super viewDidLoad];
     if ([self.requstType  isEqualToString:@"moved"]) {
         [self initNagationBar:@"喜欢的Muzzik" leftBtn:Constant_backImage rightBtn:0];
+    }else if([self.requstType isEqualToString:@"feeds"]){
+        [self initNagationBar:@"关注" leftBtn:Constant_backImage rightBtn:0];
     }
     page = 2;
     self.uid = [userInfo shareClass].uid;
@@ -72,7 +74,11 @@
     ASIHTTPRequest *request;
     if ([self.requstType  isEqualToString:@"moved"]) {
         request= [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/movedMuzzik",BaseURL]]];
-    }else{
+    }else if([self.requstType  isEqualToString:@"feeds"]){
+        request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/feeds",BaseURL]]];
+        
+    }
+    else{
         request= [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@/muzziks",BaseURL,self.uid]]];
     }
     
@@ -110,7 +116,11 @@
     if ([self.requstType  isEqualToString:@"moved"]) {
         request= [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/movedMuzzik",BaseURL]]];
         [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:page],Parameter_page,Limit_Constant,Parameter_Limit, nil] Method:GetMethod auth:YES];
-    }else{
+    }else if([self.requstType  isEqualToString:@"feeds"]){
+        request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/feeds",BaseURL]]];
+        [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:lastId,Parameter_from,Limit_Constant,Parameter_Limit, nil] Method:GetMethod auth:YES];
+    }
+    else{
         request= [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@/muzziks",BaseURL,self.uid]]];
         [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:lastId,Parameter_from,Limit_Constant,Parameter_Limit, nil] Method:GetMethod auth:YES];
     }
@@ -144,7 +154,7 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self reloadMuzzikSource];
-    if ([self.requstType  isEqualToString:@"moved"]) {
+    if ([self.requstType  length]>0) {
         [self followScrollView:MytableView];
     }else{
         
@@ -233,7 +243,7 @@
         muzzik *tempMuzzik = self.muzziks[indexPath.row];
         DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
         detail.localmuzzik = tempMuzzik;
-        if ([self.requstType  isEqualToString:@"moved"]) {
+        if ([self.requstType length]>0) {
             [self.navigationController pushViewController:detail animated:YES];
         }else{
             [self.keeper.navigationController pushViewController:detail animated:YES];
@@ -665,7 +675,7 @@
     if ([[url.lastPathComponent substringToIndex:1] isEqualToString:@"#"]) {
         TopicDetail *topicDetail = [[TopicDetail alloc] init];
         topicDetail.topic_id = urlId;
-        if ([self.requstType  isEqualToString:@"moved"]) {
+        if ([self.requstType  length]>0) {
             [self.navigationController pushViewController:topicDetail animated:YES];
         }else{
             [self.keeper.navigationController pushViewController:topicDetail animated:YES];
@@ -675,7 +685,7 @@
     }else {
         userDetailInfo *uInfo = [[userDetailInfo alloc] init];
         uInfo.uid = [urlId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        if ([self.requstType  isEqualToString:@"moved"]) {
+        if ([self.requstType  length]>0) {
             [self.navigationController pushViewController:uInfo animated:YES];
         }else{
             [self.keeper.navigationController pushViewController:uInfo animated:YES];
@@ -714,7 +724,7 @@
         
     }else{
         LoginViewController *loginVC = [[LoginViewController alloc] init];
-        if ([self.requstType  isEqualToString:@"moved"]) {
+        if ([self.requstType  length]>0) {
             [self.navigationController pushViewController:loginVC animated:YES];
         }else{
             [self.keeper.navigationController pushViewController:loginVC animated:YES];
@@ -770,6 +780,8 @@
     ASIHTTPRequest *request;
     if ([self.requstType  isEqualToString:@"moved"]) {
         request= [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/movedMuzzik",BaseURL]]];
+    }else if([self.requstType  isEqualToString:@"feeds"]){
+        request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/feeds",BaseURL]]];
     }else{
         request= [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@/muzziks",BaseURL,self.uid]]];
   
@@ -817,7 +829,7 @@
     DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
     detail.localmuzzik = tempMuzzik;
     detail.showType = Constant_Comment;
-    if ([self.requstType  isEqualToString:@"moved"]) {
+    if ([self.requstType length]>0) {
         [self.navigationController pushViewController:detail animated:YES];
     }else{
         [self.keeper.navigationController pushViewController:detail animated:YES];
@@ -828,7 +840,7 @@
     showUserVC *showvc = [[showUserVC alloc] init];
     showvc.muzzik_id = muzzik_id;
     showvc.showType = @"repost";
-    if ([self.requstType  isEqualToString:@"moved"]) {
+    if ([self.requstType  length]>0) {
         [self.navigationController pushViewController:showvc animated:YES];
     }else{
         [self.keeper.navigationController pushViewController:showvc animated:YES];
@@ -838,7 +850,7 @@
     showUserVC *showvc = [[showUserVC alloc] init];
     showvc.muzzik_id = muzzik_id;
     showvc.showType = @"share";
-    if ([self.requstType  isEqualToString:@"moved"]) {
+    if ([self.requstType  length]>0) {
         [self.navigationController pushViewController:showvc animated:YES];
     }else{
         [self.keeper.navigationController pushViewController:showvc animated:YES];
@@ -849,7 +861,7 @@
     DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
     detail.localmuzzik = tempMuzzik;
     detail.showType = Constant_showComment;
-    if ([self.requstType  isEqualToString:@"moved"]) {
+    if ([self.requstType  length]>0) {
         [self.navigationController pushViewController:detail animated:YES];
     }else{
         [self.keeper.navigationController pushViewController:detail animated:YES];
@@ -861,7 +873,7 @@
     showUserVC *showvc = [[showUserVC alloc] init];
     showvc.muzzik_id = muzzik_id;
     showvc.showType = @"moved";
-    if ([self.requstType  isEqualToString:@"moved"]) {
+    if ([self.requstType  length]>0) {
         [self.navigationController pushViewController:showvc animated:YES];
     }else{
         [self.keeper.navigationController pushViewController:showvc animated:YES];
@@ -871,7 +883,7 @@
 -(void)userDetail:(NSString *)user_id{
     userDetailInfo *detailuser = [[userDetailInfo alloc] init];
     detailuser.uid = user_id;
-    if ([self.requstType  isEqualToString:@"moved"]) {
+    if ([self.requstType  length]>0) {
         [self.navigationController pushViewController:detailuser animated:YES];
     }else{
         [self.keeper.navigationController pushViewController:detailuser animated:YES];

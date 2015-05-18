@@ -10,6 +10,7 @@
 #import "SearchtopicCell.h"
 #import "MuzzikObject.h"
 #import "MessageStepViewController.h"
+#import "TopicDetail.h"
 @interface SearchForTopic (){
     NSInteger indexOfMuzzik;
     BOOL isSearch;
@@ -21,6 +22,7 @@
     UILabel *searchLabel;
     UILabel *resultLabel;
     BOOL isNew;
+    UITableView *myTableView;
 }
 @property(nonatomic,retain)NSMutableArray *searchArray;
 
@@ -30,7 +32,11 @@
 - (void)viewDidLoad {
     page = 1;
     [super viewDidLoad];
-    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    myTableView  = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
+    myTableView.delegate = self;
+    myTableView.dataSource = self;
+    [self.view addSubview:myTableView];
+    myTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     searchView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 60)];
     searchLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 20, SCREEN_WIDTH-60, 20)];
     [searchLabel setFont:[UIFont systemFontOfSize:14]];
@@ -38,12 +44,12 @@
     [searchView addSubview:searchLabel];
     [searchView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(searchTopic)]];
     [MuzzikItem addLineOnView:searchView heightPoint:60 toLeft:13 toRight:13 withColor:Color_line_1];
-    [self.tableView registerClass:[SearchtopicCell class] forCellReuseIdentifier:@"SearchtopicCell"];
+    [myTableView registerClass:[SearchtopicCell class] forCellReuseIdentifier:@"SearchtopicCell"];
 }
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self.keeper.searchBar setHidden:NO];
     self.keeper.activityVC = self;
+    [self.keeper followScrollView:myTableView];
     if ([self.keeper.searchBar.text length]>0 &&![_searchText isEqualToString:self.keeper.searchBar.text]) {
         searchLabel.text = [NSString stringWithFormat:@"搜索相关音乐:%@",self.keeper.searchBar.text];
         [self.view addSubview:searchView];
@@ -89,12 +95,16 @@
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return 60.0;
 }
-
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    TopicDetail *topic = [[TopicDetail alloc] init];
+    topic.topic_id = [self.searchArray[indexPath.row] objectForKey:@"_id"];
+    [self.keeper.navigationController pushViewController:topic animated:YES];
+}
 -(void)updateDataSource:(NSString *)searchText{
     [resultLabel removeFromSuperview];
     isNew = NO;
     [self.searchArray removeAllObjects];
-    [self.tableView reloadData];
+    [myTableView reloadData];
     if ([searchText length]>0) {
         searchLabel.text = [NSString stringWithFormat:@"搜索相关音乐:%@",self.keeper.searchBar.text];
         [self.view addSubview:searchView];
@@ -110,7 +120,6 @@
 -(void) poAction:(NSInteger)index{
     MuzzikObject *mobject = [MuzzikObject shareClass];
     mobject.tempmessage = [NSString stringWithFormat:@"#%@#",[self.searchArray[index] objectForKey:@"name"]];
-    [self.keeper.searchView setHidden:YES];
     MessageStepViewController *messagebv = [[MessageStepViewController alloc] init];
     [self.keeper.navigationController pushViewController:messagebv animated:YES];
 }
@@ -153,7 +162,7 @@
                         [self.view addSubview:resultLabel];
                         
                     }
-                    [self.tableView reloadData];
+                    [myTableView reloadData];
                 }
                 else{
                     //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];

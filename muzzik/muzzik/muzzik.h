@@ -7,12 +7,14 @@
 //
 #import "MuzzikUser.h"
 #import "music.h"
+#import "ReplyObject.h"
 #import <Foundation/Foundation.h>
 
 @interface muzzik : NSObject
 @property (nonatomic,copy) NSString *muzzik_id;
 @property (nonatomic,copy) NSString *date;
 @property (nonatomic,assign) BOOL ismoved;
+@property (nonatomic,retain) ReplyObject *reply;
 @property (nonatomic,retain) MuzzikUser *MuzzikUser;
 @property (nonatomic,retain) MuzzikUser *reposter;
 @property (nonatomic,copy) NSString *message;

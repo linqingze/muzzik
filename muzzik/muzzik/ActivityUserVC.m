@@ -1,140 +1,55 @@
 //
-//  showUsersVC.m
+//  ActivityUserVC.m
 //  muzzik
 //
-//  Created by muzzik on 15/5/13.
+//  Created by muzzik on 15/5/17.
 //  Copyright (c) 2015年 muzziker. All rights reserved.
 //
 
-#import "showUsersVC.h"
-#import "UIScrollView+DXRefresh.h"
+#import "ActivityUserVC.h"
 #import "searchUserCell.h"
-#import "UIImageView+WebCache.h"
 #import "userDetailInfo.h"
-@interface showUsersVC ()<UITableViewDataSource,UITableViewDelegate,CellDelegate>{
+#import "UIImageView+WebCache.h"
+@interface ActivityUserVC ()<UITableViewDataSource,UITableViewDelegate,CellDelegate>{
     UITableView *userTableview;
     NSMutableArray *userArray;
-    int page;
 }
 
 @end
 
-@implementation showUsersVC
+@implementation ActivityUserVC
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    page = 2;
+    [self initNagationBar:@"活跃用户" leftBtn:Constant_backImage rightBtn:0];
     userTableview = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     [self.view addSubview:userTableview];
     userTableview.delegate = self;
     userTableview.dataSource = self;
     userTableview.separatorStyle = UITableViewCellSeparatorStyleNone;
-
+    
     [userTableview registerClass:[searchUserCell class] forCellReuseIdentifier:@"searchUserCell"];
-    ASIHTTPRequest *requestForm;
-    NSString *uid;
-    if ([self.uid length]>0) {
-        uid = self.uid;
-    }else{
-        uid = [userInfo shareClass].uid;
-    }
-    if ([self.showType isEqualToString:@"fans"]) {
-        [self initNagationBar:@"粉丝" leftBtn:Constant_backImage rightBtn:0];
-        requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@/fans",BaseURL,uid]]];
-    }else{
-        [self initNagationBar:@"关注" leftBtn:Constant_backImage rightBtn:0];
-        requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@/follows",BaseURL,uid]]];
-    }
-    [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:Limit_Constant forKey:Parameter_Limit] Method:GetMethod auth:YES];
-    __weak ASIHTTPRequest *weakrequest = requestForm;
-    [requestForm setCompletionBlock :^{
+    [self followScrollView:userTableview];
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/suggest",BaseURL]]];
+    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:@"6" forKey:Parameter_Limit] Method:GetMethod auth:YES];
+    __weak ASIHTTPRequest *weakrequest = request;
+    [request setCompletionBlock :^{
+        //    NSLog(@"%@",weakrequest.originalURL);
         NSLog(@"%@",[weakrequest responseString]);
-        NSLog(@"%d",[weakrequest responseStatusCode]);
-        
-        if ([weakrequest responseStatusCode] == 200) {
-            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
-            userArray = [[MuzzikUser new] makeMuzziksByUserArray:[dic objectForKey:@"users"]];
-            [userTableview reloadData];
-            if ([userArray count]<[Limit_Constant integerValue]) {
-                [userTableview removeFooter];
-            }
-        }
-        else{
-            //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-        }
-    }];
-    [requestForm setFailedBlock:^{
-        NSLog(@"%@",[weakrequest error]);
-        NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-        [userInfo checkLoginWithVC:self];
-    }];
-    [requestForm startAsynchronous];
-}
-
-
-- (void)refreshFooter
-{
-    ASIHTTPRequest *requestForm;
-    NSString *uid;
-    if ([self.uid length]>0) {
-        uid = self.uid;
-    }else{
-        uid = [userInfo shareClass].uid;
-    }
-    if ([self.showType isEqualToString:@"fans"]) {
-        requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@/fans",BaseURL,uid]]];
-    }else{
-        requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@/follows",BaseURL,uid]]];
-    }
-    [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,[NSNumber numberWithInt:page],Parameter_page, nil] Method:GetMethod auth:YES];
-    __weak ASIHTTPRequest *weakrequest = requestForm;
-    [requestForm setCompletionBlock :^{
-        NSLog(@"%@",[weakrequest responseString]);
-        NSLog(@"%d",[weakrequest responseStatusCode]);
-        
-        if ([weakrequest responseStatusCode] == 200) {
-            page++;
-            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
-            [userArray addObjectsFromArray :[[MuzzikUser new] makeMuzziksByUserArray:[dic objectForKey:@"users"]]];
+        NSData *data = [weakrequest responseData];
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+        if (dic) {
             
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [userTableview reloadData];
-                [userTableview footerEndRefreshing];
-                if ([[dic objectForKey:@"users"] count]<[Limit_Constant integerValue] ) {
-                    [userTableview removeFooter];
-                }
-            });
+            MuzzikUser *muzzikToy = [MuzzikUser new];
+            userArray = [muzzikToy makeMuzziksByUserArray:[dic objectForKey:@"users"]];
+            [userTableview reloadData];
         }
-        else{
-            //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-        }
-    }];
-    [requestForm setFailedBlock:^{
-        NSLog(@"%@",[weakrequest error]);
-        NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-        [userInfo checkLoginWithVC:self];
-    }];
-    [requestForm startAsynchronous];
-    
-}
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
--(void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
-
-    [self.view setNeedsLayout];
-    [userTableview addFooterWithTarget:self action:@selector(refreshFooter)];
-    
-    // MytableView add
-    
-}
-
--(void)viewWillDisappear:(BOOL)animated{
-    [super viewWillDisappear:animated];
-    [userTableview removeFooter];
+        }];
+        [request setFailedBlock:^{
+            NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
+        }];
+        [request startAsynchronous];
+    // Do any additional setup after loading the view.
 }
 #pragma mark - Table view data source
 
@@ -156,7 +71,7 @@
     }];
     cell.delegate = self;
     cell.muzzikUser = muzzikuser;
-
+    
     cell.index = indexPath.row;
     cell.label.text = muzzikuser.name;
     if (muzzikuser.isFollow &&muzzikuser.isFans) {
@@ -181,7 +96,7 @@
     userDetailInfo *detailuser = [[userDetailInfo alloc] init];
     detailuser.uid = attentionuser.user_id;
     [self.navigationController pushViewController:detailuser animated:YES];
-
+    
 }
 -(void)attention:(NSInteger)index{
     MuzzikUser *attentionuser = userArray[index];
@@ -231,6 +146,12 @@
         [requestForm startAsynchronous];
     }
 }
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
 /*
 #pragma mark - Navigation
 

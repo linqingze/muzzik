@@ -74,7 +74,22 @@
     [_searchBar becomeFirstResponder];
 
 }
-
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    for (UIView *view in [self.navigationController.view subviews]) {
+        if ([view isKindOfClass:[RFRadioView class]]) {
+            RFRadioView *musicView = (RFRadioView*)view;
+            [self.navigationController.view insertSubview:self.searchView belowSubview:musicView];
+        }
+    }
+    
+    [self.searchView setHidden:NO];
+}
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    [self.searchView removeFromSuperview];
+    [self.searchView setHidden:YES];
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

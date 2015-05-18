@@ -8,8 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "searchViewController.h"
-@interface SearchForUser : UITableViewController<searchSource>
+#import "AMScrollingNavbarViewController.h"
+@interface SearchForUser : AMScrollingNavbarViewController<UITableViewDelegate,UITableViewDataSource,searchSource>
 @property (nonatomic,weak) searchViewController *keeper;
 -(void) attention:(NSInteger) index;
--(void) goUser:(NSInteger) index;
 @end

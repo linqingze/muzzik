@@ -21,10 +21,9 @@
 }
 
 -(void)setup{
-    self.headerImage = [[UIButton alloc] initWithFrame:CGRectMake(13, 12.5, 35, 35)];
+    self.headerImage = [[UIImageView alloc] initWithFrame:CGRectMake(13, 12.5, 35, 35)];
     self.headerImage.layer.cornerRadius = 17.5;
     self.headerImage.clipsToBounds = YES;
-    [self.headerImage addTarget:self action:@selector(goUser) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview: self.headerImage];
     self.label = [[UILabel alloc] initWithFrame:CGRectMake(60, 20, SCREEN_WIDTH-80, 20)];
     [self.label setFont:[UIFont boldSystemFontOfSize:14]];
@@ -39,9 +38,6 @@
 
 -(void)attentionAction{
     [self.delegate attention:self.index];
-}
--(void)goUser{
-    [self.delegate userDetail:self.muzzikUser.uid];
 }
 
 @end

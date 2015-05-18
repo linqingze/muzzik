@@ -55,8 +55,8 @@
 #define URL_user_Unfollow       @"api/user/unfollow"   //同上
 #define URL_Classify            @"api/common/musicGenre"
 #define URL_Logout              @"api/user/logout"
-#define URL_Get_Feed            @"/api/muzzik/feeds"
-
+#define URL_Get_Feed            @"api/muzzik/feeds"
+#define URL_Notify              @"api/notify"
 
 //#define URL_check_phone @"http://192.168.1.112:3000/api/user/check"
 //#define URL_register @"http://192.168.1.112:3000/api/user/register"

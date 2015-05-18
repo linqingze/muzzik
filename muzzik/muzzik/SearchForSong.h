@@ -8,7 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "searchViewController.h"
-@interface SearchForSong : UITableViewController<searchSource>
+#import "AMScrollingNavbarViewController.h"
+@interface SearchForSong : AMScrollingNavbarViewController
 @property (nonatomic,weak) searchViewController *keeper;
 -(void) playMuzzikWithIndex:(NSInteger) index;
 -(void) commentMuzzikWithIndex:(NSInteger) index;

@@ -8,9 +8,8 @@
 
 #import "SearchForUser.h"
 #import "searchUserCell.h"
-#import "UIButton+WebCache.h"
+#import "UIImageView+WebCache.h"
 #import "MuzzikObject.h"
-#import "AttentionUser.h"
 #import "userDetailInfo.h"
 @interface SearchForUser ()<CellDelegate>{
     NSInteger indexOfMuzzik;
@@ -21,6 +20,7 @@
     NSInteger page;
     UIView *searchView;
     UILabel *searchLabel;
+    UITableView *myTableView;
 }
 @property(nonatomic,retain)NSMutableArray *searchArray;
 @end
@@ -30,7 +30,13 @@
 - (void)viewDidLoad {
     page = 1;
     [super viewDidLoad];
-    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    
+    myTableView  = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
+    myTableView.delegate = self;
+    myTableView.dataSource = self;
+    [self.view addSubview:myTableView];
+    myTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+
     searchView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 50)];
     searchLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 13, SCREEN_WIDTH-60, 20)];
     [searchLabel setFont:[UIFont systemFontOfSize:14]];
@@ -41,11 +47,12 @@
     [searchView addSubview:searchLabel];
     [searchView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(searchUser)]];
     [MuzzikItem addLineOnView:searchView heightPoint:50 toLeft:13 toRight:13 withColor:Color_line_1];
-    [self.tableView registerClass:[searchUserCell class] forCellReuseIdentifier:@"searchUserCell"];
+    [myTableView registerClass:[searchUserCell class] forCellReuseIdentifier:@"searchUserCell"];
 }
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     self.keeper.activityVC = self;
+    [self.keeper followScrollView:myTableView];
     if ([self.keeper.searchBar.text length]>0 &&![_searchText isEqualToString:self.keeper.searchBar.text]) {
         searchLabel.text = [NSString stringWithFormat:@"搜索相关音乐:%@",self.keeper.searchBar.text];
         [self.view addSubview:searchView];
@@ -70,9 +77,9 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     searchUserCell *cell = [tableView dequeueReusableCellWithIdentifier:@"searchUserCell" forIndexPath:indexPath];
-    AttentionUser *muzzikuser = self.searchArray[indexPath.row];
+    MuzzikUser *muzzikuser = self.searchArray[indexPath.row];
     [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-    [cell.headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,muzzikuser.avatar]] forState:UIControlStateNormal completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+    [cell.headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,muzzikuser.avatar]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
         [cell.headerImage setAlpha:1];
     }];
     cell.delegate = self;
@@ -95,11 +102,17 @@
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return 60.0;
 }
-
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    MuzzikUser *attentionuser = self.searchArray[indexPath.row];
+    userDetailInfo *detailuser = [[userDetailInfo alloc] init];
+    detailuser.uid = attentionuser.user_id;
+    [self.keeper.navigationController pushViewController:detailuser animated:YES];
+    
+}
 -(void)updateDataSource:(NSString *)searchText{
     
     [self.searchArray removeAllObjects];
-    [self.tableView reloadData];
+    [myTableView reloadData];
     if ([searchText length]>0) {
         searchLabel.text = [NSString stringWithFormat:@"搜索相关音乐:%@",self.keeper.searchBar.text];
         [self.view addSubview:searchView];
@@ -113,10 +126,10 @@
 }
 //关注用户
 -(void)attention:(NSInteger)index{
-    AttentionUser *attentionuser = self.searchArray[index];
+    MuzzikUser *attentionuser = self.searchArray[index];
     if (attentionuser.isFollow) {
         ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_user_Unfollow]]];
-        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:attentionuser.uid forKey:@"_id"] Method:PostMethod auth:YES];
+        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:attentionuser.user_id forKey:@"_id"] Method:PostMethod auth:YES];
         __weak ASIHTTPRequest *weakrequest = requestForm;
         [requestForm setCompletionBlock :^{
             NSLog(@"%@",[weakrequest responseString]);
@@ -124,7 +137,7 @@
             
             if ([weakrequest responseStatusCode] == 200) {
                 attentionuser.isFollow = NO;
-                [self.tableView reloadData];
+                [myTableView reloadData];
             }
             else{
                 //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
@@ -138,7 +151,7 @@
         [requestForm startAsynchronous];
     }else{
         ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_User_Follow]]];
-        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:attentionuser.uid forKey:@"_id"] Method:PostMethod auth:YES];
+        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:attentionuser.user_id forKey:@"_id"] Method:PostMethod auth:YES];
         __weak ASIHTTPRequest *weakrequest = requestForm;
         [requestForm setCompletionBlock :^{
             NSLog(@"%@",[weakrequest responseString]);
@@ -146,7 +159,7 @@
             
             if ([weakrequest responseStatusCode] == 200) {
                 attentionuser.isFollow = YES;
-                [self.tableView reloadData];
+                [myTableView reloadData];
             }
             else{
                 //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
@@ -175,8 +188,8 @@
             
             if ([weakrequest responseStatusCode] == 200) {
                 NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
-                self.searchArray = [[AttentionUser new] makeAttentionUserByArray:[dic objectForKey:@"users"]];
-                [self.tableView reloadData];
+                self.searchArray = [[MuzzikUser new] makeMuzziksByUserArray:[dic objectForKey:@"users"]];
+                [myTableView reloadData];
             }
             else{
                 //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];

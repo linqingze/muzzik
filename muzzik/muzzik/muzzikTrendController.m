@@ -29,7 +29,7 @@
 #import "TopicDetail.h"
 
 
-#define lineheightLimit   60
+#define lineheightLimit   65
 @interface muzzikTrendController (){
     int numberOfProducts;
     BOOL needsLoad;
@@ -39,6 +39,15 @@
     UIButton *newButton;
     NSString *lastId;
     NSString *headId;
+    
+    //shareView
+    UIView *shareViewFull;
+    UIView *shareView;
+    UIButton *shareToTimeLineButton;
+    UIButton *shareToWeiChatButton;
+    UIButton *shareToWeiboButton;
+    UIButton *shareToQQButton;
+    UIButton *shareToQQZoneButton;
 }
 
 @end
@@ -66,6 +75,7 @@
     
     [self followScrollView:MytableView];
     RefreshDic = [NSMutableDictionary dictionary];
+    [RefreshDic setValue:@"0" forKey:@"0"];
     newButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-70, SCREEN_HEIGHT-125, 55, 55)];
     newButton.layer.cornerRadius = 28;
     newButton.clipsToBounds = YES;
@@ -765,8 +775,7 @@
         //NSLog(@"json:%@,dic:%@",tempJsonData,dic);
         
     }else{
-        LoginViewController *loginVC = [[LoginViewController alloc] init];
-        [self.navigationController pushViewController:loginVC animated:YES];
+        [userInfo checkLoginWithVC:self];
     }
     
     
@@ -919,6 +928,15 @@
     
     return array;
 }
-
-
+-(void)SettingShareView{
+    shareViewFull = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+    [shareViewFull setBackgroundColor:[UIColor colorWithRed:0.1 green:0.1 blue:0.1 alpha:0.4]];
+    [shareViewFull addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(closeShareView)]];
+    [self.navigationController.view addSubview:shareViewFull];
+   // shareView = [UIView alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT-, <#CGFloat width#>, <#CGFloat height#>)
+    
+}
+-(void)closeShareView{
+    [shareViewFull removeFromSuperview];
+}
 @end

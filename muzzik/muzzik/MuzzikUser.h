@@ -13,6 +13,7 @@
 @property (nonatomic,copy) NSString *avatar;
 @property (nonatomic,copy) NSString *name;
 @property (nonatomic,copy) NSString *gender;
+@property (nonatomic,copy) NSString *descrip;
 @property (nonatomic,assign) BOOL isFans;
 @property (nonatomic,assign) BOOL isFollow;
 -(NSMutableArray*)makeMuzziksByUserArray:(NSMutableArray *)array;

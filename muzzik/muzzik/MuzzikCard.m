@@ -52,7 +52,7 @@
     
     //screenwidth*9/8-52
     
-    _muzzikMessage = [[CXAHyperlinkLabel alloc] initWithFrame:CGRectMake(32, CGRectGetMaxY(_userImage.frame)+10, ScreenWidth-80, 200)];
+    _muzzikMessage = [[CXAHyperlinkLabel alloc] initWithFrame:CGRectMake(32, CGRectGetMaxY(_userImage.frame)+10, ScreenWidth-64, 200)];
     
     _musicPlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 0 , ScreenWidth-16, 60)];
     [self.contentView addSubview:_musicPlayView];

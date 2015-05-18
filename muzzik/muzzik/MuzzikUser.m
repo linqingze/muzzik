@@ -14,7 +14,7 @@
     for (NSDictionary *dic in array) {
         MuzzikUser *newUser = [MuzzikUser new];
         
-        
+        newUser.descrip = [dic objectForKey:@"description"];
         newUser.user_id = [dic objectForKey:Parameter_Id];
         newUser.avatar = [dic objectForKey:Parameter_avatar];
         newUser.gender = [dic objectForKey:Parameter_Gender];

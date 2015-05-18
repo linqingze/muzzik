@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@interface NotificationVC : UITableViewController
+#import "AMScrollingNavbarViewController.h"
+@interface NotificationVC : AMScrollingNavbarViewController
 
 @end

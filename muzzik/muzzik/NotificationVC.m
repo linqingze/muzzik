@@ -7,8 +7,12 @@
 //
 
 #import "NotificationVC.h"
-
-@interface NotificationVC ()
+#import "UIScrollView+DXRefresh.h"
+#import "NotifyObject.h"
+@interface NotificationVC ()<UITableViewDataSource,UITableViewDelegate>{
+    UITableView *notifyTabelView;
+    NSMutableArray *notifyArray;
+}
 
 @end
 
@@ -16,7 +20,27 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    notifyTabelView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+//    notifyTabelView.delegate = self;
+//    notifyTabelView.dataSource = self;
+    notifyTabelView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    [self.view addSubview:notifyTabelView];
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Notify]]];
+    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,[NSNumber numberWithBool:YES],@"full", nil] Method:GetMethod auth:YES];
+    __weak ASIHTTPRequest *weakrequest = request;
+    [request setCompletionBlock :^{
+        //    NSLog(@"%@",weakrequest.originalURL);
+        NSLog(@"%@",[weakrequest responseString]);
+        NSData *data = [weakrequest responseData];
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+        if (dic) {
+            notifyArray = [[NotifyObject new] makeMuzziksByNotifyArray:[dic objectForKey:@"notifies"]];
+        }
+    }];
+    [request setFailedBlock:^{
+        NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
+    }];
+    [request startAsynchronous];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     

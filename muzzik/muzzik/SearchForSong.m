@@ -11,7 +11,8 @@
 #import "UIScrollView+DXRefresh.h"
 #import "MessageStepViewController.h"
 #import "MuzzikObject.h"
-@interface SearchForSong (){
+@interface SearchForSong ()<searchSource,UITableViewDataSource,UITableViewDelegate>{
+    UITableView *myTableView;
     NSInteger indexOfMuzzik;
     BOOL isSearch;
     NSString *pageID;
@@ -29,7 +30,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
-    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    myTableView  = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
+    myTableView.delegate = self;
+    myTableView.dataSource = self;
+    [self.view addSubview:myTableView];
+    
+    
+    myTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     searchView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 50)];
     searchLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 13, SCREEN_WIDTH-60, 20)];
     [searchLabel setFont:[UIFont systemFontOfSize:14]];
@@ -40,12 +47,13 @@
     [searchView addSubview:searchLabel];
     [searchView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(searchSong)]];
     [MuzzikItem addLineOnView:searchView heightPoint:50 toLeft:13 toRight:13 withColor:Color_line_1];
-    [self.tableView registerClass:[MusicAndArtistCell class] forCellReuseIdentifier:@"MusicAndArtistCell"];
+    [myTableView registerClass:[MusicAndArtistCell class] forCellReuseIdentifier:@"MusicAndArtistCell"];
     
 }
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     self.keeper.activityVC = self;
+    [self.keeper followScrollView:myTableView];
     if ([self.keeper.searchBar.text length]>0 &&![_searchText isEqualToString:self.keeper.searchBar.text]) {
         searchLabel.text = [NSString stringWithFormat:@"搜索相关音乐:%@",self.keeper.searchBar.text];
         [self.view addSubview:searchView];
@@ -81,10 +89,16 @@
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return 60.0;
 }
-
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    musicPlayer *player = [musicPlayer shareClass];
+    player.listType = TempList;
+    player.MusicArray = self.searchArray;
+    player.index = indexPath.row;
+    [player playSongWithSongModel:self.searchArray[indexPath.row]];
+}
 -(void)updateDataSource:(NSString *)searchText{
     [self.searchArray removeAllObjects];
-    [self.tableView reloadData];
+    [myTableView reloadData];
     if ([searchText length]>0) {
         searchLabel.text = [NSString stringWithFormat:@"搜索相关音乐:%@",self.keeper.searchBar.text];
         [self.view addSubview:searchView];
@@ -108,7 +122,7 @@
             if ([weakrequest responseStatusCode] == 200) {
                 NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
                 self.searchArray = [[muzzik new] makeMuzziksByMusicArray:[dic objectForKey:@"music"]];
-                [self.tableView reloadData];
+                [myTableView reloadData];
             }
             else{
                 //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
@@ -137,7 +151,7 @@
             if ([weakrequest responseStatusCode] == 200) {
                 NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
                 self.searchArray = [[muzzik new] makeMuzziksByMusicArray:[dic objectForKey:@"music"]];
-                [self.tableView reloadData];
+                [myTableView reloadData];
             }
             else{
                 //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
@@ -154,7 +168,7 @@
 
 -(void)playnextMuzzikUpdate{
     if ([musicPlayer shareClass].listType == TempList) {
-        [self.tableView reloadData];
+        [myTableView reloadData];
     }
     
     
@@ -173,7 +187,6 @@
     MuzzikObject *mobject = [MuzzikObject shareClass];
     
     mobject.music = tempMuzzik.music;
-    [self.keeper.searchView setHidden:YES];
     MessageStepViewController *messagebv = [[MessageStepViewController alloc] init];
     [self.keeper.navigationController pushViewController:messagebv animated:YES];
 }

@@ -80,19 +80,21 @@
 	CGPoint translation = [gesture translationInView:[self.scrollableView superview]];
 	NSLog(@"%f",translation.y);
     //标示 用户向上滑动或者向下滑动 (>0,向上滑动；<0,向下滑动)
+    if ([gesture state] == UIGestureRecognizerStateBegan) {
+        self.lastContentOffset = translation.y;
+    }
 	float delta = self.lastContentOffset - translation.y;
-	self.lastContentOffset = translation.y;
     for (UIView *view in [self.navigationController.view subviews]) {
         if ([view isKindOfClass:[RFRadioView class]]) {
             RFRadioView *musicView = (RFRadioView*)view;
-            if (self.lastContentOffset != 0 &&delta < 0 &&[[musicPlayer shareClass].MusicArray count]>0) {
+            if (self.lastContentOffset != 0 &&delta < -5 &&[[musicPlayer shareClass].MusicArray count]>0) {
                 musicView.isOpen = YES;
                 [UIView animateWithDuration:0.3 animations:^{
                     [musicView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 64)];
                 }];
             }
             
-            if (delta > 0&&self.lastContentOffset != 0  ) {
+            if (delta > 5&&self.lastContentOffset != 0  ) {
                 if (musicView.IsShowDetail) {
                     [musicView rollBack];
                     musicView.isOpen = NO;
