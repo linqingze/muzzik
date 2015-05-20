@@ -99,7 +99,24 @@
 #define Image_recommendfollow           @"recommendfollow"
 #define Image_recommendfollowed         @"recommendfollowed"
 #define Image_recommendfollowedeachother    @"recommendfollowedeachother"
+#define Image_momentImage               @"momentImage"
+#define Image_q_zoneImage               @"q-zoneImage"
+#define Image_qqImage                   @"qqImage"
+#define Image_sharebgImage              @"sharebgImage"
+#define Image_shareclickbgImage         @"shareclickbgImage"
+#define Image_wechatImage               @"wechatImage"
+#define Image_weiboImage                @"weiboImage"
 
+#define Image_notifollowclickImage      @"notifollowclickImage"
+#define Image_notifollowImage           @"notifollowImage"
+#define Image_notilikeclickImage        @"notilikeclickImage"
+#define Image_notilikeImage             @"notilikeImage"
+#define Image_notireplyclickImage       @"notireplyclickImage"
+#define Image_notireplyImage            @"notireplyImage"
+#define Image_notiretweetclickImage     @"notiretweetclickImage"
+#define Image_notiretweetImage          @"notiretweetImage"
+#define Image_notitopicclickImage       @"notitopicclickImage"
+#define Image_notitopicImage            @"notitopicImage"
 
 
 

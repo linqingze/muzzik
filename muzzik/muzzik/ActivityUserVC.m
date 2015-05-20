@@ -13,6 +13,7 @@
 @interface ActivityUserVC ()<UITableViewDataSource,UITableViewDelegate,CellDelegate>{
     UITableView *userTableview;
     NSMutableArray *userArray;
+    NSMutableDictionary *RefreshDic;
 }
 
 @end
@@ -21,6 +22,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    RefreshDic = [NSMutableDictionary dictionary];
+    for (int i = 0; i<4; i++) {
+        [RefreshDic setObject:[NSNumber numberWithInt:i] forKey:[NSString stringWithFormat:@"%d",i]];
+    }
     [self initNagationBar:@"活跃用户" leftBtn:Constant_backImage rightBtn:0];
     userTableview = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     [self.view addSubview:userTableview];
@@ -66,8 +71,15 @@
     searchUserCell *cell = [tableView dequeueReusableCellWithIdentifier:@"searchUserCell" forIndexPath:indexPath];
     MuzzikUser *muzzikuser = userArray[indexPath.row];
     [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+    if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%d",indexPath.row]]) {
+        [RefreshDic setObject:indexPath forKey:[NSString stringWithFormat:@"%d",indexPath.row]];
+        [cell.headerImage setAlpha:0];
+    }
     [cell.headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,muzzikuser.avatar]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-        [cell.headerImage setAlpha:1];
+        [UIView animateWithDuration:0.5 animations:^{
+            [cell.headerImage setAlpha:1];
+        }];
+        
     }];
     cell.delegate = self;
     cell.muzzikUser = muzzikuser;

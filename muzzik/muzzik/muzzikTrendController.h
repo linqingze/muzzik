@@ -10,15 +10,15 @@
 #import "AMScrollingNavbarViewController.h"
 #import "CXAHyperlinkLabel.h"
 #import "AudioPlayer.h"
-
+#import "TencentOpenAPI/QQApiInterface.h"
 #import "musicPlayer.h"
 #import "RootViewController.h"
 #import "WXApiObject.h"
+#import "TencentOpenAPI/QQApi.h"
 
 
 
-
-@interface muzzikTrendController : AMScrollingNavbarViewController<UITableViewDataSource,UITableViewDelegate,CXDelegate,CellDelegate>{
+@interface muzzikTrendController : AMScrollingNavbarViewController<UITableViewDataSource,UITableViewDelegate,CXDelegate,CellDelegate,WBHttpRequestDelegate,QQApiInterfaceDelegate>{
      AudioPlayer* audioPlayer;
     NSInteger isPlayBack;
     

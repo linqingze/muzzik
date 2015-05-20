@@ -11,7 +11,9 @@
 @interface BaseNagationViewController : UIViewController
 @property (nonatomic,retain)NSMutableArray *btnImage;
 @property (nonatomic,assign) CGFloat lastY;
-
+@property(nonatomic, retain)UIButton *leftBtn;
+@property (nonatomic,retain)UIView *headerView;
+@property(nonatomic, retain)UIButton *rightBtn;
 - (void)tapAction:(UITapGestureRecognizer *)tap; //返回按钮点击响应方法
 //- (void)longPressAction:(UILongPressGestureRecognizer *)longPressGesture; //返回按钮长按手势响应方法
 

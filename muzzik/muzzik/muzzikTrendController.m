@@ -27,8 +27,7 @@
 #import "MuzzikNoCardCell.h"
 #import "userDetailInfo.h"
 #import "TopicDetail.h"
-
-
+#import "AppDelegate.h"
 #define lineheightLimit   65
 @interface muzzikTrendController (){
     int numberOfProducts;
@@ -39,6 +38,7 @@
     UIButton *newButton;
     NSString *lastId;
     NSString *headId;
+    muzzik *shareMuzzik;
     
     //shareView
     UIView *shareViewFull;
@@ -48,6 +48,7 @@
     UIButton *shareToWeiboButton;
     UIButton *shareToQQButton;
     UIButton *shareToQQZoneButton;
+    
 }
 
 @end
@@ -72,10 +73,12 @@
     [MytableView registerClass:[NormalNoCardCell class] forCellReuseIdentifier:@"NormalNoCardCell"];
     [MytableView registerClass:[MuzzikCard class] forCellReuseIdentifier:@"MuzzikCard"];
     [MytableView registerClass:[MuzzikNoCardCell class] forCellReuseIdentifier:@"MuzzikNoCardCell"];
-    
+    [self SettingShareView];
     [self followScrollView:MytableView];
     RefreshDic = [NSMutableDictionary dictionary];
-    [RefreshDic setValue:@"0" forKey:@"0"];
+    for (int i = 0; i<4; i++) {
+        [RefreshDic setObject:[NSNumber numberWithInt:i] forKey:[NSString stringWithFormat:@"%d",i]];
+    }
     newButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-70, SCREEN_HEIGHT-125, 55, 55)];
     newButton.layer.cornerRadius = 28;
     newButton.clipsToBounds = YES;
@@ -173,7 +176,6 @@
     [MytableView removeFooter];
     [MytableView removeHeader];
    // [MytableView removeKeyPath];
-    needsLoad = NO;
 }
 
 
@@ -817,8 +819,9 @@
     }];
     [requestForm startAsynchronous];
 }
--(void)shareActionWithMuzzik_id:(NSString *)muzzik_id atIndex:(NSInteger)index{
-    
+-(void)shareActionWithMuzzik:(muzzik *)localMuzzik{
+    shareMuzzik = localMuzzik;
+    [self addShareView];
 }
 -(void)reloadMuzzikSource{
     NSDictionary *requestDic;
@@ -906,7 +909,7 @@
 }
 
 -(NSMutableArray *) searchUsers:(NSString *)message{
-    
+    NSString *checkTabel = @"<>,.~!@＠#$¥%％^&*()，。：；;:‘“～  》？《！＃＊……‘“”／/";
     NSMutableArray *array = [NSMutableArray array];
     BOOL GetAt = NO;
    //  || [[message substringWithRange:NSMakeRange(i, 1)] isEqualToString:@"＠"]
@@ -916,7 +919,7 @@
             GetAt = YES;
             location = i;
             continue;
-        }else if ([@"<>,.~!@＠#$¥%％^&*()，。：；;:.,‘“~～  》？《！＃＊……‘“”／/" containsString:[message substringWithRange:NSMakeRange(i, 1)]] && GetAt){
+        }else if ([checkTabel rangeOfString:[message substringWithRange:NSMakeRange(i, 1)]].location != NSNotFound && GetAt){
             GetAt = NO;
             [array addObject:[message substringWithRange:NSMakeRange(location, i-location)]];
             
@@ -929,14 +932,166 @@
     return array;
 }
 -(void)SettingShareView{
-    shareViewFull = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
-    [shareViewFull setBackgroundColor:[UIColor colorWithRed:0.1 green:0.1 blue:0.1 alpha:0.4]];
+    CGFloat screenWidth = SCREEN_WIDTH;
+    shareViewFull = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, SCREEN_HEIGHT)];
+    [shareViewFull setBackgroundColor:[UIColor colorWithRed:0.125 green:0.121 blue:0.164 alpha:0.8]];
     [shareViewFull addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(closeShareView)]];
     [self.navigationController.view addSubview:shareViewFull];
-   // shareView = [UIView alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT-, <#CGFloat width#>, <#CGFloat height#>)
+    #define Color_NavigationBar         [UIColor colorWithHexString:@"201f2a"]
+    shareView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT, screenWidth, screenWidth*0.7)];
+    [shareView setBackgroundColor:[UIColor colorWithRed:0.125 green:0.121 blue:0.164 alpha:0.85]];
+    UIButton *wechatButton = [[UIButton alloc] initWithFrame:CGRectMake(screenWidth*0.1, screenWidth*0.08, screenWidth*0.18, screenWidth*0.18)];
+    [wechatButton setImage:[UIImage imageNamed:Image_wechatImage] forState:UIControlStateNormal];
+    [wechatButton setBackgroundImage:[UIImage imageNamed:Image_sharebgImage] forState:UIControlStateNormal];
+    [wechatButton setBackgroundImage:[UIImage imageNamed:Image_shareclickbgImage] forState:UIControlStateHighlighted];
+    [wechatButton setImage:[UIImage imageNamed:Image_wechatImage] forState:UIControlStateHighlighted];
+    [wechatButton addTarget:self action:@selector(shareWeChat) forControlEvents:UIControlEventTouchUpInside];
+    [shareView addSubview:wechatButton];
+    
+    UIButton *timeLineButton = [[UIButton alloc] initWithFrame:CGRectMake(screenWidth*0.41, screenWidth*0.08, SCREEN_WIDTH*0.18, SCREEN_WIDTH*0.18)];
+    [timeLineButton setImage:[UIImage imageNamed:Image_momentImage] forState:UIControlStateNormal];
+    [timeLineButton setBackgroundImage:[UIImage imageNamed:Image_sharebgImage] forState:UIControlStateNormal];
+    [timeLineButton setBackgroundImage:[UIImage imageNamed:Image_shareclickbgImage] forState:UIControlStateHighlighted];
+    [timeLineButton setImage:[UIImage imageNamed:Image_momentImage] forState:UIControlStateHighlighted];
+    
+    [shareView addSubview:timeLineButton];
+    
+    UIButton *weiboButton = [[UIButton alloc] initWithFrame:CGRectMake(screenWidth*0.72, screenWidth*0.08, SCREEN_WIDTH*0.18, SCREEN_WIDTH*0.18)];
+    [weiboButton setImage:[UIImage imageNamed:Image_weiboImage] forState:UIControlStateNormal];
+    [weiboButton setBackgroundImage:[UIImage imageNamed:Image_sharebgImage] forState:UIControlStateNormal];
+    [weiboButton setBackgroundImage:[UIImage imageNamed:Image_shareclickbgImage] forState:UIControlStateHighlighted];
+    [weiboButton setImage:[UIImage imageNamed:Image_weiboImage] forState:UIControlStateHighlighted];
+    [weiboButton addTarget:self action:@selector(shareWeiBo) forControlEvents:UIControlEventTouchUpInside];
+    [shareView addSubview:weiboButton];
+    
+    UIButton *QQButton = [[UIButton alloc] initWithFrame:CGRectMake(screenWidth*0.1, screenWidth*0.39, screenWidth*0.18, screenWidth*0.18)];
+    [QQButton setImage:[UIImage imageNamed:Image_qqImage] forState:UIControlStateNormal];
+    [QQButton setBackgroundImage:[UIImage imageNamed:Image_sharebgImage] forState:UIControlStateNormal];
+    [QQButton setBackgroundImage:[UIImage imageNamed:Image_shareclickbgImage] forState:UIControlStateHighlighted];
+    [QQButton setImage:[UIImage imageNamed:Image_qqImage] forState:UIControlStateHighlighted];
+    [QQButton addTarget:self action:@selector(shareQQ) forControlEvents:UIControlEventTouchUpInside];
+    [shareView addSubview:QQButton];
+    
+    UIButton *qqZoneButton = [[UIButton alloc] initWithFrame:CGRectMake(screenWidth*0.41, screenWidth*0.39, screenWidth*0.18, screenWidth*0.18)];
+    [qqZoneButton setImage:[UIImage imageNamed:Image_q_zoneImage] forState:UIControlStateNormal];
+    [qqZoneButton setBackgroundImage:[UIImage imageNamed:Image_sharebgImage] forState:UIControlStateNormal];
+    [qqZoneButton setBackgroundImage:[UIImage imageNamed:Image_shareclickbgImage] forState:UIControlStateHighlighted];
+    [qqZoneButton setImage:[UIImage imageNamed:Image_q_zoneImage] forState:UIControlStateHighlighted];
+    
+    [shareView addSubview:qqZoneButton];
+    [shareViewFull addSubview:shareView];
+    
+    
     
 }
 -(void)closeShareView{
-    [shareViewFull removeFromSuperview];
+    [UIView animateWithDuration:0.5 animations:^{
+        [shareViewFull setAlpha:0];
+        [shareView setFrame:CGRectMake(0, SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_WIDTH*0.7)];
+    } completion:^(BOOL finished) {
+        [shareViewFull removeFromSuperview];
+        
+    }];
+}
+-(void) addShareView{
+    [self.navigationController.view addSubview:shareViewFull];
+    [UIView animateWithDuration:0.3 animations:^{
+        [shareViewFull setAlpha:1];
+    } completion:^(BOOL finished) {
+        [UIView animateWithDuration:0.5 animations:^{
+            [shareView setFrame:CGRectMake(0, SCREEN_HEIGHT-SCREEN_WIDTH*0.7, SCREEN_WIDTH, SCREEN_WIDTH*0.7)];
+        } ];
+    }];
+}
+- (WBMessageObject *)messageToShare
+{
+    WBMessageObject *message = [WBMessageObject message];
+    
+    message.text =[NSString stringWithFormat:@"一起来用Muzzik吧 %@%@",URL_Muzzik_SharePage,shareMuzzik.muzzik_id];
+
+    WBImageObject *image = [WBImageObject object];
+    image.imageData = UIImageJPEGRepresentation([MuzzikItem convertViewToImage:[MytableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:[self.muzziks indexOfObject:shareMuzzik] inSection:0]]], 1.0);
+    message.imageObject = image;
+    return message;
+}
+-(void)shareWeiBo{
+    AppDelegate *myDelegate =(AppDelegate*)[[UIApplication sharedApplication] delegate];
+    
+    WBAuthorizeRequest *authRequest = [WBAuthorizeRequest request];
+    authRequest.redirectURI = URL_WeiBo_redirectURI;
+    authRequest.scope = @"all";
+    
+    WBSendMessageToWeiboRequest *request = [WBSendMessageToWeiboRequest requestWithMessage:[self messageToShare] authInfo:authRequest access_token:myDelegate.wbtoken];
+
+    //    request.shouldOpenWeiboAppInstallPageIfNotInstalled = NO;
+    [WeiboSDK sendRequest:request];
+}
+-(void) shareQQ{
+    NSString *url = @"http://muzzik-image.qiniudn.com/FieqckeQDGWACSpDA3P0aDzmGcB6";
+    //分享图预览图URL地址
+    NSString *previewImageUrl = @"http://muzzik-image.qiniudn.com/FieqckeQDGWACSpDA3P0aDzmGcB6";
+    //音乐播放的网络流媒体地址
+    QQApiAudioObject *audioObj =[QQApiAudioObject objectWithURL:[NSURL URLWithString:url]
+                                                          title:shareMuzzik.music.name description:shareMuzzik.music.artist previewImageURL:[NSURL URLWithString:previewImageUrl]];
+    //设置播放流媒体地址
+    audioObj.flashURL=[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_audio,shareMuzzik.music.key]];
+    SendMessageToQQReq *req = [SendMessageToQQReq reqWithContent:audioObj];
+    //将内容分享到qq
+    QQApiSendResultCode sent = [QQApiInterface sendReq:req];
+    [self handleSendResult:sent];
+    //将被容分享到qzone
+    //QQApiSendResultCode sent = [QQApiInterface SendReqToQZone:req];
+
+}
+- (void)handleSendResult:(QQApiSendResultCode)sendResult
+{
+    switch (sendResult)
+    {
+        case EQQAPIAPPNOTREGISTED:
+        {
+            UIAlertView *msgbox = [[UIAlertView alloc] initWithTitle:@"Error" message:@"App未注册" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil];
+            [msgbox show];
+
+            
+            break;
+        }
+        case EQQAPIMESSAGECONTENTINVALID:
+        case EQQAPIMESSAGECONTENTNULL:
+        case EQQAPIMESSAGETYPEINVALID:
+        {
+            UIAlertView *msgbox = [[UIAlertView alloc] initWithTitle:@"Error" message:@"发送参数错误" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil];
+            [msgbox show];
+
+            
+            break;
+        }
+        case EQQAPIQQNOTINSTALLED:
+        {
+            UIAlertView *msgbox = [[UIAlertView alloc] initWithTitle:@"Error" message:@"未安装手Q" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil];
+            [msgbox show];
+
+            
+            break;
+        }
+        case EQQAPIQQNOTSUPPORTAPI:
+        {
+            UIAlertView *msgbox = [[UIAlertView alloc] initWithTitle:@"Error" message:@"API接口不支持" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil];
+            [msgbox show];
+
+            
+            break;
+        }
+        case EQQAPISENDFAILD:
+        {
+            UIAlertView *msgbox = [[UIAlertView alloc] initWithTitle:@"Error" message:@"发送失败" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil];
+            [msgbox show];
+            
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
 }
 @end

@@ -44,6 +44,9 @@
     
     [self followScrollView:MytableView];
     RefreshDic = [NSMutableDictionary dictionary];
+    for (int i = 0; i<4; i++) {
+        [RefreshDic setObject:[NSNumber numberWithInt:i] forKey:[NSString stringWithFormat:@"%d",i]];
+    }
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@/muzziks",BaseURL,self.uid]]];
     [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES],@"reply",Limit_Constant,Parameter_Limit, nil] Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = request;

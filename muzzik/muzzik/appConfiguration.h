@@ -57,11 +57,13 @@
 #define URL_Logout              @"api/user/logout"
 #define URL_Get_Feed            @"api/muzzik/feeds"
 #define URL_Notify              @"api/notify"
-
+#define URL_Read_Notify         @"api/notify/readed"
 //#define URL_check_phone @"http://192.168.1.112:3000/api/user/check"
 //#define URL_register @"http://192.168.1.112:3000/api/user/register"
 //#define URL_GetVerifiCode @"http://192.168.1.112:3000/api/user/verifiCode"
 //#define URL_Login @"http://192.168.1.112:3000/api/user/login"
+
+#define URL_Muzzik_SharePage    @"http://www.muzziker.com/app/muzzik/"
 
 #pragma -mark App_Color
 #define Color_underLine             [UIColor colorWithRed:227.0/255.0 green:227.0/255.0 blue:227.0/255.0 alpha:1]

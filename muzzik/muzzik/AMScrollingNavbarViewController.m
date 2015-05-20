@@ -8,7 +8,7 @@
 
 #import "AMScrollingNavbarViewController.h"
 #import "AppConfiguration.h"
-
+#define timeinterval  0.25
 @interface AMScrollingNavbarViewController () <UIGestureRecognizerDelegate>
 
 @property (nonatomic, weak)	UIScrollView *scrollableView;
@@ -32,11 +32,22 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
+    for (UIView *view in [self.navigationController.view subviews]) {
+        if ([view isKindOfClass:[RFRadioView class]]) {
+            [view setAlpha:0];
+            break;
+        }
+    }
+    [self.leftBtn setAlpha:1];
+    [self.rightBtn setAlpha:1];
+    [self.headerView setAlpha:1];
+    
 }
 
 - (void)followScrollView:(UIScrollView *)scrollableView
@@ -77,24 +88,32 @@
 
 - (void)handlePan:(UIPanGestureRecognizer*)gesture
 {
-	CGPoint translation = [gesture translationInView:[self.scrollableView superview]];
-	NSLog(@"%f",translation.y);
+    CGPoint translation = [gesture translationInView:[self.scrollableView superview]];
+    NSLog(@"%f",translation.y);
     //标示 用户向上滑动或者向下滑动 (>0,向上滑动；<0,向下滑动)
     if ([gesture state] == UIGestureRecognizerStateBegan) {
         self.lastContentOffset = translation.y;
     }
-	float delta = self.lastContentOffset - translation.y;
+    float delta = self.lastContentOffset - translation.y;
     for (UIView *view in [self.navigationController.view subviews]) {
         if ([view isKindOfClass:[RFRadioView class]]) {
             RFRadioView *musicView = (RFRadioView*)view;
-            if (self.lastContentOffset != 0 &&delta < -5 &&[[musicPlayer shareClass].MusicArray count]>0) {
+            if (self.lastContentOffset != 0 &&delta < -3 &&[[musicPlayer shareClass].MusicArray count]>0) {
                 musicView.isOpen = YES;
-                [UIView animateWithDuration:0.3 animations:^{
-                    [musicView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 64)];
+                NSArray *array = [self.navigationController.navigationBar subviews];
+                [UIView animateWithDuration:timeinterval animations:^{
+                    [self.leftBtn setAlpha:0];
+                    [self.rightBtn setAlpha:0];
+                    [self.headerView setAlpha:0];
+                } completion:^(BOOL finished) {
+                    [UIView animateWithDuration:timeinterval animations:^{
+                        [musicView setAlpha:1];
+                    }];
+                    
                 }];
             }
             
-            if (delta > 5&&self.lastContentOffset != 0  ) {
+            if (delta > 3&&self.lastContentOffset != 0  ) {
                 if (musicView.IsShowDetail) {
                     [musicView rollBack];
                     musicView.isOpen = NO;
@@ -103,19 +122,26 @@
                 }else{
                     musicView.isOpen = NO;
                     musicView.IsShowDetail = NO;
-                    [UIView animateWithDuration:0.3 animations:^{
-                        [musicView setFrame:CGRectMake(0, -64, SCREEN_WIDTH, 64)];
+                    [UIView animateWithDuration:timeinterval animations:^{
+                        [musicView setAlpha:0];
+                    }completion:^(BOOL finished) {
+                        [UIView animateWithDuration:timeinterval animations:^{
+                            [self.leftBtn setAlpha:1];
+                            [self.rightBtn setAlpha:1];
+                            [self.headerView setAlpha:1];
+                            
+                        }];
                     }];
                 }
+                
+                break;
             }
-            break;
         }
-	}
-	
-	if ([gesture state] == UIGestureRecognizerStateEnded) {
-		// Reset the nav bar if the scroll is partial
-		self.lastContentOffset = 0;
-	}
+    }
+    if ([gesture state] == UIGestureRecognizerStateEnded) {
+        // Reset the nav bar if the scroll is partial
+        self.lastContentOffset = 0;
+    }
 }
 
 

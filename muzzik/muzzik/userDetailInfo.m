@@ -52,6 +52,9 @@
      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
     page = 1;
     RefreshDic = [NSMutableDictionary dictionary];
+    for (int i = 0; i<4; i++) {
+        [RefreshDic setObject:[NSNumber numberWithInt:i] forKey:[NSString stringWithFormat:@"%d",i]];
+    }
     [self initNagationBar:@"Ta" leftBtn:Constant_backImage rightBtn:0];
     MyTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     self.musicplayer = [musicPlayer shareClass];

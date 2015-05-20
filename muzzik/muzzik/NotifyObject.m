@@ -14,43 +14,38 @@
     for (NSDictionary *dic in array) {
         NotifyObject *notify = [NotifyObject new];
         muzzik *newmuzzik = [muzzik new];
-        newmuzzik.muzzik_id = [dic objectForKey:@"_id"];
-        newmuzzik.ismoved = [[dic objectForKey:@"ismoved"] boolValue];
-        newmuzzik.date = [dic objectForKey:@"date"];
-        newmuzzik.message = [dic objectForKey:@"message"];
-        newmuzzik.image = [dic objectForKey:@"image"];
-        newmuzzik.topics = [dic objectForKey:@"topics"];
-        newmuzzik.users = [dic objectForKey:@"users"];
-        newmuzzik.type = [dic objectForKey:@"type"];
-        newmuzzik.onlytext = [[dic objectForKey:@"onlytext"] boolValue];
-        newmuzzik.reposts = [dic objectForKey:@"reposts"];
-        newmuzzik.shares = [dic objectForKey:@"shares"];
-        newmuzzik.comments = [dic objectForKey:@"comments"];
-        newmuzzik.color = [dic objectForKey:@"color"];
-        newmuzzik.moveds = [dic objectForKey:@"moveds"];
-        newmuzzik.isprivate = [[dic objectForKey:@"private"] boolValue];
-        newmuzzik.plays = [dic objectForKey:@"plays"];
-        newmuzzik.repostID = [dic objectForKey:@"repostID"];
-        newmuzzik.title = [dic objectForKey:@"title"];
-        newmuzzik.repostDate = [dic objectForKey:@"repostDate"];
+        newmuzzik.muzzik_id = [[dic  objectForKey:@"muzzik"] objectForKey:@"_id"];
+        newmuzzik.ismoved = [[[dic  objectForKey:@"muzzik"] objectForKey:@"ismoved"] boolValue];
+        newmuzzik.date = [[dic  objectForKey:@"muzzik"] objectForKey:@"date"];
+        newmuzzik.message = [[dic  objectForKey:@"muzzik"] objectForKey:@"message"];
+        newmuzzik.image = [[dic  objectForKey:@"muzzik"]  objectForKey:@"image"];
+        newmuzzik.topics = [[dic  objectForKey:@"muzzik"]objectForKey:@"topics"];
+        newmuzzik.users = [[dic  objectForKey:@"muzzik"] objectForKey:@"users"];
+        newmuzzik.type = [[dic  objectForKey:@"muzzik"] objectForKey:@"type"];
+        newmuzzik.onlytext = [[[dic  objectForKey:@"muzzik"] objectForKey:@"onlytext"] boolValue];
+        newmuzzik.reposts = [[dic  objectForKey:@"muzzik"] objectForKey:@"reposts"];
+        newmuzzik.shares = [[dic  objectForKey:@"muzzik"] objectForKey:@"shares"];
+        newmuzzik.comments = [[dic  objectForKey:@"muzzik"] objectForKey:@"comments"];
+        newmuzzik.color = [[dic  objectForKey:@"muzzik"] objectForKey:@"color"];
+        newmuzzik.moveds = [[dic  objectForKey:@"muzzik"] objectForKey:@"moveds"];
+        newmuzzik.isprivate = [[[dic  objectForKey:@"muzzik"] objectForKey:@"private"] boolValue];
+        newmuzzik.plays = [[dic  objectForKey:@"muzzik"] objectForKey:@"plays"];
+        newmuzzik.repostID = [[dic  objectForKey:@"muzzik"] objectForKey:@"repostID"];
+        newmuzzik.title = [[dic  objectForKey:@"muzzik"]objectForKey:@"title"];
+        newmuzzik.repostDate = [[dic  objectForKey:@"muzzik"] objectForKey:@"repostDate"];
         newmuzzik.reposter = [MuzzikUser new];
-        newmuzzik.reposter.name = [[dic objectForKey:@"repostUser"] objectForKey:@"name"];
-        newmuzzik.reposter.user_id = [[dic objectForKey:@"repostUser"] objectForKey:@"_id"];
-        newmuzzik.reposter.avatar = [[dic objectForKey:@"repostUser"] objectForKey:@"avatar"];
-        newmuzzik.reposter.gender = [[dic objectForKey:@"repostUser"] objectForKey:@"gender"];
+        newmuzzik.reposter.name = [[[dic  objectForKey:@"muzzik"] objectForKey:@"repostUser"] objectForKey:@"name"];
+        newmuzzik.reposter.user_id = [[[dic  objectForKey:@"muzzik"] objectForKey:@"repostUser"] objectForKey:@"_id"];
+        newmuzzik.reposter.avatar = [[[dic  objectForKey:@"muzzik"] objectForKey:@"repostUser"] objectForKey:@"avatar"];
+        newmuzzik.reposter.gender = [[[dic  objectForKey:@"muzzik"] objectForKey:@"repostUser"] objectForKey:@"gender"];
         
-        newmuzzik.MuzzikUser = [MuzzikUser new];
-        newmuzzik.MuzzikUser.avatar = [[dic objectForKey:@"user"] objectForKey:@"avatar"];
-        newmuzzik.MuzzikUser.user_id = [[dic objectForKey:@"user"] objectForKey:@"_id"];
-        newmuzzik.MuzzikUser.gender = [[dic objectForKey:@"user"] objectForKey:@"gender"];
-        newmuzzik.MuzzikUser.name = [[dic objectForKey:@"user"] objectForKey:@"name"];
         newmuzzik.music = [music new];
-        newmuzzik.music.music_id = [[dic objectForKey:@"music"] objectForKey:@"_id"];
-        newmuzzik.music.artist = [[dic objectForKey:@"music"] objectForKey:@"artist"];
+        newmuzzik.music.music_id = [[[dic  objectForKey:@"muzzik"] objectForKey:@"music"] objectForKey:@"_id"];
+        newmuzzik.music.artist = [[[dic  objectForKey:@"muzzik"] objectForKey:@"music"] objectForKey:@"artist"];
         //NSLog(@"%@",[[dic objectForKey:@"music"] objectForKey:@"artist"]);
-        newmuzzik.music.key = [[dic objectForKey:@"music"] objectForKey:@"key"];
+        newmuzzik.music.key = [[[dic  objectForKey:@"muzzik"] objectForKey:@"music"] objectForKey:@"key"];
         // newmuzzik.music.block = [[[dic objectForKey:@"music"] objectForKey:@"block"] boolValue];
-        newmuzzik.music.name = [[dic objectForKey:@"music"] objectForKey:@"name"];
+        newmuzzik.music.name = [[[dic  objectForKey:@"muzzik"] objectForKey:@"music"] objectForKey:@"name"];
         if ([[dic allKeys ] containsObject:@"reply"]) {
             newmuzzik.reply = [ReplyObject new];
             newmuzzik.reply.reply_id = [[dic objectForKey:@"reply"] objectForKey:@"_id"];
@@ -60,16 +55,16 @@
         notify.muzzik = newmuzzik;
         MuzzikUser *newUser = [MuzzikUser new];
         
-        newUser.descrip = [dic objectForKey:@"description"];
-        newUser.user_id = [dic objectForKey:Parameter_Id];
-        newUser.avatar = [dic objectForKey:Parameter_avatar];
-        newUser.gender = [dic objectForKey:Parameter_Gender];
-        newUser.name = [dic objectForKey:Parameter_name];
-        if ([[dic allKeys] containsObject:@"isFollow"]) {
-            newUser.isFollow = [[dic objectForKey:@"isFollow"] boolValue];
+        newUser.descrip = [[dic objectForKey:@"user" ] objectForKey:@"description"];
+        newUser.user_id =  [[dic objectForKey:@"user" ]  objectForKey:Parameter_Id];
+        newUser.avatar =  [[dic objectForKey:@"user" ]  objectForKey:Parameter_avatar];
+        newUser.gender =  [[dic objectForKey:@"user" ]  objectForKey:Parameter_Gender];
+        newUser.name =  [[dic objectForKey:@"user" ]  objectForKey:Parameter_name];
+        if ([ [[dic objectForKey:@"user" ]  allKeys] containsObject:@"isFollow"]) {
+            newUser.isFollow = [ [[dic objectForKey:@"user" ]  objectForKey:@"isFollow"] boolValue];
         }
-        if ([[dic allKeys] containsObject:@"isFans"]) {
-            newUser.isFans = [[dic objectForKey:@"isFans"] boolValue];
+        if ([ [[dic objectForKey:@"user" ]  allKeys] containsObject:@"isFans"]) {
+            newUser.isFans = [ [[dic objectForKey:@"user" ]  objectForKey:@"isFans"] boolValue];
         }
         notify.user = newUser;
         notify.notify_id = [dic objectForKey:@"_id"];

@@ -9,11 +9,12 @@
 #import "SuggestMuzzikVC.h"
 #import "suggestCollectionCell.h"
 #import "UIImageView+WebCache.h"
+#import "StyledPageControl.h"
 #import "UIButton+WebCache.h"
 @interface SuggestMuzzikVC ()<UICollectionViewDataSource,UICollectionViewDelegate>{
     NSMutableDictionary *RefreshDic;
     NSMutableArray *suggestMuzzik;
-    UIPageControl *pagecontrol;
+    StyledPageControl *pagecontrol;
 }
 
 @end
@@ -23,21 +24,27 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     RefreshDic = [NSMutableDictionary dictionary];
-    [RefreshDic setValue:@"0" forKey:@"0"];
-    pagecontrol = [[UIPageControl alloc] initWithFrame:CGRectMake(0, 10, SCREEN_WIDTH, 10)];
+    for (int i = 0; i<4; i++) {
+        [RefreshDic setObject:[NSNumber numberWithInt:i] forKey:[NSString stringWithFormat:@"%d",i]];
+    }
+    pagecontrol = [[StyledPageControl alloc] initWithFrame:CGRectMake(0, 5, SCREEN_WIDTH, 10)];
 
     
-    [pagecontrol setCurrentPageIndicatorTintColor:Color_Active_Button_1];
-    [pagecontrol setPageIndicatorTintColor:Color_line_1];
+    [pagecontrol setCoreSelectedColor:Color_Active_Button_1];
+    [pagecontrol setCoreNormalColor:Color_line_1];
+    [pagecontrol setDiameter:7];
+    [pagecontrol setGapWidth:4];
+    //[pagecontrol setPageControlStyle:PageControlStyleStrokedCircle];
     pagecontrol.numberOfPages = 10;
     [pagecontrol setCurrentPage:0];
+    
     [self.view addSubview:pagecontrol];
     [self initNagationBar:@"选择风格" leftBtn:Constant_backImage rightBtn:0];
     UICollectionViewFlowLayout  *flowLayout=[[ UICollectionViewFlowLayout alloc ] init];
     [flowLayout setScrollDirection : UICollectionViewScrollDirectionHorizontal];
     flowLayout.minimumInteritemSpacing = 0;
     flowLayout.minimumLineSpacing = 0;
-    _suggestCollectionView = [[ UICollectionView alloc ] initWithFrame : CGRectMake (0,20,SCREEN_WIDTH,SCREEN_HEIGHT-64) collectionViewLayout :flowLayout];
+    _suggestCollectionView = [[ UICollectionView alloc ] initWithFrame : CGRectMake (0,15,SCREEN_WIDTH,SCREEN_HEIGHT-64) collectionViewLayout :flowLayout];
     [_suggestCollectionView registerClass:[suggestCollectionCell class] forCellWithReuseIdentifier:@"suggestCollectionCell"];
     [_suggestCollectionView setBackgroundColor:[UIColor whiteColor]];
     //[hotTopicCollectionView setHeaderHidden:NO];
@@ -47,7 +54,7 @@
     [self.view addSubview:_suggestCollectionView];
     [self followScrollView:_suggestCollectionView];
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/suggest",BaseURL]]];
-    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES],@"iamge",@"10",Parameter_Limit, nil] Method:GetMethod auth:YES];
+    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:@"10",Parameter_Limit,[NSNumber numberWithBool:YES],@"image", nil] Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = request;
     [request setCompletionBlock :^{
         //    NSLog(@"%@",weakrequest.originalURL);
@@ -73,14 +80,15 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    return suggestMuzzik.count;
+    return suggestMuzzik.count>10 ? 10:suggestMuzzik.count;
 }
 
 -( CGSize )collectionView:( UICollectionView *)collectionView layout:( UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:( NSIndexPath *)indexPath
 
 {
-    
-    return CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT-84);
+    muzzik *tempMuzzik = [suggestMuzzik objectAtIndex:indexPath.row];
+
+    return CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT-79);
     
     
     
@@ -110,7 +118,12 @@
     }];
     cell.nameLabel.text = tempMuzzik.MuzzikUser.name;
     cell.timeLabel.text = [MuzzikItem transtromTime:tempMuzzik.date];
+    
     cell.message.text = tempMuzzik.message;
+    CGSize msize = [cell.message sizeThatFits:CGSizeMake(SCREEN_WIDTH-46, 400)];
+    [cell.message setFrame:CGRectMake(cell.message.frame.origin.x, cell.message.frame.origin.y, cell.message.frame.size.width, msize.height)];
+    [cell.ActionView setFrame:CGRectMake(25, cell.message.frame.origin.y+msize.height+15, SCREEN_WIDTH-50, 40)];
+    [cell.scroll setContentSize:CGSizeMake(SCREEN_WIDTH, cell.message.frame.origin.y+msize.height+65)];
     return cell;
 }
 

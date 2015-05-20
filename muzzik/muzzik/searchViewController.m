@@ -29,7 +29,7 @@
     }
     
     [super viewDidLoad];
-    //[MuzzikItem addLineOnView:self.navigationController.view heightPoint:64 toLeft:0 toRight:0 withColor:Color_NavigationBar];
+    [MuzzikItem addLineOnView:self.navigationController.view heightPoint:64 toLeft:0 toRight:0 withColor:Color_NavigationBar];
     [self.view setBackgroundColor:Color_NavigationBar];
     [self initNagationBar:nil leftBtn:0 rightBtn:0];
     _searchBar = [[UISearchBar alloc] initWithFrame: CGRectMake(6, 6, SCREEN_WIDTH-60, 28)];

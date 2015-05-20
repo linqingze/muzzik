@@ -73,12 +73,12 @@
     attentionLabel = [[UILabel alloc] initWithFrame:CGRectMake(15,0 , 50, 40)];
     [attentionLabel setText:@"关注"];
     [attentionLabel setFont:[UIFont boldSystemFontOfSize:15]];
-    [attentionLabel setTextColor:[UIColor whiteColor]];
+    [attentionLabel setTextColor:Color_Text_2];
     attentionLabel.textAlignment = NSTextAlignmentCenter;
     [attentionView addSubview:attentionLabel];
     
     nextImage = [[UIImageView alloc] initWithFrame:CGRectMake(attentionView.frame.size.width-30, 14, 7, 12)];
-    nextImage.image = [UIImage imageNamed:Image_recommendwhitearrowImage];
+    nextImage.image = [UIImage imageNamed:Image_recommendarrowImage];
     [attentionView addSubview:nextImage];
     
     //topic
@@ -309,7 +309,7 @@
 }
 -(void) loadMuzzik{
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/suggest",BaseURL]]];
-    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES],@"iamge",@"1",Parameter_Limit, nil] Method:GetMethod auth:YES];
+    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES],@"image",[NSNumber numberWithInt:1],Parameter_Limit, nil] Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = request;
     [request setCompletionBlock :^{
         //    NSLog(@"%@",weakrequest.originalURL);
@@ -481,6 +481,9 @@
     [self.navigationController pushViewController:suggsetvc animated:YES];
 }
 -(void)goToUser{
+    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+        self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+    }
     userDetailInfo *detailuser = [[userDetailInfo alloc] init];
     detailuser.uid = suggestMuzzik.MuzzikUser.user_id;
     [self.navigationController pushViewController:detailuser animated:YES];

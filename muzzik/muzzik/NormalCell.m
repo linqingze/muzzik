@@ -206,7 +206,7 @@
 }
 -(void)shareAction{
     NSLog(@"share");
-    [self.delegate shareActionWithMuzzik_id:self.muzzik_id atIndex:self.index];
+    [self.delegate shareActionWithMuzzik:self.songModel];
 }
 -(void)commentAction{
     [self.delegate commentAtMuzzik:self.songModel];

@@ -23,7 +23,7 @@
 -(void)downMusicWithModel:(muzzik *)model;
 -(void)moveMuzzikWithId:(NSString *)muzzik_id isMoved:(BOOL) ismoved atIndex:(NSInteger) index;
 -(void)repostActionWithMuzzik_id:(NSString *)muzzik_id atIndex:(NSInteger) index;
--(void)shareActionWithMuzzik_id:(NSString *)muzzik_id atIndex:(NSInteger) index;
+-(void)shareActionWithMuzzik:(muzzik *)localMuzzik;
 -(void)reloadMuzzikSource;
 -(void)payAttention:(NSString *)uid;
 -(void)showFollow:(NSString *)uid;

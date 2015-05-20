@@ -67,6 +67,9 @@
     
     [self followScrollView:MytableView];
     RefreshDic = [NSMutableDictionary dictionary];
+    for (int i = 0; i<4; i++) {
+        [RefreshDic setObject:[NSNumber numberWithInt:i] forKey:[NSString stringWithFormat:@"%d",i]];
+    }
     [self followScrollView:MytableView];
     [self loadTopicTittle];
 
@@ -773,7 +776,7 @@
 }
 
 -(NSMutableArray *) searchUsers:(NSString *)message{
-    
+    NSString *checkTabel = @"<>,.~!@＠#$¥%％^&*()，。：；;:‘“～  》？《！＃＊……‘“”／/";
     NSMutableArray *array = [NSMutableArray array];
     BOOL GetAt = NO;
     //  || [[message substringWithRange:NSMakeRange(i, 1)] isEqualToString:@"＠"]
@@ -783,7 +786,7 @@
             GetAt = YES;
             location = i;
             continue;
-        }else if ([@"<>,.~!@＠#$¥%％^&*()，。：；;:.,‘“~～  》？《！＃＊……‘“”／/" containsString:[message substringWithRange:NSMakeRange(i, 1)]] && GetAt){
+        }else if ([checkTabel rangeOfString:[message substringWithRange:NSMakeRange(i, 1)]].location != NSNotFound && GetAt){
             GetAt = NO;
             [array addObject:[message substringWithRange:NSMakeRange(location, i-location)]];
             

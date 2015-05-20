@@ -9,5 +9,11 @@
 #import <UIKit/UIKit.h>
 
 @interface NotifyFollowCell : UITableViewCell
-
+@property (nonatomic,retain) UIImageView *preImage;
+@property (nonatomic,retain) UIButton *headImage;
+@property (nonatomic,retain) UILabel *nameLabel;
+@property (nonatomic,retain) UILabel *message;
+@property (nonatomic,retain) UIView *lineView;
+@property (nonatomic,weak) id<CellDelegate> delegate;
+@property (nonatomic,copy) NSString *user_id;
 @end

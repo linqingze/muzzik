@@ -149,6 +149,9 @@
 }
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
 {
+#if __QQAPI_ENABLE__
+    [QQApiInterface handleOpenURL:url delegate:(id)[QQAPIDemoEntry class]];
+#endif
     if ([WeiboSDK handleOpenURL:url delegate:self]) {
         return [WeiboSDK handleOpenURL:url delegate:self];
     }else if([TencentOAuth HandleOpenURL:url]){

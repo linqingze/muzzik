@@ -867,8 +867,8 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 +(UIImage*)convertViewToImage:(UIView*)v{
     
     
-    
-    UIGraphicsBeginImageContext(v.bounds.size);
+    UIGraphicsBeginImageContextWithOptions(v.bounds.size, YES, 3.0f);
+//    UIGraphicsBeginImageContext(v.bounds.size,YES,2.0f);
     
     [v.layer renderInContext:UIGraphicsGetCurrentContext()];
     
@@ -963,7 +963,7 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 }
 
 +(NSMutableArray *) searchUsers:(NSString *)message{
-    
+    NSString *checkTabel = @"<>,.~!@＠#$¥%％^&*()，。：；;:‘“～  》？《！＃＊……‘“”／/";
     NSMutableArray *array = [NSMutableArray array];
     BOOL GetAt = NO;
     //  || [[message substringWithRange:NSMakeRange(i, 1)] isEqualToString:@"＠"]
@@ -973,7 +973,7 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
             GetAt = YES;
             location = i;
             continue;
-        }else if (([[message substringWithRange:NSMakeRange(i, 1)] isEqualToString:@" "] || [[message substringWithRange:NSMakeRange(i, 1)] isEqualToString:@" "]) && GetAt){
+        }else if ([checkTabel rangeOfString:[message substringWithRange:NSMakeRange(i, 1)]].location != NSNotFound && GetAt){
             GetAt = NO;
             [array addObject:[message substringWithRange:NSMakeRange(location, i-location)]];
             

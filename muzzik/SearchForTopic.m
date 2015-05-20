@@ -37,13 +37,13 @@
     myTableView.dataSource = self;
     [self.view addSubview:myTableView];
     myTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    searchView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 60)];
-    searchLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 20, SCREEN_WIDTH-60, 20)];
+    searchView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 50)];
+    searchLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 15, SCREEN_WIDTH-60, 20)];
     [searchLabel setFont:[UIFont systemFontOfSize:14]];
     [searchLabel setTextColor:Color_Active_Button_1];
     [searchView addSubview:searchLabel];
     [searchView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(searchTopic)]];
-    [MuzzikItem addLineOnView:searchView heightPoint:60 toLeft:13 toRight:13 withColor:Color_line_1];
+    [MuzzikItem addLineOnView:searchView heightPoint:50 toLeft:13 toRight:13 withColor:Color_line_1];
     [myTableView registerClass:[SearchtopicCell class] forCellReuseIdentifier:@"SearchtopicCell"];
 }
 -(void)viewWillAppear:(BOOL)animated{

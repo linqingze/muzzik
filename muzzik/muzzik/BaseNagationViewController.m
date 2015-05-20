@@ -11,9 +11,6 @@
 
 @interface BaseNagationViewController ()<UIScrollViewDelegate>
 
-@property(nonatomic, retain)UIButton *leftBtn;
-@property(nonatomic, retain)UIButton *rightBtn;
-
 @end
 
 
@@ -22,9 +19,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-}
--(void)viewDidAppear:(BOOL)animated{
-    self.navigationController.interactivePopGestureRecognizer.enabled = NO;
 }
 - (void)initNagationBar:(id)title leftBtn:(NSInteger)leftImage rightBtn:(NSInteger)rightImge
 {
@@ -36,6 +30,7 @@
         [headlabel setText:title];
         headlabel.font = [UIFont boldSystemFontOfSize:17];
         [self.navigationItem setTitleView:headlabel];
+        self.headerView = headlabel;
     }else if ([title isKindOfClass:[UIImage class]]) {
         UIImage *logoImage = (UIImage *)title;
         UIImageView *imageView = [[UIImageView alloc]
@@ -44,8 +39,11 @@
         [imageView setContentMode:UIViewContentModeCenter];
         [imageView setClipsToBounds:YES];
         self.navigationItem.titleView = imageView;
+        self.headerView = self.navigationItem.titleView;
     }else if ([title isKindOfClass:[UIView class]]){
         self.navigationItem.titleView = title;
+        self.headerView = self.navigationItem.titleView;
+
     }
     else{
         if ([title isKindOfClass:[UISegmentedControl class]]) {
@@ -125,9 +123,6 @@
         }
     }
     
-}
--(BOOL)prefersStatusBarHidden{
-    return YES;
 }
 
 - (void)rightBtnAction:(UIButton *)sender

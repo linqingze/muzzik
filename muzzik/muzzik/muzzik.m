@@ -50,7 +50,7 @@
         newmuzzik.music.key = [[dic objectForKey:@"music"] objectForKey:@"key"];
        // newmuzzik.music.block = [[[dic objectForKey:@"music"] objectForKey:@"block"] boolValue];
         newmuzzik.music.name = [[dic objectForKey:@"music"] objectForKey:@"name"];
-        if ([[dic allKeys ] containsObject:@"reply"]) {
+        if ([[dic allKeys ] containsObject:@"reply"] &&[[dic objectForKey:@"reply"] isKindOfClass:[NSDictionary class]] &&[[[dic objectForKey:@"reply"] allKeys] count]>1) {
             newmuzzik.reply = [ReplyObject new];
             newmuzzik.reply.reply_id = [[dic objectForKey:@"reply"] objectForKey:@"_id"];
             newmuzzik.reply.message = [[dic objectForKey:@"reply"] objectForKey:@"message"];

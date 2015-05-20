@@ -19,4 +19,11 @@
 @property (nonatomic,retain) UIImageView *timeImage;
 @property (nonatomic,retain) UILabel *timeLabel;
 @property (nonatomic,retain) CXAHyperlinkLabel *message;
+@property (nonatomic,retain) UIScrollView *scroll;
+@property (nonatomic,retain) UIView *downLine;
+@property (nonatomic,retain) UIView *ActionView;
+@property (nonatomic,retain) UIButton *moveButton;
+@property (nonatomic,retain) UIButton *repostButton;
+@property (nonatomic,retain) UIButton *shareButton;
+@property (nonatomic,retain) UIButton *commentButton;
 @end
