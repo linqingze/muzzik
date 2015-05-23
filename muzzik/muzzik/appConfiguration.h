@@ -13,7 +13,7 @@
 #define SCREEN_HEIGHT [ UIScreen mainScreen ].bounds.size.height
 
 #pragma -mark URL Address
-
+#define URL_Muzzik_SharePage    @"http://www.muzziker.com/app/muzzik/"
 #define URL_Lyric_Me            @"http://geci.me/api/lyric/"
 #define BaseURL                 @"http://117.121.26.174/"
 //#define BaseURL                 @"http://192.168.1.110:3000/"
@@ -63,7 +63,7 @@
 //#define URL_GetVerifiCode @"http://192.168.1.112:3000/api/user/verifiCode"
 //#define URL_Login @"http://192.168.1.112:3000/api/user/login"
 
-#define URL_Muzzik_SharePage    @"http://www.muzziker.com/app/muzzik/"
+
 
 #pragma -mark App_Color
 #define Color_underLine             [UIColor colorWithRed:227.0/255.0 green:227.0/255.0 blue:227.0/255.0 alpha:1]
@@ -100,11 +100,12 @@
 
 
 #pragma -mark Notification string
-#define String_StatusNotifiation                   @"StatusNotifiation"
-#define String_SetSongInformationNotification      @"SetSongInformationNotification"
-#define String_WeiBo_Response_Notification         @"weiboresponse"
-#define String_SetSongPlayNextNotification         @"notification_play_next"
-
+#define String_StatusNotifiation                    @"StatusNotifiation"
+#define String_SetSongInformationNotification       @"SetSongInformationNotification"
+#define String_WeiBo_Response_Notification          @"weiboresponse"
+#define String_SetSongPlayNextNotification          @"notification_play_next"
+#define String_MuzzikDataSource_update              @"Muzzik_datasource_update"
+#define String_UserDataSource_update                @"User_datasource_update"
 
 #pragma -mark Font_Size
 
@@ -168,7 +169,6 @@
 #define TempList               4
 #define feedList               5
 #define recommendList          6
-
 
 #pragma -mark HTTP constant
 #define PostMethod             @"1"

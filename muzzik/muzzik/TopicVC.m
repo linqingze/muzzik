@@ -18,6 +18,7 @@
 #import "MuzzikTableVC.h"
 #import "SuggestMuzzikVC.h"
 #import "ActivityUserVC.h"
+#import "TopRankVC.h"
 #define width_For_Cell 60.0
 @interface TopicVC ()<UIScrollViewDelegate,TapLabelDelegate,TapImageViewDelegate>{
     UIScrollView *mainScroll;
@@ -49,6 +50,8 @@
     UIImageView *muzzikNext;
     UIButton *playButton;
     UIButton *likeButton;
+    
+    NSMutableArray *userImageArray;
 }
 @end
 
@@ -56,7 +59,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    userImageArray = [NSMutableArray array];
     [self.view setBackgroundColor:[UIColor whiteColor]];
+     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceMuzzikUpdate:) name:String_MuzzikDataSource_update object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceUserUpdate:) name:String_UserDataSource_update object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
     mainScroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     [mainScroll setContentSize:CGSizeMake(SCREEN_WIDTH, 1200)];
@@ -68,7 +74,7 @@
     attentionView.clipsToBounds = YES;
     UITapGestureRecognizer *tapForAttention = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapForAttention)];
     [attentionView addGestureRecognizer:tapForAttention];
-    [mainScroll addSubview:attentionView];
+    
     
     attentionLabel = [[UILabel alloc] initWithFrame:CGRectMake(15,0 , 50, 40)];
     [attentionLabel setText:@"关注"];
@@ -80,6 +86,8 @@
     nextImage = [[UIImageView alloc] initWithFrame:CGRectMake(attentionView.frame.size.width-30, 14, 7, 12)];
     nextImage.image = [UIImage imageNamed:Image_recommendarrowImage];
     [attentionView addSubview:nextImage];
+
+    
     
     //topic
     topicView = [[UIView alloc] initWithFrame:CGRectMake(8, 76, SCREEN_WIDTH-16, 234)];
@@ -139,7 +147,22 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self loadFeeds];
+    if ([[userInfo shareClass].token length]>0) {
+        [mainScroll addSubview:attentionView];
+        topicView.frame = CGRectMake(8, 76, SCREEN_WIDTH-16, 234);
+        userView.frame = CGRectMake(8, 330, SCREEN_WIDTH-16, 58+SCREEN_WIDTH*2/3);
+        MainMuzzikView.frame = CGRectMake(0, 408+SCREEN_WIDTH*2/3, SCREEN_WIDTH-16, MainMuzzikView.frame.size.height);
+        [mainScroll setContentSize:CGSizeMake(SCREEN_WIDTH, MainMuzzikView.frame.origin.y+MainMuzzikView.frame.size.height+20)];
+        [self loadFeeds];
+    }else{
+        [attentionView removeFromSuperview];
+        topicView.frame = CGRectMake(8, 16, SCREEN_WIDTH-16, 234);
+        userView.frame = CGRectMake(8, 270, SCREEN_WIDTH-16, 58+SCREEN_WIDTH*2/3);
+        MainMuzzikView.frame = CGRectMake(0, 348+SCREEN_WIDTH*2/3, SCREEN_WIDTH-16, MainMuzzikView.frame.size.height);
+        [mainScroll setContentSize:CGSizeMake(SCREEN_WIDTH, MainMuzzikView.frame.origin.y+MainMuzzikView.frame.size.height+20)];
+        
+    }
+    
 
 }
 
@@ -209,7 +232,7 @@
             for (int i = 0; i<topicArray.count; i++) {
                 topicLabel *tempLabel = [[topicLabel alloc] init];
                 tempLabel.delegate = self;
-                [tempLabel setText:[topicArray[i] objectForKey:@"name"] font:[UIFont boldSystemFontOfSize:12] color:[[topicArray[i] objectForKey:@"color"] longLongValue]];
+                [tempLabel setText:[topicArray[i] objectForKey:@"name"] font:[UIFont boldSystemFontOfSize:12] color:[[topicArray[i] objectForKey:@"color"] longValue]];
                 tempLabel.tid = [topicArray[i] objectForKey:@"_id"];
                 if (localX +tempLabel.frame.size.width+8>MaxX) {
                     localX = 15;
@@ -237,7 +260,7 @@
 
 -(void) loadUser{
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/suggest",BaseURL]]];
-    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:@"6" forKey:Parameter_Limit] Method:GetMethod auth:YES];
+    [request addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = request;
     [request setCompletionBlock :^{
         //    NSLog(@"%@",weakrequest.originalURL);
@@ -249,12 +272,17 @@
             MuzzikUser *muzzikToy = [MuzzikUser new];
             userArray = [muzzikToy makeMuzziksByUserArray:[dic objectForKey:@"users"]];
             NSMutableArray *tempArray = [NSMutableArray array];
-            while (tempArray.count<=6) {
-                MuzzikUser *user = [userArray objectAtIndex:arc4random()%userArray.count];
-                if (![tempArray containsObject:user]) {
-                    [tempArray addObject:user];
+            if ([userArray count]>6) {
+                while (tempArray.count<6) {
+                    MuzzikUser *user = [userArray objectAtIndex:arc4random()%userArray.count];
+                    if (![tempArray containsObject:user]) {
+                        [tempArray addObject:user];
+                    }
                 }
+            }else{
+                [tempArray addObjectsFromArray:userArray];
             }
+           
             CGFloat localX = 15;
             CGFloat localY = 52;
             for (int i = 0; i<2; i++) {
@@ -286,6 +314,7 @@
                         followImage.followType = @"0";
                         [followImage setImage:[UIImage imageNamed:Image_recommendfollow]];
                     }
+                    [userImageArray addObject:followImage];
                     UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(localX, tapImage.frame.size.height+tapImage.frame.origin.y+5, SCREEN_WIDTH/3-31, 15)];
                     [nameLabel setFont:[UIFont systemFontOfSize:12]];
                     [nameLabel setText:tempUser.name];
@@ -420,10 +449,15 @@
             [progress setTintColor:color];
             [musicArtist setTextColor:color];
             [musicName setTextColor:color];
+            muzzikView.frame = CGRectMake(8, 0, SCREEN_WIDTH-16, 145+SCREEN_WIDTH+label.frame.size.height);
+            if ([[userInfo shareClass].token length]>0) {
+                MainMuzzikView.frame = CGRectMake(0, 408+SCREEN_WIDTH*2/3, SCREEN_WIDTH-16, 145+SCREEN_WIDTH+label.frame.size.height);
+                [mainScroll setContentSize:CGSizeMake(SCREEN_WIDTH, 573+SCREEN_WIDTH*5/3.0+label.frame.size.height)];
+            }else{
+                MainMuzzikView.frame = CGRectMake(0, 348+SCREEN_WIDTH*2/3, SCREEN_WIDTH-16, 145+SCREEN_WIDTH+label.frame.size.height);
+                [mainScroll setContentSize:CGSizeMake(SCREEN_WIDTH, 513+SCREEN_WIDTH*5/3.0+label.frame.size.height)];
+            }
             
-             muzzikView.frame = CGRectMake(8, 0, SCREEN_WIDTH-16, 145+SCREEN_WIDTH+label.frame.size.height);
-            MainMuzzikView.frame = CGRectMake(0, 408+SCREEN_WIDTH*2/3, SCREEN_WIDTH-16, 145+SCREEN_WIDTH+label.frame.size.height);
-            [mainScroll setContentSize:CGSizeMake(SCREEN_WIDTH, 573+SCREEN_WIDTH*5/3.0+label.frame.size.height)];
         }
     }];
     [request setFailedBlock:^{
@@ -452,11 +486,7 @@
                 if ([weakrequest responseStatusCode] == 200) {
                     sender.user.isFollow = YES;
                     sender.followType = @"1";
-                    if (sender.user.isFans && sender.user.isFollow) {
-                        [sender setImage:[UIImage imageNamed:Image_recommendfollowedeachother]];
-                    }else {
-                        [sender setImage:[UIImage imageNamed:Image_recommendfollowed]];
-                    }
+                    [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:sender.user];
                 }
                 else{
                     //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
@@ -469,6 +499,30 @@
             }];
             [requestForm startAsynchronous];
 
+        }else{
+            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_user_Unfollow]]];
+            [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:sender.user.user_id forKey:@"_id"] Method:PostMethod auth:YES];
+            __weak ASIHTTPRequest *weakrequest = requestForm;
+            [requestForm setCompletionBlock :^{
+                NSLog(@"%@",[weakrequest responseString]);
+                NSLog(@"%d",[weakrequest responseStatusCode]);
+                
+                if ([weakrequest responseStatusCode] == 200) {
+                    sender.user.isFollow = NO;
+                    sender.followType = @"0";
+
+                    [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:sender.user];
+                }
+                else{
+                    //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+                }
+            }];
+            [requestForm setFailedBlock:^{
+                NSLog(@"%@",[weakrequest error]);
+                NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
+                [userInfo checkLoginWithVC:self];
+            }];
+            [requestForm startAsynchronous];
         }
     }else{
         userDetailInfo *detailuser = [[userDetailInfo alloc] init];
@@ -499,33 +553,13 @@
             if ([weakrequest responseStatusCode] == 200) {
                 // NSData *data = [weakrequest responseData];
                 suggestMuzzik.ismoved = !suggestMuzzik.ismoved;
-                UIColor *color ;
-                    if ([suggestMuzzik.color longLongValue]==1) {
-                        color = [UIColor colorWithHexString:@"fea42c"];
-                        if (suggestMuzzik.ismoved) {
-                            [likeButton setImage:[UIImage imageNamed:@"yellowlikedImage"] forState:UIControlStateNormal];
-                        }else{
-                            [likeButton setImage:[UIImage imageNamed:@"yellowlikeImage"] forState:UIControlStateNormal];
-                        }
-                    }
-                    else if([suggestMuzzik.color longLongValue]==2){
-                        //bluelikeImage
-                        color = [UIColor colorWithHexString:@"04a0bf"];
-                        if (suggestMuzzik.ismoved) {
-                            [likeButton setImage:[UIImage imageNamed:@"bluelikedImage"] forState:UIControlStateNormal];
-                        }else{
-                            [likeButton setImage:[UIImage imageNamed:@"bluelikeImage"] forState:UIControlStateNormal];
-                        }
-                    }
-                    
-                    else{
-                        color = [UIColor colorWithHexString:@"f26d7d"];
-                        if (suggestMuzzik.ismoved) {
-                            [likeButton setImage:[UIImage imageNamed:@"redlikedImage"] forState:UIControlStateNormal];
-                        }else{
-                            [likeButton setImage:[UIImage imageNamed:@"redlikeImage"] forState:UIControlStateNormal];
-                        }
-                    }
+                if (suggestMuzzik.ismoved) {
+                    suggestMuzzik.moveds = [NSString stringWithFormat:@"%d",[suggestMuzzik.moveds intValue]+1 ];
+                }else{
+                    suggestMuzzik.moveds = [NSString stringWithFormat:@"%d",[suggestMuzzik.moveds intValue]-1 ];
+                }
+                [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:suggestMuzzik];
+                
                 
             }
             else{
@@ -561,7 +595,8 @@
     NSLog(@"user");
 }
 -(void) tapForMoreTopic{
-    NSLog(@"topic");
+    TopRankVC *toprank = [[TopRankVC alloc] init];
+    [self.navigationController pushViewController:toprank animated:YES];
 }
 -(void)playnextMuzzikUpdate{
     Globle *glob = [Globle shareGloble];
@@ -588,6 +623,63 @@
             [playButton setImage:[UIImage imageNamed:@"redstopImage"] forState:UIControlStateNormal];
         }else{
             [playButton setImage:[UIImage imageNamed:@"redplayImage"] forState:UIControlStateNormal];
+        }
+    }
+    
+}
+
+-(void)dataSourceUserUpdate:(NSNotification *)notify{
+    MuzzikUser *user = notify.object;
+    for (TapImageView *tap in userImageArray) {
+        if ([tap.user.user_id isEqualToString:user.user_id]) {
+            tap.user.isFollow = user.isFollow;
+            tap.user.isFans = user.isFans;
+            if (user.isFans &&user.isFollow) {
+                [tap setImage:[UIImage imageNamed:Image_recommendfollowedeachother]];
+            }else if (user.isFollow){
+                [tap setImage:[UIImage imageNamed:Image_recommendfollowed]];
+            }else{
+                 [tap setImage:[UIImage imageNamed:Image_recommendfollow]];
+            }
+            break;
+        }
+    }
+}
+-(void)dataSourceMuzzikUpdate:(NSNotification *)notify{
+    muzzik *tempMuzzik = (muzzik *)notify.object;
+    if ([suggestMuzzik.muzzik_id isEqualToString:tempMuzzik.muzzik_id]) {
+        suggestMuzzik.ismoved = tempMuzzik.ismoved;
+        suggestMuzzik.isReposted = tempMuzzik.isReposted;
+        suggestMuzzik.moveds = tempMuzzik.moveds;
+        suggestMuzzik.reposts = tempMuzzik.reposts;
+        suggestMuzzik.shares = tempMuzzik.shares;
+        suggestMuzzik.comments = tempMuzzik.comments;
+        UIColor *color ;
+        if ([suggestMuzzik.color longLongValue]==1) {
+            color = [UIColor colorWithHexString:@"fea42c"];
+            if (suggestMuzzik.ismoved) {
+                [likeButton setImage:[UIImage imageNamed:@"yellowlikedImage"] forState:UIControlStateNormal];
+            }else{
+                [likeButton setImage:[UIImage imageNamed:@"yellowlikeImage"] forState:UIControlStateNormal];
+            }
+        }
+        else if([suggestMuzzik.color longLongValue]==2){
+            //bluelikeImage
+            color = [UIColor colorWithHexString:@"04a0bf"];
+            if (suggestMuzzik.ismoved) {
+                [likeButton setImage:[UIImage imageNamed:@"bluelikedImage"] forState:UIControlStateNormal];
+            }else{
+                [likeButton setImage:[UIImage imageNamed:@"bluelikeImage"] forState:UIControlStateNormal];
+            }
+        }
+        
+        else{
+            color = [UIColor colorWithHexString:@"f26d7d"];
+            if (suggestMuzzik.ismoved) {
+                [likeButton setImage:[UIImage imageNamed:@"redlikedImage"] forState:UIControlStateNormal];
+            }else{
+                [likeButton setImage:[UIImage imageNamed:@"redlikeImage"] forState:UIControlStateNormal];
+            }
         }
     }
     

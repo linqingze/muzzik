@@ -17,6 +17,7 @@
 #import "HostViewController.h"
 #import "RootViewController.h"
 #import "settingSystemVC.h"
+#import "UIImageView+WebCache.m"
 @interface AppDelegate ()
 
 @end
@@ -52,6 +53,7 @@
     user.avatar = [dic objectForKey:@"avatar"];
     user.name = [dic objectForKey:@"name"];
     [self registerRemoteNotification];
+    [self checkChannel];
     NSDictionary* message = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
     if (message) {
         NSString *payloadMsg = [message objectForKey:@"payload"];
@@ -583,7 +585,28 @@
     [WXApi sendReq:req];
 }
 
-
+-(void) sendMusicContentByMuzzik:(muzzik*)localMuzzik scen:(int)scene;
+{
+    WXMediaMessage *message = [WXMediaMessage message];
+    message.title = localMuzzik.music.name;
+    message.description = localMuzzik.music.artist;
+    UIImageView *webimage = [[UIImageView alloc] init];
+    [webimage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,localMuzzik.MuzzikUser.avatar]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+     
+    }];
+    [message setThumbImage:webimage.image];
+    WXMusicObject *ext = [WXMusicObject object];
+    ext.musicUrl = [NSString stringWithFormat:@"%@%@",URL_Muzzik_SharePage,localMuzzik.muzzik_id];
+    ext.musicDataUrl = [NSString stringWithFormat:@"%@%@",BaseURL_audio,localMuzzik.music.key];
+    message.mediaObject = ext;
+    
+    SendMessageToWXReq* req = [[SendMessageToWXReq alloc] init];
+    req.bText = NO;
+    req.message = message;
+    req.scene = scene;
+    
+    [WXApi sendReq:req];
+}
 
 //#pragma -mark 辅助方法
 //-(void) downLoadLyricByMusic:(music *)music{
@@ -591,6 +614,10 @@
 //}
 
 
-
+-(void) checkChannel{
+    userInfo *user = [userInfo shareClass];
+    user.WeChatInstalled = [WXApi isWXAppInstalled];
+    user.QQInstalled = [QQApi isQQInstalled];
+}
 
 @end

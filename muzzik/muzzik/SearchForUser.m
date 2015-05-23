@@ -30,7 +30,7 @@
 - (void)viewDidLoad {
     page = 1;
     [super viewDidLoad];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceUserUpdate:) name:String_UserDataSource_update object:nil];
     myTableView  = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     myTableView.delegate = self;
     myTableView.dataSource = self;
@@ -137,7 +137,8 @@
             
             if ([weakrequest responseStatusCode] == 200) {
                 attentionuser.isFollow = NO;
-                [myTableView reloadData];
+                [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
+                
             }
             else{
                 //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
@@ -159,7 +160,7 @@
             
             if ([weakrequest responseStatusCode] == 200) {
                 attentionuser.isFollow = YES;
-                [myTableView reloadData];
+                [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
             }
             else{
                 //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
@@ -207,5 +208,11 @@
     userDetailInfo *detailuser = [[userDetailInfo alloc] init];
     detailuser.uid = user_id;
     [self.keeper.navigationController pushViewController:detailuser animated:YES];
+}
+-(void)dataSourceUserUpdate:(NSNotification *)notify{
+    MuzzikUser *user = notify.object;
+    if ([MuzzikItem checkMutableArray:self.searchArray isContainUser:user]) {
+        [myTableView reloadData];
+    }
 }
 @end

@@ -14,14 +14,12 @@
 #import "UserHomePage.h"
 #import "settingSystemVC.h"
 #import "NotificationVC.h"
+#import "KxMenu.h"
 @interface RootViewController ()<UIPageViewControllerDelegate,UIPageViewControllerDataSource,UIScrollViewDelegate>{
     NSArray *pageControllers;
     UIView *nacView;
     UIPageControl *_pagecontrol;
     UILabel *titleLable;
-    UIView *moreItemView;
-    BOOL isOpen;
-    UIView *glassView;
     muzzikTrendController* muzzikvc;
     TopicVC *topicvc ;
     UserHomePage *userHome;
@@ -35,6 +33,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [KxMenu setTintColor:Color_NavigationBar];
     [self initNagationBar:0 leftBtn:0 rightBtn:0];
     nacView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 64)];
     [nacView setBackgroundColor:Color_NavigationBar];
@@ -52,30 +51,7 @@
     [titleLable setFont:[UIFont boldSystemFontOfSize:15]];
     titleLable.textAlignment = NSTextAlignmentCenter;
     [nacView addSubview:titleLable];
-    glassView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
-    [glassView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(closeView)]];
-    moreItemView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-120, 44, 120, 0)];
-    [moreItemView setBackgroundColor:Color_NavigationBar];
-    [moreItemView setAlpha:0];
-    moreItemView.layer.shadowOffset = CGSizeMake(1, 1);
-    moreItemView.layer.shadowColor = [UIColor blackColor].CGColor;
-    UIButton *draftBox = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 120, 50)];
-    [draftBox setTitle:@"草稿箱" forState:UIControlStateNormal];
-    [draftBox setTitleColor:Color_Text_4 forState:UIControlStateNormal];
-    [draftBox.titleLabel setFont:[UIFont systemFontOfSize:16]];
-    [draftBox setContentEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 40)];
-    [moreItemView addSubview:draftBox];
-    [draftBox addTarget:self action:@selector(DraftAction) forControlEvents:UIControlEventTouchUpInside];
-    
-    
-    UIButton *settingButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 50, 120, 50)];
-    [settingButton setTitle:@"设置" forState:UIControlStateNormal];
-    [settingButton setTitleColor:Color_Text_4 forState:UIControlStateNormal];
-    [settingButton.titleLabel setFont:[UIFont systemFontOfSize:16]];
-    [settingButton setContentEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 56)];
-    [settingButton addTarget:self action:@selector(systemSetting) forControlEvents:UIControlEventTouchUpInside];
-    [moreItemView addSubview:settingButton];
-    [MuzzikItem addLineOnView:moreItemView heightPoint:50 toLeft:10 toRight:10 withColor:Color_Text_1];
+
     
     
     UIButton *searchButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 20, 44, 44)];
@@ -84,7 +60,7 @@
     [nacView addSubview:searchButton];
     UIButton *moreButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-44, 20, 44, 44)];
     [moreButton setImage:[UIImage imageNamed:Image_moreImage] forState:UIControlStateNormal];
-    [moreButton addTarget:self action:@selector(moreAction) forControlEvents:UIControlEventTouchUpInside];
+    [moreButton addTarget:self action:@selector(moreAction:) forControlEvents:UIControlEventTouchUpInside];
     [nacView addSubview:moreButton];
     // Do any additional setup after loading the view, typically from a nib.
     // Configure the page view controller and add it as a child view controller.
@@ -264,29 +240,48 @@
     [self.navigationController pushViewController:search animated:NO];
 }
 
--(void) moreAction{
-    if (isOpen) {
-        isOpen = !isOpen;
-        [self.view addSubview:glassView];
-        [self.view addSubview:moreItemView];
-        [UIView animateWithDuration:0.3 animations:^{
-            [moreItemView setAlpha:1];
-            [moreItemView setFrame:CGRectMake(SCREEN_WIDTH-120, 0, 120, 100)];
-        }];
-    }else{
-        isOpen = !isOpen;
-        [UIView animateWithDuration:0.3 animations:^{
-            [moreItemView setAlpha:0];
-            [moreItemView setFrame:CGRectMake(SCREEN_WIDTH-120, 0, 120, 0)];
-        }completion:^(BOOL finished) {
-            [moreItemView removeFromSuperview];
-            [glassView removeFromSuperview];
-        }];
-    }
-}
-
--(void) closeView{
-    [self moreAction];
+-(void) moreAction:(UIButton *)sender{
+    NSArray *menuItems =
+    @[
+      
+      [KxMenuItem menuItem:@"设置"
+                     image:nil
+                    target:self
+                    action:@selector(systemSetting)],
+      
+      [KxMenuItem menuItem:@"草稿箱"
+                     image:nil
+                    target:self
+                    action:@selector(DraftAction)],
+      
+//      [KxMenuItem menuItem:@"Check menu"
+//                     image:[UIImage imageNamed:@"check_icon"]
+//                    target:self
+//                    action:@selector(pushMenuItem:)],
+//      
+//      [KxMenuItem menuItem:@"Reload page"
+//                     image:[UIImage imageNamed:@"reload"]
+//                    target:self
+//                    action:@selector(pushMenuItem:)],
+//      
+//      [KxMenuItem menuItem:@"Search"
+//                     image:[UIImage imageNamed:@"search_icon"]
+//                    target:self
+//                    action:@selector(pushMenuItem:)],
+//      
+//      [KxMenuItem menuItem:@"Go home"
+//                     image:[UIImage imageNamed:@"home_icon"]
+//                    target:self
+//                    action:@selector(pushMenuItem:)],
+      ];
+    
+    //    KxMenuItem *first = menuItems[0];
+    //    first.foreColor = [UIColor colorWithRed:47/255.0f green:112/255.0f blue:225/255.0f alpha:1.0];
+    //    first.alignment = NSTextAlignmentCenter;
+    
+    [KxMenu showMenuInView:self.navigationController.view
+                  fromRect:sender.frame
+                 menuItems:menuItems];
 }
 -(void) DraftAction{
    
@@ -295,7 +290,6 @@
 
 -(void)systemSetting{
     settingSystemVC *setting = [[settingSystemVC alloc] init];
-    [self moreAction];
     [self.navigationController pushViewController:setting animated:YES];
     
 }

@@ -179,6 +179,7 @@ static char DXRefreshFooterViewKey;
     }
     
     UIRefreshControl *refresh = [[UIRefreshControl alloc] init];
+    [refresh setTintColor:Color_line_1];
     [refresh addTarget:target action:action forControlEvents:UIControlEventValueChanged];
     [self addSubview:refresh];
     self.alwaysBounceVertical = YES;

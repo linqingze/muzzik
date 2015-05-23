@@ -7,14 +7,16 @@
 //
 
 #import "showUserVC.h"
-#import "AtfreindCell.h"
+#import "searchUserCell.h"
 #import "UIImageView+WebCache.h"
 #import "UIScrollView+DXRefresh.h"
-@interface showUserVC ()<UITableViewDataSource,UITableViewDelegate>{
+#import "userDetailInfo.h"
+@interface showUserVC ()<UITableViewDataSource,UITableViewDelegate,CellDelegate>{
     UITableView *_tableView;
     NSMutableArray *userArray;
     NSString *URLString;
     int page;
+    int updated;
 }
 
 @end
@@ -23,6 +25,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceUserUpdate:) name:String_UserDataSource_update object:nil];
     page = 1;
     if ([_showType isEqualToString:@"repost"]){
         [self initNagationBar:@"转发用户" leftBtn:Constant_backImage rightBtn:0];
@@ -39,7 +42,7 @@
     _tableView.delegate = self;
     _tableView.dataSource = self;
     [_tableView  setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-    [_tableView registerClass:[AtfreindCell class] forCellReuseIdentifier:@"AtfreindCell"];
+    [_tableView registerClass:[searchUserCell class] forCellReuseIdentifier:@"searchUserCell"];
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :URLString]];
     [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:page] ,Parameter_page,@"20",Parameter_Limit, nil] Method:GetMethod auth:NO];
     __weak ASIHTTPRequest *weakrequest = requestForm;
@@ -116,27 +119,40 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSString * cellName = @"AtfreindCell";
-    AtfreindCell * cell = [tableView dequeueReusableCellWithIdentifier:cellName];
-    if (!cell) {
-        cell = [[AtfreindCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellName];
-    }
+    searchUserCell *cell = [tableView dequeueReusableCellWithIdentifier:@"searchUserCell" forIndexPath:indexPath];
     MuzzikUser *muzzikuser = userArray[indexPath.row];
     [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-    [cell.headerImage setAlpha:0];
     [cell.headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,muzzikuser.avatar]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
         [cell.headerImage setAlpha:1];
     }];
+    cell.delegate = self;
+    cell.muzzikUser = muzzikuser;
+    
+    cell.index = indexPath.row;
     cell.label.text = muzzikuser.name;
-    //self.dataSource[indexPath.section][@"data"][indexPath.row];
+    if (muzzikuser.isFollow &&muzzikuser.isFans) {
+        [cell.attentionButton setImage:[UIImage imageNamed:Image_followedeachotherImageSQ] forState:UIControlStateNormal];
+        [cell.attentionButton setFrame:CGRectMake(SCREEN_WIDTH-80, 0, 65, 60)];
+    }else if(muzzikuser.isFollow){
+        [cell.attentionButton setImage:[UIImage imageNamed:Image_followedImageSQ] forState:UIControlStateNormal];
+        [cell.attentionButton setFrame:CGRectMake(SCREEN_WIDTH-70, 0, 55, 60)];
+    }else{
+        [cell.attentionButton setImage:[UIImage imageNamed:Image_followImageSQ] forState:UIControlStateNormal];
+        [cell.attentionButton setFrame:CGRectMake(SCREEN_WIDTH-60, 0, 45, 60)];
+    }
+    
     return cell;
+
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return 50.0;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-
+    MuzzikUser *attentionuser = userArray[indexPath.row];
+    userDetailInfo *detailuser = [[userDetailInfo alloc] init];
+    detailuser.uid = attentionuser.user_id;
+    [self.navigationController pushViewController:detailuser animated:YES];
     
 }
 
@@ -144,7 +160,60 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
+-(void)attention:(NSInteger)index{
+    MuzzikUser *attentionuser = userArray[index];
+    if (attentionuser.isFollow) {
+        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_user_Unfollow]]];
+        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:attentionuser.user_id forKey:@"_id"] Method:PostMethod auth:YES];
+        __weak ASIHTTPRequest *weakrequest = requestForm;
+        [requestForm setCompletionBlock :^{
+            NSLog(@"%@",[weakrequest responseString]);
+            NSLog(@"%d",[weakrequest responseStatusCode]);
+            
+            if ([weakrequest responseStatusCode] == 200) {
+                attentionuser.isFollow = NO;
+                 [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
+            }
+            else{
+                //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+            }
+        }];
+        [requestForm setFailedBlock:^{
+            NSLog(@"%@",[weakrequest error]);
+            NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
+            [userInfo checkLoginWithVC:self];
+        }];
+        [requestForm startAsynchronous];
+    }else{
+        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_User_Follow]]];
+        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:attentionuser.user_id forKey:@"_id"] Method:PostMethod auth:YES];
+        __weak ASIHTTPRequest *weakrequest = requestForm;
+        [requestForm setCompletionBlock :^{
+            NSLog(@"%@",[weakrequest responseString]);
+            NSLog(@"%d",[weakrequest responseStatusCode]);
+            
+            if ([weakrequest responseStatusCode] == 200) {
+                attentionuser.isFollow = YES;
+                [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
+            }
+            else{
+                //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+            }
+        }];
+        [requestForm setFailedBlock:^{
+            NSLog(@"%@",[weakrequest error]);
+            NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
+            [userInfo checkLoginWithVC:self];
+        }];
+        [requestForm startAsynchronous];
+    }
+}
+-(void)dataSourceUserUpdate:(NSNotification *)notify{
+    MuzzikUser *user = notify.object;
+    if ([MuzzikItem checkMutableArray:userArray isContainUser:user]) {
+        [_tableView reloadData];
+    }
+}
 /*
 #pragma mark - Navigation
 

@@ -21,8 +21,8 @@
 -(void)userDetail:(NSString *)uid;
 -(void)playSongWithSongModel:(muzzik *)songModel;
 -(void)downMusicWithModel:(muzzik *)model;
--(void)moveMuzzikWithId:(NSString *)muzzik_id isMoved:(BOOL) ismoved atIndex:(NSInteger) index;
--(void)repostActionWithMuzzik_id:(NSString *)muzzik_id atIndex:(NSInteger) index;
+-(void)moveMuzzik:(muzzik *) tempMuzzik;
+-(void)repostActionWithMuzzik:(muzzik *) tempMuzzik;
 -(void)shareActionWithMuzzik:(muzzik *)localMuzzik;
 -(void)reloadMuzzikSource;
 -(void)payAttention:(NSString *)uid;
@@ -31,6 +31,7 @@
 -(void)showFans:(NSString *)uid;
 -(void)attention:(NSInteger)index;
 -(void)newMuzzik:(muzzik *)localMzzik;
+-(void)clickOnCell:(muzzik *)tempMuzzik;
 @end
 
 #endif

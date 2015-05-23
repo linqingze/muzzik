@@ -17,6 +17,9 @@
 @property (nonatomic,copy) NSString *name;
 @property (nonatomic,copy) NSString *deviceToken;
 @property (nonatomic,copy) NSString *clientId;
+@property (nonatomic) BOOL WeChatInstalled;
+@property (nonatomic) BOOL QQInstalled;
+
 +(userInfo *) shareClass;
 +(void)checkLoginWithVC:(UIViewController *)vc;
 @end

@@ -21,6 +21,8 @@
 #import "TopicHotVC.h"
 #import "Globle.h"
 #import "UIScrollView+DXRefresh.h"
+#import "AppDelegate.h"
+#import <TencentOpenAPI/TencentOAuth.h>
 @interface DetaiMuzzikVC ()<UITableViewDataSource,UITableViewDelegate,CXDelegate,HPGrowingTextViewDelegate,CellDelegate>{
     UITableView *muzzikTableView;
     UIView *headView;
@@ -49,6 +51,16 @@
     CGFloat MuzzikViewheight;
     BOOL isComment;                  //评论时，关闭键盘自动滚到表头；
     NSString *lastID;
+    
+    //shareView
+    UIView *shareViewFull;
+    UIView *shareView;
+    UIButton *shareToTimeLineButton;
+    UIButton *shareToWeiChatButton;
+    UIButton *shareToWeiboButton;
+    UIButton *shareToQQButton;
+    UIButton *shareToQQZoneButton;
+    CGFloat maxScaleY;
 }
 @property (nonatomic,retain) NSMutableDictionary *profileDic;
 @property(nonatomic,retain)UIImageView *headimage;
@@ -112,9 +124,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceMuzzikUpdate:) name:String_MuzzikDataSource_update object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceUserUpdate:) name:String_UserDataSource_update object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
     [self initNagationBar:@"详情" leftBtn:Constant_backImage rightBtn:0];
+    [self SettingShareView];
     commentToMuzzik = self.localmuzzik;
     muzzikTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-119)];
     tableOriginRect = muzzikTableView.frame;
@@ -155,7 +171,7 @@
     commentViewRect = commentView.frame;
     
     [muzzikTableView registerClass:[CommentMuzzikCell class] forCellReuseIdentifier:@"CommentMuzzikCell"];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
+    
     page = 1;
     self.musicplayer = [musicPlayer shareClass];
     headView = [[UIView alloc] initWithFrame:CGRectMake(0, -SCREEN_WIDTH/2, SCREEN_WIDTH, SCREEN_WIDTH/2)];
@@ -496,7 +512,7 @@
     _comments.titleLabel.textAlignment = NSTextAlignmentCenter;
     [_muzzikView addSubview:_comments];
     
-    [self colorViewWithColorString:[NSString stringWithFormat:@"%@",self.localmuzzik.color]];
+    
     
     _downLine = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/8,_reposts.frame.origin.y+40, SCREEN_WIDTH*3/4, 1)];
     [_downLine setImage:[UIImage imageNamed:Image_lineImage]];
@@ -591,7 +607,7 @@
         [muzzikTableView setTableHeaderView:_muzzikView];
 
     }
-    
+    [self colorViewWithColorString:[NSString stringWithFormat:@"%@",self.localmuzzik.color]];
     [self loadComment];
     songView = [[UIView alloc] initWithFrame:CGRectMake(0, 55, SCREEN_WIDTH, 55)];
     songLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 7.5, SCREEN_WIDTH-100, 20)];
@@ -607,6 +623,7 @@
     [deleButton setImage:[UIImage imageNamed:Image_deletesongImage] forState:UIControlStateNormal];
     [deleButton addTarget:self action:@selector(deleSong) forControlEvents:UIControlEventTouchUpInside];
     [songView addSubview:deleButton];
+    [muzzikTableView addFooterWithTarget:self action:@selector(refreshFooter)];
     
 }
 -(void)viewWillAppear:(BOOL)animated{
@@ -646,19 +663,15 @@
         }
         
     }
-    if ([self.showType isEqualToString:Constant_Comment]) {
-        [comnentTextView becomeFirstResponder];
-    }else if([self.showType isEqualToString:Constant_showComment]){
-        [muzzikTableView setContentOffset:CGPointMake(0, _muzzikView.frame.size.height-SCREEN_WIDTH/2) animated:NO];
-    }
+   
     
-    [muzzikTableView addFooterWithTarget:self action:@selector(refreshFooter)];
+    
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     [Globle shareGloble].isHeadView = NO;
-    [muzzikTableView removeFooter];
+    
 
     // [MytableView removeKeyPath];
 
@@ -684,7 +697,16 @@
             if ([commentArray count]>0) {
                 [_muzzikView addSubview:commentTitle];
             }
+           
             [muzzikTableView reloadData];
+            if ([self.showType isEqualToString:Constant_Comment]) {
+                [comnentTextView performSelector:@selector(becomeFirstResponder) withObject:nil afterDelay:0.5];
+            }else if([self.showType isEqualToString:Constant_showComment]){
+                if ([commentArray count]>0) {
+                    [muzzikTableView setContentOffset:CGPointMake(0, _muzzikView.frame.size.height-SCREEN_WIDTH-64) animated:NO];
+                }
+                
+            }
             
         }
         else{
@@ -947,6 +969,7 @@
             }
         }];
         [shareRequest setFailedBlock:^{
+            [userInfo checkLoginWithVC:self];
             NSLog(@"%@",[weakShare error]);
         }];
         [shareRequest startAsynchronous];
@@ -994,7 +1017,7 @@
 }
 -(void) colorViewWithColorString:(NSString *) colorString{
     UIColor *color;
-    if ([colorString isEqualToString:@"1"]) {
+    if ([colorString intValue] == 1) {
         color = [UIColor colorWithHexString:@"fea42c"];
         [self.repostImage setImage:[UIImage imageNamed:Image_yellowretweetImage]];
         if (self.localmuzzik.ismoved) {
@@ -1007,8 +1030,11 @@
         }else{
             [self.playButton setImage:[UIImage imageNamed:@"yellowplayImage"] forState:UIControlStateNormal];
         }
+        if (self.localmuzzik.isReposted) {
+            [self.repostButton setImage:[UIImage imageNamed:Image_hottweetyellowretweetImage] forState:UIControlStateNormal];
+        }
     }
-    else if([colorString isEqualToString:@"2"]){
+    else if([colorString intValue] == 2){
         //bluelikeImage
         [self.repostImage setImage:[UIImage imageNamed:Image_blueretweetImage]];
         color = [UIColor colorWithHexString:@"04a0bf"];
@@ -1021,6 +1047,9 @@
             [self.playButton setImage:[UIImage imageNamed:@"bluestopImage"] forState:UIControlStateNormal];
         }else{
             [self.playButton setImage:[UIImage imageNamed:@"blueplayImage"] forState:UIControlStateNormal];
+        }
+        if (self.localmuzzik.isReposted) {
+            [self.repostButton setImage:[UIImage imageNamed:Image_hottweetblueretweetImage] forState:UIControlStateNormal];
         }
     }
     else{
@@ -1036,7 +1065,12 @@
         }else{
             [self.playButton setImage:[UIImage imageNamed:@"redplayImage"] forState:UIControlStateNormal];
         }
+        if (self.localmuzzik.isReposted) {
+            [self.repostButton setImage:[UIImage imageNamed:Image_hottweetredretweetImage] forState:UIControlStateNormal];
+        }
     }
+    [_moves setTitle:[self.localmuzzik.moveds integerValue]>0? [NSString stringWithFormat:@"喜欢数%@",self.localmuzzik.moveds] : @"喜欢数" forState:UIControlStateNormal];
+    [_reposts setTitle:[self.localmuzzik.reposts integerValue]>0? [NSString stringWithFormat:@"转发数%@",self.localmuzzik.reposts] : @"转发数" forState:UIControlStateNormal];
     [_progress setTintColor:color];
     [_musicArtist setTextColor:color];
     [_musicName setTextColor:color];
@@ -1051,10 +1085,15 @@
             NSLog(@"%d",[weakrequest responseStatusCode]);
             
             if ([weakrequest responseStatusCode] == 200) {
+                
+                
                 [_profileDic setValue:[NSNumber numberWithBool:NO] forKey:@"isFollow"];
-                [_addFriendButton setImage:[UIImage imageNamed:Image_detailfollowImage] forState:UIControlStateNormal];
-                [_attentionButton setImage:[UIImage imageNamed:Image_profilefollow] forState:UIControlStateNormal];
-                [_attentionButton setFrame:CGRectMake(SCREEN_WIDTH-65, 16, 45, 23)];
+
+                MuzzikUser *attentionuser = [MuzzikUser new];
+                attentionuser.user_id = [_profileDic objectForKey:@"_id"];
+                attentionuser.isFans = [[_profileDic objectForKey:@"isFans"] boolValue];
+                attentionuser.isFollow = [[_profileDic objectForKey:@"isFollow"] boolValue];
+                [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
             }
             else{
                 //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
@@ -1076,16 +1115,12 @@
             
             if ([weakrequest responseStatusCode] == 200) {
                 [_profileDic setValue:[NSNumber numberWithBool:YES] forKey:@"isFollow"];
-                if ([[_profileDic objectForKey:@"isFollow"] boolValue] &&[[_profileDic objectForKey:@"isFans"] boolValue]) {
-                    [_addFriendButton setImage:[UIImage imageNamed:Image_viewprofileImage] forState:UIControlStateNormal];
-                    [_attentionButton setImage:[UIImage imageNamed:Image_profilefolloweacherother] forState:UIControlStateNormal];
-                    [_attentionButton setFrame:CGRectMake(SCREEN_WIDTH-85, 16, 65, 23)];
-                }else if([[_profileDic objectForKey:@"isFollow"] boolValue]){
-                    
-                    [_addFriendButton setImage:[UIImage imageNamed:Image_viewprofileImage] forState:UIControlStateNormal];
-                    [_attentionButton setImage:[UIImage imageNamed:Image_profilefollowed] forState:UIControlStateNormal];
-                    [_attentionButton setFrame:CGRectMake(SCREEN_WIDTH-75, 16, 55, 23)];
-                }
+                
+                MuzzikUser *attentionuser = [MuzzikUser new];
+                attentionuser.user_id = [_profileDic objectForKey:@"_id"];
+                attentionuser.isFans = [[_profileDic objectForKey:@"isFans"] boolValue];
+                attentionuser.isFollow = [[_profileDic objectForKey:@"isFollow"] boolValue];
+                [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
             }
             else{
                 //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
@@ -1114,16 +1149,11 @@
             
             if ([weakrequest responseStatusCode] == 200) {
                 [_profileDic setValue:[NSNumber numberWithBool:YES] forKey:@"isFollow"];
-                if ([[_profileDic objectForKey:@"isFollow"] boolValue] &&[[_profileDic objectForKey:@"isFans"] boolValue]) {
-                    [_addFriendButton setImage:[UIImage imageNamed:Image_viewprofileImage] forState:UIControlStateNormal];
-                    [_attentionButton setImage:[UIImage imageNamed:Image_profilefolloweacherother] forState:UIControlStateNormal];
-                    [_attentionButton setFrame:CGRectMake(SCREEN_WIDTH-85, 16, 65, 23)];
-                }else if([[_profileDic objectForKey:@"isFollow"] boolValue]){
-                    
-                    [_addFriendButton setImage:[UIImage imageNamed:Image_viewprofileImage] forState:UIControlStateNormal];
-                    [_attentionButton setImage:[UIImage imageNamed:Image_profilefollowed] forState:UIControlStateNormal];
-                    [_attentionButton setFrame:CGRectMake(SCREEN_WIDTH-75, 16, 55, 23)];
-                }
+                MuzzikUser *attentionuser = [MuzzikUser new];
+                attentionuser.user_id = [_profileDic objectForKey:@"_id"];
+                attentionuser.isFans = [[_profileDic objectForKey:@"isFans"] boolValue];
+                attentionuser.isFollow = [[_profileDic objectForKey:@"isFollow"] boolValue];
+                [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
             }
             else{
                 //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
@@ -1153,7 +1183,7 @@
 -(void)pushMove{
     showUserVC *showvc = [[showUserVC alloc] init];
     showvc.muzzik_id = self.localmuzzik.muzzik_id;
-    showvc.showType = @"movesd";
+    showvc.showType = @"moved";
     [self.navigationController pushViewController:showvc animated:YES];
 }
 -(void)pushShare{
@@ -1163,7 +1193,10 @@
     [self.navigationController pushViewController:showvc animated:YES];
 }
 -(void)pushComment{
-    [muzzikTableView setContentOffset:CGPointMake(0, muzzikTableView.contentSize.height-SCREEN_WIDTH/2) animated:YES];
+    if ([commentArray count]>0) {
+        [muzzikTableView setContentOffset:CGPointMake(0, muzzikTableView.contentSize.height-SCREEN_WIDTH*3/2+10) animated:YES];
+    }
+    
     
 }
 -(void) moveAction{
@@ -1176,7 +1209,14 @@
             if ([weakrequest responseStatusCode] == 200) {
                 // NSData *data = [weakrequest responseData];
                 self.localmuzzik.ismoved = !self.localmuzzik.ismoved;
-                [self colorViewWithColorString:[NSString stringWithFormat:@"%@",self.localmuzzik.color]];
+                if (self.localmuzzik.ismoved) {
+                    self.localmuzzik.moveds = [NSString stringWithFormat:@"%d",[self.localmuzzik.moveds intValue]+1 ];
+                }else{
+                    self.localmuzzik.moveds = [NSString stringWithFormat:@"%d",[self.localmuzzik.moveds intValue]-1 ];
+                }
+                [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:self.localmuzzik];
+                
+                
             }
             else{
                 //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
@@ -1196,10 +1236,43 @@
     
 }
 -(void)repostAction{
-    
+    if (self.localmuzzik.isReposted) {
+        [MuzzikItem showNotifyOnView:self.view text:@"您已转发过"];
+    }else{
+        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik",BaseURL]]];
+        [requestForm setRequestMethod:@"PUT"];
+        
+        NSDictionary *dictionary = [NSDictionary dictionaryWithObject:self.localmuzzik.muzzik_id forKey:@"repost"];
+        [requestForm addBodyDataSourceWithJsonByDic:dictionary Method:PutMethod auth:YES];
+        __weak ASIHTTPRequest *weakrequest = requestForm;
+        [requestForm setCompletionBlock :^{
+            NSLog(@"%@",[weakrequest requestHeaders]);
+            NSLog(@"%@",[weakrequest responseString]);
+            NSLog(@"%d",[weakrequest responseStatusCode]);
+            if ([weakrequest responseStatusCode] == 200) {
+                [MuzzikItem showNotifyOnView:self.view text:@"转发成功"];
+                self.localmuzzik.isReposted = YES;
+                self.localmuzzik.reposts = [NSString stringWithFormat:@"%ld",[self.localmuzzik.reposts integerValue]+1];
+                
+                [self colorViewWithColorString:self.localmuzzik.color];
+            }
+            
+            else if([weakrequest responseStatusCode] == 401){
+                [userInfo checkLoginWithVC:self];
+                //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+            }else if ([weakrequest responseStatusCode] == 400){
+                
+            }
+        }];
+        [requestForm setFailedBlock:^{
+            NSLog(@"%@",[weakrequest error]);
+            [userInfo checkLoginWithVC:self];
+        }];
+        [requestForm startAsynchronous];
+        }
 }
 -(void)shareAction{
-    
+    [self addShareView];
 }
 -(void)commentAction{
     [comnentTextView becomeFirstResponder];
@@ -1213,10 +1286,12 @@
         NSLog(@"%@",[weakrequest responseString]);
         NSLog(@"%d",[weakrequest responseStatusCode]);
         if ([weakrequest responseStatusCode] == 200 && [[dic objectForKey:@"result"] boolValue]) {
+            [muzzikTableView removeFooter];
             [self.navigationController popViewControllerAnimated:YES];
         }
     }];
     [requestForm setFailedBlock:^{
+        
         // [SVProgressHUD showErrorWithStatus:@"network error"];
     }];
     [requestForm startAsynchronous];
@@ -1304,6 +1379,7 @@
             }
         }];
         [shareRequest setFailedBlock:^{
+            [userInfo checkLoginWithVC:self];
             NSLog(@"%@",[weakShare error]);
         }];
         [shareRequest startAsynchronous];
@@ -1354,31 +1430,34 @@
 - (void)refreshFooter
 {
     // [self updateSomeThing];
-    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/%@/comments",BaseURL,self.localmuzzik.muzzik_id]]];
-    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:lastID,Parameter_from,Limit_Constant,Parameter_Limit, nil] Method:GetMethod auth:YES];
-    __weak ASIHTTPRequest *weakrequest = request;
-    [request setCompletionBlock :^{
-        // NSLog(@"%@",[weakrequest responseString]);
-        NSData *data = [weakrequest responseData];
-        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-        if (dic) {
-            muzzik *muzzikToy = [muzzik new];
-            [commentArray addObjectsFromArray:[muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]]];
-            lastID = [dic objectForKey:@"tail"];
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [muzzikTableView reloadData];
-                [muzzikTableView footerEndRefreshing];
-                if ([[dic objectForKey:@"muzziks"] count]<[Limit_Constant integerValue] ) {
-                    [muzzikTableView removeFooter];
-                }
-            });
-            
-        }
-    }];
-    [request setFailedBlock:^{
-        NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
-    }];
-    [request startAsynchronous];
+    if ([lastID length]>0) {
+        ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/%@/comments",BaseURL,self.localmuzzik.muzzik_id]]];
+        [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:lastID,Parameter_from,Limit_Constant,Parameter_Limit, nil] Method:GetMethod auth:YES];
+        __weak ASIHTTPRequest *weakrequest = request;
+        [request setCompletionBlock :^{
+            // NSLog(@"%@",[weakrequest responseString]);
+            NSData *data = [weakrequest responseData];
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+            if (dic) {
+                muzzik *muzzikToy = [muzzik new];
+                [commentArray addObjectsFromArray:[muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]]];
+                lastID = [dic objectForKey:@"tail"];
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    [muzzikTableView reloadData];
+                    [muzzikTableView footerEndRefreshing];
+                    if ([[dic objectForKey:@"muzziks"] count]<[Limit_Constant integerValue] ) {
+                        [muzzikTableView removeFooter];
+                    }
+                });
+                
+            }
+        }];
+        [request setFailedBlock:^{
+            NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
+        }];
+        [request startAsynchronous];
+
+    }
     
 }
 #pragma mark - 监听键盘高度改变事件
@@ -1464,7 +1543,14 @@
     {
         firstLoad = YES;
         if (!isComment) {
-            [muzzikTableView setContentOffset:CGPointMake(0, _muzzikView.frame.size.height-SCREEN_WIDTH/2) animated:NO];
+            if ([commentArray count]==0) {
+                [muzzikTableView setContentOffset:CGPointMake(0, _muzzikView.frame.size.height-SCREEN_WIDTH+64) animated:NO];
+            }else if([commentArray count]<=2){
+                [muzzikTableView setContentOffset:CGPointMake(0, _muzzikView.frame.size.height-SCREEN_WIDTH+64+[commentArray count]*70+20) animated:NO];
+            }else{
+                [muzzikTableView setContentOffset:CGPointMake(0, _muzzikView.frame.size.height-SCREEN_WIDTH+64+160) animated:NO];
+            }
+            
         }else{
             [muzzikTableView scrollToRowAtIndexPath:
              [NSIndexPath indexPathForRow:[commentArray indexOfObject:commentToMuzzik]  inSection:0]
@@ -1490,7 +1576,9 @@
     
     MuzzikObject *mobject = [MuzzikObject shareClass];
     [mobject clearObject];
+    [muzzikTableView removeFooter];
     [super tapAction:tap];
+    
 }
 
 -(void)pressWithUrl:(NSURL *)url AndRange:(NSRange)rang{
@@ -1511,6 +1599,8 @@
     // [SVProgressHUD showSuccessWithStatus:[NSString stringWithFormat:@"%@",url]];
 }
 #pragma -mark cellDelegate
+
+
 -(void)playSongWithSongModel:(muzzik *)songModel{
     _musicplayer.listType = TempList;
     _musicplayer.MusicArray = [NSMutableArray arrayWithArray:@[songModel]];
@@ -1531,4 +1621,282 @@
     
 
 }
+-(void)SettingShareView{
+    CGFloat screenWidth = SCREEN_WIDTH;
+    
+    CGFloat scaleX = 0.1;
+    CGFloat scaleY = 0.08;
+    userInfo *user = [userInfo shareClass];
+    if (user.WeChatInstalled && user.QQInstalled) {
+        maxScaleY = 0.7;
+    }else{
+        maxScaleY = 0.4;
+    }
+    shareViewFull = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, SCREEN_HEIGHT)];
+    [shareViewFull setAlpha:0];
+    [shareViewFull setBackgroundColor:[UIColor colorWithRed:0.125 green:0.121 blue:0.164 alpha:0.8]];
+    [shareViewFull addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(closeShareView)]];
+    shareView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT, screenWidth, screenWidth*maxScaleY)];
+    [shareView setBackgroundColor:[UIColor colorWithRed:0.125 green:0.121 blue:0.164 alpha:0.85]];
+    if (user.WeChatInstalled) {
+        UIButton *wechatButton = [[UIButton alloc] initWithFrame:CGRectMake(screenWidth*0.1, screenWidth*0.08, screenWidth*0.18, screenWidth*0.18)];
+        [wechatButton setImage:[UIImage imageNamed:Image_wechatImage] forState:UIControlStateNormal];
+        [wechatButton setBackgroundImage:[UIImage imageNamed:Image_sharebgImage] forState:UIControlStateNormal];
+        [wechatButton setBackgroundImage:[UIImage imageNamed:Image_shareclickbgImage] forState:UIControlStateHighlighted];
+        [wechatButton setImage:[UIImage imageNamed:Image_wechatImage] forState:UIControlStateHighlighted];
+        [wechatButton addTarget:self action:@selector(shareWeChat) forControlEvents:UIControlEventTouchUpInside];
+        [shareView addSubview:wechatButton];
+        UILabel *weiChatLabel = [[UILabel alloc] initWithFrame:CGRectMake(screenWidth*0.1, screenWidth*0.26, screenWidth*0.18, 20)];
+        weiChatLabel.text = @"微 信";
+        weiChatLabel.textAlignment = NSTextAlignmentCenter;
+        [weiChatLabel setFont:[UIFont systemFontOfSize:12]];
+        weiChatLabel.textColor =  Color_line_2;
+        [shareView addSubview:weiChatLabel];
+        UIButton *timeLineButton = [[UIButton alloc] initWithFrame:CGRectMake(screenWidth*0.41, screenWidth*0.08, SCREEN_WIDTH*0.18, SCREEN_WIDTH*0.18)];
+        [timeLineButton setImage:[UIImage imageNamed:Image_momentImage] forState:UIControlStateNormal];
+        [timeLineButton setBackgroundImage:[UIImage imageNamed:Image_sharebgImage] forState:UIControlStateNormal];
+        [timeLineButton setBackgroundImage:[UIImage imageNamed:Image_shareclickbgImage] forState:UIControlStateHighlighted];
+        [timeLineButton setImage:[UIImage imageNamed:Image_momentImage] forState:UIControlStateHighlighted];
+        [timeLineButton addTarget:self action:@selector(shareTimeLine) forControlEvents:UIControlEventTouchUpInside];
+        [shareView addSubview:timeLineButton];
+        
+        UILabel *timeLineLabel = [[UILabel alloc] initWithFrame:CGRectMake(screenWidth*0.41, screenWidth*0.26, screenWidth*0.18, 20)];
+        timeLineLabel.text = @"微 信";
+        timeLineLabel.textAlignment = NSTextAlignmentCenter;
+        [timeLineLabel setFont:[UIFont systemFontOfSize:12]];
+        timeLineLabel.textColor =  Color_line_2;
+        [shareView addSubview:timeLineLabel];
+        scaleX = 0.72;
+    }
+    
+    
+    UIButton *weiboButton = [[UIButton alloc] initWithFrame:CGRectMake(screenWidth*scaleX, screenWidth*0.08, SCREEN_WIDTH*0.18, SCREEN_WIDTH*0.18)];
+    [weiboButton setImage:[UIImage imageNamed:Image_weiboImage] forState:UIControlStateNormal];
+    [weiboButton setBackgroundImage:[UIImage imageNamed:Image_sharebgImage] forState:UIControlStateNormal];
+    [weiboButton setBackgroundImage:[UIImage imageNamed:Image_shareclickbgImage] forState:UIControlStateHighlighted];
+    [weiboButton setImage:[UIImage imageNamed:Image_weiboImage] forState:UIControlStateHighlighted];
+    [weiboButton addTarget:self action:@selector(shareWeiBo) forControlEvents:UIControlEventTouchUpInside];
+    [shareView addSubview:weiboButton];
+    UILabel *weiBoLabel = [[UILabel alloc] initWithFrame:CGRectMake(screenWidth*scaleX, screenWidth*0.26, screenWidth*0.18, 20)];
+    weiBoLabel.text = @"微 博";
+    weiBoLabel.textAlignment = NSTextAlignmentCenter;
+    [weiBoLabel setFont:[UIFont systemFontOfSize:12]];
+    weiBoLabel.textColor = Color_line_2;
+    [shareView addSubview:weiBoLabel];
+    if (user.WeChatInstalled) {
+        scaleY = 0.39;
+        scaleX = 0.1;
+    }else{
+        scaleX = 0.41;
+    }
+    if (user.QQInstalled) {
+        UIButton *QQButton = [[UIButton alloc] initWithFrame:CGRectMake(screenWidth*scaleX, screenWidth*scaleY, screenWidth*0.18, screenWidth*0.18)];
+        [QQButton setImage:[UIImage imageNamed:Image_qqImage] forState:UIControlStateNormal];
+        [QQButton setBackgroundImage:[UIImage imageNamed:Image_sharebgImage] forState:UIControlStateNormal];
+        [QQButton setBackgroundImage:[UIImage imageNamed:Image_shareclickbgImage] forState:UIControlStateHighlighted];
+        [QQButton setImage:[UIImage imageNamed:Image_qqImage] forState:UIControlStateHighlighted];
+        [QQButton addTarget:self action:@selector(shareQQ) forControlEvents:UIControlEventTouchUpInside];
+        [shareView addSubview:QQButton];
+        
+        UILabel *QQLabel = [[UILabel alloc] initWithFrame:CGRectMake(screenWidth*scaleX, screenWidth*(scaleY+0.18), screenWidth*0.18, 20)];
+        QQLabel.text = @"QQ";
+        QQLabel.textAlignment = NSTextAlignmentCenter;
+        [QQLabel setFont:[UIFont systemFontOfSize:12]];
+        QQLabel.textColor = Color_line_2;
+        [shareView addSubview:QQLabel];
+        
+        UIButton *qqZoneButton = [[UIButton alloc] initWithFrame:CGRectMake(screenWidth*(scaleX+0.31), screenWidth*scaleY, screenWidth*0.18, screenWidth*0.18)];
+        [qqZoneButton setImage:[UIImage imageNamed:Image_q_zoneImage] forState:UIControlStateNormal];
+        [qqZoneButton setBackgroundImage:[UIImage imageNamed:Image_sharebgImage] forState:UIControlStateNormal];
+        [qqZoneButton setBackgroundImage:[UIImage imageNamed:Image_shareclickbgImage] forState:UIControlStateHighlighted];
+        [qqZoneButton setImage:[UIImage imageNamed:Image_q_zoneImage] forState:UIControlStateHighlighted];
+        [qqZoneButton addTarget:self action:@selector(shareQQZone) forControlEvents:UIControlEventTouchUpInside];
+        [shareView addSubview:qqZoneButton];
+        
+        UILabel *QQZoneLabel = [[UILabel alloc] initWithFrame:CGRectMake(screenWidth*(scaleX+0.31), screenWidth*(scaleY+0.18), screenWidth*0.18, 20)];
+        QQZoneLabel.text = @"QQ空间";
+        QQZoneLabel.textAlignment = NSTextAlignmentCenter;
+        [QQZoneLabel setFont:[UIFont systemFontOfSize:12]];
+        QQZoneLabel.textColor = Color_line_2;
+        [shareView addSubview:QQZoneLabel];
+        
+    }
+    
+    [shareViewFull addSubview:shareView];
+    
+    
+    
+}
+-(void)closeShareView{
+    [UIView animateWithDuration:0.5 animations:^{
+        [shareViewFull setAlpha:0];
+        [shareView setFrame:CGRectMake(0, SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_WIDTH*maxScaleY)];
+    } completion:^(BOOL finished) {
+        [shareViewFull removeFromSuperview];
+        
+    }];
+}
+-(void) addShareView{
+    [self.navigationController.view addSubview:shareViewFull];
+    [UIView animateWithDuration:0.3 animations:^{
+        [shareViewFull setAlpha:1];
+    } completion:^(BOOL finished) {
+        [UIView animateWithDuration:0.5 animations:^{
+            [shareView setFrame:CGRectMake(0, SCREEN_HEIGHT-SCREEN_WIDTH*maxScaleY, SCREEN_WIDTH, SCREEN_WIDTH*maxScaleY)];
+        } ];
+    }];
+}
+- (WBMessageObject *)messageToShare
+{
+    WBMessageObject *message = [WBMessageObject message];
+    
+    message.text =[NSString stringWithFormat:@"一起来用Muzzik吧 %@%@",URL_Muzzik_SharePage,self.localmuzzik.muzzik_id];
+    
+    WBImageObject *image = [WBImageObject object];
+    image.imageData = UIImageJPEGRepresentation([MuzzikItem convertViewToImage:_muzzikView], 1.0);
+    message.imageObject = image;
+    return message;
+}
+-(void)shareWeiBo{
+    AppDelegate *myDelegate =(AppDelegate*)[[UIApplication sharedApplication] delegate];
+    
+    WBAuthorizeRequest *authRequest = [WBAuthorizeRequest request];
+    authRequest.redirectURI = URL_WeiBo_redirectURI;
+    authRequest.scope = @"all";
+    
+    WBSendMessageToWeiboRequest *request = [WBSendMessageToWeiboRequest requestWithMessage:[self messageToShare] authInfo:authRequest access_token:myDelegate.wbtoken];
+    
+    //    request.shouldOpenWeiboAppInstallPageIfNotInstalled = NO;
+    [WeiboSDK sendRequest:request];
+}
+-(void) shareQQ{
+    TencentOAuth *tencentOAuth = [[TencentOAuth alloc] initWithAppId:ID_QQ_APP
+                                                         andDelegate:nil];
+    NSString *url = [NSString stringWithFormat:@"%@%@",URL_Muzzik_SharePage,self.localmuzzik.muzzik_id];
+    //分享图预览图URL地址
+    NSString *previewImageUrl = @"http://muzzik-image.qiniudn.com/FieqckeQDGWACSpDA3P0aDzmGcB6";
+    //音乐播放的网络流媒体地址
+    QQApiAudioObject *audioObj =[QQApiAudioObject objectWithURL:[NSURL URLWithString:url]
+                                                          title:self.localmuzzik.music.name description:self.localmuzzik.music.artist previewImageURL:[NSURL URLWithString:previewImageUrl]];
+    //设置播放流媒体地址
+    audioObj.flashURL=[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_audio,self.localmuzzik.music.key]];
+    SendMessageToQQReq *req = [SendMessageToQQReq reqWithContent:audioObj];
+    //将内容分享到qq
+    
+    QQApiSendResultCode sent = [QQApiInterface sendReq:req];
+    [self handleSendResult:sent];
+    //将被容分享到qzone
+    //QQApiSendResultCode sent = [QQApiInterface SendReqToQZone:req];
+    
+}
+- (void)handleSendResult:(QQApiSendResultCode)sendResult
+{
+    switch (sendResult)
+    {
+        case EQQAPIAPPNOTREGISTED:
+        {
+            UIAlertView *msgbox = [[UIAlertView alloc] initWithTitle:@"Error" message:@"App未注册" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil];
+            [msgbox show];
+            
+            
+            break;
+        }
+        case EQQAPIMESSAGECONTENTINVALID:
+        case EQQAPIMESSAGECONTENTNULL:
+        case EQQAPIMESSAGETYPEINVALID:
+        {
+            UIAlertView *msgbox = [[UIAlertView alloc] initWithTitle:@"Error" message:@"发送参数错误" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil];
+            [msgbox show];
+            
+            
+            break;
+        }
+        case EQQAPIQQNOTINSTALLED:
+        {
+            UIAlertView *msgbox = [[UIAlertView alloc] initWithTitle:@"Error" message:@"未安装手Q" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil];
+            [msgbox show];
+            
+            
+            break;
+        }
+        case EQQAPIQQNOTSUPPORTAPI:
+        {
+            UIAlertView *msgbox = [[UIAlertView alloc] initWithTitle:@"Error" message:@"API接口不支持" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil];
+            [msgbox show];
+            
+            
+            break;
+        }
+        case EQQAPISENDFAILD:
+        {
+            UIAlertView *msgbox = [[UIAlertView alloc] initWithTitle:@"Error" message:@"发送失败" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil];
+            [msgbox show];
+            
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
+}
+-(void) shareQQZone{
+    TencentOAuth *tencentOAuth = [[TencentOAuth alloc] initWithAppId:ID_QQ_APP
+                                                         andDelegate:nil];
+    NSURL *previewURL = [NSURL URLWithString:@"http://muzzik-image.qiniudn.com/Fscv0d_e94ij-WgpvIoTiHmPJgu9"];
+    NSString *url = [NSString stringWithFormat:@"%@%@",URL_Muzzik_SharePage,self.localmuzzik.muzzik_id];
+    
+    QQApiNewsObject* img = [QQApiNewsObject objectWithURL:[NSURL URLWithString:url] title:@"在Muzzik上分享了首歌" description:[NSString stringWithFormat:@"%@  %@",self.localmuzzik.music.name,self.localmuzzik.music.artist] previewImageURL:previewURL];
+    SendMessageToQQReq* req = [SendMessageToQQReq reqWithContent:img];
+    
+    
+    //将被容分享到qzone
+    QQApiSendResultCode sent = [QQApiInterface SendReqToQZone:req];
+    [self handleSendResult:sent];
+}
+-(void) shareTimeLine{
+    AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    [app sendMusicContentByMuzzik:self.localmuzzik scen:1];
+}
+
+-(void) shareWeChat{
+    AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    [app sendMusicContentByMuzzik:self.localmuzzik scen:0];
+}
+
+-(void)dataSourceUserUpdate:(NSNotification *)notify{
+    MuzzikUser *user = notify.object;
+    if ([[_profileDic objectForKey:@"_id"] isEqualToString:user.user_id]) {
+            [_profileDic setObject:[NSNumber numberWithBool:user.isFans ]forKey:@"isFans"];
+            [_profileDic setObject:[NSNumber numberWithBool:user.isFollow ]forKey:@"isFollow"];
+        if (user.isFollow &&user.isFans) {
+            [_addFriendButton setImage:[UIImage imageNamed:Image_viewprofileImage] forState:UIControlStateNormal];
+            [_attentionButton setImage:[UIImage imageNamed:Image_profilefolloweacherother] forState:UIControlStateNormal];
+            [_attentionButton setFrame:CGRectMake(SCREEN_WIDTH-85, 16, 65, 23)];
+        }else if(user.isFollow){
+            [_addFriendButton setImage:[UIImage imageNamed:Image_viewprofileImage] forState:UIControlStateNormal];
+            [_attentionButton setImage:[UIImage imageNamed:Image_profilefollowed] forState:UIControlStateNormal];
+            [_attentionButton setFrame:CGRectMake(SCREEN_WIDTH-75, 16, 55, 23)];
+        }else{
+            [_addFriendButton setImage:[UIImage imageNamed:Image_detailfollowImage] forState:UIControlStateNormal];
+            [_attentionButton setImage:[UIImage imageNamed:Image_profilefollow] forState:UIControlStateNormal];
+            [_attentionButton setFrame:CGRectMake(SCREEN_WIDTH-65, 16, 45, 23)];
+        }
+    }
+}
+
+-(void)dataSourceMuzzikUpdate:(NSNotification *)notify{
+    muzzik *tempMuzzik = (muzzik *)notify.object;
+    if ([self.localmuzzik.muzzik_id isEqualToString:tempMuzzik.muzzik_id]) {
+        self.localmuzzik.ismoved = tempMuzzik.ismoved;
+        self.localmuzzik.isReposted = tempMuzzik.isReposted;
+        self.localmuzzik.moveds = tempMuzzik.moveds;
+        self.localmuzzik.reposts = tempMuzzik.reposts;
+        self.localmuzzik.shares = tempMuzzik.shares;
+        self.localmuzzik.comments = tempMuzzik.comments;
+        [self colorViewWithColorString:[NSString stringWithFormat:@"%@",self.localmuzzik.color]];
+    }
+    
+}
+
 @end

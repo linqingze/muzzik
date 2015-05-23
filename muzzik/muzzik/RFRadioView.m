@@ -163,10 +163,6 @@
         [artistName setFont:[UIFont boldSystemFontOfSize:12]];
         [artistName setTextColor:[UIColor whiteColor]];
         [self addSubview:artistName];
-        [self layoutSubviews];
-        
-        
-        [self setNeedsLayout];
     }
     return self;
 }
@@ -184,7 +180,7 @@
     showButton.transform = CGAffineTransformMakeRotation(0);
     [showButton.layer addAnimation:animation2 forKey:@"move-rotate-layer"];
     [UIView animateWithDuration:0.3 animations:^{
-        [self setFrame:CGRectMake(0, -64, SCREEN_WIDTH, 64)];
+        [self setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 64)];
     }completion:^(BOOL finished) {
         [playButton setFrame:CGRectMake(SCREEN_WIDTH - 32, 31, 20, 20)];
     }];

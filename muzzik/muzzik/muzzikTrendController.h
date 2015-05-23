@@ -18,7 +18,7 @@
 
 
 
-@interface muzzikTrendController : AMScrollingNavbarViewController<UITableViewDataSource,UITableViewDelegate,CXDelegate,CellDelegate,WBHttpRequestDelegate,QQApiInterfaceDelegate>{
+@interface muzzikTrendController : AMScrollingNavbarViewController<UITableViewDataSource,UITableViewDelegate,CXDelegate,CellDelegate,WBHttpRequestDelegate>{
      AudioPlayer* audioPlayer;
     NSInteger isPlayBack;
     

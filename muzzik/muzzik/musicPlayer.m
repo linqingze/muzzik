@@ -33,7 +33,7 @@ static NSMutableArray *playList;
 -(id)init{
    self = [super init];
     
-    _radioView = [[RFRadioView alloc] initWithFrame:CGRectMake(0,-64,SCREEN_WIDTH,64)];
+    _radioView = [[RFRadioView alloc] initWithFrame:CGRectMake(0,0,SCREEN_WIDTH,64)];
     _radioView.delegate = self;
     self.playModel = 0;
     NSFileManager *fileMgr = [NSFileManager defaultManager];

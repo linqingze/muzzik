@@ -16,10 +16,18 @@
         [self.scroll setContentSize:CGSizeMake(SCREEN_WIDTH, SCREEN_WIDTH*2)];
         [self addSubview:self.scroll];
         
+        [self.scroll addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickOnCell)]];
         self.muzzikImage = [[UIImageView alloc] initWithFrame:CGRectMake(23, 0, SCREEN_WIDTH-46, SCREEN_WIDTH-46)];
         self.muzzikImage.layer.cornerRadius = 3;
         self.muzzikImage.clipsToBounds = YES;
         [self.scroll addSubview:self.muzzikImage];
+        self.playButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-75, 20, 36, 36)];
+        self.playButton.layer.cornerRadius = 3;
+        self.playButton.clipsToBounds = YES;
+        [self.playButton addTarget:self action:@selector(playAction) forControlEvents:UIControlEventTouchUpInside];
+        
+       // [self.playButton setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.4]];
+        [self.scroll addSubview:self.playButton];
         _headImage = [[UIButton alloc] initWithFrame:CGRectMake(23, SCREEN_WIDTH-74, 56, 56)];
         _headImage.layer.cornerRadius = 28;
         _headImage.layer.borderColor = [UIColor whiteColor].CGColor;
@@ -74,5 +82,30 @@
     }
     return self;
 }
+-(void)moveAction{
+    NSLog(@"move");
+    [self.delegate moveMuzzik:self.songModel];
+}
+-(void)repostAction{
+    [self.delegate repostActionWithMuzzik:self.songModel];
+    NSLog(@"repost");
+}
+-(void)shareAction{
+    NSLog(@"share");
+    [self.delegate shareActionWithMuzzik:self.songModel];
+}
+-(void)commentAction{
+    [self.delegate commentAtMuzzik:self.songModel];
+}
 
+-(void)goToUser{
+    [self.delegate userDetail:self.songModel.MuzzikUser.user_id];
+}
+-(void)clickOnCell{
+    NSLog(@"click");
+    [self.delegate clickOnCell:self.songModel];
+}
+-(void)playAction{
+    [self.delegate playSongWithSongModel:self.songModel];
+}
 @end

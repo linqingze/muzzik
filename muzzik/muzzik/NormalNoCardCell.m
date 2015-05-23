@@ -32,7 +32,7 @@
     [self addSubview:_userImage];
     _repostImage = [[UIImageView alloc] initWithFrame:CGRectMake(66, 36, 8, 8)];
     [self addSubview:_repostImage];
-    _repostUserName = [[UILabel alloc] initWithFrame:CGRectMake(80, 36, 150, 10)];
+    _repostUserName = [[UILabel alloc] initWithFrame:CGRectMake(80, 35, 150, 10)];
     [_repostUserName setTextColor:Color_Additional_5];
     [_repostUserName setFont:[UIFont fontWithName:Font_Next_DemiBold size:8]];
     [self addSubview:_repostUserName];
@@ -163,6 +163,11 @@
         }else{
             [self.playButton setImage:[UIImage imageNamed:@"yellowplayImage"] forState:UIControlStateNormal];
         }
+        if (self.isReposted) {
+            [self.repostButton setImage:[UIImage imageNamed:Image_hottweetyellowretweetImage] forState:UIControlStateNormal];
+        }else{
+            [self.repostButton setImage:[UIImage imageNamed:Image_hottweetgreyretweetImage] forState:UIControlStateNormal];
+        }
     }
     else if([colorString isEqualToString:@"2"]){
         //bluelikeImage
@@ -178,6 +183,11 @@
         }else{
             [self.playButton setImage:[UIImage imageNamed:@"blueplayImage"] forState:UIControlStateNormal];
         }
+        if (self.isReposted) {
+            [self.repostButton setImage:[UIImage imageNamed:Image_hottweetblueretweetImage] forState:UIControlStateNormal];
+        }else{
+            [self.repostButton setImage:[UIImage imageNamed:Image_hottweetgreyretweetImage] forState:UIControlStateNormal];
+        }
     }
     else{
         color = [UIColor colorWithHexString:@"f26d7d"];
@@ -192,6 +202,11 @@
         }else{
             [self.playButton setImage:[UIImage imageNamed:@"redplayImage"] forState:UIControlStateNormal];
         }
+        if (self.isReposted) {
+            [self.repostButton setImage:[UIImage imageNamed:Image_hottweetredretweetImage] forState:UIControlStateNormal];
+        }else{
+            [self.repostButton setImage:[UIImage imageNamed:Image_hottweetgreyretweetImage] forState:UIControlStateNormal];
+        }
     }
     [_progress setTintColor:color];
     [_musicArtist setTextColor:color];
@@ -199,10 +214,10 @@
 }
 -(void)moveAction{
     NSLog(@"move");
-    [self.delegate moveMuzzikWithId:self.muzzik_id isMoved:self.isMoved atIndex:self.index];
+    [self.delegate moveMuzzik:self.songModel];
 }
 -(void)repostAction{
-    [self.delegate repostActionWithMuzzik_id:self.muzzik_id atIndex:self.index];
+    [self.delegate repostActionWithMuzzik:self.songModel];
     NSLog(@"repost");
 }
 -(void)shareAction{

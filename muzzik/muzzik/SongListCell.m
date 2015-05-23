@@ -25,15 +25,15 @@
     [self setSelectionStyle:UITableViewCellSelectionStyleNone];
     self.timeImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 33, 60)];
     [self addSubview:self.timeImage];
-    self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 25, 20, 10)];
+    self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(4, 25, 20, 10)];
     self.timeLabel.textColor = [UIColor whiteColor];
     [self.timeLabel setFont:[UIFont systemFontOfSize:7]];
     [self addSubview:self.timeLabel];
-    self.songName = [[UILabel alloc] initWithFrame:CGRectMake(60, 8, SCREEN_WIDTH-100, 20)];
+    self.songName = [[UILabel alloc] initWithFrame:CGRectMake(60, 8, SCREEN_WIDTH-150, 20)];
     [self.songName setFont:[UIFont fontWithName:Font_Next_Bold size:14]];
     [self.songName setTextColor:[UIColor colorWithHexString:@"777777"]];
     [self addSubview:self.songName];
-    self.Artist = [[UILabel alloc] initWithFrame:CGRectMake(60, 30, SCREEN_WIDTH-100, 20)];
+    self.Artist = [[UILabel alloc] initWithFrame:CGRectMake(60, 30, SCREEN_WIDTH-150, 20)];
     [self.Artist setFont:[UIFont fontWithName:Font_Next_DemiBold size:12]];
     [self.Artist setTextColor:[UIColor colorWithHexString:@"999999"]];
     [self addSubview:self.Artist];

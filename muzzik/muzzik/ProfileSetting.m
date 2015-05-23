@@ -114,7 +114,7 @@
     [schoolText setValue:[UIFont boldSystemFontOfSize:15] forKeyPath:@"_placeholderLabel.font"];
     [belowView addSubview:schoolLabel];
     [belowView addSubview:schoolText];
-    [MuzzikItem addLineOnView:belowView heightPoint:49 toLeft:0 toRight:0 withColor:Color_line_1];
+    [MuzzikItem addLineOnView:belowView heightPoint:49 toLeft:0 toRight:26 withColor:Color_line_1];
 
     companyLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 50, 30, 50)];
     companyLabel.text = @"公司";
@@ -133,7 +133,7 @@
     [companyText setValue:[UIFont boldSystemFontOfSize:15] forKeyPath:@"_placeholderLabel.font"];
     [belowView addSubview:companyLabel];
     [belowView addSubview:companyText];
-    [MuzzikItem addLineOnView:belowView heightPoint:99 toLeft:0 toRight:0 withColor:Color_line_1];
+    [MuzzikItem addLineOnView:belowView heightPoint:99 toLeft:0 toRight:26 withColor:Color_line_1];
     
     birthLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 100, 30, 50)];
     birthLabel.text = @"生日";
@@ -157,7 +157,7 @@
     [birthText setValue:[UIFont boldSystemFontOfSize:15] forKeyPath:@"_placeholderLabel.font"];
     [belowView addSubview:birthLabel];
     [belowView addSubview:birthText];
-    [MuzzikItem addLineOnView:belowView heightPoint:149 toLeft:0 toRight:0 withColor:Color_line_1];
+    [MuzzikItem addLineOnView:belowView heightPoint:149 toLeft:0 toRight:26 withColor:Color_line_1];
     
     genderLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 150, 30, 50)];
     genderLabel.text = @"性别";
@@ -192,7 +192,7 @@
     [belowView addSubview:genderLabel];
     [belowView addSubview:maleButton];
     [belowView addSubview:femaleButton];
-    [MuzzikItem addLineOnView:belowView heightPoint:199 toLeft:0 toRight:0 withColor:Color_line_1];
+    [MuzzikItem addLineOnView:belowView heightPoint:199 toLeft:0 toRight:26 withColor:Color_line_1];
     
     classifyLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 200, 30, 50)];
     classifyLabel.text = @"风格";
@@ -209,7 +209,7 @@
     [belowView addSubview:classifyBiew];
     [belowView addSubview:classifyLabel];
     [classifyBiew addSubview: addClassifyLabel];
-    [MuzzikItem addLineOnView:belowView heightPoint:1 toLeft:0 toRight:0 withColor:Color_line_1];
+    [MuzzikItem addLineOnView:belowView heightPoint:1 toLeft:0 toRight:26 withColor:Color_line_1];
     [self.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(endEditOnView)]];
     [mainTableView setTableHeaderView:mainView];
     // Do any additional setup after loading the view.

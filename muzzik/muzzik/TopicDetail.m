@@ -23,6 +23,8 @@
 #import "UIScrollView+DXRefresh.h"
 #import "UIButton+WebCache.h"
 #import "LoginViewController.h"
+#import "AppDelegate.h"
+#import <TencentOpenAPI/TencentOAuth.h>
 
 @interface TopicDetail ()<UITableViewDataSource,UITableViewDelegate,CXDelegate,CellDelegate>{
     UITableView *MytableView;
@@ -36,6 +38,17 @@
      NSMutableDictionary *RefreshDic;
     NSString *lastId;
     NSString *headId;
+    
+    //shareView
+    muzzik *shareMuzzik;
+    UIView *shareViewFull;
+    UIView *shareView;
+    UIButton *shareToTimeLineButton;
+    UIButton *shareToWeiChatButton;
+    UIButton *shareToWeiboButton;
+    UIButton *shareToQQButton;
+    UIButton *shareToQQZoneButton;
+    CGFloat maxScaleY;
 }
 @end
 
@@ -44,6 +57,8 @@
 
 -(void)viewDidLoad{
     [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceMuzzikUpdate:) name:String_MuzzikDataSource_update object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
     [self initNagationBar:@"选择话题" leftBtn:Constant_backImage rightBtn:0];
     initiatorView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 40)];
     headButton = [[UIButton alloc] initWithFrame:CGRectMake(16, 5, 30, 30)];
@@ -72,6 +87,7 @@
     }
     [self followScrollView:MytableView];
     [self loadTopicTittle];
+    [self SettingShareView];
 
 }
 - (void)refreshHeader
@@ -234,7 +250,7 @@
     muzzik *tempMuzzik = [TopicArray objectAtIndex:indexPath.row];
     [label setText:tempMuzzik.message];
     CGSize msize = [label sizeThatFits:CGSizeMake(SCREEN_WIDTH-110, 2000)];
-    if ([tempMuzzik.image length]>0) {
+    if (tempMuzzik.image && [tempMuzzik.image length]>0) {
         if ([tempMuzzik.type isEqualToString:@"normal"] ||[tempMuzzik.type isEqualToString:@"repost"]) {
             return 245+msize.height+SCREEN_WIDTH*3/4;
         }else if([tempMuzzik.type isEqualToString:@"muzzikCard"]){
@@ -300,6 +316,7 @@
             
             [cell.muzzikMessage setText: [self transformMessage:temp withTopics:tempMuzzik.topics andColorString:[NSString stringWithFormat:@"%@",tempMuzzik.color]]];
             cell.isMoved = tempMuzzik.ismoved;
+            cell.isReposted = tempMuzzik.isReposted;
             cell.index = indexPath.row;
             cell.muzzikMessage.delegate = self;
             CGSize msize = [cell.muzzikMessage sizeThatFits:CGSizeMake(SCREEN_WIDTH-110, 2000)];
@@ -365,6 +382,7 @@
             
             [cell.muzzikMessage setText: [self transformMessage:temp withTopics:tempMuzzik.topics andColorString:[NSString stringWithFormat:@"%@",tempMuzzik.color]]];
             cell.isMoved = tempMuzzik.ismoved;
+            cell.isReposted = tempMuzzik.isReposted;
             cell.index = indexPath.row;
             cell.muzzikMessage.delegate = self;
             CGSize msize = [cell.muzzikMessage sizeThatFits:CGSizeMake(SCREEN_WIDTH-110, 2000)];
@@ -438,6 +456,7 @@
             
             [cell.muzzikMessage setText: [self transformMessage:temp withTopics:tempMuzzik.topics andColorString:[NSString stringWithFormat:@"%@",tempMuzzik.color]]];
             cell.isMoved = tempMuzzik.ismoved;
+            cell.isReposted = tempMuzzik.isReposted;
             cell.index = indexPath.row;
             cell.muzzikMessage.delegate = self;
             CGSize msize = [cell.muzzikMessage sizeThatFits:CGSizeMake(SCREEN_WIDTH-110, 2000)];
@@ -508,6 +527,7 @@
             
             [cell.muzzikMessage setText: [self transformMessage:temp withTopics:tempMuzzik.topics andColorString:[NSString stringWithFormat:@"%@",tempMuzzik.color]]];
             cell.isMoved = tempMuzzik.ismoved;
+            cell.isReposted = tempMuzzik.isReposted;
             cell.index = indexPath.row;
             cell.muzzikMessage.delegate = self;
             CGSize msize = [cell.muzzikMessage sizeThatFits:CGSizeMake(SCREEN_WIDTH-110, 2000)];
@@ -617,20 +637,22 @@
     }
     // [SVProgressHUD showSuccessWithStatus:[NSString stringWithFormat:@"%@",url]];
 }
--(void)moveMuzzikWithId:(NSString *)muzzik_id isMoved:(BOOL) ismoved atIndex:(NSInteger) index{
-    muzzik *tempMuzzik = TopicArray[index];
-    
+-(void)moveMuzzik:(muzzik *)tempMuzzik{
     userInfo *user = [userInfo shareClass];
     if ([user.token length]>0) {
-        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/%@/moved",BaseURL,muzzik_id]]];
+        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/%@/moved",BaseURL,tempMuzzik.muzzik_id]]];
         [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:!tempMuzzik.ismoved] forKey:@"ismoved"] Method:PostMethod auth:YES];
         __weak ASIHTTPRequest *weakrequest = requestForm;
         [requestForm setCompletionBlock :^{
             if ([weakrequest responseStatusCode] == 200) {
                 // NSData *data = [weakrequest responseData];
                 tempMuzzik.ismoved = !tempMuzzik.ismoved;
-                NSIndexPath *indexPath=[NSIndexPath indexPathForRow:index inSection:0];
-                [MytableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];
+                if (tempMuzzik.ismoved) {
+                    tempMuzzik.moveds = [NSString stringWithFormat:@"%d",[tempMuzzik.moveds intValue]+1 ];
+                }else{
+                    tempMuzzik.moveds = [NSString stringWithFormat:@"%d",[tempMuzzik.moveds intValue]-1 ];
+                }
+                [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:tempMuzzik];
                 
             }
             else{
@@ -657,11 +679,11 @@
     
     
 }
--(void)repostActionWithMuzzik_id:(NSString *)muzzik_id atIndex:(NSInteger) index{
+-(void)repostActionWithMuzzik:(muzzik *)tempMuzzik{
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik",BaseURL]]];
     [requestForm setRequestMethod:@"PUT"];
     
-    NSDictionary *dictionary = [NSDictionary dictionaryWithObject:muzzik_id forKey:@"repost"];
+    NSDictionary *dictionary = [NSDictionary dictionaryWithObject:tempMuzzik.muzzik_id forKey:@"repost"];
     [requestForm addBodyDataSourceWithJsonByDic:dictionary Method:PutMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = requestForm;
     [requestForm setCompletionBlock :^{
@@ -669,11 +691,13 @@
         NSLog(@"%@",[weakrequest responseString]);
         NSLog(@"%d",[weakrequest responseStatusCode]);
         if ([weakrequest responseStatusCode] == 200) {
-            muzzik *localMuzzik = TopicArray[index];
+
             [MuzzikItem showNotifyOnView:self.view text:@"转发成功"];
-            localMuzzik.reposts = [NSString stringWithFormat:@"%ld",[localMuzzik.reposts integerValue]+1];
-            NSIndexPath *indexPath=[NSIndexPath indexPathForRow:index inSection:0];
-            [MytableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];
+            tempMuzzik.isReposted = YES;
+            tempMuzzik.ismoved = !tempMuzzik.ismoved;
+            tempMuzzik.reposts = [NSString stringWithFormat:@"%d",[tempMuzzik.reposts intValue]+1 ];
+
+            [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:tempMuzzik];
         }
         
         else if([weakrequest responseStatusCode] == 401){
@@ -797,6 +821,263 @@
     
     
     return array;
+}
+
+
+-(void)shareActionWithMuzzik:(muzzik *)localMuzzik{
+    shareMuzzik = localMuzzik;
+    [self addShareView];
+}
+
+-(void)SettingShareView{
+    CGFloat screenWidth = SCREEN_WIDTH;
+    
+    CGFloat scaleX = 0.1;
+    CGFloat scaleY = 0.08;
+    userInfo *user = [userInfo shareClass];
+    if (user.WeChatInstalled && user.QQInstalled) {
+        maxScaleY = 0.7;
+    }else{
+        maxScaleY = 0.4;
+    }
+    shareViewFull = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, SCREEN_HEIGHT)];
+    [shareViewFull setAlpha:0];
+    [shareViewFull setBackgroundColor:[UIColor colorWithRed:0.125 green:0.121 blue:0.164 alpha:0.8]];
+    [shareViewFull addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(closeShareView)]];
+    shareView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT, screenWidth, screenWidth*maxScaleY)];
+    [shareView setBackgroundColor:[UIColor colorWithRed:0.125 green:0.121 blue:0.164 alpha:0.85]];
+    if (user.WeChatInstalled) {
+        UIButton *wechatButton = [[UIButton alloc] initWithFrame:CGRectMake(screenWidth*0.1, screenWidth*0.08, screenWidth*0.18, screenWidth*0.18)];
+        [wechatButton setImage:[UIImage imageNamed:Image_wechatImage] forState:UIControlStateNormal];
+        [wechatButton setBackgroundImage:[UIImage imageNamed:Image_sharebgImage] forState:UIControlStateNormal];
+        [wechatButton setBackgroundImage:[UIImage imageNamed:Image_shareclickbgImage] forState:UIControlStateHighlighted];
+        [wechatButton setImage:[UIImage imageNamed:Image_wechatImage] forState:UIControlStateHighlighted];
+        [wechatButton addTarget:self action:@selector(shareWeChat) forControlEvents:UIControlEventTouchUpInside];
+        [shareView addSubview:wechatButton];
+        UILabel *weiChatLabel = [[UILabel alloc] initWithFrame:CGRectMake(screenWidth*0.1, screenWidth*0.26, screenWidth*0.18, 20)];
+        weiChatLabel.text = @"微 信";
+        weiChatLabel.textAlignment = NSTextAlignmentCenter;
+        [weiChatLabel setFont:[UIFont systemFontOfSize:12]];
+        weiChatLabel.textColor =  Color_line_2;
+        [shareView addSubview:weiChatLabel];
+        UIButton *timeLineButton = [[UIButton alloc] initWithFrame:CGRectMake(screenWidth*0.41, screenWidth*0.08, SCREEN_WIDTH*0.18, SCREEN_WIDTH*0.18)];
+        [timeLineButton setImage:[UIImage imageNamed:Image_momentImage] forState:UIControlStateNormal];
+        [timeLineButton setBackgroundImage:[UIImage imageNamed:Image_sharebgImage] forState:UIControlStateNormal];
+        [timeLineButton setBackgroundImage:[UIImage imageNamed:Image_shareclickbgImage] forState:UIControlStateHighlighted];
+        [timeLineButton setImage:[UIImage imageNamed:Image_momentImage] forState:UIControlStateHighlighted];
+        [timeLineButton addTarget:self action:@selector(shareTimeLine) forControlEvents:UIControlEventTouchUpInside];
+        [shareView addSubview:timeLineButton];
+        
+        UILabel *timeLineLabel = [[UILabel alloc] initWithFrame:CGRectMake(screenWidth*0.41, screenWidth*0.26, screenWidth*0.18, 20)];
+        timeLineLabel.text = @"微 信";
+        timeLineLabel.textAlignment = NSTextAlignmentCenter;
+        [timeLineLabel setFont:[UIFont systemFontOfSize:12]];
+        timeLineLabel.textColor =  Color_line_2;
+        [shareView addSubview:timeLineLabel];
+        scaleX = 0.72;
+    }
+    
+    
+    UIButton *weiboButton = [[UIButton alloc] initWithFrame:CGRectMake(screenWidth*scaleX, screenWidth*0.08, SCREEN_WIDTH*0.18, SCREEN_WIDTH*0.18)];
+    [weiboButton setImage:[UIImage imageNamed:Image_weiboImage] forState:UIControlStateNormal];
+    [weiboButton setBackgroundImage:[UIImage imageNamed:Image_sharebgImage] forState:UIControlStateNormal];
+    [weiboButton setBackgroundImage:[UIImage imageNamed:Image_shareclickbgImage] forState:UIControlStateHighlighted];
+    [weiboButton setImage:[UIImage imageNamed:Image_weiboImage] forState:UIControlStateHighlighted];
+    [weiboButton addTarget:self action:@selector(shareWeiBo) forControlEvents:UIControlEventTouchUpInside];
+    [shareView addSubview:weiboButton];
+    UILabel *weiBoLabel = [[UILabel alloc] initWithFrame:CGRectMake(screenWidth*scaleX, screenWidth*0.26, screenWidth*0.18, 20)];
+    weiBoLabel.text = @"微 博";
+    weiBoLabel.textAlignment = NSTextAlignmentCenter;
+    [weiBoLabel setFont:[UIFont systemFontOfSize:12]];
+    weiBoLabel.textColor = Color_line_2;
+    [shareView addSubview:weiBoLabel];
+    if (user.WeChatInstalled) {
+        scaleY = 0.39;
+        scaleX = 0.1;
+    }else{
+        scaleX = 0.41;
+    }
+    if (user.QQInstalled) {
+        UIButton *QQButton = [[UIButton alloc] initWithFrame:CGRectMake(screenWidth*scaleX, screenWidth*scaleY, screenWidth*0.18, screenWidth*0.18)];
+        [QQButton setImage:[UIImage imageNamed:Image_qqImage] forState:UIControlStateNormal];
+        [QQButton setBackgroundImage:[UIImage imageNamed:Image_sharebgImage] forState:UIControlStateNormal];
+        [QQButton setBackgroundImage:[UIImage imageNamed:Image_shareclickbgImage] forState:UIControlStateHighlighted];
+        [QQButton setImage:[UIImage imageNamed:Image_qqImage] forState:UIControlStateHighlighted];
+        [QQButton addTarget:self action:@selector(shareQQ) forControlEvents:UIControlEventTouchUpInside];
+        [shareView addSubview:QQButton];
+        
+        UILabel *QQLabel = [[UILabel alloc] initWithFrame:CGRectMake(screenWidth*scaleX, screenWidth*(scaleY+0.18), screenWidth*0.18, 20)];
+        QQLabel.text = @"QQ";
+        QQLabel.textAlignment = NSTextAlignmentCenter;
+        [QQLabel setFont:[UIFont systemFontOfSize:12]];
+        QQLabel.textColor = Color_line_2;
+        [shareView addSubview:QQLabel];
+        
+        UIButton *qqZoneButton = [[UIButton alloc] initWithFrame:CGRectMake(screenWidth*(scaleX+0.31), screenWidth*scaleY, screenWidth*0.18, screenWidth*0.18)];
+        [qqZoneButton setImage:[UIImage imageNamed:Image_q_zoneImage] forState:UIControlStateNormal];
+        [qqZoneButton setBackgroundImage:[UIImage imageNamed:Image_sharebgImage] forState:UIControlStateNormal];
+        [qqZoneButton setBackgroundImage:[UIImage imageNamed:Image_shareclickbgImage] forState:UIControlStateHighlighted];
+        [qqZoneButton setImage:[UIImage imageNamed:Image_q_zoneImage] forState:UIControlStateHighlighted];
+        [qqZoneButton addTarget:self action:@selector(shareQQZone) forControlEvents:UIControlEventTouchUpInside];
+        [shareView addSubview:qqZoneButton];
+        
+        UILabel *QQZoneLabel = [[UILabel alloc] initWithFrame:CGRectMake(screenWidth*(scaleX+0.31), screenWidth*(scaleY+0.18), screenWidth*0.18, 20)];
+        QQZoneLabel.text = @"QQ空间";
+        QQZoneLabel.textAlignment = NSTextAlignmentCenter;
+        [QQZoneLabel setFont:[UIFont systemFontOfSize:12]];
+        QQZoneLabel.textColor = Color_line_2;
+        [shareView addSubview:QQZoneLabel];
+        
+    }
+    
+    [shareViewFull addSubview:shareView];
+    
+    
+    
+}
+-(void)closeShareView{
+    [UIView animateWithDuration:0.5 animations:^{
+        [shareViewFull setAlpha:0];
+        [shareView setFrame:CGRectMake(0, SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_WIDTH*maxScaleY)];
+    } completion:^(BOOL finished) {
+        [shareViewFull removeFromSuperview];
+        
+    }];
+}
+-(void) addShareView{
+    [self.navigationController.view addSubview:shareViewFull];
+    [UIView animateWithDuration:0.3 animations:^{
+        [shareViewFull setAlpha:1];
+    } completion:^(BOOL finished) {
+        [UIView animateWithDuration:0.5 animations:^{
+            [shareView setFrame:CGRectMake(0, SCREEN_HEIGHT-SCREEN_WIDTH*maxScaleY, SCREEN_WIDTH, SCREEN_WIDTH*maxScaleY)];
+        } ];
+    }];
+}
+- (WBMessageObject *)messageToShare
+{
+    WBMessageObject *message = [WBMessageObject message];
+    
+    message.text =[NSString stringWithFormat:@"一起来用Muzzik吧 %@%@",URL_Muzzik_SharePage,shareMuzzik.muzzik_id];
+    
+    WBImageObject *image = [WBImageObject object];
+    image.imageData = UIImageJPEGRepresentation([MuzzikItem convertViewToImage:[MytableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:[TopicArray indexOfObject:shareMuzzik] inSection:0]]], 1.0);
+    message.imageObject = image;
+    return message;
+}
+-(void)shareWeiBo{
+    AppDelegate *myDelegate =(AppDelegate*)[[UIApplication sharedApplication] delegate];
+    
+    WBAuthorizeRequest *authRequest = [WBAuthorizeRequest request];
+    authRequest.redirectURI = URL_WeiBo_redirectURI;
+    authRequest.scope = @"all";
+    
+    WBSendMessageToWeiboRequest *request = [WBSendMessageToWeiboRequest requestWithMessage:[self messageToShare] authInfo:authRequest access_token:myDelegate.wbtoken];
+    
+    //    request.shouldOpenWeiboAppInstallPageIfNotInstalled = NO;
+    [WeiboSDK sendRequest:request];
+}
+-(void) shareQQ{
+    TencentOAuth *tencentOAuth = [[TencentOAuth alloc] initWithAppId:ID_QQ_APP
+                                                         andDelegate:nil];
+    NSString *url = [NSString stringWithFormat:@"%@%@",URL_Muzzik_SharePage,shareMuzzik.muzzik_id];
+    //分享图预览图URL地址
+    NSString *previewImageUrl = @"http://muzzik-image.qiniudn.com/FieqckeQDGWACSpDA3P0aDzmGcB6";
+    //音乐播放的网络流媒体地址
+    QQApiAudioObject *audioObj =[QQApiAudioObject objectWithURL:[NSURL URLWithString:url]
+                                                          title:shareMuzzik.music.name description:shareMuzzik.music.artist previewImageURL:[NSURL URLWithString:previewImageUrl]];
+    //设置播放流媒体地址
+    audioObj.flashURL=[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_audio,shareMuzzik.music.key]];
+    SendMessageToQQReq *req = [SendMessageToQQReq reqWithContent:audioObj];
+    //将内容分享到qq
+    
+    QQApiSendResultCode sent = [QQApiInterface sendReq:req];
+    [self handleSendResult:sent];
+    //将被容分享到qzone
+    //QQApiSendResultCode sent = [QQApiInterface SendReqToQZone:req];
+    
+}
+- (void)handleSendResult:(QQApiSendResultCode)sendResult
+{
+    switch (sendResult)
+    {
+        case EQQAPIAPPNOTREGISTED:
+        {
+            UIAlertView *msgbox = [[UIAlertView alloc] initWithTitle:@"Error" message:@"App未注册" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil];
+            [msgbox show];
+            
+            
+            break;
+        }
+        case EQQAPIMESSAGECONTENTINVALID:
+        case EQQAPIMESSAGECONTENTNULL:
+        case EQQAPIMESSAGETYPEINVALID:
+        {
+            UIAlertView *msgbox = [[UIAlertView alloc] initWithTitle:@"Error" message:@"发送参数错误" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil];
+            [msgbox show];
+            
+            
+            break;
+        }
+        case EQQAPIQQNOTINSTALLED:
+        {
+            UIAlertView *msgbox = [[UIAlertView alloc] initWithTitle:@"Error" message:@"未安装手Q" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil];
+            [msgbox show];
+            
+            
+            break;
+        }
+        case EQQAPIQQNOTSUPPORTAPI:
+        {
+            UIAlertView *msgbox = [[UIAlertView alloc] initWithTitle:@"Error" message:@"API接口不支持" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil];
+            [msgbox show];
+            
+            
+            break;
+        }
+        case EQQAPISENDFAILD:
+        {
+            UIAlertView *msgbox = [[UIAlertView alloc] initWithTitle:@"Error" message:@"发送失败" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil];
+            [msgbox show];
+            
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
+}
+-(void) shareQQZone{
+    TencentOAuth *tencentOAuth = [[TencentOAuth alloc] initWithAppId:ID_QQ_APP
+                                                         andDelegate:nil];
+    NSURL *previewURL = [NSURL URLWithString:@"http://muzzik-image.qiniudn.com/Fscv0d_e94ij-WgpvIoTiHmPJgu9"];
+    NSString *url = [NSString stringWithFormat:@"%@%@",URL_Muzzik_SharePage,shareMuzzik.muzzik_id];
+    
+    QQApiNewsObject* img = [QQApiNewsObject objectWithURL:[NSURL URLWithString:url] title:@"在Muzzik上分享了首歌" description:[NSString stringWithFormat:@"%@  %@",shareMuzzik.music.name,shareMuzzik.music.artist] previewImageURL:previewURL];
+    SendMessageToQQReq* req = [SendMessageToQQReq reqWithContent:img];
+    
+    
+    //将被容分享到qzone
+    QQApiSendResultCode sent = [QQApiInterface SendReqToQZone:req];
+    [self handleSendResult:sent];
+}
+-(void) shareTimeLine{
+    AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    [app sendMusicContentByMuzzik:shareMuzzik scen:1];
+}
+
+-(void) shareWeChat{
+    AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    [app sendMusicContentByMuzzik:shareMuzzik scen:0];
+}
+-(void)dataSourceMuzzikUpdate:(NSNotification *)notify{
+    muzzik *tempMuzzik = (muzzik *)notify.object;
+    if ([MuzzikItem checkMutableArray:TopicArray isContainMuzzik:tempMuzzik]) {
+        NSIndexPath *indexPath=[NSIndexPath indexPathForRow:[TopicArray indexOfObject:tempMuzzik] inSection:0];
+        [MytableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];
+    }
+    
 }
 
 @end

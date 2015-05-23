@@ -985,5 +985,31 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     
     return array;
 }
++(BOOL) checkMutableArray:(NSMutableArray*) array isContainMuzzik:(muzzik *)localMuzzik{
+    for (muzzik *tempMuzzik in array) {
+        if ([tempMuzzik.muzzik_id isEqualToString:localMuzzik.muzzik_id]) {
+            tempMuzzik.ismoved = localMuzzik.ismoved;
+            tempMuzzik.isReposted = localMuzzik.isReposted;
+            tempMuzzik.moveds = localMuzzik.moveds;
+            tempMuzzik.reposts = localMuzzik.reposts;
+            tempMuzzik.shares = localMuzzik.shares;
+            tempMuzzik.comments = localMuzzik.comments;
+            return YES;
+        }
+    }
+    return NO;
+}
++(BOOL) checkMutableArray:(NSMutableArray*) array isContainUser:(MuzzikUser *)localUser{
+    for (MuzzikUser *user in array) {
+        if ([user.user_id isEqualToString:localUser.user_id]) {
+            user.isFans = localUser.isFans;
+            user.isFollow = localUser.isFollow;
+            return YES;
+        }
+    }
+    return NO;
+}
+
+
 @end
 

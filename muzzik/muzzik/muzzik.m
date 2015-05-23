@@ -17,11 +17,15 @@
         newmuzzik.ismoved = [[dic objectForKey:@"ismoved"] boolValue];
         newmuzzik.date = [dic objectForKey:@"date"];
         newmuzzik.message = [dic objectForKey:@"message"];
-        newmuzzik.image = [dic objectForKey:@"image"];
+        if ([[dic allKeys] containsObject:@"image"] ) {
+            newmuzzik.image = [dic objectForKey:@"image"];
+        }
+        
         newmuzzik.topics = [dic objectForKey:@"topics"];
         newmuzzik.users = [dic objectForKey:@"users"];
         newmuzzik.type = [dic objectForKey:@"type"];
         newmuzzik.onlytext = [[dic objectForKey:@"onlytext"] boolValue];
+        newmuzzik.isReposted = [[dic objectForKey:@"isReposted"] boolValue];
         newmuzzik.reposts = [dic objectForKey:@"reposts"];
         newmuzzik.shares = [dic objectForKey:@"shares"];
         newmuzzik.comments = [dic objectForKey:@"comments"];

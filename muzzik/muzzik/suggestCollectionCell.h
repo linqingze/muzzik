@@ -26,4 +26,6 @@
 @property (nonatomic,retain) UIButton *repostButton;
 @property (nonatomic,retain) UIButton *shareButton;
 @property (nonatomic,retain) UIButton *commentButton;
+@property (nonatomic,weak) id<CellDelegate> delegate;
+@property (nonatomic,retain) muzzik *songModel;
 @end

@@ -63,4 +63,8 @@
 +(NSString *)transformMessage:(NSString *)message withTopics:(NSArray *)topics;
 +(NSString *)transformMessage:(NSString *)message withAt:(NSArray *)topics;
 +(NSMutableArray *) searchUsers:(NSString *)message;
+
+//处理广播
++(BOOL) checkMutableArray:(NSMutableArray*) array isContainMuzzik:(muzzik *)localMuzzik;
++(BOOL) checkMutableArray:(NSMutableArray*) array isContainUser:(MuzzikUser *)localUser;
 @end

@@ -144,8 +144,9 @@
 }
 -(void)moveAction{
     NSLog(@"move");
-    [self.delegate moveMuzzikWithId:self.muzzik_id isMoved:self.isMoved atIndex:self.index];
+    [self.delegate moveMuzzik:self.songModel];
 }
+
 -(void)goToUser{
     [self.delegate userDetail:self.songModel.MuzzikUser.user_id];
 }

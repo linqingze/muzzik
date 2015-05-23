@@ -118,6 +118,33 @@
 #define Image_notitopicclickImage       @"notitopicclickImage"
 #define Image_notitopicImage            @"notitopicImage"
 
+#define Image_hottweetbluelikeImage     @"hottweetbluelikeImage"
+#define Image_hottweetblueplayImage     @"hottweetblueplayImage"
+#define Image_hottweetblueretweetImage  @"hottweetblueretweetImage"
+#define Image_hottweetgreylikeImage     @"hottweetgreylikeImage"
+#define Image_hottweetgreyreplyImage    @"hottweetgreyreplyImage"
+#define Image_hottweetgreyretweetImage  @"hottweetgreyretweetImage"
+#define Image_hottweetgreyshareImage    @"hottweetgreyshareImage"
+#define Image_hottweetredlikeImage      @"hottweetredlikeImage"
+#define Image_hottweetredplayImage      @"hottweetredplayImage"
+#define Image_hottweetredretweetImage   @"hottweetredretweetImage"
+#define Image_hottweetyellowlikeImage   @"hottweetyellowlikeImage"
+#define Image_hottweetyellowplayImage   @"hottweetyellowplayImage"
+#define Image_hottweetyellowretweetImage @"hottweetyellowretweetImage"
+
+#define Image_newbluetopicImage         @"newbluetopicImage"
+#define Image_newredtopicImage          @"newredtopicImage"
+#define Image_newtopicnumImage          @"newtopicnumImage"
+#define Image_newtopictimeImage         @"newtopictimeImage"
+#define Image_newyellowtopicImage       @"newyellowtopicImage"
+#define Image_topictimeImage            @"topictimeImage"
+#define Image_topicsearchImage          @"topicsearchImage"
+#define Image_topicriseImage            @"topicriseImage"
+#define Image_topicnumImage             @"topicnumImage"
+#define Image_topicholdImage            @"topicholdImage"
+#define Image_topicdeclineImage         @"topicdeclineImage"
+#define Image_placeholdImage            @"placeholdImage"
+
 
 
 #define Parameter_Id              @"_id"
