@@ -109,7 +109,7 @@
     self.view.gestureRecognizers = self.pageViewController.gestureRecognizers;
     
     _musicView = [musicPlayer shareClass].radioView;
-    [_musicView setBackgroundColor:Color_NavigationBar];
+    [_musicView setBackgroundColor:[UIColor clearColor]];
     [self.navigationController.view addSubview:_musicView];
 }
 -(void)viewWillAppear:(BOOL)animated{
@@ -207,33 +207,7 @@
 }
 
 #pragma -mark Player
--(void)checkShowMusicView{
-    if ([[musicPlayer shareClass].MusicArray count]>0) {
-        [self showMusicView];
-    }
-    
-}
--(void) showMusicView{
-    _musicView.isOpen = YES;
-    [UIView animateWithDuration:0.3 animations:^{
-        [_musicView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 64)];
-    }];
-}
--(void) hideMusicView{
-    if (_musicView.IsShowDetail) {
-        [_musicView rollBack];
-        _musicView.isOpen = NO;
-        _musicView.IsShowDetail = NO;
-        
-    }else{
-        _musicView.isOpen = NO;
-        _musicView.IsShowDetail = NO;
-        [UIView animateWithDuration:0.3 animations:^{
-            [_musicView setFrame:CGRectMake(0, -64, SCREEN_WIDTH, 64)];
-        }];
-    }
-    
-}
+
 
 -(void) searchAction{
     searchViewController *search = [[searchViewController alloc ] init];

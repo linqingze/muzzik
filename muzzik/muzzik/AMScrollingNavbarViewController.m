@@ -8,7 +8,7 @@
 
 #import "AMScrollingNavbarViewController.h"
 #import "AppConfiguration.h"
-#define timeinterval  0.25
+
 @interface AMScrollingNavbarViewController () <UIGestureRecognizerDelegate>
 
 @property (nonatomic, weak)	UIScrollView *scrollableView;
@@ -32,7 +32,21 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
+    for (UIView *view in [self.navigationController.view subviews]) {
+        if ([view isKindOfClass:[RFRadioView class]]) {
+            RFRadioView *musicview = (RFRadioView *)view;
+            if (musicview.IsShowDetail) {
+                [musicview setAlpha:1];
+            }else{
+                [view setAlpha:0];
+                [self.leftBtn setAlpha:0];
+                [self.rightBtn setAlpha:0];
+                [self.headerView setAlpha:0];
+            }
+            
+            break;
+        }
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -98,44 +112,37 @@
     for (UIView *view in [self.navigationController.view subviews]) {
         if ([view isKindOfClass:[RFRadioView class]]) {
             RFRadioView *musicView = (RFRadioView*)view;
-            if (self.lastContentOffset != 0 &&delta < -3 &&[[musicPlayer shareClass].MusicArray count]>0) {
+            if (self.lastContentOffset != 0 &&delta < -2 &&[[musicPlayer shareClass].MusicArray count]>0) {
                 musicView.isOpen = YES;
-                NSArray *array = [self.navigationController.navigationBar subviews];
-                [UIView animateWithDuration:timeinterval animations:^{
+                [UIView animateWithDuration:Play_timeinterval animations:^{
                     [self.leftBtn setAlpha:0];
                     [self.rightBtn setAlpha:0];
                     [self.headerView setAlpha:0];
                 } completion:^(BOOL finished) {
-                    [UIView animateWithDuration:timeinterval animations:^{
+                    [UIView animateWithDuration:Play_timeinterval animations:^{
                         [musicView setAlpha:1];
                     }];
                     
                 }];
             }
             
-            if (delta > 3&&self.lastContentOffset != 0  ) {
-                if (musicView.IsShowDetail) {
-                    [musicView rollBack];
-                    musicView.isOpen = NO;
-                    musicView.IsShowDetail = NO;
-                    
-                }else{
-                    musicView.isOpen = NO;
-                    musicView.IsShowDetail = NO;
-                    [UIView animateWithDuration:timeinterval animations:^{
-                        [musicView setAlpha:0];
-                    }completion:^(BOOL finished) {
-                        [UIView animateWithDuration:timeinterval animations:^{
-                            [self.leftBtn setAlpha:1];
-                            [self.rightBtn setAlpha:1];
-                            [self.headerView setAlpha:1];
-                            
-                        }];
+            if (delta > 2&&self.lastContentOffset != 0  ) {
+                musicView.isOpen = NO;
+                musicView.IsShowDetail = NO;
+                [UIView animateWithDuration:Play_timeinterval animations:^{
+                    [musicView setAlpha:0];
+                }completion:^(BOOL finished) {
+                    [UIView animateWithDuration:Play_timeinterval animations:^{
+                        [self.leftBtn setAlpha:1];
+                        [self.rightBtn setAlpha:1];
+                        [self.headerView setAlpha:1];
+                        
                     }];
-                }
+                }];
                 
-                break;
+                
             }
+            break;
         }
     }
     if ([gesture state] == UIGestureRecognizerStateEnded) {

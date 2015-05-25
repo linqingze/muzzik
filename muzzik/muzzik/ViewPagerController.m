@@ -88,7 +88,7 @@
     [super viewDidLoad];
     //[self.view setBackgroundColor:[UIColor blackColor]];
     _musicView = [musicPlayer shareClass].radioView;
-    [_musicView setBackgroundColor:Color_NavigationBar];
+    [_musicView setBackgroundColor:[UIColor clearColor]];
     _pagecontrol = [[UIPageControl alloc] initWithFrame:CGRectMake(0, 125, SCREEN_WIDTH, 10)];
     //page control
     [_pagecontrol setCurrentPageIndicatorTintColor:[UIColor colorWithHexString:@"a8acbb"]];
@@ -121,27 +121,7 @@
     [super didReceiveMemoryWarning];
 }
 #pragma -mark move
--(void) showMusicView{
-    _musicView.isOpen = YES;
-    [UIView animateWithDuration:0.3 animations:^{
-        [_musicView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 64)];
-    }];
-}
--(void) hideMusicView{
-    if (_musicView.IsShowDetail) {
-        [_musicView rollBack];
-        _musicView.isOpen = NO;
-        _musicView.IsShowDetail = NO;
-        
-    }else{
-        _musicView.isOpen = NO;
-        _musicView.IsShowDetail = NO;
-        [UIView animateWithDuration:0.3 animations:^{
-            [_musicView setFrame:CGRectMake(0, -64, SCREEN_WIDTH, 64)];
-        }];
-    }
-    
-}
+
 - (IBAction)handleTapGesture:(id)sender {
     
     self.animatingToTab = YES;

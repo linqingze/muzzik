@@ -577,7 +577,8 @@
         UIButton *cardHeader = [[UIButton alloc] initWithFrame:CGRectMake(15, 15, 67, 67)];
         cardHeader.layer.cornerRadius = 33.5;
         cardHeader.clipsToBounds = YES;
-        [cardHeader setImage:[_userImage imageForState:UIControlStateNormal]  forState:UIControlStateNormal];
+        [cardHeader sd_setBackgroundImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,self.localmuzzik.MuzzikUser.avatar]] forState:UIControlStateNormal];
+
         [cardHeader addTarget:self action:@selector(goToUser) forControlEvents:UIControlEventTouchUpInside];
         [cardView addSubview:cardHeader];
         
@@ -741,7 +742,6 @@
         _attentionButton.frame = d;
     }
 }
-#warning  播放器控制
 //
 //-(void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset{
 //    for (UIView *view in [self.navigationController.view subviews]) {

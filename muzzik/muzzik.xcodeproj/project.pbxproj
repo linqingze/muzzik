@@ -174,6 +174,7 @@
 		F2E933701AFD232600B2C6B4 /* CommentMuzzikCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2E9336F1AFD232600B2C6B4 /* CommentMuzzikCell.m */; };
 		F2E9A8F71AFFB21000F4F461 /* TopicDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = F2E9A8F61AFFB21000F4F461 /* TopicDetail.m */; };
 		F2EB60F21AF9FA1F000B7579 /* userDetailInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = F2EB60F11AF9FA1F000B7579 /* userDetailInfo.m */; };
+		F2ED22D81B12AC0C001F7787 /* TTTAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = F2ED22D71B12AC0C001F7787 /* TTTAttributedLabel.m */; };
 		F2EDF71D1B0B240800400A85 /* StyledPageControl.m in Sources */ = {isa = PBXBuildFile; fileRef = F2EDF71C1B0B240800400A85 /* StyledPageControl.m */; };
 		F2F089D91B00920D00FB1639 /* settingSystemVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F089D71B00920D00FB1639 /* settingSystemVC.m */; };
 		F2F089E01B009CCA00FB1639 /* SettingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F089DF1B009CCA00FB1639 /* SettingCell.m */; };
@@ -564,6 +565,8 @@
 		F2EB60F01AF9FA1F000B7579 /* userDetailInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = userDetailInfo.h; sourceTree = "<group>"; };
 		F2EB60F11AF9FA1F000B7579 /* userDetailInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = userDetailInfo.m; sourceTree = "<group>"; };
 		F2EB60F61AFA1138000B7579 /* DeleGateMethodConfigure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeleGateMethodConfigure.h; sourceTree = "<group>"; };
+		F2ED22D61B12AC0C001F7787 /* TTTAttributedLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTAttributedLabel.h; sourceTree = "<group>"; };
+		F2ED22D71B12AC0C001F7787 /* TTTAttributedLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTAttributedLabel.m; sourceTree = "<group>"; };
 		F2EDF71B1B0B240800400A85 /* StyledPageControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StyledPageControl.h; sourceTree = "<group>"; };
 		F2EDF71C1B0B240800400A85 /* StyledPageControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StyledPageControl.m; sourceTree = "<group>"; };
 		F2F089D61B00920D00FB1639 /* settingSystemVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = settingSystemVC.h; sourceTree = "<group>"; };
@@ -820,6 +823,8 @@
 				E1B230441AB6E3F1004E50DA /* NSString+CXAHyperlinkParser.m */,
 				E1B2303E1AB6E348004E50DA /* CXAHyperlinkLabel.h */,
 				E1B2303F1AB6E348004E50DA /* CXAHyperlinkLabel.m */,
+				F2ED22D61B12AC0C001F7787 /* TTTAttributedLabel.h */,
+				F2ED22D71B12AC0C001F7787 /* TTTAttributedLabel.m */,
 			);
 			name = RTLabel;
 			sourceTree = "<group>";
@@ -1597,6 +1602,7 @@
 				F2EB60F21AF9FA1F000B7579 /* userDetailInfo.m in Sources */,
 				F212A76F1AF5044A005B14DD /* DetaiMuzzikVC.m in Sources */,
 				F2FBE8FD1AFB56C50070831D /* CommentTableVC.m in Sources */,
+				F2ED22D81B12AC0C001F7787 /* TTTAttributedLabel.m in Sources */,
 				E1FA13461AB195E0005EDA1D /* Globle.m in Sources */,
 				F2F7EE4F1AEE80CA00265596 /* TopicModel.m in Sources */,
 				F2A5E20C1AD9106E00FD8B3E /* music.m in Sources */,

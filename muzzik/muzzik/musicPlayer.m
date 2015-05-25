@@ -124,7 +124,7 @@ static NSMutableArray *playList;
 
 -(void)playModleIsLock
 {
-    
+    _radioView.playMuzzik = nil;
     _radioView.playMuzzik = _localMuzzik;
     globle.isPlaying = YES;
 }
@@ -205,6 +205,9 @@ static NSMutableArray *playList;
     if (playModel == 0) {
         [self playNext];
         
+    }
+    else if(playModel == -1){
+        [self playModleIsLock];
     }
     
     }

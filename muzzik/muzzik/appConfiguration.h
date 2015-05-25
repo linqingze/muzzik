@@ -58,6 +58,9 @@
 #define URL_Get_Feed            @"api/muzzik/feeds"
 #define URL_Notify              @"api/notify"
 #define URL_Read_Notify         @"api/notify/readed"
+#define URL_Music_Lyric_get     @"api/music/lyric"
+
+
 //#define URL_check_phone @"http://192.168.1.112:3000/api/user/check"
 //#define URL_register @"http://192.168.1.112:3000/api/user/register"
 //#define URL_GetVerifiCode @"http://192.168.1.112:3000/api/user/verifiCode"
@@ -145,7 +148,7 @@
 
 
 #pragma -mark Constant
-
+#define Play_timeinterval  0.25
 #define Cell_width 60.0
 #define Constant_backImage      1     //返回按钮图片
 #define Constant_filterImage    2     //筛选按钮图片

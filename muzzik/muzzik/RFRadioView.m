@@ -19,10 +19,13 @@
 #import "UIColor+HexColor.h"
 #import "UIImageView+WebCache.h"
 #import "CXAHyperlinkLabel.h"
+#import "AppDelegate.h"
+#import "MessageStepViewController.h"
+
+#define closeInterValTime 0.5
 @implementation RFRadioView
 @synthesize delegate = _delegate;
 @synthesize selectedPlaylistItem = _selectedPlaylistItem;
-@synthesize downLoadButton;
 
 -(NSMutableArray *)lyricArray{
     if (!_lyricArray) {
@@ -36,7 +39,7 @@
     if (self) {
         // Initialization code
        
-        
+        [self setAlpha:0];
         //后台播放音频设置
         AVAudioSession *session = [AVAudioSession sharedInstance];
         [session setActive:YES error:nil];
@@ -48,199 +51,182 @@
 //        audioController = [[FSAudioController alloc] init];
         audioPlayer = [AudioPlayer shareClass];
         audioPlayer.delegate = self;
-
+        self.smallView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 64)];
+        self.titleView = [[UIView alloc] initWithFrame:CGRectMake(-SCREEN_WIDTH, 0, SCREEN_WIDTH, 64)];
+        self.playView = [[UIView alloc] initWithFrame:CGRectMake(0, -338, SCREEN_WIDTH, 338)];
+        self.playListView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH, 64, SCREEN_WIDTH, 338)];
+        self.coverView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+        [self.coverView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(closeView)]];
+        [self.coverView setHidden:YES];
+        [self addSubview:self.smallView];
         
+        [self addSubview:self.coverView];
+        [self addSubview:self.playListView];
+        [self addSubview:self.playView];
+        [self addSubview:self.smallView];
+        [self addSubview:self.titleView];
+        [self.playListView setBackgroundColor:Color_NavigationBar];
+        [self.titleView setBackgroundColor:Color_NavigationBar];
+        [self.smallView setBackgroundColor:Color_NavigationBar];
+        [self.playView setBackgroundColor:Color_NavigationBar];
         //[self addSubview:_currentPlaybackTime];
         
-        showButton = [[UIButton alloc] initWithFrame:CGRectMake(13, 31, 20, 20)];
-        [showButton setImage:[UIImage imageNamed:@"controlImage"] forState:UIControlStateNormal];
+        showButton = [[UIButton alloc] initWithFrame:CGRectMake(8, 21, 40, 40)];
+        [showButton setImage:[UIImage imageNamed:Image_PlayercontrolImage] forState:UIControlStateNormal];
         [showButton addTarget:self action:@selector(showFullPlayer:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview: showButton];
+        
         
         _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 30,SCREEN_WIDTH-80, 20)];
         _titleLabel.font = [UIFont boldSystemFontOfSize:15];
         [_titleLabel setTextColor:[UIColor whiteColor]];
         _titleLabel.textAlignment = NSTextAlignmentCenter;
         _titleLabel.text = @"播放歌曲";
-        [_titleLabel setAlpha:0];
-        [self addSubview:_titleLabel];
-        //[self addSubview:_titleLabel];
-        playButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH - 32, 31, 20, 20)];
-        [playButton setImage:[UIImage imageNamed:@"playImage"] forState:UIControlStateNormal];
-        [playButton addTarget:self action:@selector(playAction) forControlEvents:UIControlEventTouchUpInside];
-        [self addSubview:playButton];
+        [_titleLabel setAlpha:1];
+        [self.titleView addSubview:_titleLabel];
+        playListButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-42, 21, 40, 40)];
+        [playListButton setImage:[UIImage imageNamed:Image_PlayerlistImage] forState:UIControlStateNormal];
+        [playListButton addTarget:self action:@selector(showPlayList) forControlEvents:UIControlEventTouchUpInside];
+        [self.titleView addSubview:playListButton];
         
-        self.clipsToBounds = YES;
-        detailView = [[UIView alloc] initWithFrame:CGRectMake(0, 55, SCREEN_WIDTH, 320)];
-        [self addSubview:detailView];
-        headerImage = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-37, 10, 75, 75)];
+        //[self addSubview:_titleLabel];
+        smallPlayButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH - 42, 21, 40, 40)];
+        [smallPlayButton setImage:[UIImage imageNamed:Image_PlayerplayImage] forState:UIControlStateNormal];
+        [smallPlayButton addTarget:self action:@selector(playAction) forControlEvents:UIControlEventTouchUpInside];
+        [self.smallView addSubview:smallPlayButton];
+        
+
+        headerImage = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-37, 0, 75, 75)];
         headerImage.layer.cornerRadius = 38;
         headerImage.clipsToBounds = YES;
-        [detailView addSubview:headerImage];
-        attentionButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2+12, 60, 25, 25)];
+        [self.playView addSubview:headerImage];
+        attentionButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2+12, 50, 25, 25)];
+        [attentionButton setImage:[UIImage imageNamed:Image_PlayerfollowImage] forState:UIControlStateNormal];
         [attentionButton addTarget:self action:@selector(attentionAction) forControlEvents:UIControlEventTouchUpInside];
-        [attentionButton setImage:[UIImage imageNamed:@"followImage"] forState:UIControlStateNormal];
-        [detailView addSubview:attentionButton];
-        nickLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 90, SCREEN_WIDTH, 30)];
+        [self.playView addSubview:attentionButton];
+        nickLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 75, SCREEN_WIDTH, 30)];
         [nickLabel setTextColor:[UIColor whiteColor]];
         [nickLabel setFont:[UIFont fontWithName:Font_Next_Bold size:14]];
         nickLabel.textAlignment = NSTextAlignmentCenter;
-        [detailView addSubview:nickLabel];
-        pagecontrol = [[UIPageControl alloc] initWithFrame:CGRectMake(0, 125, SCREEN_WIDTH, 10)];
+        [self.playView addSubview:nickLabel];
+        pagecontrol = [[StyledPageControl alloc] initWithFrame:CGRectMake(0, 105, SCREEN_WIDTH, 8)];
         //page control
-        [pagecontrol setCurrentPageIndicatorTintColor:[UIColor colorWithHexString:@"a8acbb"]];
-        [pagecontrol setPageIndicatorTintColor:[UIColor colorWithHexString:@"3b4051"]];
-        [detailView addSubview:pagecontrol];
+        [pagecontrol setCoreSelectedColor:Color_Additional_5];
+        [pagecontrol setCoreNormalColor:Color_Theme_3];
+        [pagecontrol setDiameter:7];
+        [pagecontrol setGapWidth:4];
+        [self.playView addSubview:pagecontrol];
         //[pagecontrol setBackgroundColor:[UIColor whiteColor]];
         pagecontrol.numberOfPages = 2;
-        Scroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 135, SCREEN_WIDTH, 100)];
+        Scroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 113, SCREEN_WIDTH, 100)];
         Scroll.delegate = self;
         [Scroll setPagingEnabled:YES];
         [Scroll setContentSize:CGSizeMake(SCREEN_WIDTH*2, 100)];
-        [detailView addSubview:Scroll];
-        message =[[UILabel alloc ] initWithFrame:CGRectMake(SCREEN_WIDTH, 0, SCREEN_WIDTH, 100)];
+        [self.playView addSubview:Scroll];
+        message =[[UILabel alloc ] initWithFrame:CGRectMake(SCREEN_WIDTH+10, 0, SCREEN_WIDTH-20, 100)];
         message.textAlignment = NSTextAlignmentCenter;
+        [message setFont:[UIFont systemFontOfSize:14]];
         message.lineBreakMode = NSLineBreakByCharWrapping;
         message.numberOfLines = 0;
         message.textColor = [UIColor whiteColor];
         [Scroll addSubview:message];
-        LineLayout *lineout = [[LineLayout alloc] init];
-        lyricCollectionview = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 100) collectionViewLayout:lineout];
-        [Scroll addSubview:lyricCollectionview];
-        lyricCollectionview.delegate = self;
-        lyricCollectionview.dataSource = self;
-        [lyricCollectionview setBackgroundColor:[UIColor clearColor]];
-        [lyricCollectionview registerClass:[Cell class] forCellWithReuseIdentifier:@"MY_CELL"];
+        lyricTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 100)];
+        [lyricTableView setBackgroundColor:Color_NavigationBar];
+        [lyricTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+        [Scroll addSubview:lyricTableView];
+        lyricTableView.delegate = self;
+        lyricTableView.dataSource = self;
+
         
         
         
-        _progress = [[UISlider alloc] initWithFrame:CGRectMake(15, 260, SCREEN_WIDTH-65, 20)];
+        _progress = [[UISlider alloc] initWithFrame:CGRectMake(15, 213, SCREEN_WIDTH-70, 20)];
         _progress.continuous = NO;
-        
-        _progress.minimumTrackTintColor = [UIColor colorWithRed:244.0f/255.0f green:147.0f/255.0f blue:23.0f/255.0f alpha:1.0f];
-        _progress.maximumTrackTintColor = [UIColor lightGrayColor];
-        [_progress setThumbImage:[UIImage imageNamed:@"forwardImage"] forState:UIControlStateNormal];
+        [_progress setMinimumValue:0.0];
+        _progress.minimumTrackTintColor = Color_Active_Button_1;
+        _progress.maximumTrackTintColor = Color_Theme_2;
+        [_progress setThumbImage:[UIImage imageNamed:Image_PlayerforwardImage] forState:UIControlStateNormal];
         [_progress addTarget:self action:@selector(progressChange:) forControlEvents:UIControlEventValueChanged];
-        [detailView addSubview: _progress];
+        [self.playView addSubview: _progress];
         
-        _currentPlaybackTime = [[UILabel alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-50 , 262, 50, 15)];
+        _currentPlaybackTime = [[UILabel alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-55 , 215, 50, 15)];
        // [_currentPlaybackTime setBackgroundColor:[UIColor whiteColor]];
         UIFont *font = [UIFont systemFontOfSize:7];
         NSMutableAttributedString *text = [[NSMutableAttributedString alloc] init];
         NSString *itemStr = @"00:00";
-        NSAttributedString *item = [MuzzikItem formatAttrItem:itemStr color:[UIColor colorWithHexString:@"a8acbb"] font:font];
+        NSAttributedString *item = [MuzzikItem formatAttrItem:itemStr color:Color_Active_Button_1 font:font];
         [text appendAttributedString:item];
         NSString *itemStr1 = @"/00:00";
-        NSAttributedString *item1 = [MuzzikItem formatAttrItem:itemStr1 color:[UIColor colorWithHexString:@"366ab3"] font:font];
+        NSAttributedString *item1 = [MuzzikItem formatAttrItem:itemStr1 color:Color_Additional_5 font:font];
         [text appendAttributedString:item1];
         _currentPlaybackTime.attributedText = text;
-        [detailView addSubview:_currentPlaybackTime];
+        [self.playView addSubview:_currentPlaybackTime];
         
-        movedButton =[[UIButton alloc] initWithFrame:CGRectMake(15, 300, 30, 30)];
-        [movedButton setImage:[UIImage imageNamed:@"redlikeImage"] forState:UIControlStateNormal];
+        playButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-51, 240, 36, 36)];
+        [playButton addTarget:self action:@selector(playAction) forControlEvents:UIControlEventTouchUpInside];
+        [self.playView addSubview:playButton];
+        movedButton =[[UIButton alloc] initWithFrame:CGRectMake(15, 240, 36, 36)];
         [movedButton addTarget:self action:@selector(moveAction) forControlEvents:UIControlEventTouchUpInside];
-        [detailView addSubview:movedButton];
+        [self.playView addSubview:movedButton];
+        
+        PsongName = [[UILabel alloc] initWithFrame:CGRectMake(60, 240, SCREEN_WIDTH -140, 15)];
+        [PsongName setFont:[UIFont boldSystemFontOfSize:14]];
         
         
+        PartistName = [[UILabel alloc] initWithFrame:CGRectMake(60, 258, SCREEN_WIDTH -140, 15)];
+        PartistName.adjustsFontSizeToFitWidth = YES;
+        [PartistName setFont:[UIFont boldSystemFontOfSize:12]];
+        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(13, 293, SCREEN_WIDTH-26, 1)];
+        [lineView setBackgroundColor:Color_Theme_2];
+        [self.playView addSubview:lineView];
+        
+        [self.playView addSubview:PsongName];
+        [self.playView addSubview:PartistName];
         
 //        UISlider *slider = [[UISlider alloc ] initWithFrame:CGRectMake(10, 20, 300, 20)];
 //        [slider addTarget:self action:@selector(updateValue:) forControlEvents:UIControlEventValueChanged];
 //        [self addSubview:slider];
-        closeButton = [[UIButton alloc] init];
-        shareButton = [[UIButton alloc] init];
-        playModel = [[UIButton alloc] init];
-        commentButton = [[UIButton alloc] init];
+        closeButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 293, SCREEN_WIDTH/4, 45)];
+        [closeButton setImage:[UIImage imageNamed:Image_PlayercloseImage] forState:UIControlStateNormal];
+        [closeButton addTarget:self action:@selector(closePlayView) forControlEvents:UIControlEventTouchUpInside];
+        [self.playView addSubview:closeButton];
+        
+        commentButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/4, 293, SCREEN_WIDTH/4, 45)];
+        [commentButton setImage:[UIImage imageNamed:Image_PlayerreplyImage] forState:UIControlStateNormal];
+        [commentButton addTarget:self action:@selector(commentAction) forControlEvents:UIControlEventTouchUpInside];
+        [self.playView addSubview:commentButton];
+        
+        playModelButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2, 293, SCREEN_WIDTH/4, 45)];
+        [playModelButton setImage:[UIImage imageNamed:Image_PlayerloopImage] forState:UIControlStateNormal];
+        [playModelButton addTarget:self action:@selector(modelAction) forControlEvents:UIControlEventTouchUpInside];
+        [self.playView addSubview:playModelButton];
+        
+        nextButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH*3/4, 293, SCREEN_WIDTH/4, 45)];
+        [nextButton setImage:[UIImage imageNamed:Image_PlayernextsongImage] forState:UIControlStateNormal];
+        [nextButton addTarget:self action:@selector(nextAction) forControlEvents:UIControlEventTouchUpInside];
+        [self.playView addSubview:nextButton];
         
        
         songName = [[UILabel alloc] init];
         artistName = [[UILabel alloc] init];
-         [songName setFrame:CGRectMake(60, 25, SCREEN_WIDTH -120, 15)];
+         [songName setFrame:CGRectMake(60, 25, SCREEN_WIDTH -140, 15)];
         [songName setTextColor:[UIColor whiteColor]];
-        [songName setFont:[UIFont boldSystemFontOfSize:16]];
-        [self addSubview:songName];
-        artistName.frame=CGRectMake(60, 41, SCREEN_WIDTH -120, 15);
+        [songName setFont:[UIFont boldSystemFontOfSize:14]];
+        [self.smallView addSubview:songName];
+        artistName.frame=CGRectMake(60, 41, SCREEN_WIDTH -140, 15);
         artistName.adjustsFontSizeToFitWidth = YES;
         [artistName setFont:[UIFont boldSystemFontOfSize:12]];
         [artistName setTextColor:[UIColor whiteColor]];
-        [self addSubview:artistName];
+        [self.smallView addSubview:artistName];
     }
     return self;
 }
--(void) rollBack{
-    [_titleLabel setAlpha:0];
-    CABasicAnimation *animation2 = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
-    animation2.duration = 0.3; // 持续时间
-    animation2.removedOnCompletion = YES;
-    animation2.autoreverses = NO;
-    animation2.fillMode = kCAFillModeForwards;
-    animation2.repeatCount = 1; // 重复次数
-    animation2.fromValue = [NSNumber numberWithFloat:M_PI_4]; // 起始角度
-    animation2.toValue = [NSNumber numberWithFloat:0.0]; // 终止角度
-    [showButton.layer addAnimation:animation2 forKey:@"rotate-layer"];
-    showButton.transform = CGAffineTransformMakeRotation(0);
-    [showButton.layer addAnimation:animation2 forKey:@"move-rotate-layer"];
-    [UIView animateWithDuration:0.3 animations:^{
-        [self setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 64)];
-    }completion:^(BOOL finished) {
-        [playButton setFrame:CGRectMake(SCREEN_WIDTH - 32, 31, 20, 20)];
-    }];
-    [songName setFrame:CGRectMake(60, 25, SCREEN_WIDTH -120, 15)];
-    [self addSubview:songName];
-    artistName.frame=CGRectMake(60,41, SCREEN_WIDTH -120, 15);
-    [self addSubview:artistName];
-    
-    [playButton setFrame:CGRectMake(SCREEN_WIDTH - 32, 31, 20, 20)];
-    [playButton setImage:[UIImage imageNamed:@"playImage"] forState:UIControlStateNormal];
-    //[playButton addTarget:self action:@selector(playAction) forControlEvents:UIControlEventTouchUpInside];
-    [self addSubview:playButton];
-}
--(void)layoutSubviews{
-    if (_isOpen) {
-        if (!_IsShowDetail) {
-            [UIView animateWithDuration:0.3 animations:^{
-                [_titleLabel setAlpha:0];
-                [self setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 64)];
-            }completion:^(BOOL finished) {
-                [playButton setFrame:CGRectMake(SCREEN_WIDTH - 32, 31, 20, 20)];
-            }];
-            [songName setFrame:CGRectMake(60, 25, SCREEN_WIDTH -120, 15)];
-            [self addSubview:songName];
-            artistName.frame=CGRectMake(60, 41, SCREEN_WIDTH -120, 15);
-            [self addSubview:artistName];
-            [playButton setFrame:CGRectMake(SCREEN_WIDTH - 32, 31, 20, 20)];
-            [playButton setImage:[UIImage imageNamed:@"playImage"] forState:UIControlStateNormal];
-            //[playButton addTarget:self action:@selector(playAction) forControlEvents:UIControlEventTouchUpInside];
-            [self addSubview:playButton];
-        }else{
-            
-            [UIView animateWithDuration:0.1 animations:^{
-                [playButton setAlpha:0];
-            } completion:^(BOOL finished) {
-                [playButton setImage:[UIImage imageNamed:@"bluecircleplayImage"] forState:UIControlStateNormal];
-                [playButton setAlpha:1];
-                [playButton setFrame:CGRectMake(SCREEN_WIDTH-42, 300, 30, 30)];
-                [detailView addSubview: playButton];
-            }];
-            
-            [UIView animateWithDuration:0.3 animations:^{
-                [_titleLabel setAlpha:1];
-//                [playButton setFrame:CGRectMake(SCREEN_WIDTH - 32, 231, 20, 20)];
-                [songName setFrame:CGRectMake(60, 355, SCREEN_WIDTH -120, 15)];
-                
-                artistName.frame = CGRectMake(60, 371, SCREEN_WIDTH -120, 15);
-                
-                [self setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 430)];
-            //    [self ]
-            }];
-        }
 
-    }
-}
-
+#pragma mark - 播放器控制
 -(void) showFullPlayer:(UIButton *) sender{
     if (_IsShowDetail) {
         CABasicAnimation *animation2 = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
-        animation2.duration = 0.3; // 持续时间
+        animation2.duration = 0.825; // 持续时间
         animation2.removedOnCompletion = YES;
         animation2.autoreverses = NO;
         animation2.fillMode = kCAFillModeForwards;
@@ -250,9 +236,43 @@
         [showButton.layer addAnimation:animation2 forKey:@"rotate-layer"];
         showButton.transform = CGAffineTransformMakeRotation(0);
         [showButton.layer addAnimation:animation2 forKey:@"move-rotate-layer"];
+        
+        _IsShowDetail = NO;
+        if (_IsShowPlayList) {
+            _IsShowPlayList = NO;
+            [UIView animateWithDuration:0.825 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+                [self.titleView setFrame:CGRectMake(-SCREEN_WIDTH, 0, SCREEN_WIDTH, 64)];
+                
+            } completion:^(BOOL finished) {
+                [smallPlayButton setHidden:NO];
+                [songName setHidden:NO];
+                [artistName setHidden:NO];
+                [self setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 64)];
+                [self.playView setFrame:CGRectMake(0, -366, SCREEN_WIDTH, 338)];
+                [self.playListView setFrame:CGRectMake(SCREEN_WIDTH, 64, SCREEN_WIDTH, 338)];
+            }];
+            [UIView animateWithDuration:0.6 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+                [self.playListView setFrame:CGRectMake(0, -366, SCREEN_WIDTH, 338)];
+            } completion:nil];
+        }else{
+            [UIView animateWithDuration:0.825 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+                [self.titleView setFrame:CGRectMake(-SCREEN_WIDTH, 0, SCREEN_WIDTH, 64)];
+                
+            } completion:^(BOOL finished) {
+                [smallPlayButton setHidden:NO];
+                [songName setHidden:NO];
+                [artistName setHidden:NO];
+                [self setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 64)];
+            }];
+            [UIView animateWithDuration:0.6 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+                [self.playView setFrame:CGRectMake(0, -366, SCREEN_WIDTH, 338)];
+            } completion:nil];
+        }
+        
+        
     }else{
         CABasicAnimation *animation2 = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
-        animation2.duration = 0.3; // 持续时间
+        animation2.duration = 0.85; // 持续时间
         animation2.removedOnCompletion = YES;
         animation2.autoreverses = NO;
         animation2.fillMode = kCAFillModeForwards;
@@ -262,22 +282,146 @@
         [showButton.layer addAnimation:animation2 forKey:@"rotate-layer"];
         showButton.transform = CGAffineTransformMakeRotation(M_PI_4);
         [showButton.layer addAnimation:animation2 forKey:@"move-rotate-layer"];
-    }
-   
-//    CABasicAnimation *monkeyAnimation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
-//    monkeyAnimation.toValue = [NSNumber numberWithFloat:0.25 *M_PI];
-//    monkeyAnimation.duration = 0.5f;
-//    monkeyAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
-//    monkeyAnimation.cumulative = NO;
-//    monkeyAnimation.removedOnCompletion = YES; //No Remove
-//
-//    [showButton.layer addAnimation:monkeyAnimation forKey:@"AnimatedKey"];
-//    showButton.layer.speed = 0.5;
-//    showButton.layer.beginTime = 0.0;
-    _IsShowDetail = !_IsShowDetail;
-    [self setNeedsLayout];
-}
+        
+        _IsShowDetail = YES;
+        [smallPlayButton setHidden:YES];
+        [songName setHidden:YES];
+        [artistName setHidden:YES];
+        
+        if (!_playMuzzik.isCheckFollow) {
+            _playMuzzik.isCheckFollow = YES;
+            ASIHTTPRequest *requestUser = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@",BaseURL,_playMuzzik.MuzzikUser.user_id]]];
+            [requestUser addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
+            __weak ASIHTTPRequest *weakrequestUser = requestUser;
+            [requestUser setCompletionBlock :^{
+                NSLog(@"%@",[weakrequestUser responseString]);
+                NSLog(@"%d",[weakrequestUser responseStatusCode]);
+                if ([weakrequestUser responseStatusCode] == 200) {
+                    NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequestUser responseData]  options:NSJSONReadingMutableContainers error:nil];
+                    _playMuzzik.MuzzikUser.isFollow = [[dic objectForKey:@"isFollow"] boolValue];
+                    _playMuzzik.MuzzikUser.isFans = [[dic objectForKey:@"isFans"] boolValue];
+                    if (![[dic objectForKey:@"isFollow"] boolValue]) {
+                        [attentionButton setHidden:NO];
+                    }else{
+                        [attentionButton setHidden:YES];
+                    }
+                }
+            }];
+            [requestUser setFailedBlock:^{
+                NSLog(@"%@",[weakrequestUser error]);
+            }];
+            [requestUser startAsynchronous];
+            
+            [self.lyricArray removeAllObjects];
+            [lyricTableView reloadData];
+            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString :[[NSString stringWithFormat:@"%@%@/%@",URL_Lyric_Me,_playMuzzik.music.name,_playMuzzik.music.artist] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+            [requestForm setUseCookiePersistence:NO];
+            __weak ASIHTTPRequest *weakrequest = requestForm;
+            [requestForm setCompletionBlock :^{
+                // NSLog(@"%@",[weakrequest responseString]);
+                //NSLog(@"URL:%@     status:%d",[weakrequest originalURL],[weakrequest responseStatusCode]);
+                if ([weakrequest responseStatusCode] == 200) {
+                    [weakrequest originalURL];
+                    NSData *data = [weakrequest responseData];
+                    NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data  options:NSJSONReadingMutableContainers error:nil];
+                    if ([[dic objectForKey:@"count"] longValue]>0) {
+                        ASIHTTPRequest *lyricRequest = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[[[[dic objectForKey:@"result"] objectAtIndex:0] objectForKey:@"lrc"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+                        __weak ASIHTTPRequest *lrcRequest = lyricRequest;
+                        [lyricRequest setCompletionBlock:^{
+                            NSString *lyric =  [[NSString alloc] initWithData:[lrcRequest responseData]   encoding:NSUTF8StringEncoding];
+                            [self parseLrcLine:lyric];
+                            // NSLog(@"%@",self.lyricArray);
+                            // NSLog(@"%@",[lrcRequest responseString]);
+                            // NSLog(@"URL:%@     status:%d",[lrcRequest originalURL],[lrcRequest responseStatusCode]);
+                        }];
+                        [lyricRequest setFailedBlock:^{
+                            NSLog(@"%@",lrcRequest.error);
+                        }];
+                        [lyricRequest startAsynchronous];
+                    }
+                    else{
+                        
+                        ASIHTTPRequest *requestForm1 = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Music_Lyric_get]]];
+                        [requestForm1 addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[[NSString stringWithFormat:@"%@+%@",_playMuzzik.music.artist,_playMuzzik.music.name] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] forKey:@"q"] Method:GetMethod auth:NO];
+                        [requestForm1 setUseCookiePersistence:NO];
+                        __weak ASIHTTPRequest *weakrequest1 = requestForm1;
+                        [requestForm1 setCompletionBlock :^{
+                            //  NSLog(@"%@",[weakrequest1 responseString]);
+                            // NSLog(@"URL:%@     status:%d",[weakrequest1 originalURL],[weakrequest1 responseStatusCode]);
+                            if ([weakrequest1 responseStatusCode] == 200) {
+                                NSData *data = [weakrequest1 responseData];
+                                NSDictionary *dic1 = [NSJSONSerialization JSONObjectWithData:data  options:NSJSONReadingMutableContainers error:nil];
+                                if ([[dic1 objectForKey:@"music"] count]>0) {
+                                    ASIHTTPRequest *lyricRequest1 = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[[[[dic1 objectForKey:@"music"] objectAtIndex:0] objectForKey:@"lyric"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+                                    __weak ASIHTTPRequest *lrcRequest1 = lyricRequest1;
+                                    [lyricRequest1 setCompletionBlock:^{
+                                        NSString *lyric =  [[NSString alloc] initWithData:[lrcRequest1 responseData]   encoding:NSUTF8StringEncoding];
+                                        [self parseLrcLine:lyric];
+                                        // NSLog(@"%@",self.lyricArray);
+                                        //  NSLog(@"%@",[lrcRequest1 responseString]);
+                                        //  NSLog(@"URL:%@     status:%d",[lrcRequest1 originalURL],[lrcRequest1 responseStatusCode]);
+                                    }];
+                                    [lyricRequest1 setFailedBlock:^{
+                                        NSLog(@"%@",lrcRequest1.error);
+                                    }];
+                                    [lyricRequest1 startAsynchronous];
+                                }
+                                else{
+                                    
+                                }
+                                
+                            }
+                            else{
+                                //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+                            }
+                        }];
+                        [requestForm1 setFailedBlock:^{
+                            NSLog(@"URL:%@     status:%d",[weakrequest originalURL],[weakrequest responseStatusCode]);
+                            NSLog(@"  kkk%@",[weakrequest error]);
+                        }];
+                        [requestForm1 startAsynchronous];
+                    }
+                    
+                }
+                else{
+                    //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+                }
+            }];
+            [requestForm setFailedBlock:^{
+                NSLog(@"URL:%@     status:%d",[weakrequest originalURL],[weakrequest responseStatusCode]);
+                NSLog(@"  kkk%@",[weakrequest error]);
+            }];
+            [requestForm startAsynchronous];
+        }
+        
 
+        [self setFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+        [UIView animateWithDuration:0.85 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+            [self.titleView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 64)];
+            
+        } completion:^(BOOL finished) {
+            
+        }];
+        [UIView animateWithDuration:0.75 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+            [self.playView setFrame:CGRectMake(0, 64, SCREEN_WIDTH, 338)];
+        } completion:nil];
+    }
+}
+-(void)showPlayList{
+    if (_IsShowPlayList) {
+        _IsShowPlayList = NO;
+        [UIView animateWithDuration:0.85 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+            [self.playListView setFrame:CGRectMake(SCREEN_WIDTH, 64, SCREEN_WIDTH, 338)];
+            [self.playView setFrame:CGRectMake(0, 64, SCREEN_WIDTH, 338)];
+        }completion:nil];
+    }else{
+        _IsShowPlayList = YES;
+        [UIView animateWithDuration:0.85 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+            [self.playListView setFrame:CGRectMake(0, 64, SCREEN_WIDTH, 338)];
+            [self.playView setFrame:CGRectMake(-SCREEN_WIDTH, 64, SCREEN_WIDTH, 338)];
+        }completion:nil];
+    }
+}
 -(void)setRadioViewLrc
 {
         noLrcLabel.text = @"无歌词";
@@ -354,11 +498,7 @@
 {
     [_delegate radioView:self playListButton:btn];
 }
--(void)downLoadButtonEvent:(UIButton *)btn
-{
-    self.downLoadButton.enabled = NO;
-   [_delegate radioView:self downLoadButton:btn];
-}
+
 -(void)collectButtonEvent:(UIButton *)btn
 {
     
@@ -406,7 +546,7 @@
     else{
         itemStr = [NSString stringWithFormat:@"%02d:%02d:%02d", h, m, s];
     }
-    NSAttributedString *item = [MuzzikItem formatAttrItem:itemStr color:[UIColor colorWithHexString:@"a8acbb"] font:font];
+    NSAttributedString *item = [MuzzikItem formatAttrItem:itemStr color:Color_Active_Button_1 font:font];
     [text appendAttributedString:item];
     
     if (th==0) {
@@ -425,117 +565,173 @@
         }
     }
 
-    NSAttributedString *item1 = [MuzzikItem formatAttrItem:itemStr1 color:[UIColor colorWithHexString:@"366ab3"] font:font];
+    NSAttributedString *item1 = [MuzzikItem formatAttrItem:itemStr1 color:Color_Additional_5 font:font];
     [text appendAttributedString:item1];
     return  text;
     
 }
 -(void)scrolllyric:(NSDictionary *)dic{
     if ([self.lyricArray containsObject:dic]) {
-        [lyricCollectionview scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:[self.lyricArray indexOfObject:dic] inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+        [lyricTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[self.lyricArray indexOfObject:dic] inSection:0]  atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
     }
     
 }
 -(void)stopEverything
 {
     Globle *glob = [Globle shareGloble];
-    self.downLoadButton.enabled = NO;
     glob.isPlaying = NO;
     [audioPlayer stop];
-#warning 处理歌词
 }
 -(void)setPlayMuzzik:(muzzik *)playMuzzik{
-    self.isOpen = YES;
-    [UIView animateWithDuration:0.3 animations:^{
-        [self setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 64)];
+    [UIView animateWithDuration:Play_timeinterval animations:^{
+        [self setAlpha:1];
     }];
     NSLog(@"%@",[NSString stringWithFormat:@"%@/%@",playMuzzik.music.name,playMuzzik.music.artist]);
     if (!([playMuzzik.muzzik_id isEqualToString:_playMuzzik.muzzik_id]||([playMuzzik.muzzik_id length] == 0 &&[playMuzzik.music.music_id isEqualToString:_playMuzzik.music.music_id]))||([[musicPlayer shareClass].MusicArray count] ==1 && ![playMuzzik.muzzik_id isEqualToString:_playMuzzik.muzzik_id])) {
         [Globle shareGloble].isPause = NO;
-        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString :[[NSString stringWithFormat:@"%@%@/%@",URL_Lyric_Me,playMuzzik.music.name,playMuzzik.music.artist] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
-        [requestForm setUseCookiePersistence:NO];
-        __weak ASIHTTPRequest *weakrequest = requestForm;
-        [requestForm setCompletionBlock :^{
-           // NSLog(@"%@",[weakrequest responseString]);
-            //NSLog(@"URL:%@     status:%d",[weakrequest originalURL],[weakrequest responseStatusCode]);
-            if ([weakrequest responseStatusCode] == 200) {
-                [weakrequest originalURL];
-                NSData *data = [weakrequest responseData];
-                NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data  options:NSJSONReadingMutableContainers error:nil];
-                if ([[dic objectForKey:@"count"] longValue]>0) {
-                    ASIHTTPRequest *lyricRequest = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[[[[dic objectForKey:@"result"] objectAtIndex:0] objectForKey:@"lrc"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
-                    __weak ASIHTTPRequest *lrcRequest = lyricRequest;
-                    [lyricRequest setCompletionBlock:^{
-                        NSString *lyric =  [[NSString alloc] initWithData:[lrcRequest responseData]   encoding:NSUTF8StringEncoding];
-                        [self parseLrcLine:lyric];
-                       // NSLog(@"%@",self.lyricArray);
-                       // NSLog(@"%@",[lrcRequest responseString]);
-                       // NSLog(@"URL:%@     status:%d",[lrcRequest originalURL],[lrcRequest responseStatusCode]);
-                    }];
-                    [lyricRequest setFailedBlock:^{
-                        NSLog(@"%@",lrcRequest.error);
-                    }];
-                    [lyricRequest startAsynchronous];
-                }
-                else{
-                    ASIHTTPRequest *requestForm1 = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString :[[NSString stringWithFormat:@"%@%@",URL_Lyric_Me,playMuzzik.music.name] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
-                    [requestForm1 setUseCookiePersistence:NO];
-                    __weak ASIHTTPRequest *weakrequest1 = requestForm1;
-                    [requestForm1 setCompletionBlock :^{
-                      //  NSLog(@"%@",[weakrequest1 responseString]);
-                       // NSLog(@"URL:%@     status:%d",[weakrequest1 originalURL],[weakrequest1 responseStatusCode]);
-                        if ([weakrequest1 responseStatusCode] == 200) {
-                            [weakrequest1 originalURL];
-                            NSData *data = [weakrequest1 responseData];
-                            NSDictionary *dic1 = [NSJSONSerialization JSONObjectWithData:data  options:NSJSONReadingMutableContainers error:nil];
-                            if ([[dic1 objectForKey:@"count"] longValue]>0) {
-                                ASIHTTPRequest *lyricRequest1 = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[[[[dic1 objectForKey:@"result"] objectAtIndex:0] objectForKey:@"lrc"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
-                                __weak ASIHTTPRequest *lrcRequest1 = lyricRequest1;
-                                [lyricRequest1 setCompletionBlock:^{
-                                    NSString *lyric =  [[NSString alloc] initWithData:[lrcRequest1 responseData]   encoding:NSUTF8StringEncoding];
-                                    [self parseLrcLine:lyric];
-                                   // NSLog(@"%@",self.lyricArray);
-                                  //  NSLog(@"%@",[lrcRequest1 responseString]);
-                                  //  NSLog(@"URL:%@     status:%d",[lrcRequest1 originalURL],[lrcRequest1 responseStatusCode]);
-                                }];
-                                [lyricRequest1 setFailedBlock:^{
-                                    NSLog(@"%@",lrcRequest1.error);
-                                }];
-                                [lyricRequest1 startAsynchronous];
-                            }
-                            else{
+        
+        
+        _playMuzzik = playMuzzik;
+        if (_IsShowDetail) {
+            _playMuzzik.isCheckFollow = YES;
+            [self.lyricArray removeAllObjects];
+            [lyricTableView reloadData];
+            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString :[[NSString stringWithFormat:@"%@%@/%@",URL_Lyric_Me,playMuzzik.music.name,playMuzzik.music.artist] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+            [requestForm setUseCookiePersistence:NO];
+            __weak ASIHTTPRequest *weakrequest = requestForm;
+            [requestForm setCompletionBlock :^{
+                // NSLog(@"%@",[weakrequest responseString]);
+                //NSLog(@"URL:%@     status:%d",[weakrequest originalURL],[weakrequest responseStatusCode]);
+                if ([weakrequest responseStatusCode] == 200) {
+                    NSData *data = [weakrequest responseData];
+                    NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data  options:NSJSONReadingMutableContainers error:nil];
+                    if ([[dic objectForKey:@"count"] longValue]>0) {
+                        ASIHTTPRequest *lyricRequest = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[[[[dic objectForKey:@"result"] objectAtIndex:0] objectForKey:@"lrc"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+                        __weak ASIHTTPRequest *lrcRequest = lyricRequest;
+                        [lyricRequest setCompletionBlock:^{
+                            NSString *lyric =  [[NSString alloc] initWithData:[lrcRequest responseData]   encoding:NSUTF8StringEncoding];
+                            [self parseLrcLine:lyric];
+                            // NSLog(@"%@",self.lyricArray);
+                            // NSLog(@"%@",[lrcRequest responseString]);
+                            // NSLog(@"URL:%@     status:%d",[lrcRequest originalURL],[lrcRequest responseStatusCode]);
+                        }];
+                        [lyricRequest setFailedBlock:^{
+                            NSLog(@"%@",lrcRequest.error);
+                        }];
+                        [lyricRequest startAsynchronous];
+                    }
+                    else{
+                        
+                        ASIHTTPRequest *requestForm1 = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Music_Lyric_get]]];
+                        [requestForm1 addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[[NSString stringWithFormat:@"%@+%@",playMuzzik.music.artist,playMuzzik.music.name] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] forKey:@"q"] Method:GetMethod auth:NO];
+                        [requestForm1 setUseCookiePersistence:NO];
+                        __weak ASIHTTPRequest *weakrequest1 = requestForm1;
+                        [requestForm1 setCompletionBlock :^{
+                            //  NSLog(@"%@",[weakrequest1 responseString]);
+                            // NSLog(@"URL:%@     status:%d",[weakrequest1 originalURL],[weakrequest1 responseStatusCode]);
+                            if ([weakrequest1 responseStatusCode] == 200) {
+                                NSData *data = [weakrequest1 responseData];
+                                NSDictionary *dic1 = [NSJSONSerialization JSONObjectWithData:data  options:NSJSONReadingMutableContainers error:nil];
+                                if ([[dic1 objectForKey:@"music"] count]>0) {
+                                    ASIHTTPRequest *lyricRequest1 = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[[[[dic1 objectForKey:@"music"] objectAtIndex:0] objectForKey:@"lyric"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+                                    __weak ASIHTTPRequest *lrcRequest1 = lyricRequest1;
+                                    [lyricRequest1 setCompletionBlock:^{
+                                        NSString *lyric =  [[NSString alloc] initWithData:[lrcRequest1 responseData]   encoding:NSUTF8StringEncoding];
+                                        [self parseLrcLine:lyric];
+                                        // NSLog(@"%@",self.lyricArray);
+                                        //  NSLog(@"%@",[lrcRequest1 responseString]);
+                                        //  NSLog(@"URL:%@     status:%d",[lrcRequest1 originalURL],[lrcRequest1 responseStatusCode]);
+                                    }];
+                                    [lyricRequest1 setFailedBlock:^{
+                                        NSLog(@"%@",lrcRequest1.error);
+                                    }];
+                                    [lyricRequest1 startAsynchronous];
+                                }
+                                else{
+                                    
+                                }
                                 
                             }
-                            
-                        }
-                        else{
-                            //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-                        }
-                    }];
-                    [requestForm1 setFailedBlock:^{
-                        NSLog(@"URL:%@     status:%d",[weakrequest originalURL],[weakrequest responseStatusCode]);
-                        NSLog(@"  kkk%@",[weakrequest error]);
-                    }];
-                    [requestForm1 startAsynchronous];
+                            else{
+                                //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+                            }
+                        }];
+                        [requestForm1 setFailedBlock:^{
+                            NSLog(@"URL:%@     status:%d",[weakrequest originalURL],[weakrequest responseStatusCode]);
+                            NSLog(@"  kkk%@",[weakrequest error]);
+                        }];
+                        [requestForm1 startAsynchronous];
+                    }
+                    
                 }
-                
-            }
-            else{
-                //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-            }
-        }];
-        [requestForm setFailedBlock:^{
-            NSLog(@"URL:%@     status:%d",[weakrequest originalURL],[weakrequest responseStatusCode]);
-            NSLog(@"  kkk%@",[weakrequest error]);
-        }];
-        [requestForm startAsynchronous];
-        _playMuzzik = playMuzzik;
+                else{
+                    //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+                }
+            }];
+            [requestForm setFailedBlock:^{
+                NSLog(@"URL:%@     status:%d",[weakrequest originalURL],[weakrequest responseStatusCode]);
+                NSLog(@"  kkk%@",[weakrequest error]);
+            }];
+            [requestForm startAsynchronous];
+            
+            //检测用户是否已关注
+            ASIHTTPRequest *requestUser = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@",BaseURL,playMuzzik.MuzzikUser.user_id]]];
+            [requestUser addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
+            __weak ASIHTTPRequest *weakrequestUser = requestUser;
+            [requestUser setCompletionBlock :^{
+                NSLog(@"%@",[weakrequestUser responseString]);
+                NSLog(@"%d",[weakrequestUser responseStatusCode]);
+                if ([weakrequestUser responseStatusCode] == 200) {
+                    NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequestUser responseData]  options:NSJSONReadingMutableContainers error:nil];
+                    if (![[dic objectForKey:@"isFollow"] boolValue]) {
+                        [attentionButton setHidden:NO];
+                    }else{
+                        [attentionButton setHidden:YES];
+                    }
+                }
+            }];
+            [requestUser setFailedBlock:^{
+                NSLog(@"%@",[weakrequestUser error]);
+            }];
+            [requestUser startAsynchronous];
+            
+        }
         if ([playMuzzik.message length]>0) {
             message.text = playMuzzik.message;
         }
         
+        
+        UIColor *color;
+        if ([playMuzzik.color intValue] == 1) {
+            color = Color_Action_Button_1;
+            if (playMuzzik.ismoved) {
+                [movedButton setImage:[UIImage imageNamed:Image_PlayeryellowlikedImage] forState:UIControlStateNormal];
+            }else{
+                [movedButton setImage:[UIImage imageNamed:Image_PlayeryellowlikeImage] forState:UIControlStateNormal];
+            }
+        }else if ([playMuzzik.color intValue] == 2){
+            color = Color_Action_Button_2;
+            if (playMuzzik.ismoved) {
+                [movedButton setImage:[UIImage imageNamed:Image_PlayerbluelikedImage] forState:UIControlStateNormal];
+            }else{
+                [movedButton setImage:[UIImage imageNamed:Image_PlayerbluelikeImage] forState:UIControlStateNormal];
+            }
+        }else{
+            color = Color_Action_Button_3;
+            if (playMuzzik.ismoved) {
+                [movedButton setImage:[UIImage imageNamed:Image_PlayerredlikedImage] forState:UIControlStateNormal];
+            }else{
+                [movedButton setImage:[UIImage imageNamed:Image_PlayerredlikeImage] forState:UIControlStateNormal];
+            }
+        }
         artistName.text = playMuzzik.music.artist;
+        PartistName.text = playMuzzik.music.artist;
         songName.text = playMuzzik.music.name;
+        PsongName.text = playMuzzik.music.name;
+        [artistName setTextColor:color];
+        [PartistName setTextColor:color];
+        [songName setTextColor:color];
+        [PsongName setTextColor:color];
         if (playMuzzik.MuzzikUser) {
             nickLabel.text = playMuzzik.MuzzikUser.name;
             [headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,playMuzzik.MuzzikUser.avatar]]];
@@ -596,14 +792,14 @@
         return NSOrderedSame;
     }]];
     NSArray *larray = [NSArray arrayWithArray:self.lyricArray];
-    for (int i = larray.count-1; i>0; i--) {
+    for (long i = larray.count-1; i>0; i--) {
         NSDictionary *dic = larray[i];
        // NSLog(@"%d",[[[dic allValues][0] stringByTrimmingCharactersInSet:[NSCharacterSet symbolCharacterSet]] length]);
         if ([[[dic allValues][0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length] == 0 ) {
             [self.lyricArray removeObjectAtIndex:[larray indexOfObject:dic]];
         }
     }
-    [lyricCollectionview reloadData];
+    [lyricTableView reloadData];
     return nil;
 }
 
@@ -650,7 +846,26 @@
          [_delegate radioView:self musicStop:isPlayBack];
         glob.isPlaying = YES;
     }
-    [playButton setImage:glob.isPlaying&&!glob.isPause?[UIImage imageNamed:@"stopImage"]:[UIImage imageNamed:@"playImage"] forState:UIControlStateNormal];
+    
+    [smallPlayButton setImage:glob.isPlaying&&!glob.isPause?[UIImage imageNamed:Image_PlayerstopImage]:[UIImage imageNamed:Image_PlayerplayImage] forState:UIControlStateNormal];
+    if (glob.isPause) {
+        if ([_playMuzzik.color intValue] == 1) {
+            [playButton setImage:[UIImage imageNamed:Image_PlayeryellowcircleplayImage] forState:UIControlStateNormal];
+        }else if ([_playMuzzik.color intValue] == 2) {
+            [playButton setImage:[UIImage imageNamed:Image_PlayerbluecircleplayImage] forState:UIControlStateNormal];
+        }else{
+            [playButton setImage:[UIImage imageNamed:Image_PlayerredcircleplayImage] forState:UIControlStateNormal];
+        }
+    }else{
+        if ([_playMuzzik.color intValue] == 1) {
+            [playButton setImage:[UIImage imageNamed:Image_PlayeryellowcirclestopImage] forState:UIControlStateNormal];
+        }else if ([_playMuzzik.color intValue] == 2) {
+            [playButton setImage:[UIImage imageNamed:Image_PlayerbluecirclestopImage] forState:UIControlStateNormal];
+        }else{
+            [playButton setImage:[UIImage imageNamed:Image_PlayerredcirclestopImage] forState:UIControlStateNormal];
+        }
+    }
+    
 }
 -(void) updatePlaybackProgress
 {
@@ -693,21 +908,27 @@
     [self updateControls];
 }
 #pragma -mark  picker委托方法
-- (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section;
-{
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.lyricArray.count;
 }
 
-- (UICollectionViewCell *)collectionView:(UICollectionView *)cv cellForItemAtIndexPath:(NSIndexPath *)indexPath;
-{
-    Cell *cell = [cv dequeueReusableCellWithReuseIdentifier:@"MY_CELL" forIndexPath:indexPath];
-    cell.label.text =[_lyricArray[indexPath.row] allObjects][0];
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
+    cell.textLabel.text =[_lyricArray[indexPath.row] allObjects][0];
+    [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+    [cell.textLabel setFont:[UIFont fontWithName:Font_Next_Regular size:14]];
+    
+    cell.textLabel.textAlignment = NSTextAlignmentCenter;
+    [cell setBackgroundColor:Color_NavigationBar];
+    [cell.textLabel setTextColor:[UIColor whiteColor]];
     return cell;
 }
-
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return 35;
+}
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)sView
 {
-    NSInteger index = fabs(sView.contentOffset.x) / sView.frame.size.width;
+    int index = fabs(sView.contentOffset.x) / sView.frame.size.width;
     //NSLog(@"%d",index);
     [pagecontrol setCurrentPage:index];
 }
@@ -721,5 +942,234 @@
     musicPlayer *player = [musicPlayer shareClass];
     [player play];
     [[NSNotificationCenter defaultCenter] postNotificationName:String_SetSongPlayNextNotification object:nil];
+}
+
+
+-(void) closePlayView{
+    [audioPlayer stop];
+    [musicPlayer shareClass].localMuzzik = nil;
+    [musicPlayer shareClass].MusicArray = nil;
+    Globle *glob = [Globle shareGloble];
+    _playMuzzik = nil;
+    glob.isPause = NO;
+    glob.isPlaying = NO;
+    [[NSNotificationCenter defaultCenter] postNotificationName:String_SetSongPlayNextNotification object:nil];
+    CABasicAnimation *animation2 = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
+    animation2.duration = 0.825; // 持续时间
+    animation2.removedOnCompletion = YES;
+    animation2.autoreverses = NO;
+    animation2.fillMode = kCAFillModeForwards;
+    animation2.repeatCount = 1; // 重复次数
+    animation2.fromValue = [NSNumber numberWithFloat:M_PI_4]; // 起始角度
+    animation2.toValue = [NSNumber numberWithFloat:0.0]; // 终止角度
+    [showButton.layer addAnimation:animation2 forKey:@"rotate-layer"];
+    showButton.transform = CGAffineTransformMakeRotation(0);
+    [showButton.layer addAnimation:animation2 forKey:@"move-rotate-layer"];
+    
+    _IsShowDetail = NO;
+    if (_IsShowPlayList) {
+        _IsShowPlayList = NO;
+        [UIView animateWithDuration:0.825 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+            [self.titleView setFrame:CGRectMake(-SCREEN_WIDTH, 0, SCREEN_WIDTH, 64)];
+            
+        } completion:^(BOOL finished) {
+            [smallPlayButton setHidden:NO];
+            [songName setHidden:NO];
+            [artistName setHidden:NO];
+            [self setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 64)];
+            [self.playView setFrame:CGRectMake(0, -366, SCREEN_WIDTH, 338)];
+            [self.playListView setFrame:CGRectMake(SCREEN_WIDTH, 64, SCREEN_WIDTH, 338)];
+            [UIView animateWithDuration:Play_timeinterval delay:closeInterValTime options: UIViewAnimationOptionCurveEaseInOut animations:^{
+                [self setAlpha:0];
+            } completion:^(BOOL finished) {
+                [UIView animateWithDuration:Play_timeinterval animations:^{
+                    AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
+                    UINavigationController *nac = (UINavigationController *)app.window.rootViewController;
+                    if ([[[nac viewControllers] objectAtIndex:0] isKindOfClass:[AMScrollingNavbarViewController class]]) {
+                        AMScrollingNavbarViewController *viewcontroller = (AMScrollingNavbarViewController *)[[nac viewControllers] objectAtIndex:0];
+                        [viewcontroller.leftBtn setAlpha:1];
+                        [viewcontroller.rightBtn setAlpha:1];
+                        [viewcontroller.headerView setAlpha:1];
+                    }
+                }];
+            }];
+        }];
+        [UIView animateWithDuration:0.6 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+            [self.playListView setFrame:CGRectMake(0, -366, SCREEN_WIDTH, 338)];
+        } completion:nil];
+    }else{
+        [UIView animateWithDuration:0.825 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+            [self.titleView setFrame:CGRectMake(-SCREEN_WIDTH, 0, SCREEN_WIDTH, 64)];
+            
+        } completion:^(BOOL finished) {
+            [smallPlayButton setHidden:NO];
+            [songName setHidden:NO];
+            [artistName setHidden:NO];
+            [self setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 64)];
+            [UIView animateWithDuration:Play_timeinterval delay:closeInterValTime options: UIViewAnimationOptionCurveEaseInOut animations:^{
+                [self setAlpha:0];
+            } completion:^(BOOL finished) {
+                [UIView animateWithDuration:Play_timeinterval animations:^{
+                    AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
+                    UINavigationController *nac = (UINavigationController *)app.window.rootViewController;
+                    if ([[[nac viewControllers] objectAtIndex:0] isKindOfClass:[AMScrollingNavbarViewController class]]) {
+                        AMScrollingNavbarViewController *viewcontroller = (AMScrollingNavbarViewController *)[[nac viewControllers] objectAtIndex:0];
+                        [viewcontroller.leftBtn setAlpha:1];
+                        [viewcontroller.rightBtn setAlpha:1];
+                        [viewcontroller.headerView setAlpha:1];
+                    }
+                }];
+            }];
+        }];
+        [UIView animateWithDuration:0.6 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+            [self.playView setFrame:CGRectMake(0, -366, SCREEN_WIDTH, 338)];
+        } completion:nil];
+    }
+
+}
+-(void)nextAction{
+    [_delegate radioView:self musicStop:isPlayBack];
+    [Globle shareGloble].isPlaying = YES;
+}
+//收起播放器
+-(void)closeView{
+    CABasicAnimation *animation2 = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
+    animation2.duration = 0.825; // 持续时间
+    animation2.removedOnCompletion = YES;
+    animation2.autoreverses = NO;
+    animation2.fillMode = kCAFillModeForwards;
+    animation2.repeatCount = 1; // 重复次数
+    animation2.fromValue = [NSNumber numberWithFloat:M_PI_4]; // 起始角度
+    animation2.toValue = [NSNumber numberWithFloat:0.0]; // 终止角度
+    [showButton.layer addAnimation:animation2 forKey:@"rotate-layer"];
+    showButton.transform = CGAffineTransformMakeRotation(0);
+    [showButton.layer addAnimation:animation2 forKey:@"move-rotate-layer"];
+    
+    _IsShowDetail = NO;
+    if (_IsShowPlayList) {
+        _IsShowPlayList = NO;
+        [UIView animateWithDuration:0.825 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+            [self.titleView setFrame:CGRectMake(-SCREEN_WIDTH, 0, SCREEN_WIDTH, 64)];
+            
+        } completion:^(BOOL finished) {
+            [smallPlayButton setHidden:NO];
+            [songName setHidden:NO];
+            [artistName setHidden:NO];
+            [self setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 64)];
+            [self.playView setFrame:CGRectMake(0, -366, SCREEN_WIDTH, 338)];
+            [self.playListView setFrame:CGRectMake(SCREEN_WIDTH, 64, SCREEN_WIDTH, 338)];
+        }];
+        [UIView animateWithDuration:0.6 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+            [self.playListView setFrame:CGRectMake(0, -366, SCREEN_WIDTH, 338)];
+        } completion:nil];
+    }else{
+        [UIView animateWithDuration:0.825 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+            [self.titleView setFrame:CGRectMake(-SCREEN_WIDTH, 0, SCREEN_WIDTH, 64)];
+            
+        } completion:^(BOOL finished) {
+            [smallPlayButton setHidden:NO];
+            [songName setHidden:NO];
+            [artistName setHidden:NO];
+            [self setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 64)];
+        }];
+        [UIView animateWithDuration:0.6 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+            [self.playView setFrame:CGRectMake(0, -366, SCREEN_WIDTH, 338)];
+        } completion:nil];
+    }
+}
+-(void) attentionAction{
+    if ([[userInfo shareClass].token length]>0) {
+        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_User_Follow]]];
+        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:_playMuzzik.MuzzikUser.user_id forKey:@"_id"] Method:PostMethod auth:YES];
+        __weak ASIHTTPRequest *weakrequest = requestForm;
+        [requestForm setCompletionBlock :^{
+            NSLog(@"%@",[weakrequest responseString]);
+            NSLog(@"%d",[weakrequest responseStatusCode]);
+            
+            if ([weakrequest responseStatusCode] == 200) {
+                _playMuzzik.MuzzikUser.isFollow = YES;
+                [attentionButton setHidden:YES];
+                [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:_playMuzzik.MuzzikUser];
+            }
+            else{
+                
+                //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+            }
+        }];
+        [requestForm setFailedBlock:^{
+            NSLog(@"%@",[weakrequest error]);
+            NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
+        }];
+        [requestForm startAsynchronous];
+    }else{
+        AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
+        UINavigationController *nac = (UINavigationController *)app.window.rootViewController;
+        [userInfo checkLoginWithVC:nac.viewControllers[0]];
+    }
+    
+}
+-(void)modelAction{
+    if (isPlayBack == -1) {
+        isPlayBack = 0;
+        [playModelButton setImage:[UIImage imageNamed:Image_PlayerloopImage] forState:UIControlStateNormal];
+    }else{
+        isPlayBack = -1;
+        [playModelButton setImage:[UIImage imageNamed:Image_PlayerloopclickImage] forState:UIControlStateNormal];
+    }
+    
+}
+-(void)moveAction{
+    userInfo *user = [userInfo shareClass];
+    if ([user.token length]>0) {
+        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/%@/moved",BaseURL,_playMuzzik.muzzik_id]]];
+        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:!_playMuzzik.ismoved] forKey:@"ismoved"] Method:PostMethod auth:YES];
+        __weak ASIHTTPRequest *weakrequest = requestForm;
+        [requestForm setCompletionBlock :^{
+            if ([weakrequest responseStatusCode] == 200) {
+                // NSData *data = [weakrequest responseData];
+                _playMuzzik.ismoved = !_playMuzzik.ismoved;
+                if (_playMuzzik.ismoved) {
+                    _playMuzzik.moveds = [NSString stringWithFormat:@"%d",[_playMuzzik.moveds intValue]+1 ];
+                }else{
+                    _playMuzzik.moveds = [NSString stringWithFormat:@"%d",[_playMuzzik.moveds intValue]-1 ];
+                }
+                [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:_playMuzzik];
+                //                NSIndexPath *indexPath=[NSIndexPath indexPathForRow:[self.muzziks indexOfObject:tempMuzzik] inSection:0];
+                //                [MytableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];
+                
+            }
+            else{
+                //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+            }
+        }];
+        [requestForm setFailedBlock:^{
+            NSLog(@"%@",[weakrequest error]);
+        }];
+        [requestForm startAsynchronous];
+        
+        //NSLog(@"json:%@,dic:%@",tempJsonData,dic);
+        
+    }else{
+        AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
+        UINavigationController *nac = (UINavigationController *)app.window.rootViewController;
+        [userInfo checkLoginWithVC:nac.viewControllers[0]];
+    }
+}
+-(void)commentAction{
+    AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    UINavigationController *nac = (UINavigationController *)app.window.rootViewController;
+    userInfo *user = [userInfo shareClass];
+    if ([user.token length]>0) {
+        MuzzikObject *mobject = [MuzzikObject shareClass];
+        
+        mobject.music = _playMuzzik.music;
+        MessageStepViewController *messagebv = [[MessageStepViewController alloc] init];
+        [nac pushViewController:messagebv animated:YES];
+    }else{
+        AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
+        UINavigationController *nac = (UINavigationController *)app.window.rootViewController;
+        [userInfo checkLoginWithVC:nac.viewControllers[0]];
+    }
+   
 }
 @end
