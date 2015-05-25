@@ -7,12 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CXAHyperlinkLabel.h"
+#import "TTTAttributedLabel.h"
 @interface CommentMuzzikCell : UITableViewCell
 
 @property(nonatomic ,retain) UIButton *userImage;
 @property(nonatomic ,retain) UILabel *userName;
-@property(nonatomic ,retain) CXAHyperlinkLabel *message;
+@property(nonatomic ,retain) TTTAttributedLabel *message;
 @property(nonatomic ,retain) UIButton *playButton;
 @property(nonatomic ,retain) UILabel *songName;
 @property(nonatomic ,retain) UILabel *timeLabel;

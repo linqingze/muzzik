@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CXAHyperlinkLabel.h"
+#import "TTTAttributedLabel.h"
 #import "appConfiguration.h"
 
 @interface topicCardCell : UICollectionViewCell
@@ -18,7 +18,7 @@
 @property (nonatomic) UILabel *timeStamp;                      //时间
 @property (nonatomic) UIView *musicPlayView;                   //播放器图层
 @property (nonatomic) UIButton *playButton;
-@property (nonatomic) CXAHyperlinkLabel *muzzikMessage;        //muzzik文字
+@property (nonatomic) TTTAttributedLabel *muzzikMessage;        //muzzik文字
 @property (nonatomic) UILabel *musicName;                      //音乐名称
 @property (nonatomic) UILabel *musicArtist;                    //音乐家
 @property (nonatomic) UIImageView *timeImage;                  //时间图标

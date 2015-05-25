@@ -10,7 +10,7 @@
 
 @interface NotifyFollowCell : UITableViewCell
 @property (nonatomic,retain) UIImageView *preImage;
-@property (nonatomic,retain) UIButton *headImage;
+@property (nonatomic,retain) UIImageView *headImage;
 @property (nonatomic,retain) UILabel *nameLabel;
 @property (nonatomic,retain) UILabel *message;
 @property (nonatomic,retain) UIView *lineView;

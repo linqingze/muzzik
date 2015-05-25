@@ -13,7 +13,7 @@
 #import "TopicDetail.h"
 #import "userDetailInfo.h"
 #import "DetaiMuzzikVC.h"
-@interface CommentTableVC ()<UITableViewDataSource,UITableViewDelegate,CXDelegate,CellDelegate>{
+@interface CommentTableVC ()<UITableViewDataSource,UITableViewDelegate,TTTAttributedLabelDelegate,CellDelegate>{
     int numberOfProducts;
     BOOL needsLoad;
     NSMutableDictionary *RefreshDic;
@@ -155,7 +155,7 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     muzzik *tempMuzzik = commentArray[indexPath.row];
-    CXAHyperlinkLabel *label = [[CXAHyperlinkLabel alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH-140, 2000)];
+    TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH-140, 2000)];
     label.text = tempMuzzik.message;
     
     [label setFont:[UIFont systemFontOfSize:15]];
@@ -194,10 +194,9 @@
     }else{
         [cell.privateImage setHidden:YES];
     }
-    NSString *temp = tempMuzzik.message;
-    temp = [MuzzikItem transformMessage:temp withAt:[MuzzikItem searchUsers:temp]];
-    
-    [cell.message setText: [MuzzikItem transformMessage:temp withTopics:tempMuzzik.topics]];
+    cell.message.text = tempMuzzik.message;
+    [cell.message addClickMessageForAt];
+    [cell.message addClickMessagewithTopics:tempMuzzik.topics];
     CGSize msize = [cell.message sizeThatFits:CGSizeMake(SCREEN_WIDTH-140, 2000)];
     [cell.message setFrame:CGRectMake(cell.message.frame.origin.x, cell.message.frame.origin.y, msize.width, msize.height)];
     cell.timeLabel.text = [MuzzikItem transtromTime:tempMuzzik.date];

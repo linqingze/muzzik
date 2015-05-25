@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "SuggestMuzzikVC.h"
-#import "CXAHyperlinkLabel.h"
+#import "TTTAttributedLabel.h"
 @interface suggestCollectionCell : UICollectionViewCell
 @property (nonatomic,retain) UIImageView *muzzikImage;
 @property (nonatomic,assign) CGFloat lastContentOffset;
@@ -18,7 +18,7 @@
 @property (nonatomic,retain) UILabel *nameLabel;
 @property (nonatomic,retain) UIImageView *timeImage;
 @property (nonatomic,retain) UILabel *timeLabel;
-@property (nonatomic,retain) CXAHyperlinkLabel *message;
+@property (nonatomic,retain) TTTAttributedLabel *message;
 @property (nonatomic,retain) UIScrollView *scroll;
 @property (nonatomic,retain) UIView *downLine;
 @property (nonatomic,retain) UIView *ActionView;

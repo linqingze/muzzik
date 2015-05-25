@@ -43,18 +43,19 @@
     
     _timeImage = [[UIImageView alloc] initWithFrame:CGRectMake(ScreenWidth-90, 28, 10, 10)];
     [_timeImage setImage:[UIImage imageNamed:Image_timeImage]];
-    _muzzikMessage = [[CXAHyperlinkLabel alloc] initWithFrame:CGRectMake(32, CGRectGetMaxY(_userImage.frame)+15, ScreenWidth-80, 200)];
-    
+    _muzzikMessage = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(32, CGRectGetMaxY(_userImage.frame)+15, ScreenWidth-80, 200)];
+    [_muzzikMessage setTextColor:Color_Text_1];
+    [_muzzikMessage setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
     _musicPlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 0 , ScreenWidth-16, 60)];
     [self.contentView addSubview:_musicPlayView];
     _progress = [[UIProgressView alloc] initWithFrame:CGRectMake(32, 0, ScreenWidth-80, 2)];
     [_progress setProgress:1];
     [_musicPlayView addSubview:_progress];
-    _musicName = [[UILabel alloc] initWithFrame:CGRectMake(75, 2, ScreenWidth-155, 29)];
-    [_musicName setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
+    _musicName = [[UILabel alloc] initWithFrame:CGRectMake(75, 7, ScreenWidth-155, 25)];
+    [_musicName setFont:[UIFont boldSystemFontOfSize:16]];
     [_musicPlayView addSubview:_musicName];
-    _musicArtist = [[UILabel alloc] initWithFrame:CGRectMake(75, 31, ScreenWidth-155, 29)];
-    [_musicArtist setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
+    _musicArtist = [[UILabel alloc] initWithFrame:CGRectMake(75, 30, ScreenWidth-155, 25)];
+    [_musicArtist setFont:[UIFont boldSystemFontOfSize:13]];
     [_musicPlayView addSubview:_musicArtist];
     _likeButton = [[UIButton alloc] initWithFrame:CGRectMake(32,14 , 30, 30)];
     [_likeButton addTarget:self action:@selector(moveAction) forControlEvents:UIControlEventTouchUpInside];

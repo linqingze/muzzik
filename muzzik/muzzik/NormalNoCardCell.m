@@ -52,9 +52,9 @@
     [_userName setFont:[UIFont fontWithName:Font_Next_DemiBold size:15]];
     [_userName setTextColor:Color_Text_1];
     [self.contentView addSubview:_userName];
-    _muzzikMessage = [[CXAHyperlinkLabel alloc] initWithFrame:CGRectMake( 80, 83, SCREEN_WIDTH-110, 2000)];
-    [_muzzikMessage setTextColor:Color_Text_2];
-    [_muzzikMessage setFont:[UIFont systemFontOfSize:15]];
+    _muzzikMessage = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake( 80, 83, SCREEN_WIDTH-110, 2000)];
+    [_muzzikMessage setTextColor:Color_Text_1];
+    [_muzzikMessage setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
     [self.contentView addSubview:_muzzikMessage];
     _musicPlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 75, SCREEN_WIDTH, 145+SCREEN_WIDTH*3/4)];
     [self.contentView addSubview:_musicPlayView];

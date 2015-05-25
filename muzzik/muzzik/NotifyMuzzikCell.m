@@ -26,6 +26,7 @@
     _headImage = [[UIButton alloc] initWithFrame:CGRectMake(23, 16, 40, 40)];
     _headImage.layer.cornerRadius = 20;
     _headImage.clipsToBounds = YES;
+    [_headImage addTarget:self action:@selector(goToUser) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:_headImage];
     _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(73, 16, SCREEN_WIDTH-100, 20)];
     [self addSubview:_nameLabel];

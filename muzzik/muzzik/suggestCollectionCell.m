@@ -48,7 +48,7 @@
         [_timeImage setImage:[UIImage imageNamed:Image_timeImage]];
         [self.scroll addSubview:_timeImage];
         
-        _message = [[CXAHyperlinkLabel alloc] initWithFrame:CGRectMake(23, SCREEN_WIDTH-10, SCREEN_WIDTH-46, 400)];
+        _message = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(23, SCREEN_WIDTH-10, SCREEN_WIDTH-46, 400)];
         [_message setFont:[UIFont systemFontOfSize:14]];
         [_message setTextColor:Color_Text_2];
         [self.scroll addSubview:_message];

@@ -145,7 +145,7 @@
 #define Image_topicnumImage                 @"topicnumImage"
 #define Image_topicholdImage                @"topicholdImage"
 #define Image_topicdeclineImage             @"topicdeclineImage"
-#define Image_placeholdImage                @"placeholdImage"
+
 #define Image_PlayercloseImage              @"PlayercloseImage"
 #define Image_PlayerbluecircleplayImage     @"PlayerbluecircleplayImage"
 #define Image_PlayerbluecirclestopImage     @"PlayerbluecirclestopImage"
@@ -173,7 +173,10 @@
 #define Image_PlayerplayImage               @"PlayerplayImage"
 #define Image_PlayershareImage              @"PlayershareImage"
 #define Image_PlayerstopImage               @"PlayerstopImage"
-
+#define Image_Notify_clockButton            @"notificationImage"
+#define Image_NotifynewnotificationImage          @"newnotificationImage"
+#define Image_user_placeHolder                @"User_PlaceHolder"
+#define Image_placeholdImage                @"placeholderImage"
 
 
 #define Parameter_Id              @"_id"

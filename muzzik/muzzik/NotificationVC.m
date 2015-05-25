@@ -14,10 +14,10 @@
 #import "UIButton+WebCache.h"
 #import "userDetailInfo.h"
 #import "DetaiMuzzikVC.h"
+#import "UIImageView+WebCache.h"
 @interface NotificationVC ()<UITableViewDataSource,UITableViewDelegate,CellDelegate>{
     UITableView *notifyTabelView;
     NSMutableArray *notifyArray;
-    NSMutableDictionary *RefreshDic;
     int page;
     
 }
@@ -29,18 +29,16 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     page =1;
-    notifyTabelView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+    [self initNagationBar:@"通知消息" leftBtn:Constant_backImage rightBtn:0];
+    notifyTabelView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     notifyTabelView.delegate = self;
     notifyTabelView.dataSource = self;
-    
+    [self followScrollView:notifyTabelView];
     notifyTabelView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:notifyTabelView];
     [notifyTabelView registerClass:[NotifyFollowCell class] forCellReuseIdentifier:@"NotifyFollowCell"];
     [notifyTabelView registerClass:[NotifyMuzzikCell class] forCellReuseIdentifier:@"NotifyMuzzikCell"];
-    RefreshDic = [NSMutableDictionary dictionary];
-    for (int i = 0; i<4; i++) {
-        [RefreshDic setObject:[NSNumber numberWithInt:i] forKey:[NSString stringWithFormat:@"%d",i]];
-    }
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -105,23 +103,20 @@
         }else{
             [cell.preImage setImage:[UIImage imageNamed:Image_notifollowImage]];
         }
-        if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%d",indexPath.row]]) {
-            [RefreshDic setObject:indexPath forKey:[NSString stringWithFormat:@"%d",indexPath.row]];
-            [cell.headImage setAlpha:0];
-        }
-        [cell.headImage sd_setBackgroundImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempNotify.user.avatar]] forState:UIControlStateNormal completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-            [UIView animateWithDuration:0.5 animations:^{
-                [cell.headImage setAlpha:1];
-            }];
-        }];
+
+//        [cell.headImage sd_setBackgroundImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempNotify.user.avatar]] forState:UIControlStateNormal completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+//            [UIView animateWithDuration:0.5 animations:^{
+//                [cell.headImage setAlpha:1];
+//            }];
+//        }];
         cell.user_id = tempNotify.user.user_id;
         cell.nameLabel.attributedText = [self creatTextByName:tempNotify.user.name Date:tempNotify.date];
         if ([tempNotify.type isEqualToString:@"follow"]) {
             cell.message.text = @"关注了你";
         }else if ([tempNotify.type isEqualToString:@"friend_registered"]) {
-            
+            cell.message.text = @"微博好友加入了Muzzik";
         }else if ([tempNotify.type isEqualToString:@"frient_exists"]) {
-            
+            cell.message.text = @"微博好友在Muzzik里等候你好久好久了....";
         }
        return cell;
     }else{
@@ -147,11 +142,7 @@
                 [cell.preImage setImage:[UIImage imageNamed:Image_notitopicclickImage]];
             }
         }
-        
-        if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%d",indexPath.row]]) {
-            [RefreshDic setObject:indexPath forKey:[NSString stringWithFormat:@"%d",indexPath.row]];
-            [cell.headImage setAlpha:0];
-        }
+
         [cell.headImage sd_setBackgroundImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempNotify.user.avatar]] forState:UIControlStateNormal completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
             [UIView animateWithDuration:0.5 animations:^{
                 [cell.headImage setAlpha:1];
@@ -159,7 +150,7 @@
         }];
         cell.user_id = tempNotify.user.user_id;
         cell.nameLabel.attributedText = [self creatTextByName:tempNotify.user.name Date:tempNotify.date];
-        
+        cell.delegate = self;
         if ([tempNotify.type isEqualToString:@"moved"]) {
             cell.message.text = @"喜欢了这条Muzzik";
         }else if([tempNotify.type isEqualToString:@"repost"]){
@@ -177,7 +168,7 @@
     }
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    NotifyObject *tempNotify = notifyArray[indexPath.row];
+    NotifyObject *tempNotify = [notifyArray objectAtIndex:indexPath.row];
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Read_Notify]]];
     [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:tempNotify.notify_id,@"_id", nil] Method:PostMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = request;
@@ -187,12 +178,18 @@
         NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
     }];
     [request startAsynchronous];
-    
-    muzzik *tempMuzzik = tempNotify.muzzik;
-    tempMuzzik.MuzzikUser = tempNotify.user;
-    DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
-    detail.localmuzzik = tempMuzzik;
-    [self.navigationController pushViewController:detail animated:YES];
+    if ([tempNotify.type isEqualToString:@"follow"] ||[tempNotify.type isEqualToString:@"friend_registered"] || [tempNotify.type isEqualToString:@"frient_exists"]) {
+        userDetailInfo *detailuser = [[userDetailInfo alloc] init];
+        detailuser.uid = tempNotify.user.user_id;
+        [self.navigationController pushViewController:detailuser animated:YES];
+    }else{
+        muzzik *tempMuzzik = tempNotify.muzzik;
+        tempMuzzik.MuzzikUser = tempNotify.user;
+        DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
+        detail.localmuzzik = tempMuzzik;
+        [self.navigationController pushViewController:detail animated:YES];
+    }
+   
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
      NotifyObject *tempNotify = [notifyArray objectAtIndex:indexPath.row];

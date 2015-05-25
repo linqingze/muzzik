@@ -15,8 +15,8 @@
 #pragma -mark URL Address
 #define URL_Muzzik_SharePage    @"http://www.muzziker.com/app/muzzik/"
 #define URL_Lyric_Me            @"http://geci.me/api/lyric/"
-#define BaseURL                 @"http://117.121.26.174/"
-//#define BaseURL                 @"http://192.168.1.110:3000/"
+//#define BaseURL                 @"http://117.121.26.174/"
+#define BaseURL                 @"http://192.168.1.110:3000/"
 #define BaseURL_audio           @"http://7bvaim.com1.z0.glb.clouddn.com/"
 #define BaseURL_image           @"http://7bvarm.com1.z0.glb.clouddn.com/"
 
@@ -59,6 +59,8 @@
 #define URL_Notify              @"api/notify"
 #define URL_Read_Notify         @"api/notify/readed"
 #define URL_Music_Lyric_get     @"api/music/lyric"
+#define URL_New_Notify          @"api/notify/havenew"
+
 
 
 //#define URL_check_phone @"http://192.168.1.112:3000/api/user/check"
@@ -113,7 +115,7 @@
 #pragma -mark Font_Size
 
 #define Font_Size_Muzzik_Time 7.0
-#define Font_Size_Muzzik_Message 12.0
+#define Font_Size_Muzzik_Message 14.0
 #define Constant_String_PlayMode_Once 0
 #define Constant_String_PlayMode_Cycle 1
 #define Constant_String_PlayMode_Single 2
@@ -148,7 +150,9 @@
 
 
 #pragma -mark Constant
+#define limitHeight 65
 #define Play_timeinterval  0.25
+#define Font_LineSapce  5
 #define Cell_width 60.0
 #define Constant_backImage      1     //返回按钮图片
 #define Constant_filterImage    2     //筛选按钮图片

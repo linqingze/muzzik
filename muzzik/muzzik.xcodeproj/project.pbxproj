@@ -67,9 +67,6 @@
 		E1B2303B1AB5BF22004E50DA /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B230331AB5BF22004E50DA /* FMDatabasePool.m */; };
 		E1B2303C1AB5BF22004E50DA /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B230351AB5BF22004E50DA /* FMDatabaseQueue.m */; };
 		E1B2303D1AB5BF22004E50DA /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B230381AB5BF22004E50DA /* FMResultSet.m */; };
-		E1B230401AB6E348004E50DA /* CXAHyperlinkLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B2303F1AB6E348004E50DA /* CXAHyperlinkLabel.m */; };
-		E1B230451AB6E3F1004E50DA /* NSAttributedString+CXACoreTextFrameSize.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B230421AB6E3F1004E50DA /* NSAttributedString+CXACoreTextFrameSize.m */; };
-		E1B230461AB6E3F1004E50DA /* NSString+CXAHyperlinkParser.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B230441AB6E3F1004E50DA /* NSString+CXAHyperlinkParser.m */; };
 		E1E857B01ABD6EC2006B1BA6 /* libWeiboSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E1E857A51ABD6EC2006B1BA6 /* libWeiboSDK.a */; };
 		E1E857B11ABD6EC2006B1BA6 /* WeiboSDK.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E1E857AD1ABD6EC2006B1BA6 /* WeiboSDK.bundle */; };
 		E1FA12A91AB148B1005EDA1D /* FMLrcView.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FA12A61AB148B1005EDA1D /* FMLrcView.m */; };
@@ -175,6 +172,7 @@
 		F2E9A8F71AFFB21000F4F461 /* TopicDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = F2E9A8F61AFFB21000F4F461 /* TopicDetail.m */; };
 		F2EB60F21AF9FA1F000B7579 /* userDetailInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = F2EB60F11AF9FA1F000B7579 /* userDetailInfo.m */; };
 		F2ED22D81B12AC0C001F7787 /* TTTAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = F2ED22D71B12AC0C001F7787 /* TTTAttributedLabel.m */; };
+		F2ED22DB1B136029001F7787 /* UIButton_UserMuzzik.m in Sources */ = {isa = PBXBuildFile; fileRef = F2ED22DA1B136029001F7787 /* UIButton_UserMuzzik.m */; };
 		F2EDF71D1B0B240800400A85 /* StyledPageControl.m in Sources */ = {isa = PBXBuildFile; fileRef = F2EDF71C1B0B240800400A85 /* StyledPageControl.m */; };
 		F2F089D91B00920D00FB1639 /* settingSystemVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F089D71B00920D00FB1639 /* settingSystemVC.m */; };
 		F2F089E01B009CCA00FB1639 /* SettingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F089DF1B009CCA00FB1639 /* SettingCell.m */; };
@@ -351,12 +349,6 @@
 		E1B230361AB5BF22004E50DA /* FMDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDB.h; sourceTree = "<group>"; };
 		E1B230371AB5BF22004E50DA /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMResultSet.h; sourceTree = "<group>"; };
 		E1B230381AB5BF22004E50DA /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMResultSet.m; sourceTree = "<group>"; };
-		E1B2303E1AB6E348004E50DA /* CXAHyperlinkLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CXAHyperlinkLabel.h; sourceTree = "<group>"; };
-		E1B2303F1AB6E348004E50DA /* CXAHyperlinkLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CXAHyperlinkLabel.m; sourceTree = "<group>"; };
-		E1B230411AB6E3F1004E50DA /* NSAttributedString+CXACoreTextFrameSize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSAttributedString+CXACoreTextFrameSize.h"; sourceTree = "<group>"; };
-		E1B230421AB6E3F1004E50DA /* NSAttributedString+CXACoreTextFrameSize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSAttributedString+CXACoreTextFrameSize.m"; sourceTree = "<group>"; };
-		E1B230431AB6E3F1004E50DA /* NSString+CXAHyperlinkParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+CXAHyperlinkParser.h"; sourceTree = "<group>"; };
-		E1B230441AB6E3F1004E50DA /* NSString+CXAHyperlinkParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+CXAHyperlinkParser.m"; sourceTree = "<group>"; };
 		E1B230481AB6E6FA004E50DA /* muzzik-PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "muzzik-PrefixHeader.pch"; sourceTree = "<group>"; };
 		E1E857A51ABD6EC2006B1BA6 /* libWeiboSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libWeiboSDK.a; sourceTree = "<group>"; };
 		E1E857A61ABD6EC2006B1BA6 /* WBHttpRequest+WeiboShare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WBHttpRequest+WeiboShare.h"; sourceTree = "<group>"; };
@@ -567,6 +559,8 @@
 		F2EB60F61AFA1138000B7579 /* DeleGateMethodConfigure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeleGateMethodConfigure.h; sourceTree = "<group>"; };
 		F2ED22D61B12AC0C001F7787 /* TTTAttributedLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTAttributedLabel.h; sourceTree = "<group>"; };
 		F2ED22D71B12AC0C001F7787 /* TTTAttributedLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTAttributedLabel.m; sourceTree = "<group>"; };
+		F2ED22D91B136029001F7787 /* UIButton_UserMuzzik.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIButton_UserMuzzik.h; sourceTree = "<group>"; };
+		F2ED22DA1B136029001F7787 /* UIButton_UserMuzzik.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIButton_UserMuzzik.m; sourceTree = "<group>"; };
 		F2EDF71B1B0B240800400A85 /* StyledPageControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StyledPageControl.h; sourceTree = "<group>"; };
 		F2EDF71C1B0B240800400A85 /* StyledPageControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StyledPageControl.m; sourceTree = "<group>"; };
 		F2F089D61B00920D00FB1639 /* settingSystemVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = settingSystemVC.h; sourceTree = "<group>"; };
@@ -817,12 +811,6 @@
 		E112461F1AAAB10A0014D461 /* RTLabel */ = {
 			isa = PBXGroup;
 			children = (
-				E1B230411AB6E3F1004E50DA /* NSAttributedString+CXACoreTextFrameSize.h */,
-				E1B230421AB6E3F1004E50DA /* NSAttributedString+CXACoreTextFrameSize.m */,
-				E1B230431AB6E3F1004E50DA /* NSString+CXAHyperlinkParser.h */,
-				E1B230441AB6E3F1004E50DA /* NSString+CXAHyperlinkParser.m */,
-				E1B2303E1AB6E348004E50DA /* CXAHyperlinkLabel.h */,
-				E1B2303F1AB6E348004E50DA /* CXAHyperlinkLabel.m */,
 				F2ED22D61B12AC0C001F7787 /* TTTAttributedLabel.h */,
 				F2ED22D71B12AC0C001F7787 /* TTTAttributedLabel.m */,
 			);
@@ -1206,6 +1194,8 @@
 				F22AB3A51B068A6000C61677 /* TapImageView.m */,
 				F25C50511B038AAB00F03A61 /* topicLabel.h */,
 				F25C50521B038AAB00F03A61 /* topicLabel.m */,
+				F2ED22D91B136029001F7787 /* UIButton_UserMuzzik.h */,
+				F2ED22DA1B136029001F7787 /* UIButton_UserMuzzik.m */,
 				F2A2E8FD1B08A81300D65514 /* ActivityUserVC.h */,
 				F2A2E8FE1B08A81300D65514 /* ActivityUserVC.m */,
 				F288A4CB1B0DC81900B89860 /* TopRankVC.h */,
@@ -1549,7 +1539,6 @@
 				E1FA12D21AB14CEF005EDA1D /* UIView+Additions.m in Sources */,
 				F2E9A8F71AFFB21000F4F461 /* TopicDetail.m in Sources */,
 				E1FA12C71AB1499F005EDA1D /* DataSourceWrapper.m in Sources */,
-				E1B230461AB6E3F1004E50DA /* NSString+CXAHyperlinkParser.m in Sources */,
 				E11246781AAAB20B0014D461 /* UIImage+WebP.m in Sources */,
 				F2F7EE3C1AEE23E400265596 /* HanyuPinyinOutputFormat.m in Sources */,
 				F2641F231AD9A652003BECDD /* NSString+MD5.m in Sources */,
@@ -1608,9 +1597,9 @@
 				F2A5E20C1AD9106E00FD8B3E /* music.m in Sources */,
 				E1FA12C81AB1499F005EDA1D /* HttpDataSource.m in Sources */,
 				F2F7EE461AEE24B700265596 /* TransfromTime.m in Sources */,
+				F2ED22DB1B136029001F7787 /* UIButton_UserMuzzik.m in Sources */,
 				E1B230391AB5BF22004E50DA /* FMDatabase.m in Sources */,
 				E159C3211AC11F76007D2254 /* ViewPagerController.m in Sources */,
-				E1B230451AB6E3F1004E50DA /* NSAttributedString+CXACoreTextFrameSize.m in Sources */,
 				F20B102F1AF674540067EBD3 /* RootViewController.m in Sources */,
 				F20B10361AF6B4A30067EBD3 /* UserHomePage.m in Sources */,
 				F2F7EE1A1AED69B600265596 /* MessageStepViewController.m in Sources */,
@@ -1636,7 +1625,6 @@
 				F22AB3A61B068A6000C61677 /* TapImageView.m in Sources */,
 				F2A7F98A1AEF810E000FCC57 /* ChooseLyricVC.m in Sources */,
 				F20FDD6F1AF74B24008A71C0 /* SearchForTopic.m in Sources */,
-				E1B230401AB6E348004E50DA /* CXAHyperlinkLabel.m in Sources */,
 				F2AEC69E1B090FF100DA676E /* NotifyFollowCell.m in Sources */,
 				E112469A1AAAC02A0014D461 /* AMScrollingNavbarViewController.m in Sources */,
 				E11246471AAAB1F20014D461 /* ASIHTTPRequest.m in Sources */,

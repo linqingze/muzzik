@@ -16,7 +16,7 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "userInfo.h"
 #import "playListController.h"
-#import "CXAHyperlinkLabel.h"
+#import "TTTAttributedLabel.h"
 #import "ChooseMusicVC.h"
 #import "LoginViewController.h"
 #import "UIScrollView+DXRefresh.h"

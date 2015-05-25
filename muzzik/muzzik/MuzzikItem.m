@@ -34,12 +34,18 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     CGRect size = [strText boundingRectWithSize:constraint options:NSStringDrawingUsesLineFragmentOrigin attributes:attributes context:nil];
     return size.size.height;
 }
-+(float) heightForLabel: (UILabel *)Label WithText: (NSString *) strText{
++(float) heightForLabel: (UIView *)view WithText: (NSString *) strText{
+    NSDictionary *attributes;
+    CGSize constraint = CGSizeMake(view.frame.size.width, CGFLOAT_MAX);
     //float fPadding = 16.0; // 8.0px x 2
-    CGSize constraint = CGSizeMake(Label.frame.size.width, CGFLOAT_MAX);
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
     paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
-    NSDictionary *attributes = @{NSFontAttributeName:Label.font, NSParagraphStyleAttributeName:paragraphStyle.copy};
+    paragraphStyle.lineSpacing = Font_LineSapce;
+    if ([view isKindOfClass:[UILabel class]]) {
+        UILabel *label = (UILabel *)view;
+        attributes = @{NSFontAttributeName:label.font, NSParagraphStyleAttributeName:paragraphStyle};
+    }
+
     CGRect size = [strText boundingRectWithSize:constraint options:NSStringDrawingUsesLineFragmentOrigin attributes:attributes context:nil];
     return size.size.height;
 }
@@ -934,57 +940,6 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
         return @"N天前";
     }
 }
-+(NSString *)transformMessage:(NSString *)message withTopics:(NSArray *)topics{
-    message = [message stringByReplacingOccurrencesOfString:@"＃" withString:@"#"];
-    message = [message stringByReplacingOccurrencesOfString:@"&" withString:@"&"];
-    NSArray *array = [message componentsSeparatedByString:@"#"];
-    for (NSDictionary *dic in topics) {
-        for (NSString *messageString in array) {
-            if ([[messageString lowercaseString] isEqualToString:[dic objectForKey:@"name"]]) {
-                NSRange rang = [message rangeOfString:[NSString stringWithFormat:@"#%@#",messageString]];
-                message = [message stringByReplacingOccurrencesOfString:[message substringWithRange:rang] withString:[NSString stringWithFormat:@" <a href='#%@'>%@</a>",[dic objectForKey:@"_id"],[message substringWithRange:rang]]];
-                break;
-            }
-        }
-    }
-    
-    
-    return message;
-}
-+(NSString *)transformMessage:(NSString *)message withAt:(NSArray *)topics{
-    //  NSMutableString *temp = [NSMutableString stringWithString:message];
-    if ([topics count]>0) {
-        for (NSString *string in topics) {
-            NSLog(@"%d",[message containsString:string]);
-            message = [message stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%@",string] withString:[NSString stringWithFormat:@" <a href='%@'>%@</a>",string,string]];
-        }
-    }
-    return message;
-}
-
-+(NSMutableArray *) searchUsers:(NSString *)message{
-    NSString *checkTabel = @"<>,.~!@＠#$¥%％^&*()，。：；;:‘“～  》？《！＃＊……‘“”／/";
-    NSMutableArray *array = [NSMutableArray array];
-    BOOL GetAt = NO;
-    //  || [[message substringWithRange:NSMakeRange(i, 1)] isEqualToString:@"＠"]
-    int location = 0;
-    for (int i = 0; i<message.length; i++) {
-        if ([[message substringWithRange:NSMakeRange(i, 1)] isEqualToString:@"@"]|| [[message substringWithRange:NSMakeRange(i, 1)] isEqualToString:@"＠"]) {
-            GetAt = YES;
-            location = i;
-            continue;
-        }else if ([checkTabel rangeOfString:[message substringWithRange:NSMakeRange(i, 1)]].location != NSNotFound && GetAt){
-            GetAt = NO;
-            [array addObject:[message substringWithRange:NSMakeRange(location, i-location)]];
-            
-        }else if(i == message.length-1 && GetAt){
-            [array addObject:[message substringWithRange:NSMakeRange(location, i-location+1)]];
-        }
-    }
-    
-    
-    return array;
-}
 +(BOOL) checkMutableArray:(NSMutableArray*) array isContainMuzzik:(muzzik *)localMuzzik{
     for (muzzik *tempMuzzik in array) {
         if ([tempMuzzik.muzzik_id isEqualToString:localMuzzik.muzzik_id]) {
@@ -1010,6 +965,17 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     return NO;
 }
 
-
++ (CGFloat)heightForCellWithText:(NSString *)text Size:(CGSize)textSize {
+    static CGFloat padding = 10.0;
+    
+    UIFont *systemFont = [UIFont systemFontOfSize:Font_Size_Muzzik_Message];
+    CGSize sizeWithFont = [text sizeWithFont:systemFont constrainedToSize:textSize lineBreakMode:NSLineBreakByWordWrapping];
+    
+#if defined(__LP64__) && __LP64__
+    return ceil(sizeWithFont.height) + padding;
+#else
+    return ceilf(sizeWithFont.height) + padding;
+#endif
+}
 @end
 

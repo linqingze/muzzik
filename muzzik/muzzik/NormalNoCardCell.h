@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CXAHyperlinkLabel.h"
+#import "TTTAttributedLabel.h"
 #import "muzzikTrendController.h"
 @interface NormalNoCardCell : UITableViewCell
 @property (nonatomic) UILabel *repostUserName;                 //转发用户名
@@ -19,7 +19,7 @@
 @property (nonatomic) UIView *musicPlayView;                   //播放器图层
 @property (nonatomic) UIButton *playButton;
 @property (nonatomic) UIButton *likeButton;
-@property (nonatomic) CXAHyperlinkLabel *muzzikMessage;        //muzzik文字
+@property (nonatomic) TTTAttributedLabel *muzzikMessage;        //muzzik文字
 @property (nonatomic) UILabel *musicName;                      //音乐名称
 @property (nonatomic) UILabel *musicArtist;                    //音乐家
 @property (nonatomic) UIImageView *timeImage;                  //时间图标

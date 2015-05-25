@@ -301,7 +301,9 @@ afterInheritingLabelAttributesAndConfiguringWithBlock:(NSMutableAttributedString
  A copy of the label's current attributedText. This returns `nil` if an attributed string has never been set on the label.
  */
 @property (readwrite, nonatomic, copy) NSAttributedString *attributedText;
-
+#pragma mark - 转换 点击
+-(void)addClickMessagewithTopics:(NSArray *)topics;
+-(void)addClickMessageForAt;
 ///-------------------
 /// @name Adding Links
 ///-------------------

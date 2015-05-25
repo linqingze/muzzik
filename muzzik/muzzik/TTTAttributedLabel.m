@@ -372,28 +372,28 @@ static inline CGSize CTFramesetterSuggestFrameSizeForAttributedStringWithConstra
     self.linkBackgroundEdgeInset = UIEdgeInsetsMake(0.0f, -1.0f, 0.0f, -1.0f);
 
     NSMutableDictionary *mutableLinkAttributes = [NSMutableDictionary dictionary];
-    [mutableLinkAttributes setObject:[NSNumber numberWithBool:YES] forKey:(NSString *)kCTUnderlineStyleAttributeName];
+
 
     NSMutableDictionary *mutableActiveLinkAttributes = [NSMutableDictionary dictionary];
-    [mutableActiveLinkAttributes setObject:[NSNumber numberWithBool:NO] forKey:(NSString *)kCTUnderlineStyleAttributeName];
+
 
     NSMutableDictionary *mutableInactiveLinkAttributes = [NSMutableDictionary dictionary];
-    [mutableInactiveLinkAttributes setObject:[NSNumber numberWithBool:NO] forKey:(NSString *)kCTUnderlineStyleAttributeName];
+
 
     if ([NSMutableParagraphStyle class]) {
-        [mutableLinkAttributes setObject:[UIColor blueColor] forKey:(NSString *)kCTForegroundColorAttributeName];
-        [mutableActiveLinkAttributes setObject:[UIColor redColor] forKey:(NSString *)kCTForegroundColorAttributeName];
+        [mutableLinkAttributes setObject:Color_Additional_4 forKey:(NSString *)kCTForegroundColorAttributeName];
+        [mutableActiveLinkAttributes setObject:Color_Additional_4 forKey:(NSString *)kCTForegroundColorAttributeName];
         [mutableInactiveLinkAttributes setObject:[UIColor grayColor] forKey:(NSString *)kCTForegroundColorAttributeName];
 
         NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
         paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
-
+        paragraphStyle.lineSpacing = Font_LineSapce;
         [mutableLinkAttributes setObject:paragraphStyle forKey:(NSString *)kCTParagraphStyleAttributeName];
         [mutableActiveLinkAttributes setObject:paragraphStyle forKey:(NSString *)kCTParagraphStyleAttributeName];
         [mutableInactiveLinkAttributes setObject:paragraphStyle forKey:(NSString *)kCTParagraphStyleAttributeName];
     } else {
-        [mutableLinkAttributes setObject:(__bridge id)[[UIColor blueColor] CGColor] forKey:(NSString *)kCTForegroundColorAttributeName];
-        [mutableActiveLinkAttributes setObject:(__bridge id)[[UIColor redColor] CGColor] forKey:(NSString *)kCTForegroundColorAttributeName];
+        [mutableLinkAttributes setObject:(__bridge id)[Color_Additional_4 CGColor] forKey:(NSString *)kCTForegroundColorAttributeName];
+        [mutableActiveLinkAttributes setObject:(__bridge id)[Color_Additional_4 CGColor] forKey:(NSString *)kCTForegroundColorAttributeName];
         [mutableInactiveLinkAttributes setObject:(__bridge id)[[UIColor grayColor] CGColor] forKey:(NSString *)kCTForegroundColorAttributeName];
 
         CTLineBreakMode lineBreakMode = kCTLineBreakByWordWrapping;
@@ -412,6 +412,72 @@ static inline CGSize CTFramesetterSuggestFrameSizeForAttributedStringWithConstra
     self.linkAttributes = [NSDictionary dictionaryWithDictionary:mutableLinkAttributes];
     self.activeLinkAttributes = [NSDictionary dictionaryWithDictionary:mutableActiveLinkAttributes];
     self.inactiveLinkAttributes = [NSDictionary dictionaryWithDictionary:mutableInactiveLinkAttributes];
+    
+    
+    self.numberOfLines = 0;
+    //self.linkAttributes = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:(__bridge NSString *)kCTUnderlineStyleAttributeName];
+    self.lineSpacing = Font_LineSapce;
+    NSMutableDictionary *LocalmutableActiveLinkAttributes = [NSMutableDictionary dictionary];
+    [LocalmutableActiveLinkAttributes setValue:[NSNumber numberWithBool:NO] forKey:(NSString *)kCTUnderlineStyleAttributeName];
+    [LocalmutableActiveLinkAttributes setValue:(__bridge id)[Color_Additional_4 CGColor] forKey:(NSString *)kCTForegroundColorAttributeName];
+    [LocalmutableActiveLinkAttributes setValue:(__bridge id)[[UIColor colorWithRed:0.0f green:0.0f blue:1.0f alpha:0.1f] CGColor] forKey:(NSString *)kTTTBackgroundFillColorAttributeName];
+
+    [LocalmutableActiveLinkAttributes setValue:[NSNumber numberWithFloat:1.0f] forKey:(NSString *)kTTTBackgroundLineWidthAttributeName];
+    [LocalmutableActiveLinkAttributes setValue:[NSNumber numberWithFloat:5.0f] forKey:(NSString *)kTTTBackgroundCornerRadiusAttributeName];
+    self.activeLinkAttributes = LocalmutableActiveLinkAttributes;
+    
+    self.highlightedTextColor = [UIColor whiteColor];
+    //self.shadowColor = [UIColor colorWithWhite:0.87f alpha:1.0f];
+    ///self.shadowOffset = CGSizeMake(0.0f, 1.0f);
+    //self.highlightedShadowColor = [UIColor colorWithWhite:0.0f alpha:0.25f];
+   // self.highlightedShadowOffset = CGSizeMake(0.0f, -1.0f);
+   // self.highlightedShadowRadius = 1;
+    self.verticalAlignment = TTTAttributedLabelVerticalAlignmentCenter;
+    
+    
+}
+#pragma mark - 转换 点击
+-(void)addClickMessagewithTopics:(NSArray *)topics{
+    self.text = [self.text stringByReplacingOccurrencesOfString:@"＃" withString:@"#"];
+    self.text = [self.text stringByReplacingOccurrencesOfString:@"&" withString:@"&"];
+    NSArray *array = [self.text componentsSeparatedByString:@"#"];
+    for (NSDictionary *dic in topics) {
+        for (NSString *messageString in array) {
+            if ([[messageString lowercaseString] isEqualToString:[dic objectForKey:@"name"]]) {
+                NSRange rang = [self.text rangeOfString:[NSString stringWithFormat:@"#%@#",messageString]];
+                [self addLinkToTransitInformation:[NSDictionary dictionaryWithObject:[dic objectForKey:@"_id"] forKey:@"topic_id"] withRange:rang];
+                break;
+            }
+        }
+    }
+
+}
+
+-(void)addClickMessageForAt{
+    NSString *checkTabel = @"<>,.~!@＠#$¥%％^&*()，。：；;:‘“～  》？《！＃＊……‘“”／/";
+    NSMutableArray *array = [NSMutableArray array];
+    BOOL GetAt = NO;
+    //  || [[message substringWithRange:NSMakeRange(i, 1)] isEqualToString:@"＠"]
+    int location = 0;
+    for (int i = 0; i<[self.text length]; i++) {
+        if ([[self.text substringWithRange:NSMakeRange(i, 1)] isEqualToString:@"@"]|| [[self.text substringWithRange:NSMakeRange(i, 1)] isEqualToString:@"＠"]) {
+            GetAt = YES;
+            location = i;
+            continue;
+        }else if ([checkTabel rangeOfString:[self.text substringWithRange:NSMakeRange(i, 1)]].location != NSNotFound && GetAt){
+            GetAt = NO;
+            [array addObject:[self.text substringWithRange:NSMakeRange(location, i-location)]];
+            
+        }else if(i == [self.text length]-1 && GetAt){
+            [array addObject:[self.text substringWithRange:NSMakeRange(location, i-location+1)]];
+        }
+    }
+    if ([array count]>0) {
+        for (NSString *string in array) {
+            NSRange rang = [self.text rangeOfString:string];
+            [self addLinkToTransitInformation:[NSDictionary dictionaryWithObject:[string substringFromIndex:1] forKey:@"at_name"] withRange:rang];
+        }
+    }
 }
 
 - (void)dealloc {
@@ -1042,7 +1108,7 @@ static inline CGSize CTFramesetterSuggestFrameSizeForAttributedStringWithConstra
         [self setText:text afterInheritingLabelAttributesAndConfiguringWithBlock:nil];
         return;
     }
-
+    
     self.attributedText = text;
     self.activeLink = nil;
 

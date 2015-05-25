@@ -18,12 +18,15 @@
 @interface RootViewController ()<UIPageViewControllerDelegate,UIPageViewControllerDataSource,UIScrollViewDelegate>{
     NSArray *pageControllers;
     UIView *nacView;
-    UIPageControl *_pagecontrol;
+    StyledPageControl *_pagecontrol;
     UILabel *titleLable;
     muzzikTrendController* muzzikvc;
     TopicVC *topicvc ;
     UserHomePage *userHome;
     NotificationVC *notifyvc;
+    BOOL isLogiined;
+    UIButton *notifyButton;
+    UIImageView *notifyImage;
 }
 
 @end
@@ -38,11 +41,15 @@
     nacView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 64)];
     [nacView setBackgroundColor:Color_NavigationBar];
     
-    _pagecontrol = [[UIPageControl alloc] initWithFrame:CGRectMake(0, 50, SCREEN_WIDTH, 10)];
+    _pagecontrol = [[StyledPageControl alloc] initWithFrame:CGRectMake(0, 50, SCREEN_WIDTH, 8)];
     //page control
-    
-    [_pagecontrol setCurrentPageIndicatorTintColor:Color_Active_Button_1];
-    [_pagecontrol setPageIndicatorTintColor:Color_Theme_3];
+    [_pagecontrol setCoreSelectedColor:Color_Active_Button_1];
+    _pagecontrol.strokeSelectedColor = [UIColor clearColor] ;
+    _pagecontrol.strokeNormalColor = [UIColor clearColor] ;
+    [_pagecontrol setCoreNormalColor:[UIColor whiteColor]];
+    [_pagecontrol setDiameter:8];
+    [_pagecontrol setGapWidth:5];
+
     
     [nacView addSubview:_pagecontrol];
     titleLable = [[UILabel alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-50, 25, 100, 15)];
@@ -51,7 +58,29 @@
     [titleLable setFont:[UIFont boldSystemFontOfSize:15]];
     titleLable.textAlignment = NSTextAlignmentCenter;
     [nacView addSubview:titleLable];
-
+    notifyButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-80, 24, 36, 36)];
+    [notifyButton setImage:[UIImage imageNamed:Image_Notify_clockButton] forState:UIControlStateNormal];
+    [notifyButton addTarget:self action:@selector(seeNotify) forControlEvents:UIControlEventTouchUpInside];
+    [nacView addSubview:notifyButton];
+    notifyImage = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-80, 24, 36, 36)];
+    [notifyImage setImage:[UIImage imageNamed:Image_NotifynewnotificationImage]];
+    [nacView addSubview:notifyImage];
+    [notifyImage setHidden: YES];
+    if ([[userInfo shareClass].token length]>0) {
+        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@%@",BaseURL,URL_New_Notify]]];
+        [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
+        __weak ASIHTTPRequest *weakrequest = requestForm;
+        [requestForm setCompletionBlock :^{
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
+            if ([[dic objectForKey:@"result"] longValue]>0) {
+                [notifyImage setHidden:NO];
+            }
+        }];
+        [requestForm setFailedBlock:^{
+            // [SVProgressHUD showErrorWithStatus:@"network error"];
+        }];
+        [requestForm startAsynchronous];
+    }
     
     
     UIButton *searchButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 20, 44, 44)];
@@ -83,9 +112,9 @@
     userHome = [[UserHomePage alloc] init];
     notifyvc = [[NotificationVC alloc] init];
     
-   NSArray* viewControllers = @[muzzikvc];
+   
     pageControllers = @[muzzikvc,topicvc];
-
+    NSArray* viewControllers = @[muzzikvc];
     [_pageViewController setViewControllers:viewControllers
                               direction:UIPageViewControllerNavigationDirectionForward
                                animated:NO
@@ -114,13 +143,39 @@
 }
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    BOOL hasToken = NO;
     [self.navigationController.view insertSubview:nacView belowSubview:_musicView];
     userInfo *user = [userInfo shareClass];
     if ([user.token length]>0) {
-        pageControllers = @[muzzikvc,topicvc,userHome,notifyvc];
+        hasToken = YES;
+        if (isLogiined != hasToken) {
+            isLogiined = YES;
+            NSArray* viewControllers = @[muzzikvc];
+            [_pageViewController setViewControllers:viewControllers
+                                          direction:UIPageViewControllerNavigationDirectionForward
+                                           animated:NO
+                                         completion:nil];
+            userHome = [[UserHomePage alloc] init];
+            pageControllers = @[muzzikvc,topicvc,userHome];
+        }
+        
     }else{
-        pageControllers = @[muzzikvc,topicvc];
+        hasToken = NO;
+        if (isLogiined != hasToken) {
+            isLogiined = NO;
+            NSArray* viewControllers = @[muzzikvc];
+            [_pageViewController setViewControllers:viewControllers
+                                          direction:UIPageViewControllerNavigationDirectionForward
+                                           animated:NO
+                                         completion:nil];
+            [userHome.view removeFromSuperview];
+            pageControllers = @[muzzikvc,topicvc];
+            userHome = nil;
+        }
+        
+        
     }
+    
     _pagecontrol.numberOfPages = pageControllers.count;
     
   //  [self reloadData];
@@ -153,9 +208,6 @@
             titleLable.text = @"推荐";
             break;
         case 2:
-            titleLable.text = @"通知";
-            break;
-        case 3:
             titleLable.text = @"个人主页";
             break;
             
@@ -266,5 +318,10 @@
     settingSystemVC *setting = [[settingSystemVC alloc] init];
     [self.navigationController pushViewController:setting animated:YES];
     
+}
+-(void)seeNotify{
+    [notifyImage setHidden:YES];
+    notifyvc = [[NotificationVC alloc] init];
+    [self.navigationController pushViewController:notifyvc animated:YES];
 }
 @end

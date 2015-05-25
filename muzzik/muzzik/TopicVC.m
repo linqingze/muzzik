@@ -12,13 +12,14 @@
 #import "TopicDetail.h"
 #import "UIImageView+WebCache.h"
 #import "TapImageView.h"
-#import "CXAHyperlinkLabel.h"
+#import "TTTAttributedLabel.h"
 #import "UIButton+WebCache.h"
 #import "userDetailInfo.h"
 #import "MuzzikTableVC.h"
 #import "SuggestMuzzikVC.h"
 #import "ActivityUserVC.h"
 #import "TopRankVC.h"
+#import "UIButton_UserMuzzik.h"
 #define width_For_Cell 60.0
 @interface TopicVC ()<UIScrollViewDelegate,TapLabelDelegate,TapImageViewDelegate>{
     UIScrollView *mainScroll;
@@ -288,40 +289,38 @@
             for (int i = 0; i<2; i++) {
                 for (int j=0; j<3; j++) {
                     MuzzikUser * tempUser = tempArray[i*3+j];
-                    TapImageView *tapImage = [[TapImageView alloc] initWithFrame:CGRectMake(localX, localY, SCREEN_WIDTH/3-31, SCREEN_WIDTH/3-31)];
-                    tapImage.user =tempUser;
-                    [tapImage setAlpha:0];
-                    tapImage.layer.cornerRadius = SCREEN_WIDTH/6-15.5;
-                    tapImage.delegate = self;
-                    [tapImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,tempUser.avatar]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                    UIButton_UserMuzzik *userbutton = [[UIButton_UserMuzzik alloc] initWithFrame:CGRectMake(localX, localY, SCREEN_WIDTH/3-31, SCREEN_WIDTH/3-31)];
+                    userbutton.user =tempUser;
+                    [userbutton setAlpha:0];
+                    userbutton.layer.cornerRadius = SCREEN_WIDTH/6-15.5;
+                    [userbutton sd_setBackgroundImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,tempUser.avatar]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                         [UIView animateWithDuration:0.5 animations:^{
-                            [tapImage setAlpha:1];
+                            [userbutton setAlpha:1];
                         }];
-                        
                     }];
+
                     
-                    TapImageView *followImage = [[TapImageView alloc] initWithFrame:CGRectMake(tapImage.frame.origin.x+tapImage.frame.size.width-29, tapImage.frame.size.height+tapImage.frame.origin.y-29, 29, 29)];
+                    UIButton_UserMuzzik *followImage = [[UIButton_UserMuzzik alloc] initWithFrame:CGRectMake(userbutton.frame.origin.x+userbutton.frame.size.width-29, userbutton.frame.size.height+userbutton.frame.origin.y-29, 29, 29)];
                     followImage.user = tempUser;
 
-                    followImage.delegate = self;
                     if (tempUser.isFans && tempUser.isFollow) {
                         followImage.followType = @"1";
-                        [followImage setImage:[UIImage imageNamed:Image_recommendfollowedeachother]];
+                        [followImage setImage:[UIImage imageNamed:Image_recommendfollowedeachother] forState:UIControlStateNormal];
                     }else if (tempUser.isFollow){
                         followImage.followType = @"1";
-                        [followImage setImage:[UIImage imageNamed:Image_recommendfollowed]];
+                        [followImage setImage:[UIImage imageNamed:Image_recommendfollowed] forState:UIControlStateNormal];
                     }else{
                         followImage.followType = @"0";
-                        [followImage setImage:[UIImage imageNamed:Image_recommendfollow]];
+                        [followImage setImage:[UIImage imageNamed:Image_recommendfollow] forState:UIControlStateNormal];
                     }
                     [userImageArray addObject:followImage];
-                    UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(localX, tapImage.frame.size.height+tapImage.frame.origin.y+5, SCREEN_WIDTH/3-31, 15)];
+                    UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(localX, userbutton.frame.size.height+userbutton.frame.origin.y+5, SCREEN_WIDTH/3-31, 15)];
                     [nameLabel setFont:[UIFont systemFontOfSize:12]];
                     [nameLabel setText:tempUser.name];
                     [nameLabel setTextColor:Color_Text_2];
                     nameLabel.textAlignment = NSTextAlignmentCenter;
                     [userView addSubview:nameLabel];
-                    [userView addSubview:tapImage];
+                    [userView addSubview:userbutton];
                     [userView addSubview:followImage];
                     localX = SCREEN_WIDTH/3-7+localX;
                 }
@@ -384,16 +383,17 @@
             timeStamp.text = [MuzzikItem transtromTime:suggestMuzzik.date];
             
             
-            CXAHyperlinkLabel *label = [[CXAHyperlinkLabel alloc] initWithFrame:CGRectMake(15, SCREEN_WIDTH+60, SCREEN_WIDTH-46, 500)];
+            TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(15, SCREEN_WIDTH+60, SCREEN_WIDTH-46, 500)];
             [label setFont:[UIFont systemFontOfSize:14]];
             [label setTextColor:Color_Text_2];
             label.text = suggestMuzzik.message;
             CGSize msize = [label sizeThatFits:CGSizeMake(SCREEN_WIDTH-46, 2000)];
-            if (msize.height>60) {
-                [label setFrame:CGRectMake(15,  SCREEN_WIDTH+60, SCREEN_WIDTH-46,60)];
+            if (msize.height>limitHeight) {
+                [label setFrame:CGRectMake(15,  SCREEN_WIDTH+60, SCREEN_WIDTH-46,limitHeight)];
             }else{
                 [label setFrame:CGRectMake(15,  SCREEN_WIDTH+60, SCREEN_WIDTH-46,msize.height)];
             }
+            
             [muzzikView addSubview:label];
             UIView *musicPlayView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN_WIDTH+60+label.frame.size.height+10, SCREEN_WIDTH, 60)];
             [MainMuzzikView addSubview:musicPlayView];

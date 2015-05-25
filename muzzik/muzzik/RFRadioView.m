@@ -18,7 +18,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import "UIColor+HexColor.h"
 #import "UIImageView+WebCache.h"
-#import "CXAHyperlinkLabel.h"
+#import "TTTAttributedLabel.h"
 #import "AppDelegate.h"
 #import "MessageStepViewController.h"
 
@@ -594,6 +594,19 @@
         _playMuzzik = playMuzzik;
         if (_IsShowDetail) {
             _playMuzzik.isCheckFollow = YES;
+            if (playMuzzik.MuzzikUser) {
+                nickLabel.text = playMuzzik.MuzzikUser.name;
+                [headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,playMuzzik.MuzzikUser.avatar]] placeholderImage:[UIImage imageNamed:Image_user_placeHolder]];
+            }else{
+                userInfo *user = [userInfo shareClass];
+                if ([user.token length]>0) {
+                    [headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,user.avatar]] placeholderImage:[UIImage imageNamed:Image_user_placeHolder]];
+                    nickLabel.text = user.name;
+                }else{
+                    nickLabel.text = @"Muzzik";
+                    [headerImage setImage:[UIImage imageNamed:@"logo"]];
+                }
+            }
             [self.lyricArray removeAllObjects];
             [lyricTableView reloadData];
             ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString :[[NSString stringWithFormat:@"%@%@/%@",URL_Lyric_Me,playMuzzik.music.name,playMuzzik.music.artist] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
@@ -732,19 +745,7 @@
         [PartistName setTextColor:color];
         [songName setTextColor:color];
         [PsongName setTextColor:color];
-        if (playMuzzik.MuzzikUser) {
-            nickLabel.text = playMuzzik.MuzzikUser.name;
-            [headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,playMuzzik.MuzzikUser.avatar]]];
-        }else{
-            userInfo *user = [userInfo shareClass];
-            if ([user.token length]>0) {
-                [headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,user.avatar]]];
-                nickLabel.text = user.name;
-            }else{
-                nickLabel.text = @"Muzzik";
-                [headerImage setImage:[UIImage imageNamed:@"logo"]];
-            }
-        }
+       
         
         [self stopEverything];
         [self startMusic];

@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "AMScrollingNavbarViewController.h"
-#import "CXAHyperlinkLabel.h"
+#import "TTTAttributedLabel.h"
 #import "AudioPlayer.h"
 #import "TencentOpenAPI/QQApiInterface.h"
 #import "musicPlayer.h"
@@ -18,7 +18,7 @@
 
 
 
-@interface muzzikTrendController : AMScrollingNavbarViewController<UITableViewDataSource,UITableViewDelegate,CXDelegate,CellDelegate,WBHttpRequestDelegate>{
+@interface muzzikTrendController : AMScrollingNavbarViewController<UITableViewDataSource,UITableViewDelegate,TTTAttributedLabelDelegate,CellDelegate,WBHttpRequestDelegate>{
      AudioPlayer* audioPlayer;
     NSInteger isPlayBack;
     

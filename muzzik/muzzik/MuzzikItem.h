@@ -21,7 +21,7 @@
 +(void) showTipsAtView:(UIView *)view xPoint:(CGFloat)x yPoint:(CGFloat) y text:(NSString *)text;
 +(void) alterInAndOutWithView:(UIView*)view;
 
-+(float) heightForLabel: (UILabel *)Label WithText: (NSString *) strText;
++(float) heightForLabel: (UIView *)view WithText: (NSString *) strText;
 +(float) heightForTextView: (UITextView *)textView WithText: (NSString *) strText;
 +(float) heightForAttributeString: (UILabel *)Label WithText: (NSMutableAttributedString *) strText;
 
@@ -59,10 +59,6 @@
 
 +(void) showNotifyOnView:(UIView *)view text:(NSString *)text;
 +(void) showNotifyOnViewUpon:(UIView *)view text:(NSString *)text;
-#pragma -mark 处理@和＃的显示和超链接
-+(NSString *)transformMessage:(NSString *)message withTopics:(NSArray *)topics;
-+(NSString *)transformMessage:(NSString *)message withAt:(NSArray *)topics;
-+(NSMutableArray *) searchUsers:(NSString *)message;
 
 //处理广播
 +(BOOL) checkMutableArray:(NSMutableArray*) array isContainMuzzik:(muzzik *)localMuzzik;

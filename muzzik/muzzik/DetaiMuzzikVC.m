@@ -9,7 +9,7 @@
 #import "DetaiMuzzikVC.h"
 #import "UIImageView+WebCache.h"
 #import "UIButton+WebCache.h"
-#import "CXAHyperlinkLabel.h"
+#import "TTTAttributedLabel.h"
 #import "CommentMuzzikCell.h"
 #import "userDetailInfo.h"
 #import "HPGrowingTextView.h"
@@ -23,7 +23,7 @@
 #import "UIScrollView+DXRefresh.h"
 #import "AppDelegate.h"
 #import <TencentOpenAPI/TencentOAuth.h>
-@interface DetaiMuzzikVC ()<UITableViewDataSource,UITableViewDelegate,CXDelegate,HPGrowingTextViewDelegate,CellDelegate>{
+@interface DetaiMuzzikVC ()<UITableViewDataSource,UITableViewDelegate,TTTAttributedLabelDelegate,HPGrowingTextViewDelegate,CellDelegate>{
     UITableView *muzzikTableView;
     UIView *headView;
     NSMutableArray *commentArray;
@@ -94,7 +94,7 @@
 @property (nonatomic) UIProgressView *progress;
 @property (nonatomic) UIButton *playButton;
 @property (nonatomic) UIButton *likeButton;
-@property (nonatomic) CXAHyperlinkLabel *muzzikMessage;        //muzzik文字
+@property (nonatomic) TTTAttributedLabel *muzzikMessage;        //muzzik文字
 @property (nonatomic) UILabel *musicName;                      //音乐名称
 @property (nonatomic) UILabel *musicArtist;                    //音乐家
 @property (nonatomic) UIImageView *timeImage;                  //时间图标
@@ -426,18 +426,16 @@
     [_userName setTextColor:Color_Text_1];
     _userName.text = self.localmuzzik.MuzzikUser.name;
     [_muzzikView addSubview:_userName];
-    _muzzikMessage = [[CXAHyperlinkLabel alloc] initWithFrame:CGRectMake( 80, 83, SCREEN_WIDTH-110, 2000)];
+    _muzzikMessage = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake( 80, 83, SCREEN_WIDTH-110, 2000)];
     [_muzzikMessage setTextColor:Color_Text_2];
-    [_muzzikMessage setFont:[UIFont systemFontOfSize:15]];
+    [_muzzikMessage setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
     
-    NSString *temp = self.localmuzzik.message;
-    temp = [MuzzikItem transformMessage:temp withAt:[MuzzikItem searchUsers:temp] ];
-    [_muzzikMessage setText: [MuzzikItem transformMessage:temp withTopics:self.localmuzzik.topics ]];
+    _muzzikMessage.text = self.localmuzzik.message;
+    [_muzzikMessage addClickMessagewithTopics:self.localmuzzik.topics];
+    [_muzzikMessage addClickMessageForAt];
     _muzzikMessage.delegate = self;
-    CXAHyperlinkLabel *label = [[CXAHyperlinkLabel alloc] initWithFrame:CGRectMake(75, 0, SCREEN_WIDTH-110, 500)];
-    [label setText:self.localmuzzik.message];
-    CGSize msize = [label sizeThatFits:CGSizeMake(SCREEN_WIDTH-110, 2000)];
-    [_muzzikMessage setFrame:CGRectMake( 80, 83, SCREEN_WIDTH-110, msize.height)];
+    
+    [_muzzikMessage setFrame:CGRectMake( 80, 83, SCREEN_WIDTH-110, [MuzzikItem heightForLabel:_muzzikMessage WithText:_muzzikMessage.text]+10)];
     [_muzzikView addSubview:_muzzikMessage];
     _muzzikView.backgroundColor = [UIColor whiteColor];
     _progress = [[UIProgressView alloc] initWithFrame:CGRectMake(16, CGRectGetMaxY(_muzzikMessage.frame)+10, SCREEN_WIDTH-32, 0.5)];
@@ -784,7 +782,7 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     muzzik *tempMuzzik = commentArray[indexPath.row];
-    CXAHyperlinkLabel *label = [[CXAHyperlinkLabel alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH-140, 2000)];
+    TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH-140, 2000)];
     label.text = tempMuzzik.message;
     
     [label setFont:[UIFont systemFontOfSize:15]];
@@ -823,10 +821,9 @@
     }else{
         [cell.privateImage setHidden:YES];
     }
-    NSString *temp = tempMuzzik.message;
-    temp = [MuzzikItem transformMessage:temp withAt:[MuzzikItem searchUsers:temp]];
-    
-    [cell.message setText: [MuzzikItem transformMessage:temp withTopics:tempMuzzik.topics]];
+    cell.message.text = tempMuzzik.message;
+    [cell.message addClickMessagewithTopics:tempMuzzik.topics];
+    [cell.message addClickMessageForAt];
     CGSize msize = [cell.message sizeThatFits:CGSizeMake(SCREEN_WIDTH-140, 2000)];
     [cell.message setFrame:CGRectMake(cell.message.frame.origin.x, cell.message.frame.origin.y, msize.width, msize.height)];
     cell.timeLabel.text = [MuzzikItem transtromTime:tempMuzzik.date];
@@ -1581,22 +1578,18 @@
     
 }
 
--(void)pressWithUrl:(NSURL *)url AndRange:(NSRange)rang{
-    
-    NSString *urlId = [url.lastPathComponent substringFromIndex:1];
-    NSLog(@"%@",url.lastPathComponent);
-    if ([[url.lastPathComponent substringToIndex:1] isEqualToString:@"#"]) {
+- (void)attributedLabel:(TTTAttributedLabel *)label
+didSelectLinkWithTransitInformation:(NSDictionary *)components{
+    NSLog(@"%@",components);
+    if ([[components allKeys] containsObject:@"topic_id"]) {
         TopicDetail *topicDetail = [[TopicDetail alloc] init];
-        topicDetail.topic_id = urlId;
+        topicDetail.topic_id = [components objectForKey:@"topic_id"];
         [self.navigationController pushViewController:topicDetail animated:YES];
-        
-    }else {
+    }else if([[components allKeys] containsObject:@"at_name"]){
         userDetailInfo *uInfo = [[userDetailInfo alloc] init];
-        uInfo.uid = [urlId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        uInfo.uid = [[components objectForKey:@"at_name"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         [self.navigationController pushViewController:uInfo animated:YES];
-        NSLog(@"好友");
     }
-    // [SVProgressHUD showSuccessWithStatus:[NSString stringWithFormat:@"%@",url]];
 }
 #pragma -mark cellDelegate
 

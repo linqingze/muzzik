@@ -52,8 +52,9 @@
     
     //screenwidth*9/8-52
     
-    _muzzikMessage = [[CXAHyperlinkLabel alloc] initWithFrame:CGRectMake(32, CGRectGetMaxY(_userImage.frame)+10, ScreenWidth-64, 200)];
-    
+    _muzzikMessage = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(32, CGRectGetMaxY(_userImage.frame)+10, ScreenWidth-64, 200)];
+    [_muzzikMessage setTextColor:Color_Text_1];
+    [_muzzikMessage setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
     _musicPlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 0 , ScreenWidth-16, 60)];
     [self.contentView addSubview:_musicPlayView];
     _progress = [[UIProgressView alloc] initWithFrame:CGRectMake(32, 0, ScreenWidth-80, 2)];

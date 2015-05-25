@@ -8,12 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import "AMScrollingNavbarViewController.h"
-#import "CXAHyperlinkLabel.h"
+#import "TTTAttributedLabel.h"
 #import "AudioPlayer.h"
 #import "musicPlayer.h"
 #import "WXApiObject.h"
 #import "UserMuzzikVC.h"
-@interface MuzzikTableVC : AMScrollingNavbarViewController<UITableViewDataSource,UITableViewDelegate,UICollectionViewDelegateFlowLayout,CXDelegate,CellDelegate>{
+@interface MuzzikTableVC : AMScrollingNavbarViewController<UITableViewDataSource,UITableViewDelegate,UICollectionViewDelegateFlowLayout,TTTAttributedLabelDelegate,CellDelegate>{
     AudioPlayer* audioPlayer;
     NSInteger isPlayBack;
     

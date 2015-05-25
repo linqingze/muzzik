@@ -15,9 +15,8 @@
 #import "userDetailInfo.h"
 #import "AppDelegate.h"
 #import <TencentOpenAPI/TencentOAuth.h>
-
+#import "TopicDetail.h"
 @interface SuggestMuzzikVC ()<UICollectionViewDataSource,UICollectionViewDelegate,CellDelegate>{
-    NSMutableDictionary *RefreshDic;
     NSMutableArray *suggestMuzzik;
     StyledPageControl *pagecontrol;
     
@@ -41,10 +40,6 @@
     [super viewDidLoad];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceMuzzikUpdate:) name:String_MuzzikDataSource_update object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
-    RefreshDic = [NSMutableDictionary dictionary];
-    for (int i = 0; i<4; i++) {
-        [RefreshDic setObject:[NSNumber numberWithInt:i] forKey:[NSString stringWithFormat:@"%d",i]];
-    }
     pagecontrol = [[StyledPageControl alloc] initWithFrame:CGRectMake(0, 5, SCREEN_WIDTH, 10)];
 
     
@@ -122,11 +117,6 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     muzzik *tempMuzzik = [suggestMuzzik objectAtIndex:indexPath.row];
     suggestCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"suggestCollectionCell" forIndexPath:indexPath];
-    if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%d",indexPath.row]]) {
-        [RefreshDic setObject:indexPath forKey:[NSString stringWithFormat:@"%d",indexPath.row]];
-        [cell.headImage setAlpha:0];
-        [cell.muzzikImage setAlpha:0];
-    }
     [cell.muzzikImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/600/h/600",BaseURL_image,tempMuzzik.image]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
         [UIView animateWithDuration:0.5 animations:^{
             [cell.muzzikImage setAlpha:1];
@@ -143,10 +133,12 @@
     cell.timeLabel.text = [MuzzikItem transtromTime:tempMuzzik.date];
     
     cell.message.text = tempMuzzik.message;
-    CGSize msize = [cell.message sizeThatFits:CGSizeMake(SCREEN_WIDTH-46, 400)];
-    [cell.message setFrame:CGRectMake(cell.message.frame.origin.x, cell.message.frame.origin.y, cell.message.frame.size.width, msize.height)];
-    [cell.ActionView setFrame:CGRectMake(25, cell.message.frame.origin.y+msize.height+15, SCREEN_WIDTH-50, 40)];
-    [cell.scroll setContentSize:CGSizeMake(SCREEN_WIDTH, cell.message.frame.origin.y+msize.height+65)];
+    [cell.message addClickMessageForAt];
+    [cell.message addClickMessagewithTopics:tempMuzzik.topics];
+    CGFloat height = [MuzzikItem heightForLabel:cell.message WithText:cell.message.text];
+    [cell.message setFrame:CGRectMake(cell.message.frame.origin.x, cell.message.frame.origin.y, cell.message.frame.size.width,height )];
+    [cell.ActionView setFrame:CGRectMake(25, cell.message.frame.origin.y+height+15, SCREEN_WIDTH-50, 40)];
+    [cell.scroll setContentSize:CGSizeMake(SCREEN_WIDTH, cell.message.frame.origin.y+height+65)];
     if ([[musicPlayer shareClass].localMuzzik.muzzik_id isEqualToString:tempMuzzik.muzzik_id] && ![Globle shareGloble].isPause) {
         [cell.playButton setHidden:YES];
     }else{
@@ -228,7 +220,19 @@
     //NSLog(@"%d",index);
     [pagecontrol setCurrentPage:index];
 }
-
+- (void)attributedLabel:(TTTAttributedLabel *)label
+didSelectLinkWithTransitInformation:(NSDictionary *)components{
+    NSLog(@"%@",components);
+    if ([[components allKeys] containsObject:@"topic_id"]) {
+        TopicDetail *topicDetail = [[TopicDetail alloc] init];
+        topicDetail.topic_id = [components objectForKey:@"topic_id"];
+        [self.navigationController pushViewController:topicDetail animated:YES];
+    }else if([[components allKeys] containsObject:@"at_name"]){
+        userDetailInfo *uInfo = [[userDetailInfo alloc] init];
+        uInfo.uid = [[components objectForKey:@"at_name"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        [self.navigationController pushViewController:uInfo animated:YES];
+    }
+}
 -(void)userDetail:(NSString *)user_id{
     userDetailInfo *detailuser = [[userDetailInfo alloc] init];
     detailuser.uid = user_id;
