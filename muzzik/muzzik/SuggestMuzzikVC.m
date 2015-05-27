@@ -119,10 +119,10 @@
 -(void)clickOnCell:(muzzik *)tempMuzzik{
     DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
     detail.localmuzzik = tempMuzzik;
-    detail.delegate = self;
     [self.navigationController pushViewController:detail animated:YES];
 }
--(void)deleteMuzzik:(muzzik *)localMzzik{
+-(void)deleteMuzzik:(NSNotification *)notify{
+    muzzik *localMzzik = notify.object;
     for (muzzik *tempMuzzik in suggestMuzzik) {
         if ([tempMuzzik.muzzik_id isEqualToString:localMzzik.muzzik_id]) {
             [suggestMuzzik removeObject:localMzzik];

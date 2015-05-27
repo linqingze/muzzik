@@ -76,7 +76,6 @@
 
 @property NSUInteger tabCount;
 @property (getter = isAnimatingToTab, assign) BOOL animatingToTab;
-@property (nonatomic,retain) UIView *lineView;
 @property (nonatomic) NSUInteger activeTabIndex;
 
 @end
@@ -102,17 +101,16 @@
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    _lineView  = [[UIView alloc] initWithFrame:CGRectMake(0, 64, SCREEN_WIDTH, 1)];
-    [_lineView setBackgroundColor:Color_NavigationBar];
+    
     [self reloadData];
+   
 }
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self.navigationController.view addSubview:_lineView];
+    
 }
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-    [_lineView removeFromSuperview];
 }
 - (void)viewWillLayoutSubviews {
     

@@ -32,7 +32,7 @@
 - (void)viewDidLoad {
     page = 1;
     [super viewDidLoad];
-    myTableView  = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
+    myTableView  = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-94)];
     myTableView.delegate = self;
     myTableView.dataSource = self;
     [self.view addSubview:myTableView];

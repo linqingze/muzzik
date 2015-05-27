@@ -306,7 +306,6 @@
     if ([self.muzziks[indexPath.row] isKindOfClass:[muzzik class]]) {
         muzzik *tempMuzzik = self.muzziks[indexPath.row];
         DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
-        detail.delegate = self;
         detail.localmuzzik = tempMuzzik;
         [self.navigationController pushViewController:detail animated:YES];
     }
@@ -795,7 +794,6 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         __weak ASIHTTPRequest *weakrequest = request;
         [request setCompletionBlock :^{
             //    NSLog(@"%@",weakrequest.originalURL);
-            NSLog(@"%@",[weakrequest responseString]);
             NSData *data = [weakrequest responseData];
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
             if (dic) {
@@ -842,7 +840,6 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 -(void) commentAtMuzzik:(muzzik *)localMuzzik{
     muzzik *tempMuzzik = localMuzzik;
     DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
-    detail.delegate = self;
     detail.localmuzzik = tempMuzzik;
     detail.showType = Constant_Comment;
     [self.navigationController pushViewController:detail animated:YES];
@@ -862,7 +859,6 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 -(void)showComment:(muzzik *)localMuzzik{
     muzzik *tempMuzzik = localMuzzik;
     DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
-    detail.delegate = self;
     detail.localmuzzik = tempMuzzik;
     detail.showType = Constant_showComment;
     [self.navigationController pushViewController:detail animated:YES];

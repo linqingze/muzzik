@@ -30,6 +30,7 @@
     }
     
     [super viewDidLoad];
+    
     //[MuzzikItem addLineOnView:self.navigationController.view heightPoint:64 toLeft:0 toRight:0 withColor:Color_NavigationBar];
     [self.view setBackgroundColor:Color_NavigationBar];
     [self initNagationBar:@"选歌" leftBtn:Constant_backImage rightBtn:Constant_searchImage];

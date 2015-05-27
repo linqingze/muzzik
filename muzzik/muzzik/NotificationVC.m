@@ -105,12 +105,11 @@
         }else{
             [cell.preImage setImage:[UIImage imageNamed:Image_notifollowImage]];
         }
-
-//        [cell.headImage sd_setBackgroundImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempNotify.user.avatar]] forState:UIControlStateNormal completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-//            [UIView animateWithDuration:0.5 animations:^{
-//                [cell.headImage setAlpha:1];
-//            }];
-//        }];
+        [cell.headImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempNotify.user.avatar]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            [UIView animateWithDuration:0.5 animations:^{
+                [cell.headImage setAlpha:1];
+            }];
+        }];
         cell.user_id = tempNotify.user.user_id;
         cell.nameLabel.attributedText = [self creatTextByName:tempNotify.user.name Date:tempNotify.date];
         if ([tempNotify.type isEqualToString:@"follow"]) {
@@ -164,9 +163,19 @@
         }else if([tempNotify.type isEqualToString:@"participate_topic"]){
             cell.message.text = @"参与了你发起的话题";
         }
+        UIColor *color;
+        if ([tempNotify.muzzik.color intValue]==1) {
+            color = Color_Action_Button_1;
+        }else if ([tempNotify.muzzik.color intValue]==2){
+            color = Color_Action_Button_2;
+        }else{
+            color = Color_Action_Button_3;
+        }
         cell.commentLabel.text = tempNotify.muzzik.message;
         cell.songname.text = tempNotify.muzzik.music.name;
         cell.artist.text = tempNotify.muzzik.music.artist;
+        [cell.songname setTextColor:color];
+        [cell.artist setTextColor:color];
         return cell;
 
     }
@@ -190,13 +199,13 @@
         muzzik *tempMuzzik = tempNotify.muzzik;
         tempMuzzik.MuzzikUser = tempNotify.user;
         DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
-        detail.delegate = self;
         detail.localmuzzik = tempMuzzik;
         [self.navigationController pushViewController:detail animated:YES];
     }
    
 }
--(void)deleteMuzzik:(muzzik *)localMzzik{
+-(void)deleteMuzzik:(NSNotification *)notify{
+    muzzik *localMzzik = notify.object;
     for (muzzik *tempMuzzik in notifyArray) {
         if ([tempMuzzik.muzzik_id isEqualToString:localMzzik.muzzik_id]) {
             [notifyArray removeObject:localMzzik];

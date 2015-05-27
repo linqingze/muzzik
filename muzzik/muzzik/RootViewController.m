@@ -36,6 +36,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    _isLaunched = YES;
     [KxMenu setTintColor:Color_NavigationBar];
     [self initNagationBar:0 leftBtn:0 rightBtn:0];
     nacView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 64)];

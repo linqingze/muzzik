@@ -383,7 +383,6 @@
     muzzik *tempMuzzik = self.muzziks[indexPath.row];
     DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
     detail.localmuzzik = tempMuzzik;
-    detail.delegate = self;
     [self.navigationController pushViewController:detail animated:YES];
 
 }
@@ -841,13 +840,12 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 -(void) commentAtMuzzik:(muzzik *)localMuzzik{
     muzzik *tempMuzzik = localMuzzik;
     DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
-    detail.delegate =self;
     detail.localmuzzik = tempMuzzik;
     detail.showType = Constant_Comment;
     [self.navigationController pushViewController:detail animated:YES];
 }
--(void)deleteMuzzik:(muzzik *)localMzzik{
-    
+-(void)deleteMuzzik:(NSNotification *)notify{
+    muzzik *localMzzik = notify.object;
     for (muzzik *tempMuzzik in self.muzziks) {
         if ([tempMuzzik.muzzik_id isEqualToString:localMzzik.muzzik_id]) {
             [self.muzziks removeObject:localMzzik];
@@ -871,7 +869,6 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 -(void)showComment:(muzzik *)localMuzzik{
     muzzik *tempMuzzik = localMuzzik;
     DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
-    detail.delegate =self;
     detail.localmuzzik = tempMuzzik;
     detail.showType = Constant_showComment;
     [self.navigationController pushViewController:detail animated:YES];

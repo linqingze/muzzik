@@ -258,15 +258,14 @@
     if ([commentArray[indexPath.row] isKindOfClass:[muzzik class]]) {
         muzzik *tempMuzzik = commentArray[indexPath.row];
         DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
-        detail.delegate = self;
         detail.localmuzzik = tempMuzzik;
         [self.keeper.navigationController pushViewController:detail animated:YES];
     }
     
     
 }
--(void)deleteMuzzik:(muzzik *)localMzzik{
-    
+-(void)deleteMuzzik:(NSNotification *)notify{
+    muzzik *localMzzik = notify.object;
     for (muzzik *tempMuzzik in commentArray) {
         if ([tempMuzzik.muzzik_id isEqualToString:localMzzik.muzzik_id]) {
             [commentArray removeObject:localMzzik];

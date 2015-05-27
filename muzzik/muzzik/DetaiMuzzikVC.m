@@ -1895,7 +1895,6 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
             if ([weakrequest responseStatusCode] == 200 && [[dic objectForKey:@"result"] boolValue]) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:String_Muzzik_Delete object:self.localmuzzik];
                 [muzzikTableView removeFooter];
-                [self.delegate deleteMuzzik:self.localmuzzik];
                 [self.navigationController popViewControllerAnimated:YES];
             }
         }];

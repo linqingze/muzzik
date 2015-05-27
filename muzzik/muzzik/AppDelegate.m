@@ -18,6 +18,7 @@
 #import "RootViewController.h"
 #import "settingSystemVC.h"
 #import "UIImageView+WebCache.m"
+#import "NotificationVC.h"
 @interface AppDelegate ()
 
 @end
@@ -60,7 +61,7 @@
     if (message) {
         NSString *payloadMsg = [message objectForKey:@"payload"];
         NSString *record = [NSString stringWithFormat:@"[APN]%@, %@", [NSDate date], payloadMsg];
-        NSLog(@"%@%@",payloadMsg,record);
+        NSLog(@"%@%@      didFinishLaunchingWithOptions",payloadMsg,record);
     }
     
     [[UIApplication sharedApplication] cancelAllLocalNotifications];
@@ -205,9 +206,34 @@
     
     NSDictionary *aps = [userInfo objectForKey:@"aps"];
     NSNumber *contentAvailable = aps == nil ? nil : [aps objectForKeyedSubscript:@"content-available"];
-    
+    UINavigationController *nac = (UINavigationController *)self.window.rootViewController;
+    for (UIViewController *vc in nac.viewControllers) {
+        if ([vc isKindOfClass:[RootViewController class]]){
+            RootViewController *root = (RootViewController *)vc;
+            NSLog(@"launch:   %d",root.isLaunched);
+            if ((root.isLaunched &&![Globle shareGloble].isApplicationEnterBackground) ||[[nac.viewControllers lastObject] isKindOfClass:[NotificationVC class]]) {
+                [root getMessage];
+            }else{
+                BOOL InNotify= NO;
+                for (UIViewController *vc in nac.viewControllers) {
+                    if ([vc isKindOfClass:[NotificationVC class]]) {
+                        [nac popToViewController:vc animated:YES];
+                        InNotify = YES;
+                        break;
+                    }
+                }
+                if (!InNotify) {
+                    UINavigationController *nac = (UINavigationController *)self.window.rootViewController;
+                    NotificationVC *notifyvc = [[NotificationVC alloc] init];
+                    [nac pushViewController:notifyvc animated:YES];
+                }
+                
+            }
+            
+        }
+    }
     NSString *record = [NSString stringWithFormat:@"[APN]%@, %@, [content-available: %@]", [NSDate date], [payloadMsg stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], contentAvailable];
-    NSLog(@"%@",record);
+    NSLog(@"%@       didReceiveRemoteNotification",record);
     
     completionHandler(UIBackgroundFetchResultNewData);
 
@@ -334,26 +360,8 @@
 - (void)GexinSdkDidRegisterClient:(NSString *)clientId{
      _sdkStatus = SdkStatusStarted;
     _clientId = clientId;
-    ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Set_Notify]]];
-    [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:clientId forKey:@"clientid"] Method:PostMethod auth:YES];
-    __weak ASIHTTPRequest *weakrequest = requestForm;
-    [requestForm setCompletionBlock :^{
-        NSLog(@"%@",[weakrequest responseString]);
-        NSLog(@"%d",[weakrequest responseStatusCode]);
-        if ([weakrequest responseStatusCode] == 200) {
-            
-            NSLog(@"register ok");
-        }
-        else{
-            //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-        }
-    }];
-    [requestForm setFailedBlock:^{
-        NSLog(@"%@",[weakrequest error]);
-    }];
-    [requestForm startAsynchronous];
 
-    
+
 }
 - (NSString *)sendMessage:(NSData *)body error:(NSError **)error {
     if (![self checkSdkInstance]) {
@@ -635,7 +643,6 @@
     __weak ASIHTTPRequest *weakrequestsquare = requestsquare;
     [requestsquare setCompletionBlock :^{
         //    NSLog(@"%@",weakrequest.originalURL);
-        NSLog(@"%@",[weakrequestsquare responseString]);
         NSData *data = [weakrequestsquare responseData];
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         if (dic) {
@@ -673,7 +680,6 @@
     __weak ASIHTTPRequest *weakrequest = request;
     [request setCompletionBlock :^{
         //    NSLog(@"%@",weakrequest.originalURL);
-        NSLog(@"%@",[weakrequest responseString]);
         NSData *data = [weakrequest responseData];
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         if (dic&&[[dic objectForKey:@"muzziks"]count]>0) {

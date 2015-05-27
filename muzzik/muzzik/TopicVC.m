@@ -137,7 +137,7 @@
     muzzikLabel = [[UILabel alloc] initWithFrame:CGRectMake(15,0 , 60, 40)];
     muzzikLabel.font = [UIFont boldSystemFontOfSize:15];
     [muzzikLabel setTextColor:Color_Text_2];
-    muzzikLabel.text = @"活跃用户";
+    muzzikLabel.text = @"本期推荐";
     [muzzikView addSubview:muzzikLabel];
     muzzikNext = [[UIImageView alloc] initWithFrame:CGRectMake(attentionView.frame.size.width-30, 14, 7, 12)];
     [muzzikNext setImage:[UIImage imageNamed:Image_recommendarrowImage]];

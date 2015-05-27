@@ -11,6 +11,5 @@
 @interface DetaiMuzzikVC : AMScrollingNavbarViewController
 @property (nonatomic,retain) muzzik *localmuzzik;
 @property(nonatomic,retain) musicPlayer *musicplayer;
-@property (nonatomic,weak) id<CellDelegate>delegate;
 @property(nonatomic,copy) NSString *showType;          //区分普通进入，评论和看评论
 @end
