@@ -15,15 +15,14 @@
     NSString *songpath;
 }
 @property (nonatomic,retain)muzzik * localMuzzik;
-@property (nonatomic) FMDatabase *muzzikDB;
 @property (nonatomic,strong) NSMutableArray * MusicArray;
 @property (nonatomic,assign) NSInteger index;
 @property (nonatomic) NSInteger playModel;
 @property (nonatomic,retain) RFRadioView * radioView;
-@property (nonatomic,assign) NSInteger listType;
+@property (nonatomic,copy) NSString *listType;
 +(musicPlayer *) shareClass;
 +(NSMutableArray *)playMusicList;
--(void)playSongWithSongModel:(muzzik *)playMuzzik;
+-(void)playSongWithSongModel:(muzzik *)playMuzzik Title:(NSString *)title;
 -(void)play;
 -(void)playNext;
 -(void)PlayPre;

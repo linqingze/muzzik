@@ -15,5 +15,6 @@
 -(void) showMusicView;
 -(void) hideMusicView;
 -(void)checkShowMusicView;
+-(void) getMessage;
 @end
 

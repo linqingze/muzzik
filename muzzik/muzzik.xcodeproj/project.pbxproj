@@ -156,8 +156,6 @@
 		F2A7F9861AEF78BD000FCC57 /* TWPhotoCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A7F9821AEF78BD000FCC57 /* TWPhotoCollectionViewCell.m */; };
 		F2A7F9871AEF78BD000FCC57 /* TWPhotoPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A7F9841AEF78BD000FCC57 /* TWPhotoPickerController.m */; };
 		F2A7F98A1AEF810E000FCC57 /* ChooseLyricVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A7F9891AEF810E000FCC57 /* ChooseLyricVC.m */; };
-		F2A7F98F1AEFD343000FCC57 /* Cell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A7F98C1AEFD343000FCC57 /* Cell.m */; };
-		F2A7F9901AEFD343000FCC57 /* LineLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A7F98E1AEFD343000FCC57 /* LineLayout.m */; };
 		F2A7F9931AEFFB0C000FCC57 /* TableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A7F9921AEFFB0C000FCC57 /* TableViewCell.m */; };
 		F2A7F99A1AF00A38000FCC57 /* IQLabelView.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A7F9961AF00A38000FCC57 /* IQLabelView.m */; };
 		F2A7F99B1AF00A38000FCC57 /* IQLabelView.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F2A7F9971AF00A38000FCC57 /* IQLabelView.bundle */; };
@@ -529,10 +527,6 @@
 		F2A7F9841AEF78BD000FCC57 /* TWPhotoPickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWPhotoPickerController.m; sourceTree = "<group>"; };
 		F2A7F9881AEF810E000FCC57 /* ChooseLyricVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChooseLyricVC.h; sourceTree = "<group>"; };
 		F2A7F9891AEF810E000FCC57 /* ChooseLyricVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChooseLyricVC.m; sourceTree = "<group>"; };
-		F2A7F98B1AEFD343000FCC57 /* Cell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cell.h; sourceTree = "<group>"; };
-		F2A7F98C1AEFD343000FCC57 /* Cell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Cell.m; sourceTree = "<group>"; };
-		F2A7F98D1AEFD343000FCC57 /* LineLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LineLayout.h; sourceTree = "<group>"; };
-		F2A7F98E1AEFD343000FCC57 /* LineLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LineLayout.m; sourceTree = "<group>"; };
 		F2A7F9911AEFFB0C000FCC57 /* TableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableViewCell.h; sourceTree = "<group>"; };
 		F2A7F9921AEFFB0C000FCC57 /* TableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TableViewCell.m; sourceTree = "<group>"; };
 		F2A7F9951AF00A38000FCC57 /* IQLabelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQLabelView.h; sourceTree = "<group>"; };
@@ -998,10 +992,6 @@
 				E1FA12A81AB148B1005EDA1D /* RFRadioView.m */,
 				E16716261AAD790F0068AE98 /* musicPlayer.h */,
 				E16716271AAD790F0068AE98 /* musicPlayer.m */,
-				F2A7F98B1AEFD343000FCC57 /* Cell.h */,
-				F2A7F98C1AEFD343000FCC57 /* Cell.m */,
-				F2A7F98D1AEFD343000FCC57 /* LineLayout.h */,
-				F2A7F98E1AEFD343000FCC57 /* LineLayout.m */,
 			);
 			name = user;
 			sourceTree = "<group>";
@@ -1573,7 +1563,6 @@
 				E112469F1AAACE3C0014D461 /* topicCardCell.m in Sources */,
 				F2A62EEB1AE9F6D900FAAA01 /* ChooseMusicVC.m in Sources */,
 				F2A7F9931AEFFB0C000FCC57 /* TableViewCell.m in Sources */,
-				F2A7F9901AEFD343000FCC57 /* LineLayout.m in Sources */,
 				E1FA12E51AB18252005EDA1D /* FSParsePlaylistRequest.m in Sources */,
 				E11246721AAAB20B0014D461 /* SDWebImageDownloaderOperation.m in Sources */,
 				F20FDD691AF74A05008A71C0 /* SearchForSong.m in Sources */,
@@ -1682,7 +1671,6 @@
 				E1FA12E71AB18252005EDA1D /* FSPlaylistItem.m in Sources */,
 				F2FBE8FA1AFB55F30070831D /* MuzzikTableVC.m in Sources */,
 				F2A62EEE1AE9F70B00FAAA01 /* ScrollVCBase.m in Sources */,
-				F2A7F98F1AEFD343000FCC57 /* Cell.m in Sources */,
 				E1FA13491AB1ABDD005EDA1D /* Reachability.m in Sources */,
 				F21EA1CA1ACECC6200F5ED32 /* TopicVC.m in Sources */,
 				F2FBE8F71AFB541E0070831D /* UserMuzzikVC.m in Sources */,

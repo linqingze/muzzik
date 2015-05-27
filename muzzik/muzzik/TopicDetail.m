@@ -56,9 +56,10 @@
 
 -(void)viewDidLoad{
     [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteMuzzik:) name:String_Muzzik_Delete object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceMuzzikUpdate:) name:String_MuzzikDataSource_update object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
-    [self initNagationBar:@"选择话题" leftBtn:Constant_backImage rightBtn:0];
+    [self initNagationBar:@"话题详情" leftBtn:Constant_backImage rightBtn:0];
     initiatorView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 40)];
     headButton = [[UIButton alloc] initWithFrame:CGRectMake(16, 5, 30, 30)];
     headButton.layer.cornerRadius = 15;
@@ -80,7 +81,6 @@
     [MytableView registerClass:[NormalNoCardCell class] forCellReuseIdentifier:@"NormalNoCardCell"];
     
     [self followScrollView:MytableView];
-    [self followScrollView:MytableView];
     [self loadTopicTittle];
     [self SettingShareView];
 
@@ -98,6 +98,7 @@
         if (dic) {
             muzzik *muzzikToy = [muzzik new];
             TopicArray = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+            [MuzzikItem SetUserInfoWithMuzziks:TopicArray title:Constant_userInfo_temp description:[NSString stringWithFormat:@"话题#%@#",topicName]];
             lastId = [dic objectForKey:@"tail"];
              headId = [dic objectForKey:@"from"];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -127,6 +128,7 @@
         if (dic) {
             muzzik *muzzikToy = [muzzik new];
             [TopicArray addObjectsFromArray:[muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]]];
+            [MuzzikItem SetUserInfoWithMuzziks:TopicArray title:Constant_userInfo_temp description:[NSString stringWithFormat:@"话题#%@#",topicName]];
             lastId = [dic objectForKey:@"tail"];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [MytableView reloadData];
@@ -300,6 +302,7 @@
     if ([TopicArray[indexPath.row] isKindOfClass:[muzzik class]]) {
         muzzik *tempMuzzik = TopicArray[indexPath.row];
         DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
+        detail.delegate = self;
         detail.localmuzzik = tempMuzzik;
         [self.navigationController pushViewController:detail animated:YES];
     }
@@ -732,17 +735,29 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     [MytableView reloadData];
 }
 -(void)playSongWithSongModel:(muzzik *)songModel{
-    [musicPlayer shareClass].listType = SquareList;
+    [musicPlayer shareClass].listType = TempList;
     [musicPlayer shareClass].MusicArray = TopicArray;
-    [[musicPlayer shareClass] playSongWithSongModel:songModel];
+    [[musicPlayer shareClass] playSongWithSongModel:songModel Title:[NSString stringWithFormat:@"话题#%@#",topicName]];
+     [MuzzikItem SetUserInfoWithMuzziks:TopicArray title:Constant_userInfo_temp description:[NSString stringWithFormat:@"话题#%@#",topicName]];
 }
 
 -(void) commentAtMuzzik:(muzzik *)localMuzzik{
     muzzik *tempMuzzik = localMuzzik;
     DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
+    detail.delegate = self;
     detail.localmuzzik = tempMuzzik;
     detail.showType = Constant_Comment;
     [self.navigationController pushViewController:detail animated:YES];
+}
+-(void)deleteMuzzik:(muzzik *)localMzzik{
+    
+    for (muzzik *tempMuzzik in TopicArray) {
+        if ([tempMuzzik.muzzik_id isEqualToString:localMzzik.muzzik_id]) {
+            [TopicArray removeObject:localMzzik];
+            [MytableView reloadData];
+            break;
+        }
+    }
 }
 -(void) showRepost:(NSString *)muzzik_id{
     showUserVC *showvc = [[showUserVC alloc] init];
@@ -759,6 +774,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 -(void)showComment:(muzzik *)localMuzzik{
     muzzik *tempMuzzik = localMuzzik;
     DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
+    detail.delegate = self;
     detail.localmuzzik = tempMuzzik;
     detail.showType = Constant_showComment;
     [self.navigationController pushViewController:detail animated:YES];

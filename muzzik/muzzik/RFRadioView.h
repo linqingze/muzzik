@@ -30,14 +30,6 @@
     UILabel *_currentPlaybackTime;
     UILabel * _totalPlaybackTime;
     
-    UIButton * _playButton;
-    UIButton * _preButton;
-    UIButton * _nextButton;
-    UIButton * _playbackButton;
-    UIButton * _playListButton;
-    UIButton * _collectButton;
-    UIButton * downLoadButton;
-    
     UILabel * noLrcLabel;
     
     BOOL isPlaying;
@@ -47,8 +39,6 @@
     NSInteger isPlayBack;
     
     id <RFRadioViewDelegate>delegate;
-    
-    FMLrcView * lrcView;
     UIImageView * backImageView;
         
    AudioPlayer* audioPlayer;
@@ -80,6 +70,8 @@
     UILabel *PsongName;
     UILabel *PartistName;
     UIButton *playListButton;
+    UITableView *plistTableView;
+    NSMutableArray *playListArray;
     
 }
 @property (nonatomic,retain) NSMutableArray *lyricArray;
@@ -100,4 +92,5 @@
 @property (nonatomic,copy) NSURL *musicUrl;
 -(void)playButtonEvent;
 -(void)setRadioViewLrc;
+-(void) setTitleString:(NSString *)title;
 @end

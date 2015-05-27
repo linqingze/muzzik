@@ -37,7 +37,6 @@
     BOOL isPlaying;
     UIButton *newButton;
     NSString *lastId;
-    NSString *headId;
     
     
     //shareView
@@ -61,6 +60,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteMuzzik:) name:String_Muzzik_Delete object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceMuzzikUpdate:) name:String_MuzzikDataSource_update object:nil];
     self.muzziks = [NSMutableArray array];
@@ -123,6 +123,7 @@
                 }
                 isContained = NO;
             }
+            [MuzzikItem SetUserInfoWithMuzziks:self.muzziks title:Constant_userInfo_square description:nil];
             lastId = [dic objectForKey:@"tail"];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [MytableView reloadData];
@@ -165,6 +166,7 @@
                 }
                 isContained = NO;
             }
+            [MuzzikItem SetUserInfoWithMuzziks:self.muzziks title:Constant_userInfo_square description:nil];
             lastId = [dic objectForKey:@"tail"];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [MytableView reloadData];
@@ -252,7 +254,7 @@
     if (textHeight>limitHeight) {
         if ([tempMuzzik.image length]>0) {
             if ([tempMuzzik.type isEqualToString:@"normal"] ||[tempMuzzik.type isEqualToString:@"repost"]) {
-                return 240+limitHeight+SCREEN_WIDTH*3/4;
+                return (int)(240+limitHeight+SCREEN_WIDTH*3/4);
             }else if([tempMuzzik.type isEqualToString:@"muzzikCard"]){
                 return SCREEN_WIDTH*9/8+textHeight+36;
             }else if ([tempMuzzik.type isEqualToString:@"userCard"] ){
@@ -275,7 +277,7 @@
     }else{
         if ([tempMuzzik.image length]>0) {
             if ([tempMuzzik.type isEqualToString:@"normal"] ||[tempMuzzik.type isEqualToString:@"repost"]) {
-                return 240+textHeight+SCREEN_WIDTH*3/4;
+                return (int)(240+textHeight+SCREEN_WIDTH*3/4);
             }else if([tempMuzzik.type isEqualToString:@"muzzikCard"]){
                 return SCREEN_WIDTH*9/8+textHeight+36;
             }else if ([tempMuzzik.type isEqualToString:@"userCard"] ){
@@ -286,7 +288,7 @@
         }
         else{
             if ([tempMuzzik.type isEqualToString:@"normal"] ||[tempMuzzik.type isEqualToString:@"repost"]) {
-                return 240+textHeight;
+                return (int)(240+textHeight);
             }else if([tempMuzzik.type isEqualToString:@"muzzikCard"]){
                 return limitHeight;
             }else if ([tempMuzzik.type isEqualToString:@"userCard"] ){
@@ -304,6 +306,7 @@
     if ([self.muzziks[indexPath.row] isKindOfClass:[muzzik class]]) {
         muzzik *tempMuzzik = self.muzziks[indexPath.row];
         DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
+        detail.delegate = self;
         detail.localmuzzik = tempMuzzik;
         [self.navigationController pushViewController:detail animated:YES];
     }
@@ -341,11 +344,11 @@
             cell.muzzikMessage.delegate = self;
             CGSize msize = [cell.muzzikMessage sizeThatFits:CGSizeMake(SCREEN_WIDTH-110, 2000)];
             if (msize.height>limitHeight) {
-                [cell.muzzikMessage setFrame:CGRectMake(cell.muzzikMessage.frame.origin.x, cell.muzzikMessage.frame.origin.y, msize.width, limitHeight)];
+                [cell.muzzikMessage setFrame:CGRectMake((int)floor(cell.muzzikMessage.frame.origin.x), (int)floor(cell.muzzikMessage.frame.origin.y), msize.width, limitHeight)];
             }else{
-                [cell.muzzikMessage setFrame:CGRectMake(cell.muzzikMessage.frame.origin.x, cell.muzzikMessage.frame.origin.y, msize.width, msize.height)];
+                [cell.muzzikMessage setFrame:CGRectMake((int)floor(cell.muzzikMessage.frame.origin.x), (int)floor(cell.muzzikMessage.frame.origin.y), msize.width, msize.height)];
             }
-            [cell.musicPlayView setFrame:CGRectMake(0, 95+cell.muzzikMessage.bounds.size.height, SCREEN_WIDTH, cell.musicPlayView.frame.size.height)];
+            [cell.musicPlayView setFrame:CGRectMake(0, (int)floor(95+cell.muzzikMessage.bounds.size.height), SCREEN_WIDTH, cell.musicPlayView.frame.size.height)];
             cell.musicArtist.text =tempMuzzik.music.artist;
             cell.musicName.text = tempMuzzik.music.name;
             cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.repostDate];
@@ -406,11 +409,11 @@
             cell.muzzikMessage.delegate = self;
             CGSize msize = [cell.muzzikMessage sizeThatFits:CGSizeMake(SCREEN_WIDTH-110, 2000)];
             if (msize.height>limitHeight) {
-                [cell.muzzikMessage setFrame:CGRectMake(cell.muzzikMessage.frame.origin.x, cell.muzzikMessage.frame.origin.y, msize.width, limitHeight)];
+                [cell.muzzikMessage setFrame:CGRectMake((int)floor(cell.muzzikMessage.frame.origin.x), (int)floor(cell.muzzikMessage.frame.origin.y), msize.width, limitHeight)];
             }else{
-                [cell.muzzikMessage setFrame:CGRectMake(cell.muzzikMessage.frame.origin.x, cell.muzzikMessage.frame.origin.y, msize.width, msize.height)];
+                [cell.muzzikMessage setFrame:CGRectMake((int)floor(cell.muzzikMessage.frame.origin.x), (int)floor(cell.muzzikMessage.frame.origin.y), msize.width, msize.height)];
             }
-            [cell.musicPlayView setFrame:CGRectMake(0, 95+cell.muzzikMessage.bounds.size.height, SCREEN_WIDTH, cell.musicPlayView.frame.size.height)];
+            [cell.musicPlayView setFrame:CGRectMake(0,(int) floor(95+cell.muzzikMessage.bounds.size.height), SCREEN_WIDTH, cell.musicPlayView.frame.size.height)];
             cell.musicArtist.text =tempMuzzik.music.artist;
             cell.musicName.text = tempMuzzik.music.name;
             cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.date];
@@ -474,11 +477,11 @@
             cell.RepostID = tempMuzzik.repostID;
             CGSize msize = [cell.muzzikMessage sizeThatFits:CGSizeMake(SCREEN_WIDTH-110, 2000)];
             if (msize.height>limitHeight) {
-                [cell.muzzikMessage setFrame:CGRectMake(cell.muzzikMessage.frame.origin.x, cell.muzzikMessage.frame.origin.y, msize.width, limitHeight)];
+                [cell.muzzikMessage setFrame:CGRectMake((int)floor(cell.muzzikMessage.frame.origin.x), (int)floor(cell.muzzikMessage.frame.origin.y), msize.width, limitHeight)];
             }else{
-                [cell.muzzikMessage setFrame:CGRectMake(cell.muzzikMessage.frame.origin.x, cell.muzzikMessage.frame.origin.y, msize.width, msize.height)];
+                [cell.muzzikMessage setFrame:CGRectMake((int)floor(cell.muzzikMessage.frame.origin.x), (int)floor(cell.muzzikMessage.frame.origin.y), msize.width, msize.height)];
             }
-            [cell.musicPlayView setFrame:CGRectMake(0, SCREEN_WIDTH*9/8+cell.muzzikMessage.bounds.size.height, SCREEN_WIDTH-16, cell.musicPlayView.frame.size.height)];
+            [cell.musicPlayView setFrame:CGRectMake(0, (int)floor(SCREEN_WIDTH*9/8+cell.muzzikMessage.bounds.size.height), SCREEN_WIDTH-16, (int)floor(cell.musicPlayView.frame.size.height))];
             cell.musicArtist.text =tempMuzzik.music.artist;
             cell.musicName.text = tempMuzzik.music.name;
             return cell;
@@ -519,11 +522,11 @@
             cell.muzzikMessage.delegate = self;
             CGSize msize = [cell.muzzikMessage sizeThatFits:CGSizeMake(SCREEN_WIDTH-110, 2000)];
             if (msize.height>limitHeight) {
-                [cell.muzzikMessage setFrame:CGRectMake(cell.muzzikMessage.frame.origin.x, cell.muzzikMessage.frame.origin.y, msize.width, limitHeight)];
+                [cell.muzzikMessage setFrame:CGRectMake((int)floor(cell.muzzikMessage.frame.origin.x),(int) floor(cell.muzzikMessage.frame.origin.y), msize.width, limitHeight)];
             }else{
-                [cell.muzzikMessage setFrame:CGRectMake(cell.muzzikMessage.frame.origin.x, cell.muzzikMessage.frame.origin.y, msize.width, msize.height)];
+                [cell.muzzikMessage setFrame:CGRectMake((int)floor(cell.muzzikMessage.frame.origin.x), (int)floor(cell.muzzikMessage.frame.origin.y), msize.width, msize.height)];
             }
-            [cell.musicPlayView setFrame:CGRectMake(0, 95+cell.muzzikMessage.bounds.size.height, SCREEN_WIDTH, cell.musicPlayView.frame.size.height)];
+            [cell.musicPlayView setFrame:CGRectMake(0,(int)floor( 95+cell.muzzikMessage.bounds.size.height), SCREEN_WIDTH, (int)cell.musicPlayView.frame.size.height)];
             cell.musicArtist.text =tempMuzzik.music.artist;
             cell.musicName.text = tempMuzzik.music.name;
             cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.repostDate];
@@ -589,11 +592,11 @@
             CGSize msize = [cell.muzzikMessage sizeThatFits:CGSizeMake(SCREEN_WIDTH-110, 2000)];
             
             if (msize.height>limitHeight) {
-                [cell.muzzikMessage setFrame:CGRectMake(cell.muzzikMessage.frame.origin.x, cell.muzzikMessage.frame.origin.y, msize.width, limitHeight)];
+                [cell.muzzikMessage setFrame:CGRectMake((int)floor(cell.muzzikMessage.frame.origin.x),(int) floor(cell.muzzikMessage.frame.origin.y), msize.width, limitHeight)];
             }else{
-                [cell.muzzikMessage setFrame:CGRectMake(cell.muzzikMessage.frame.origin.x, cell.muzzikMessage.frame.origin.y, msize.width, msize.height)];
+                [cell.muzzikMessage setFrame:CGRectMake((int)floor(cell.muzzikMessage.frame.origin.x), (int)floor(cell.muzzikMessage.frame.origin.y), msize.width, msize.height)];
             }
-            [cell.musicPlayView setFrame:CGRectMake(0, 95+cell.muzzikMessage.bounds.size.height, SCREEN_WIDTH, cell.musicPlayView.frame.size.height)];
+            [cell.musicPlayView setFrame:CGRectMake(0, (int)floor(95+cell.muzzikMessage.bounds.size.height), SCREEN_WIDTH, floor(cell.musicPlayView.frame.size.height))];
             cell.musicArtist.text =tempMuzzik.music.artist;
             cell.musicName.text = tempMuzzik.music.name;
             cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.date];
@@ -657,11 +660,11 @@
             cell.RepostID = tempMuzzik.repostID;
             CGSize msize = [cell.muzzikMessage sizeThatFits:CGSizeMake(SCREEN_WIDTH-80, 2000)];
             if (msize.height>limitHeight) {
-                [cell.muzzikMessage setFrame:CGRectMake(cell.muzzikMessage.frame.origin.x, cell.muzzikMessage.frame.origin.y, msize.width, limitHeight)];
+                [cell.muzzikMessage setFrame:CGRectMake(floor(cell.muzzikMessage.frame.origin.x), floor(cell.muzzikMessage.frame.origin.y), msize.width, limitHeight)];
             }else{
-                [cell.muzzikMessage setFrame:CGRectMake(cell.muzzikMessage.frame.origin.x, cell.muzzikMessage.frame.origin.y, msize.width, msize.height)];
+                [cell.muzzikMessage setFrame:CGRectMake(floor(cell.muzzikMessage.frame.origin.x), floor(cell.muzzikMessage.frame.origin.y), msize.width, msize.height)];
             }
-            [cell.musicPlayView setFrame:CGRectMake(0, SCREEN_WIDTH*9/8+cell.muzzikMessage.bounds.size.height-40, SCREEN_WIDTH-16, cell.musicPlayView.frame.size.height)];
+            [cell.musicPlayView setFrame:CGRectMake(0, floor(SCREEN_WIDTH*9/8+cell.muzzikMessage.bounds.size.height-40), SCREEN_WIDTH-16, cell.musicPlayView.frame.size.height)];
             [cell.cardView setFrame:CGRectMake(8, 8, SCREEN_WIDTH-16, SCREEN_WIDTH*9/8+cell.muzzikMessage.bounds.size.height+20)];
             cell.musicArtist.text =tempMuzzik.music.artist;
             cell.musicName.text = tempMuzzik.music.name;
@@ -689,24 +692,6 @@
         LoginViewController *loginVC = [[LoginViewController alloc] init];
         [self.navigationController pushViewController:loginVC animated:YES];
     }
-}
--(void)rightBtnAction:(UIButton *)sender{
-     
-}
--(void)playListAction{
-    
-//    UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:UMShareToWechatSession];
-//    snsPlatform.loginClickHandler(self,[UMSocialControllerService defaultControllerService],YES,^(UMSocialResponseEntity *response){
-//        if (response.responseCode == UMSResponseCodeSuccess) {
-//            
-//            UMSocialAccountEntity *snsAccount = [[UMSocialAccountManager socialAccountDictionary]valueForKey:UMShareToWechatSession];
-//            
-//            NSLog(@"username is %@, uid is %@, token is %@ url is %@",snsAccount.userName,snsAccount.usid,snsAccount.accessToken,snsAccount.iconURL);
-//            
-//        }
-//        
-//    });
-
 }
 - (void)attributedLabel:(TTTAttributedLabel *)label
 didSelectLinkWithTransitInformation:(NSDictionary *)components{
@@ -797,43 +782,52 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     [self addShareView];
 }
 -(void)reloadMuzzikSource{
-
-    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_Trending]]];
-    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:@"20" forKey:Parameter_Limit] Method:GetMethod auth:YES];
-    __weak ASIHTTPRequest *weakrequest = request;
-    [request setCompletionBlock :^{
-    //    NSLog(@"%@",weakrequest.originalURL);
-        NSLog(@"%@",[weakrequest responseString]);
-        NSData *data = [weakrequest responseData];
-        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-        if (dic) {
-            
-            muzzik *muzzikToy = [muzzik new];
-            NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
-            for (muzzik *tempmuzzik in array) {
-                BOOL isContained = NO;
-                for (muzzik *arrayMuzzik in self.muzziks) {
-                    if ([arrayMuzzik.muzzik_id isEqualToString:tempmuzzik.muzzik_id]) {
-                        isContained = YES;
-                        break;
+    userInfo *user = [userInfo shareClass];
+    if (user.checkSquare) {
+        muzzik *tempMuzzik;
+        self.muzziks = [[user.playList objectForKey:Constant_userInfo_square] objectForKey:UserInfo_muzziks];
+        tempMuzzik = self.muzziks.lastObject;
+        lastId = tempMuzzik.muzzik_id;
+        [MytableView reloadData];
+    }else{
+        ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_Trending]]];
+        [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:@"20" forKey:Parameter_Limit] Method:GetMethod auth:YES];
+        __weak ASIHTTPRequest *weakrequest = request;
+        [request setCompletionBlock :^{
+            //    NSLog(@"%@",weakrequest.originalURL);
+            NSLog(@"%@",[weakrequest responseString]);
+            NSData *data = [weakrequest responseData];
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+            if (dic) {
+                
+                muzzik *muzzikToy = [muzzik new];
+                NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+                for (muzzik *tempmuzzik in array) {
+                    BOOL isContained = NO;
+                    for (muzzik *arrayMuzzik in self.muzziks) {
+                        if ([arrayMuzzik.muzzik_id isEqualToString:tempmuzzik.muzzik_id]) {
+                            isContained = YES;
+                            break;
+                        }
+                        
                     }
-                    
+                    if (!isContained) {
+                        [self.muzziks addObject:tempmuzzik];
+                    }
+                    isContained = NO;
                 }
-                if (!isContained) {
-                    [self.muzziks addObject:tempmuzzik];
-                }
-                isContained = NO;
+                [MuzzikItem SetUserInfoWithMuzziks:self.muzziks title:Constant_userInfo_square description:nil];
+                lastId = [dic objectForKey:@"tail"];
+                [MytableView reloadData];
+                
             }
-            lastId = [dic objectForKey:@"tail"];
-            headId = [dic objectForKey:@"head"];
-            [MytableView reloadData];
-            
-        }
-    }];
-    [request setFailedBlock:^{
-        NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
-    }];
-    [request startAsynchronous];
+        }];
+        [request setFailedBlock:^{
+            NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
+        }];
+        [request startAsynchronous];
+    }
+    
 }
 
 -(void)playnextMuzzikUpdate{
@@ -842,12 +836,13 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 -(void)playSongWithSongModel:(muzzik *)songModel{
     _musicplayer.listType = SquareList;
     _musicplayer.MusicArray = self.muzziks;
-    [_musicplayer playSongWithSongModel:songModel];
+    [_musicplayer playSongWithSongModel:songModel Title:@"广场列表"];
 }
 
 -(void) commentAtMuzzik:(muzzik *)localMuzzik{
     muzzik *tempMuzzik = localMuzzik;
     DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
+    detail.delegate = self;
     detail.localmuzzik = tempMuzzik;
     detail.showType = Constant_Comment;
     [self.navigationController pushViewController:detail animated:YES];
@@ -867,6 +862,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 -(void)showComment:(muzzik *)localMuzzik{
     muzzik *tempMuzzik = localMuzzik;
     DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
+    detail.delegate = self;
     detail.localmuzzik = tempMuzzik;
     detail.showType = Constant_showComment;
     [self.navigationController pushViewController:detail animated:YES];
@@ -885,6 +881,17 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     detailuser.uid = user_id;
     [self.navigationController pushViewController:detailuser animated:YES];
 
+    
+}
+-(void)deleteMuzzik:(NSNotification *)notify{
+    muzzik *localMzzik = notify.object;
+    for (muzzik *tempMuzzik in self.muzziks) {
+        if ([tempMuzzik.muzzik_id isEqualToString:localMzzik.muzzik_id]) {
+            [self.muzziks removeObject:localMzzik];
+            [MytableView reloadData];
+            break;
+        }
+    }
     
 }
 -(void)SettingShareView{

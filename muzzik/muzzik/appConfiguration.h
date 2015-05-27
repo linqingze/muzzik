@@ -15,8 +15,8 @@
 #pragma -mark URL Address
 #define URL_Muzzik_SharePage    @"http://www.muzziker.com/app/muzzik/"
 #define URL_Lyric_Me            @"http://geci.me/api/lyric/"
-//#define BaseURL                 @"http://117.121.26.174/"
-#define BaseURL                 @"http://192.168.1.110:3000/"
+#define BaseURL                 @"http://117.121.26.174/"
+//#define BaseURL                 @"http://192.168.1.110:3000/"
 #define BaseURL_audio           @"http://7bvaim.com1.z0.glb.clouddn.com/"
 #define BaseURL_image           @"http://7bvarm.com1.z0.glb.clouddn.com/"
 
@@ -60,7 +60,7 @@
 #define URL_Read_Notify         @"api/notify/readed"
 #define URL_Music_Lyric_get     @"api/music/lyric"
 #define URL_New_Notify          @"api/notify/havenew"
-
+#define URL_Moved_Muzziks       @"api/user/movedMuzzik"
 
 
 //#define URL_check_phone @"http://192.168.1.112:3000/api/user/check"
@@ -86,9 +86,9 @@
 #define Color_Theme_3               [UIColor colorWithHexString:@"3b4051"]
 #define Color_Theme_4               [UIColor colorWithHexString:@"545969"]
 #define Color_Theme_5               [UIColor colorWithHexString:@"666c80"]
-#define Color_Action_Button_1       [UIColor colorWithHexString:@"fea42c"]
-#define Color_Action_Button_2       [UIColor colorWithHexString:@"04a0bf"]
-#define Color_Action_Button_3       [UIColor colorWithHexString:@"f26d7d"]
+#define Color_Action_Button_1       [UIColor colorWithHexString:@"f26d7d"]
+#define Color_Action_Button_2       [UIColor colorWithHexString:@"fea42c"]
+#define Color_Action_Button_3       [UIColor colorWithHexString:@"04a0bf"]
 #define Color_Text_1                [UIColor colorWithHexString:@"555555"]
 #define Color_Text_2                [UIColor colorWithHexString:@"777777"]
 #define Color_Text_3                [UIColor colorWithHexString:@"999999"]
@@ -111,7 +111,7 @@
 #define String_SetSongPlayNextNotification          @"notification_play_next"
 #define String_MuzzikDataSource_update              @"Muzzik_datasource_update"
 #define String_UserDataSource_update                @"User_datasource_update"
-
+#define String_Muzzik_Delete                        @"Muzzik_detail_deleteMuzzik"
 #pragma -mark Font_Size
 
 #define Font_Size_Muzzik_Time 7.0
@@ -170,12 +170,12 @@
 
 
 
-#define SquareList             1
-#define MovedList              2
-#define userList               3
-#define TempList               4
-#define feedList               5
-#define recommendList          6
+#define SquareList             @"square"
+#define MovedList              @"move"
+#define ownList                @"own"
+#define TempList               @"temp"
+#define feedList               @"follow"
+#define suggestList            @"suggest"
 
 #pragma -mark HTTP constant
 #define PostMethod             @"1"
@@ -184,11 +184,19 @@
 #define DeleteMethod           @"4"
 
 
-#pragma request parameter
-#define Parameter_Limit         @"limit"
-#define Parameter_tail          @"tail"
-#define Parameter_from          @"from"
-#define Limit_Constant          @"20"
-#define Parameter_page          @"page"
-
+#pragma request Key 常量
+#define Parameter_Limit             @"limit"
+#define Parameter_tail              @"tail"
+#define Parameter_from              @"from"
+#define Limit_Constant              @"20"
+#define Parameter_page              @"page"
+#define UserInfo_description        @"descrip"
+#define UserInfo_title              @"title"
+#define UserInfo_muzziks            @"muzziks"
+#define Constant_userInfo_square    @"square"
+#define Constant_userInfo_temp      @"temp"
+#define Constant_userInfo_suggest   @"suggest"
+#define Constant_userInfo_move      @"move"
+#define Constant_userInfo_own       @"own"
+#define Constant_userInfo_follow    @"follow"
 #endif

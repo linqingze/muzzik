@@ -15,6 +15,7 @@
 #import "settingSystemVC.h"
 #import "NotificationVC.h"
 #import "KxMenu.h"
+#import "AFViewShaker.h"
 @interface RootViewController ()<UIPageViewControllerDelegate,UIPageViewControllerDataSource,UIScrollViewDelegate>{
     NSArray *pageControllers;
     UIView *nacView;
@@ -23,7 +24,6 @@
     muzzikTrendController* muzzikvc;
     TopicVC *topicvc ;
     UserHomePage *userHome;
-    NotificationVC *notifyvc;
     BOOL isLogiined;
     UIButton *notifyButton;
     UIImageView *notifyImage;
@@ -62,10 +62,6 @@
     [notifyButton setImage:[UIImage imageNamed:Image_Notify_clockButton] forState:UIControlStateNormal];
     [notifyButton addTarget:self action:@selector(seeNotify) forControlEvents:UIControlEventTouchUpInside];
     [nacView addSubview:notifyButton];
-    notifyImage = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-80, 24, 36, 36)];
-    [notifyImage setImage:[UIImage imageNamed:Image_NotifynewnotificationImage]];
-    [nacView addSubview:notifyImage];
-    [notifyImage setHidden: YES];
     if ([[userInfo shareClass].token length]>0) {
         ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@%@",BaseURL,URL_New_Notify]]];
         [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
@@ -110,7 +106,6 @@
     mydelegate.viewcontroller = muzzikvc;
     topicvc = [[TopicVC alloc] init];
     userHome = [[UserHomePage alloc] init];
-    notifyvc = [[NotificationVC alloc] init];
     
    
     pageControllers = @[muzzikvc,topicvc];
@@ -147,6 +142,7 @@
     [self.navigationController.view insertSubview:nacView belowSubview:_musicView];
     userInfo *user = [userInfo shareClass];
     if ([user.token length]>0) {
+        [notifyButton setHidden:NO];
         hasToken = YES;
         if (isLogiined != hasToken) {
             isLogiined = YES;
@@ -160,6 +156,7 @@
         }
         
     }else{
+        [notifyButton setHidden:YES];
         hasToken = NO;
         if (isLogiined != hasToken) {
             isLogiined = NO;
@@ -313,15 +310,19 @@
    
     
 }
-
+-(void)getMessage{
+    
+    [notifyButton setImage:[UIImage imageNamed:Image_NotifynewnotificationImage] forState:UIControlStateNormal];
+    [[[AFViewShaker alloc] initWithView:notifyButton] shake];
+}
 -(void)systemSetting{
     settingSystemVC *setting = [[settingSystemVC alloc] init];
     [self.navigationController pushViewController:setting animated:YES];
     
 }
 -(void)seeNotify{
-    [notifyImage setHidden:YES];
-    notifyvc = [[NotificationVC alloc] init];
+    [notifyButton setImage:[UIImage imageNamed:Image_Notify_clockButton] forState:UIControlStateNormal];
+    NotificationVC *notifyvc = [[NotificationVC alloc] init];
     [self.navigationController pushViewController:notifyvc animated:YES];
 }
 @end

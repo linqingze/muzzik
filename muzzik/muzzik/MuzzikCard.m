@@ -99,7 +99,7 @@
 }
 -(void) colorViewWithColorString:(NSString *) colorString{
     UIColor *color;
-    if ([colorString isEqualToString:@"1"]) {
+    if ([colorString isEqualToString:@"2"]) {
         color = [UIColor colorWithHexString:@"fea42c"];
         if (self.isMoved) {
             [self.likeButton setImage:[UIImage imageNamed:@"yellowlikedImage"] forState:UIControlStateNormal];
@@ -112,7 +112,7 @@
             [self.playButton setImage:[UIImage imageNamed:@"yellowplayImage"] forState:UIControlStateNormal];
         }
     }
-    else if([colorString isEqualToString:@"2"]){
+    else if([colorString isEqualToString:@"3"]){
         //bluelikeImage
         color = [UIColor colorWithHexString:@"04a0bf"];
         if (self.isMoved) {

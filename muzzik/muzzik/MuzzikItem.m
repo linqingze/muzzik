@@ -965,17 +965,28 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     return NO;
 }
 
-+ (CGFloat)heightForCellWithText:(NSString *)text Size:(CGSize)textSize {
-    static CGFloat padding = 10.0;
+
++(void)SetUserInfoWithMuzziks:(NSMutableArray *)muzziks title:(NSString *)title description:(NSString *)descrip{
+    userInfo *user = [userInfo shareClass];
+    if ([title isEqualToString:Constant_userInfo_follow]) {
+        user.checkFollow = YES;
+        
     
-    UIFont *systemFont = [UIFont systemFontOfSize:Font_Size_Muzzik_Message];
-    CGSize sizeWithFont = [text sizeWithFont:systemFont constrainedToSize:textSize lineBreakMode:NSLineBreakByWordWrapping];
-    
-#if defined(__LP64__) && __LP64__
-    return ceil(sizeWithFont.height) + padding;
-#else
-    return ceilf(sizeWithFont.height) + padding;
-#endif
+    }else if ([title isEqualToString:Constant_userInfo_square]) {
+        user.checkSquare = YES;
+    }else if ([title isEqualToString:Constant_userInfo_suggest]) {
+        user.checkSuggest = YES;
+    }else if ([title isEqualToString:Constant_userInfo_temp]) {
+        user.checkTemp = YES;
+    }else if ([title isEqualToString:Constant_userInfo_own]) {
+        user.checkOwn = YES;
+    }else if ([title isEqualToString:Constant_userInfo_move]) {
+        user.checkMove = YES;
+    }
+    [[user.playList objectForKey:title] setValue:muzziks forKey:UserInfo_muzziks];
+    if (descrip && [descrip length]>0) {
+        [[user.playList objectForKey:title] setValue:descrip forKey:UserInfo_description];
+    }
 }
 @end
 

@@ -13,12 +13,19 @@
 @property (nonatomic,copy) NSString *uid;
 @property (nonatomic,copy) NSString *avatar;
 @property (nonatomic,copy) NSString *gender;
-@property (nonatomic) BOOL blocked;
+@property (nonatomic,assign) BOOL blocked;
 @property (nonatomic,copy) NSString *name;
 @property (nonatomic,copy) NSString *deviceToken;
 @property (nonatomic,copy) NSString *clientId;
-@property (nonatomic) BOOL WeChatInstalled;
-@property (nonatomic) BOOL QQInstalled;
+@property (nonatomic,assign) BOOL WeChatInstalled;
+@property (nonatomic,assign) BOOL QQInstalled;
+@property (nonatomic,retain) NSMutableDictionary *playList;
+@property (nonatomic,assign) BOOL checkSquare;
+@property (nonatomic,assign) BOOL checkOwn;
+@property (nonatomic,assign) BOOL checkFollow;
+@property (nonatomic,assign) BOOL checkMove;
+@property (nonatomic,assign) BOOL checkSuggest;
+@property (nonatomic,assign) BOOL checkTemp;
 
 +(userInfo *) shareClass;
 +(void)checkLoginWithVC:(UIViewController *)vc;

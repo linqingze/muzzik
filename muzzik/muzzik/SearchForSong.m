@@ -54,7 +54,7 @@
     [super viewWillAppear:animated];
     self.keeper.activityVC = self;
     [self.keeper followScrollView:myTableView];
-    if ([self.keeper.searchBar.text length]>0 &&![_searchText isEqualToString:self.keeper.searchBar.text]) {
+    if ([self.keeper.searchBar.text length]>0 &&![_searchText isEqualToString:self.keeper.searchBar.text] && [self.searchArray count] == 0) {
         searchLabel.text = [NSString stringWithFormat:@"搜索相关音乐:%@",self.keeper.searchBar.text];
         [self.view addSubview:searchView];
     }
@@ -94,7 +94,8 @@
     player.listType = TempList;
     player.MusicArray = self.searchArray;
     player.index = indexPath.row;
-    [player playSongWithSongModel:self.searchArray[indexPath.row]];
+    [player playSongWithSongModel:self.searchArray[indexPath.row] Title:[NSString stringWithFormat:@"搜索 %@ 的歌曲",_searchText]];
+    [MuzzikItem SetUserInfoWithMuzziks:self.searchArray title:Constant_userInfo_temp description:[NSString stringWithFormat:@"搜索 %@ 的歌曲",_searchText]];
 }
 -(void)updateDataSource:(NSString *)searchText{
     [self.searchArray removeAllObjects];
@@ -178,7 +179,8 @@
     player.listType = TempList;
     player.MusicArray = self.searchArray;
     player.index = index;
-    [player playSongWithSongModel:self.searchArray[index]];
+    [player playSongWithSongModel:self.searchArray[index] Title:[NSString stringWithFormat:@"搜索 %@ 的歌曲",_searchText]];
+    [MuzzikItem SetUserInfoWithMuzziks:self.searchArray title:Constant_userInfo_temp description:[NSString stringWithFormat:@"搜索 %@ 的歌曲",_searchText]];
     
     
 }

@@ -178,7 +178,12 @@
     player.listType = TempList;
     player.MusicArray = [self.searchArray count]>0 ?self.searchArray:self.movedMusicArray;
     player.index = index;
-    [player playSongWithSongModel:isSearch ?self.searchArray[index]:self.movedMusicArray[index]];
+    [player playSongWithSongModel:isSearch ?self.searchArray[index]:self.movedMusicArray[index] Title:isSearch ? [NSString stringWithFormat:@"搜索 %@ 的歌曲",_searchText]:@"曲库歌曲"];
+    if (isSearch) {
+        [MuzzikItem SetUserInfoWithMuzziks:self.searchArray title:Constant_userInfo_temp description:[NSString stringWithFormat:@"搜索 %@ 的歌曲",_searchText]];
+    }else{
+        [MuzzikItem SetUserInfoWithMuzziks:self.movedMusicArray title:Constant_userInfo_temp description:@"曲库歌曲"];
+    }
     
 }
 

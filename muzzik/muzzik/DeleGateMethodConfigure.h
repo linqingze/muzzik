@@ -31,6 +31,7 @@
 -(void)showFans:(NSString *)uid;
 -(void)attention:(NSInteger)index;
 -(void)newMuzzik:(muzzik *)localMzzik;
+-(void)deleteMuzzik:(muzzik *)localMzzik;
 -(void)clickOnCell:(muzzik *)tempMuzzik;
 @end
 

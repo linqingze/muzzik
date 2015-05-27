@@ -56,7 +56,7 @@
     [_muzzikMessage setTextColor:Color_Text_1];
     [_muzzikMessage setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
     [self.contentView addSubview:_muzzikMessage];
-    _musicPlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 75, SCREEN_WIDTH, 145+SCREEN_WIDTH*3/4)];
+    _musicPlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 75, SCREEN_WIDTH, (int)145+SCREEN_WIDTH*3/4)];
     [self.contentView addSubview:_musicPlayView];
     _progress = [[UIProgressView alloc] initWithFrame:CGRectMake(16, 0, SCREEN_WIDTH-32, 0.5)];
     [_progress setProgress:1];
@@ -76,7 +76,7 @@
     [_playButton addTarget:self action:@selector(playMusicAction:) forControlEvents:UIControlEventTouchUpInside];
     [_musicPlayView addSubview:_playButton];
     
-    _poImage = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/8, 60, SCREEN_WIDTH*3/4, SCREEN_WIDTH*3/4)];
+    _poImage = [[UIImageView alloc] initWithFrame:CGRectMake((int)SCREEN_WIDTH/8, 60, (int)SCREEN_WIDTH*3/4, (int)SCREEN_WIDTH*3/4)];
     _poImage.layer.cornerRadius = 3;
     _poImage.clipsToBounds = YES;
     [_poImage setImage:[UIImage imageNamed:Image_yellowretweetImage]];
@@ -85,7 +85,7 @@
     [self.userImage setAlpha:0];
     [self.poImage setAlpha:0];
     
-    _reposts = [[UIButton alloc] initWithFrame:CGRectMake((SCREEN_WIDTH*1)/8.0, SCREEN_WIDTH*3/4+60, (SCREEN_WIDTH*3)/16.0, 40)];
+    _reposts = [[UIButton alloc] initWithFrame:CGRectMake((int)(SCREEN_WIDTH)/8.0, (int)SCREEN_WIDTH*3/4+60, (int)(SCREEN_WIDTH*3)/16.0, 40)];
     [_reposts setTitle:@"转发数" forState:UIControlStateNormal];
     [_reposts setTitleColor:Color_Additional_5 forState:UIControlStateNormal];
     [_reposts.titleLabel setFont:[UIFont systemFontOfSize:10.0]];
@@ -93,7 +93,7 @@
     _reposts.titleLabel.textAlignment = NSTextAlignmentCenter;
     [_musicPlayView addSubview:_reposts];
     
-    _moves = [[UIButton alloc] initWithFrame:CGRectMake((SCREEN_WIDTH*5)/16.0, SCREEN_WIDTH*3/4+60, (SCREEN_WIDTH*3)/16.0, 40)];
+    _moves = [[UIButton alloc] initWithFrame:CGRectMake((int)(SCREEN_WIDTH*5)/16.0, (int)SCREEN_WIDTH*3/4+60, (int)(SCREEN_WIDTH*3)/16.0, 40)];
     [_moves setTitle:@"喜欢数" forState:UIControlStateNormal];
     [_moves setTitleColor:Color_Additional_5 forState:UIControlStateNormal];
     [_moves.titleLabel setFont:[UIFont systemFontOfSize:10.0]];
@@ -101,7 +101,7 @@
     _moves.titleLabel.textAlignment = NSTextAlignmentCenter;
     [_musicPlayView addSubview:_moves];
     
-    _shares = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2, SCREEN_WIDTH*3/4+60, (SCREEN_WIDTH*3)/16.0, 40)];
+    _shares = [[UIButton alloc] initWithFrame:CGRectMake((int)SCREEN_WIDTH/2, (int)SCREEN_WIDTH*3/4+60, (int)(SCREEN_WIDTH*3)/16.0, 40)];
     [_shares setTitle:@"分享数" forState:UIControlStateNormal];
     [_shares setTitleColor:Color_Additional_5 forState:UIControlStateNormal];
     [_shares.titleLabel setFont:[UIFont systemFontOfSize:10.0]];
@@ -109,7 +109,7 @@
     _shares.titleLabel.textAlignment = NSTextAlignmentCenter;
     [_musicPlayView addSubview:_shares];
     
-    _comments = [[UIButton alloc] initWithFrame:CGRectMake((SCREEN_WIDTH*11)/16.0, SCREEN_WIDTH*3/4+60, (SCREEN_WIDTH*3)/16.0, 40)];
+    _comments = [[UIButton alloc] initWithFrame:CGRectMake((int)(SCREEN_WIDTH*11)/16.0, (int)SCREEN_WIDTH*3/4+60, (int)(SCREEN_WIDTH*3)/16.0, 40)];
     [_comments setTitle:@"评论数" forState:UIControlStateNormal];
     [_comments setTitleColor:Color_Additional_5 forState:UIControlStateNormal];
     [_comments.titleLabel setFont:[UIFont systemFontOfSize:10.0]];
@@ -119,21 +119,21 @@
     
     
     
-    _downLine = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/8,SCREEN_WIDTH*3/4+ 100, SCREEN_WIDTH*3/4, 1)];
+    _downLine = [[UIImageView alloc] initWithFrame:CGRectMake((int)SCREEN_WIDTH/8,SCREEN_WIDTH*3/4+ 100, SCREEN_WIDTH*3/4, 1)];
     [_downLine setImage:[UIImage imageNamed:Image_lineImage]];
     [_musicPlayView addSubview:_downLine];
     
-    _repostButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/8,SCREEN_WIDTH*3/4+100, SCREEN_WIDTH/4.0, 45)];
+    _repostButton = [[UIButton alloc] initWithFrame:CGRectMake((int)SCREEN_WIDTH/8,(int)SCREEN_WIDTH*3/4+100, (int)SCREEN_WIDTH/4.0, 45)];
     [_repostButton setImage:[UIImage imageNamed:Image_retweetImage] forState:UIControlStateNormal];
     [_repostButton addTarget:self action:@selector(repostAction) forControlEvents:UIControlEventTouchUpInside];
     [_musicPlayView addSubview:_repostButton];
     //[_repostButton setBackgroundColor:Color_Additional_4];
-    _shareButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH*3/8,SCREEN_WIDTH*3/4+100, SCREEN_WIDTH/4.0, 45)];
+    _shareButton = [[UIButton alloc] initWithFrame:CGRectMake((int)SCREEN_WIDTH*3/8,(int)SCREEN_WIDTH*3/4+100,(int) SCREEN_WIDTH/4.0, 45)];
     [_shareButton setImage:[UIImage imageNamed:Image_shareImage] forState:UIControlStateNormal];
     [_shareButton addTarget:self action:@selector(shareAction) forControlEvents:UIControlEventTouchUpInside];
     [_musicPlayView addSubview:_shareButton];
     
-    _commentButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH*5/8,SCREEN_WIDTH*3/4+100, SCREEN_WIDTH/4.0, 45)];
+    _commentButton = [[UIButton alloc] initWithFrame:CGRectMake((int)SCREEN_WIDTH*5/8,(int)SCREEN_WIDTH*3/4+100, (int)SCREEN_WIDTH/4.0, 45)];
     [_commentButton setImage:[UIImage imageNamed:Image_replyImage] forState:UIControlStateNormal];
     [_commentButton addTarget:self action:@selector(commentAction) forControlEvents:UIControlEventTouchUpInside];
     [_musicPlayView addSubview:_commentButton];
@@ -150,7 +150,7 @@
 }
 -(void) colorViewWithColorString:(NSString *) colorString{
     UIColor *color;
-    if ([colorString isEqualToString:@"1"]) {
+    if ([colorString isEqualToString:@"2"]) {
         color = [UIColor colorWithHexString:@"fea42c"];
         [self.repostImage setImage:[UIImage imageNamed:Image_yellowretweetImage]];
         if (self.isMoved) {
@@ -169,7 +169,7 @@
             [self.repostButton setImage:[UIImage imageNamed:Image_hottweetgreyretweetImage] forState:UIControlStateNormal];
         }
     }
-    else if([colorString isEqualToString:@"2"]){
+    else if([colorString isEqualToString:@"3"]){
         //bluelikeImage
         [self.repostImage setImage:[UIImage imageNamed:Image_blueretweetImage]];
         color = [UIColor colorWithHexString:@"04a0bf"];

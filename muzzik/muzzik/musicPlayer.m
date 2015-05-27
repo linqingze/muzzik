@@ -44,7 +44,6 @@ static NSMutableArray *playList;
         NSString *srcPath = [[NSBundle mainBundle] pathForResource:@"myDataBase" ofType:@"db"];
         [fileMgr copyItemAtPath:srcPath toPath:dbPath error:NULL];
     }
-    self.muzzikDB = [FMDatabase databaseWithPath:dbPath] ;
     return self;
 }
 +(id)allocWithZone:(NSZone *)zone{
@@ -74,8 +73,10 @@ static NSMutableArray *playList;
     
     // Do any additional setup after loading the view.
 }
--(void)playSongWithSongModel:(muzzik *)playMuzzik{
-    
+-(void)playSongWithSongModel:(muzzik *)playMuzzik Title:(NSString *)title{
+    if (title && [title length]>0) {
+        [self.radioView setTitleString:[NSString stringWithFormat:@"正在播放 %@",title]];
+    }
     
     globle = [Globle shareGloble];
     _radioView.musicUrl = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_audio,playMuzzik.music.key]];
@@ -148,7 +149,7 @@ static NSMutableArray *playList;
                 }
                 if ([self.MusicArray count]>1) {
                     _localMuzzik = [self.MusicArray objectAtIndex:self.index];
-                    [self playSongWithSongModel:_localMuzzik];
+                    [self playSongWithSongModel:_localMuzzik Title:nil];
                 }else{
                     [[AudioPlayer shareClass] play:self.radioView.musicUrl];
                 }
@@ -159,7 +160,7 @@ static NSMutableArray *playList;
             {
                 NSInteger  number = [self.MusicArray count];
                 _localMuzzik = [self.MusicArray objectAtIndex:arc4random()%number];
-                [self playSongWithSongModel:_localMuzzik];
+                [self playSongWithSongModel:_localMuzzik Title:nil];
             }
                 break;
             case -1:
@@ -181,7 +182,7 @@ static NSMutableArray *playList;
             self.index = 0;
         }
         if ([self.MusicArray count]>1) {
-            [self playSongWithSongModel:[self.MusicArray objectAtIndex:self.index]];
+            [self playSongWithSongModel:[self.MusicArray objectAtIndex:self.index] Title:nil];
         }else{
             [[AudioPlayer shareClass] stop];
             
@@ -196,7 +197,7 @@ static NSMutableArray *playList;
         if (self.index<0) {
             self.index = 0;
         }
-        [self playSongWithSongModel:[self.MusicArray objectAtIndex:self.index]];
+        [self playSongWithSongModel:[self.MusicArray objectAtIndex:self.index] Title:nil];
     }
 }
 #pragma mark RFRadioViewDelegate

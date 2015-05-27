@@ -1275,41 +1275,30 @@
     [comnentTextView becomeFirstResponder];
 }
 -(void)deleMuzzikAction{
-    ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@api/muzzik/%@",BaseURL,self.localmuzzik.muzzik_id]]];
-    [requestForm addBodyDataSourceWithJsonByDic:nil Method:DeleteMethod auth:YES];
-    __weak ASIHTTPRequest *weakrequest = requestForm;
-    [requestForm setCompletionBlock :^{
-        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
-        NSLog(@"%@",[weakrequest responseString]);
-        NSLog(@"%d",[weakrequest responseStatusCode]);
-        if ([weakrequest responseStatusCode] == 200 && [[dic objectForKey:@"result"] boolValue]) {
-            [muzzikTableView removeFooter];
-            [self.navigationController popViewControllerAnimated:YES];
-        }
-    }];
-    [requestForm setFailedBlock:^{
-        
-        // [SVProgressHUD showErrorWithStatus:@"network error"];
-    }];
-    [requestForm startAsynchronous];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"是否保存编辑信息至草稿箱" message:@"" delegate:self cancelButtonTitle:@"放弃" otherButtonTitles:nil];
+    // optional - add more buttons:
+    [alert addButtonWithTitle:@"确定"];
+    [alert show];
+   
 }
 
 -(void)playMusicLocal{
-    _musicplayer.listType = TempList;
     _musicplayer.MusicArray = [NSMutableArray arrayWithArray:@[self.localmuzzik]];
-    [_musicplayer playSongWithSongModel:self.localmuzzik];
-    if ([[musicPlayer shareClass].MusicArray count]>0) {
-        for (UIView *view in [self.navigationController.view subviews]) {
-            if ([view isKindOfClass:[RFRadioView class]]) {
-                RFRadioView *musicView = (RFRadioView*)view;
-                musicView.isOpen = YES;
-                [UIView animateWithDuration:0.3 animations:^{
-                    [musicView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 64)];
-                }];
-                break;
-            }
-        }
-    }
+     _musicplayer.listType = TempList;
+    [_musicplayer playSongWithSongModel:self.localmuzzik Title:[NSString stringWithFormat:@"单曲<%@>",self.localmuzzik.music.name]];
+    [MuzzikItem SetUserInfoWithMuzziks:[NSMutableArray arrayWithArray:@[self.localmuzzik]] title:Constant_userInfo_temp description:[NSString stringWithFormat:@"单曲<%@>",self.localmuzzik.music.name]];
+//    if ([[musicPlayer shareClass].MusicArray count]>0) {
+//        for (UIView *view in [self.navigationController.view subviews]) {
+//            if ([view isKindOfClass:[RFRadioView class]]) {
+//                RFRadioView *musicView = (RFRadioView*)view;
+//                musicView.isOpen = YES;
+//                [UIView animateWithDuration:0.3 animations:^{
+//                    [musicView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 64)];
+//                }];
+//                break;
+//            }
+//        }
+//    }
 }
 -(void) sendComment{
     if ([comnentTextView.text length]>0) {
@@ -1597,7 +1586,8 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 -(void)playSongWithSongModel:(muzzik *)songModel{
     _musicplayer.listType = TempList;
     _musicplayer.MusicArray = [NSMutableArray arrayWithArray:@[songModel]];
-    [_musicplayer playSongWithSongModel:songModel];
+    [MuzzikItem SetUserInfoWithMuzziks:[NSMutableArray arrayWithArray:@[songModel]] title:Constant_userInfo_temp description:[NSString stringWithFormat:@"单曲<%@>",songModel.music.name]];
+    [_musicplayer playSongWithSongModel:songModel Title:[NSString stringWithFormat:@"单曲<%@>",songModel.music.name]];
     if ([[musicPlayer shareClass].MusicArray count]>0) {
         for (UIView *view in [self.navigationController.view subviews]) {
             if ([view isKindOfClass:[RFRadioView class]]) {
@@ -1892,4 +1882,32 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     
 }
 
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 1) {
+        // do stuff
+        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@api/muzzik/%@",BaseURL,self.localmuzzik.muzzik_id]]];
+        [requestForm addBodyDataSourceWithJsonByDic:nil Method:DeleteMethod auth:YES];
+        __weak ASIHTTPRequest *weakrequest = requestForm;
+        [requestForm setCompletionBlock :^{
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
+            NSLog(@"%@",[weakrequest responseString]);
+            NSLog(@"%d",[weakrequest responseStatusCode]);
+            if ([weakrequest responseStatusCode] == 200 && [[dic objectForKey:@"result"] boolValue]) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:String_Muzzik_Delete object:self.localmuzzik];
+                [muzzikTableView removeFooter];
+                [self.delegate deleteMuzzik:self.localmuzzik];
+                [self.navigationController popViewControllerAnimated:YES];
+            }
+        }];
+        [requestForm setFailedBlock:^{
+            
+            // [SVProgressHUD showErrorWithStatus:@"network error"];
+        }];
+        [requestForm startAsynchronous];
+        
+    }else{
+        
+    }
+    
+}
 @end

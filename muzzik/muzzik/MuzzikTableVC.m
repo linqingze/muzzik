@@ -63,6 +63,7 @@
     }
     page = 2;
     self.uid = [userInfo shareClass].uid;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteMuzzik:) name:String_Muzzik_Delete object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceMuzzikUpdate:) name:String_MuzzikDataSource_update object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
     // [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
@@ -105,6 +106,14 @@
             page = 1;
             muzzik *muzzikToy = [muzzik new];
             self.muzziks = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+            if ([self.requstType isEqualToString:@"moved"]) {
+                [MuzzikItem SetUserInfoWithMuzziks:self.muzziks title:Constant_userInfo_move description:[NSString stringWithFormat:@"喜欢列表"]];
+            }else if ([self.requstType isEqualToString:@"feeds"]){
+                [MuzzikItem SetUserInfoWithMuzziks:self.muzziks title:Constant_userInfo_follow description:[NSString stringWithFormat:@"关注列表"]];
+            }else{
+                [MuzzikItem SetUserInfoWithMuzziks:self.muzziks title:Constant_userInfo_own description:[NSString stringWithFormat:@"我的Muzzik"]];
+            }
+            
             lastId = [dic objectForKey:@"tail"];
             headId = [dic objectForKey:Parameter_from];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -147,6 +156,13 @@
             page++;
             muzzik *muzzikToy = [muzzik new];
             [self.muzziks addObjectsFromArray:[muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]]];
+            if ([self.requstType isEqualToString:@"moved"]) {
+                [MuzzikItem SetUserInfoWithMuzziks:self.muzziks title:Constant_userInfo_move description:[NSString stringWithFormat:@"喜欢列表"]];
+            }else if ([self.requstType isEqualToString:@"feeds"]){
+                [MuzzikItem SetUserInfoWithMuzziks:self.muzziks title:Constant_userInfo_follow description:[NSString stringWithFormat:@"关注列表"]];
+            }else{
+                [MuzzikItem SetUserInfoWithMuzziks:self.muzziks title:Constant_userInfo_own description:[NSString stringWithFormat:@"我的Muzzik"]];
+            }
             lastId = [dic objectForKey:@"tail"];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [MytableView reloadData];
@@ -279,6 +295,7 @@
     if ([self.muzziks[indexPath.row] isKindOfClass:[muzzik class]]) {
         muzzik *tempMuzzik = self.muzziks[indexPath.row];
         DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
+        detail.delegate = self;
         detail.localmuzzik = tempMuzzik;
         if ([self.requstType length]>0) {
             [self.navigationController pushViewController:detail animated:YES];
@@ -686,6 +703,18 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         [self.navigationController pushViewController:uInfo animated:YES];
     }
 }
+-(void)deleteMuzzik:(muzzik *)localMzzik{
+    
+    for (muzzik *tempMuzzik in self.muzziks) {
+        if ([tempMuzzik.muzzik_id isEqualToString:localMzzik.muzzik_id]) {
+            [self.muzziks removeObject:localMzzik];
+            [MytableView reloadData];
+            break;
+        }
+    }
+    
+}
+
 -(void)moveMuzzik:(muzzik *)tempMuzzik{
     
     userInfo *user = [userInfo shareClass];
@@ -725,13 +754,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         }
         
     }
-    
-    
-    
-    
-    
-    
-    
+
     
 }
 -(void)repostActionWithMuzzik:(muzzik *)tempMuzzik{
@@ -799,6 +822,13 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         if (dic) {
             muzzik *muzzikToy = [muzzik new];
             self.muzziks = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+            if ([self.requstType isEqualToString:@"moved"]) {
+                [MuzzikItem SetUserInfoWithMuzziks:self.muzziks title:Constant_userInfo_move description:[NSString stringWithFormat:@"喜欢列表"]];
+            }else if ([self.requstType isEqualToString:@"feeds"]){
+                [MuzzikItem SetUserInfoWithMuzziks:self.muzziks title:Constant_userInfo_follow description:[NSString stringWithFormat:@"关注列表"]];
+            }else{
+                [MuzzikItem SetUserInfoWithMuzziks:self.muzziks title:Constant_userInfo_own description:[NSString stringWithFormat:@"我的Muzzik"]];
+            }
             lastId = [dic objectForKey:@"tail"];
             headId = [dic objectForKey:Parameter_from];
             [MytableView reloadData];
@@ -815,14 +845,28 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     [MytableView reloadData];
 }
 -(void)playSongWithSongModel:(muzzik *)songModel{
-    _musicplayer.listType = SquareList;
     _musicplayer.MusicArray = self.muzziks;
-    [_musicplayer playSongWithSongModel:songModel];
+    
+    
+    if ([self.requstType isEqualToString:@"moved"]) {
+        [MuzzikItem SetUserInfoWithMuzziks:self.muzziks title:Constant_userInfo_move description:[NSString stringWithFormat:@"喜欢列表"]];
+        [_musicplayer playSongWithSongModel:songModel Title:@"喜欢列表"];
+        _musicplayer.listType = MovedList;
+    }else if ([self.requstType isEqualToString:@"feeds"]){
+        [MuzzikItem SetUserInfoWithMuzziks:self.muzziks title:Constant_userInfo_follow description:[NSString stringWithFormat:@"关注列表"]];
+        [_musicplayer playSongWithSongModel:songModel Title:@"关注列表"];
+        _musicplayer.listType = feedList;
+    }else{
+        [MuzzikItem SetUserInfoWithMuzziks:self.muzziks title:Constant_userInfo_own description:[NSString stringWithFormat:@"我的Muzzik"]];
+        [_musicplayer playSongWithSongModel:songModel Title:@"我的Muzzik列表"];
+        _musicplayer.listType = ownList;
+    }
 }
 
 -(void) commentAtMuzzik:(muzzik *)localMuzzik{
     muzzik *tempMuzzik = localMuzzik;
     DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
+    detail.delegate = self;
     detail.localmuzzik = tempMuzzik;
     detail.showType = Constant_Comment;
     if ([self.requstType length]>0) {
@@ -855,6 +899,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 -(void)showComment:(muzzik *)localMuzzik{
     muzzik *tempMuzzik = localMuzzik;
     DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
+    detail.delegate = self;
     detail.localmuzzik = tempMuzzik;
     detail.showType = Constant_showComment;
     if ([self.requstType  length]>0) {
@@ -863,7 +908,6 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         [self.keeper.navigationController pushViewController:detail animated:YES];
     }
 }
-
 
 -(void) showMoved:(NSString *)muzzik_id{
     showUserVC *showvc = [[showUserVC alloc] init];

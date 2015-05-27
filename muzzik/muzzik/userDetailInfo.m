@@ -63,6 +63,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteMuzzik:) name:String_Muzzik_Delete object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceMuzzikUpdate:) name:String_MuzzikDataSource_update object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceUserUpdate:) name:String_UserDataSource_update object:nil];
      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
@@ -120,7 +121,7 @@
                     }
                 }
                 
-                CGFloat recordHeight = 288;
+                CGFloat recordHeight = SCREEN_WIDTH-32;
                 if ([dicKeys containsObject:@"astro"] && [[_profileDic objectForKey:@"astro"] length]>0) {
                     _constellationImage.frame = CGRectMake(16, recordHeight+5, 8, 8);
                     [_constellationImage setImage:[UIImage imageNamed:Image_profileconstellationImage]];
@@ -290,7 +291,7 @@
             
             muzzik *muzzikToy = [muzzik new];
             [self.muzziks addObjectsFromArray:[muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]]];
-            muzzikToy = [self.muzziks lastObject];
+             [MuzzikItem SetUserInfoWithMuzziks:self.muzziks title:Constant_userInfo_temp description:[NSString stringWithFormat:@"#%@#的Muzzik",[_profileDic objectForKey:@"name"]]];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [MyTableView reloadData];
                 [MyTableView footerEndRefreshing];
@@ -382,6 +383,7 @@
     muzzik *tempMuzzik = self.muzziks[indexPath.row];
     DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
     detail.localmuzzik = tempMuzzik;
+    detail.delegate = self;
     [self.navigationController pushViewController:detail animated:YES];
 
 }
@@ -829,21 +831,31 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     [MyTableView reloadData];
 }
 -(void)playSongWithSongModel:(muzzik *)songModel{
-    _musicplayer.listType = SquareList;
     _musicplayer.MusicArray = self.muzziks;
-    [_musicplayer playSongWithSongModel:songModel];
-
+    _musicplayer.listType = TempList;
+    [_musicplayer playSongWithSongModel:songModel Title:[NSString stringWithFormat:@"#%@#的Muzzik",songModel.MuzzikUser.name]];
+    [MuzzikItem SetUserInfoWithMuzziks:self.muzziks title:Constant_userInfo_temp description:[NSString stringWithFormat:@"#%@#的Muzzik",songModel.MuzzikUser.name]];
    // [self.homeNav checkShowMusicView];
 }
 
 -(void) commentAtMuzzik:(muzzik *)localMuzzik{
     muzzik *tempMuzzik = localMuzzik;
     DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
+    detail.delegate =self;
     detail.localmuzzik = tempMuzzik;
     detail.showType = Constant_Comment;
     [self.navigationController pushViewController:detail animated:YES];
 }
-
+-(void)deleteMuzzik:(muzzik *)localMzzik{
+    
+    for (muzzik *tempMuzzik in self.muzziks) {
+        if ([tempMuzzik.muzzik_id isEqualToString:localMzzik.muzzik_id]) {
+            [self.muzziks removeObject:localMzzik];
+            [MyTableView reloadData];
+            break;
+        }
+    }
+}
 -(void) showRepost:(NSString *)muzzik_id{
     showUserVC *showvc = [[showUserVC alloc] init];
     showvc.muzzik_id = muzzik_id;
@@ -859,6 +871,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 -(void)showComment:(muzzik *)localMuzzik{
     muzzik *tempMuzzik = localMuzzik;
     DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
+    detail.delegate =self;
     detail.localmuzzik = tempMuzzik;
     detail.showType = Constant_showComment;
     [self.navigationController pushViewController:detail animated:YES];
@@ -940,7 +953,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     messageLabel.textColor = Color_Additional_5;
     messageLabel.text = @"信息";
     messageLabel.textAlignment = NSTextAlignmentCenter;
-    _muzzikCount = [[UILabel alloc] initWithFrame:CGRectMake(0, 5, CGRectGetWidth(_messageView.frame)/4, 25)];
+    _muzzikCount = [[UILabel alloc] initWithFrame:CGRectMake(0, 5, (int)CGRectGetWidth(_messageView.frame)/4, 25)];
     [_muzzikCount setFont:[UIFont fontWithName:Font_Next_DemiBold size:15]];
     _muzzikCount.textAlignment = NSTextAlignmentCenter;
     _muzzikCount.textColor = Color_Text_2;
@@ -949,7 +962,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     
     [_messageView addSubview:muzzikView];
     
-    UIView *followView = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetWidth(_messageView.frame)/4, 0, CGRectGetWidth(_messageView.frame)/4, CGRectGetHeight(_messageView.frame))];
+    UIView *followView = [[UIView alloc] initWithFrame:CGRectMake((int)CGRectGetWidth(_messageView.frame)/4, 0, CGRectGetWidth(_messageView.frame)/4, CGRectGetHeight(_messageView.frame))];
     UILabel *followLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 25, CGRectGetWidth(_messageView.frame)/4, 20)];
     followLabel.font = [UIFont systemFontOfSize:11];
     followLabel.textColor = Color_Additional_5;
@@ -979,7 +992,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     [fansView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showFans)]];
     [_messageView addSubview:fansView];
     
-    UIView *songView = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetWidth(_messageView.frame)*3/4, 0, CGRectGetWidth(_messageView.frame)/4, CGRectGetHeight(_messageView.frame))];
+    UIView *songView = [[UIView alloc] initWithFrame:CGRectMake((int)CGRectGetWidth(_messageView.frame)*3/4, 0, CGRectGetWidth(_messageView.frame)/4, CGRectGetHeight(_messageView.frame))];
     UILabel *songLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 25, CGRectGetWidth(_messageView.frame)/4, 20)];
     songLabel.font = [UIFont systemFontOfSize:11];
     songLabel.textColor = Color_Additional_5;

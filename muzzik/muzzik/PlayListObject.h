@@ -9,5 +9,6 @@
 #import <Foundation/Foundation.h>
 
 @interface PlayListObject : NSObject
-
+@property(nonatomic,copy) NSString *listName;
+@property(nonatomic,retain) NSMutableArray *muzziks;
 @end

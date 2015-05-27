@@ -28,7 +28,25 @@
 -(id)init{
     self = [super init];
     if(self){
+        _playList = [NSMutableDictionary dictionary];
+        NSMutableDictionary *square = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSMutableArray array],@"muzziks",@"广场列表",@"descrip",@"square",@"type", nil];
         
+        [_playList setValue:square forKey:Constant_userInfo_square];
+        
+        NSMutableDictionary *follow = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSMutableArray array],@"muzziks",@"关注列表",@"descrip",@"follow",@"type", nil];
+        [_playList setValue:follow forKey:Constant_userInfo_follow];
+        
+        NSMutableDictionary *myMuzzik = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSMutableArray array],@"muzziks",@"我的Muzzik",@"descrip",@"own",@"type", nil];
+       [_playList setValue:myMuzzik forKey:Constant_userInfo_own];
+        
+        NSMutableDictionary *suggest = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSMutableArray array],@"muzziks",@"推荐列表",@"descrip",@"suggest",@"type", nil];
+        [_playList setValue:suggest forKey:Constant_userInfo_suggest];
+        
+        NSMutableDictionary *move = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSMutableArray array],@"muzziks",@"喜欢列表",@"descrip",@"move",@"type", nil];
+       [_playList setValue:move forKey:Constant_userInfo_move];
+        
+        NSMutableDictionary *temp = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSMutableArray array],@"muzziks",@"临时列表",@"descrip",@"temp",@"type", nil];
+        [_playList setValue:temp forKey:Constant_userInfo_temp];
         
         
      //   _token = [[NSString alloc]init];

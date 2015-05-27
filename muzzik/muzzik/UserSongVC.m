@@ -223,7 +223,8 @@
     player.listType = TempList;
     player.MusicArray = self.muzziks;
     player.index = [self.muzziks indexOfObject:songModel];
-    [player playSongWithSongModel:songModel];
+    [player playSongWithSongModel:songModel Title:@"我的歌单"];
+    [MuzzikItem SetUserInfoWithMuzziks: self.muzziks title:Constant_userInfo_temp description:@"我的歌单"];
 }
 
 -(void)newMuzzik:(muzzik *)localMzzik{

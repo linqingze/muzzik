@@ -63,4 +63,6 @@
 //处理广播
 +(BOOL) checkMutableArray:(NSMutableArray*) array isContainMuzzik:(muzzik *)localMuzzik;
 +(BOOL) checkMutableArray:(NSMutableArray*) array isContainUser:(MuzzikUser *)localUser;
+
++(void)SetUserInfoWithMuzziks:(NSMutableArray *)muzziks title:(NSString *)title description:(NSString *)descrip;
 @end

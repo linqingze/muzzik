@@ -88,6 +88,7 @@
                                     
             }else{
                 [self.movedMusicArray addObjectsFromArray:[[muzzik new] makeMuzziksByMusicArray:[dic objectForKey:@"music"]]];
+                [MuzzikItem SetUserInfoWithMuzziks:self.movedMusicArray title:Constant_userInfo_move description:[NSString stringWithFormat:@"喜欢列表"]];
             }
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -180,14 +181,19 @@
     
 }
 
-
 -(void)playMuzzikWithIndex:(NSInteger)index{
     musicPlayer *player = [musicPlayer shareClass];
     player.listType = MovedList;
     player.MusicArray = [self.searchArray count]>0 ?self.searchArray:self.movedMusicArray;
     player.index = index;
-    [player playSongWithSongModel:isSearch ?self.searchArray[index]:self.movedMusicArray[index]];
-    
+    [player playSongWithSongModel:isSearch ?self.searchArray[index]:self.movedMusicArray[index] Title:isSearch? [NSString stringWithFormat:@"搜索 %@ 的歌曲",_searchText] : @"喜欢列表"];
+    if (isSearch) {
+        [MuzzikItem SetUserInfoWithMuzziks:self.searchArray title:Constant_userInfo_temp description:[NSString stringWithFormat:@"搜索 %@ 的歌曲",_searchText]];
+        player.listType = TempList;
+    }else{
+        [MuzzikItem SetUserInfoWithMuzziks:self.movedMusicArray title:Constant_userInfo_move description:[NSString stringWithFormat:@"喜欢列表"]];
+        player.listType = MovedList;
+    }
     
 }
 
@@ -238,9 +244,7 @@
     
 }
 -(void)playnextMuzzikUpdate{
-    if ([musicPlayer shareClass].listType == MovedList) {
-        [self.tableView reloadData];
-    }
+    [self.tableView reloadData];
     
     
 }

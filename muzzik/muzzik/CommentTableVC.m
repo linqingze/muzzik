@@ -32,6 +32,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.uid = [userInfo shareClass].uid;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteMuzzik:) name:String_Muzzik_Delete object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
     // [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     [self.view setBackgroundColor:[UIColor whiteColor]];
@@ -257,10 +258,22 @@
     if ([commentArray[indexPath.row] isKindOfClass:[muzzik class]]) {
         muzzik *tempMuzzik = commentArray[indexPath.row];
         DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
+        detail.delegate = self;
         detail.localmuzzik = tempMuzzik;
         [self.keeper.navigationController pushViewController:detail animated:YES];
     }
     
+    
+}
+-(void)deleteMuzzik:(muzzik *)localMzzik{
+    
+    for (muzzik *tempMuzzik in commentArray) {
+        if ([tempMuzzik.muzzik_id isEqualToString:localMzzik.muzzik_id]) {
+            [commentArray removeObject:localMzzik];
+            [MytableView reloadData];
+            break;
+        }
+    }
     
 }
 -(void)pressWithUrl:(NSURL *)url AndRange:(NSRange)rang{
@@ -281,9 +294,11 @@
     // [SVProgressHUD showSuccessWithStatus:[NSString stringWithFormat:@"%@",url]];
 }
 -(void)playSongWithSongModel:(muzzik *)songModel{
-   // _musicplayer.listType = TempList;
+    [musicPlayer shareClass].listType = TempList;
     [musicPlayer shareClass].MusicArray = [NSMutableArray arrayWithArray:@[songModel]];
-    [[musicPlayer shareClass] playSongWithSongModel:songModel];
+    [[musicPlayer shareClass] playSongWithSongModel:songModel Title:[NSString stringWithFormat:@"单曲<%@>",songModel.music.name]];
+    [MuzzikItem SetUserInfoWithMuzziks: [NSMutableArray arrayWithArray:@[songModel]] title:Constant_userInfo_temp description:[NSString stringWithFormat:@"单曲<%@>",songModel.music.name]];
+    
     if ([[musicPlayer shareClass].MusicArray count]>0) {
         for (UIView *view in [self.keeper.navigationController.view subviews]) {
             if ([view isKindOfClass:[RFRadioView class]]) {

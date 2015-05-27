@@ -52,6 +52,8 @@
     user.gender = [dic objectForKey:@"gender"];
     user.avatar = [dic objectForKey:@"avatar"];
     user.name = [dic objectForKey:@"name"];
+    [self loadData];
+    
     [self registerRemoteNotification];
     [self checkChannel];
     NSDictionary* message = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
@@ -92,6 +94,13 @@
     NSData *data = [_gexinPusher retrivePayloadById:payloadId];
     NSString *payloadMsg = nil;
     if (data) {
+        UINavigationController *nac = (UINavigationController *)self.window.rootViewController;
+        for (UIViewController *vc in nac.viewControllers) {
+            if ([vc isKindOfClass:[RootViewController class]]){
+                RootViewController *root = (RootViewController *)vc;
+                [root getMessage];
+            }
+    }
         payloadMsg = [[NSString alloc] initWithBytes:data.bytes
                                               length:data.length
                                             encoding:NSUTF8StringEncoding];
@@ -619,5 +628,123 @@
     user.WeChatInstalled = [WXApi isWXAppInstalled];
     user.QQInstalled = [QQApi isQQInstalled];
 }
-
+-(void)loadData{
+    
+    ASIHTTPRequest *requestsquare = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_Trending]]];
+    [requestsquare addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:@"20" forKey:Parameter_Limit] Method:GetMethod auth:YES];
+    __weak ASIHTTPRequest *weakrequestsquare = requestsquare;
+    [requestsquare setCompletionBlock :^{
+        //    NSLog(@"%@",weakrequest.originalURL);
+        NSLog(@"%@",[weakrequestsquare responseString]);
+        NSData *data = [weakrequestsquare responseData];
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+        if (dic) {
+            NSMutableArray *squareMuzziks = [NSMutableArray array];
+            muzzik *muzzikToy = [muzzik new];
+            NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+            for (muzzik *tempmuzzik in array) {
+                BOOL isContained = NO;
+                for (muzzik *arrayMuzzik in squareMuzziks) {
+                    if ([arrayMuzzik.muzzik_id isEqualToString:tempmuzzik.muzzik_id]) {
+                        isContained = YES;
+                        break;
+                    }
+                    
+                }
+                if (!isContained) {
+                    [squareMuzziks addObject:tempmuzzik];
+                }
+                isContained = NO;
+            }
+            [MuzzikItem SetUserInfoWithMuzziks:squareMuzziks title:Constant_userInfo_square description:nil];
+        }
+    }];
+    [requestsquare setFailedBlock:^{
+        NSLog(@"%@,%@",[weakrequestsquare error],[weakrequestsquare responseString]);
+    }];
+    [requestsquare startSynchronous];
+    
+    
+    
+    
+    
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/suggest",BaseURL]]];
+    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:@"10",Parameter_Limit,[NSNumber numberWithBool:YES],@"image", nil] Method:GetMethod auth:NO];
+    __weak ASIHTTPRequest *weakrequest = request;
+    [request setCompletionBlock :^{
+        //    NSLog(@"%@",weakrequest.originalURL);
+        NSLog(@"%@",[weakrequest responseString]);
+        NSData *data = [weakrequest responseData];
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+        if (dic&&[[dic objectForKey:@"muzziks"]count]>0) {
+            [MuzzikItem SetUserInfoWithMuzziks:[[muzzik new] makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]] title:Constant_userInfo_suggest description:[NSString stringWithFormat:@"推荐列表"]];
+            
+        }
+    }];
+    [request setFailedBlock:^{
+        NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
+    }];
+    [request startSynchronous];
+    
+    
+    userInfo *user = [userInfo shareClass];
+    if ([user.token length]>0) {
+        ASIHTTPRequest *requestOwn = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@/muzziks",BaseURL,user.uid]]];
+        [requestOwn addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:30],Parameter_Limit ,nil] Method:GetMethod auth:YES];
+        __weak ASIHTTPRequest *weakrequestOwn = requestOwn;
+        [requestOwn setCompletionBlock :^{
+            if ([weakrequestOwn responseStatusCode] == 200) {
+                NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequestOwn responseData] options:NSJSONReadingMutableContainers error:nil];
+                muzzik *tempMuzzik = [muzzik new];
+                if ([[dic objectForKey:@"muzziks"] count]>0) {
+                    [MuzzikItem SetUserInfoWithMuzziks:[tempMuzzik makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]] title:Constant_userInfo_own description:[NSString stringWithFormat:@"我的Muzzik"]];
+                    }
+                    
+                }
+            }];
+            [requestOwn setFailedBlock:^{
+                NSLog(@"%@",[weakrequestOwn error]);
+            }];
+            [requestOwn startSynchronous];
+        
+        ASIHTTPRequest *requestfollow = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/feeds",BaseURL]]];
+        [requestfollow addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:30] forKey:Parameter_Limit] Method:GetMethod auth:YES];
+        __weak ASIHTTPRequest *weakrequestfollow = requestfollow;
+        [requestfollow setCompletionBlock :^{
+            // NSLog(@"%@",[weakrequest responseString]);
+            NSData *data = [weakrequestfollow responseData];
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+            if (dic && [[dic objectForKey:@"muzziks"] count]>0 ) {
+                muzzik *muzzikToy = [muzzik new];
+                [MuzzikItem SetUserInfoWithMuzziks:[muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]] title:Constant_userInfo_follow description:[NSString stringWithFormat:@"关注列表"]];
+                
+            }
+        }];
+        [requestfollow setFailedBlock:^{
+            NSLog(@"%@,%@",[weakrequestfollow error],[weakrequestfollow responseString]);
+        }];
+        [requestfollow startAsynchronous];
+        
+        ASIHTTPRequest *requestmove = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/movedMuzzik",BaseURL]]];
+        [requestmove addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:30] forKey:Parameter_Limit] Method:GetMethod auth:YES];
+        __weak ASIHTTPRequest *weakrequestmove = requestmove;
+        [requestmove setCompletionBlock :^{
+            // NSLog(@"%@",[weakrequest responseString]);
+            NSData *data = [weakrequestmove responseData];
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+            if (dic && [[dic objectForKey:@"muzziks"] count]>0 ) {
+                muzzik *muzzikToy = [muzzik new];
+                
+                [MuzzikItem SetUserInfoWithMuzziks:[muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]] title:Constant_userInfo_move description:[NSString stringWithFormat:@"喜欢列表"]];
+            }
+        }];
+        [requestmove setFailedBlock:^{
+            NSLog(@"%@,%@",[weakrequestmove error],[weakrequestmove responseString]);
+        }];
+        [requestmove startSynchronous];
+    }
+    
+    
+    
+}
 @end

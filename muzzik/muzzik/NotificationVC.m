@@ -29,13 +29,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     page =1;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteMuzzik:) name:String_Muzzik_Delete object:nil];
     [self initNagationBar:@"通知消息" leftBtn:Constant_backImage rightBtn:0];
     notifyTabelView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     notifyTabelView.delegate = self;
     notifyTabelView.dataSource = self;
+    [self.view addSubview:notifyTabelView];
     [self followScrollView:notifyTabelView];
     notifyTabelView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    [self.view addSubview:notifyTabelView];
+    
     [notifyTabelView registerClass:[NotifyFollowCell class] forCellReuseIdentifier:@"NotifyFollowCell"];
     [notifyTabelView registerClass:[NotifyMuzzikCell class] forCellReuseIdentifier:@"NotifyMuzzikCell"];
 
@@ -155,8 +157,10 @@
             cell.message.text = @"喜欢了这条Muzzik";
         }else if([tempNotify.type isEqualToString:@"repost"]){
             cell.message.text = @"转发了这条Muzzik";
-        }else if([tempNotify.type isEqualToString:@"comment"] || [tempNotify.type isEqualToString:@"at"]){
-            cell.message.text = @"评论了你的Muzzik";
+        }else if([tempNotify.type isEqualToString:@"comment"]){
+            cell.message.text = @"回复了你的Muzzik";
+        }else if([tempNotify.type isEqualToString:@"at"]){
+             cell.message.text = @"提到了你";
         }else if([tempNotify.type isEqualToString:@"participate_topic"]){
             cell.message.text = @"参与了你发起的话题";
         }
@@ -186,10 +190,21 @@
         muzzik *tempMuzzik = tempNotify.muzzik;
         tempMuzzik.MuzzikUser = tempNotify.user;
         DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
+        detail.delegate = self;
         detail.localmuzzik = tempMuzzik;
         [self.navigationController pushViewController:detail animated:YES];
     }
    
+}
+-(void)deleteMuzzik:(muzzik *)localMzzik{
+    for (muzzik *tempMuzzik in notifyArray) {
+        if ([tempMuzzik.muzzik_id isEqualToString:localMzzik.muzzik_id]) {
+            [notifyArray removeObject:localMzzik];
+            [notifyTabelView reloadData];
+            break;
+        }
+    }
+    
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
      NotifyObject *tempNotify = [notifyArray objectAtIndex:indexPath.row];

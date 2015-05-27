@@ -38,6 +38,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteMuzzik:) name:String_Muzzik_Delete object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceMuzzikUpdate:) name:String_MuzzikDataSource_update object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
     pagecontrol = [[StyledPageControl alloc] initWithFrame:CGRectMake(0, 5, SCREEN_WIDTH, 10)];
@@ -66,23 +67,32 @@
     _suggestCollectionView.pagingEnabled = YES;
     [self.view addSubview:_suggestCollectionView];
     [self followScrollView:_suggestCollectionView];
-    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/suggest",BaseURL]]];
-    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:@"10",Parameter_Limit,[NSNumber numberWithBool:YES],@"image", nil] Method:GetMethod auth:YES];
-    __weak ASIHTTPRequest *weakrequest = request;
-    [request setCompletionBlock :^{
-        //    NSLog(@"%@",weakrequest.originalURL);
-        NSLog(@"%@",[weakrequest responseString]);
-        NSData *data = [weakrequest responseData];
-        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-        if (dic&&[[dic objectForKey:@"muzziks"]count]>0) {
-            suggestMuzzik =  [[muzzik new] makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
-            [_suggestCollectionView reloadData];
-        }
-    }];
-    [request setFailedBlock:^{
-        NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
-    }];
-    [request startAsynchronous];
+    userInfo *user = [userInfo shareClass];
+    
+    if (user.checkSuggest) {
+        suggestMuzzik = [[user.playList objectForKey:Constant_userInfo_suggest] objectForKey:UserInfo_muzziks];
+        [_suggestCollectionView reloadData];
+    }else{
+        ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/suggest",BaseURL]]];
+        [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:@"10",Parameter_Limit,[NSNumber numberWithBool:YES],@"image", nil] Method:GetMethod auth:YES];
+        __weak ASIHTTPRequest *weakrequest = request;
+        [request setCompletionBlock :^{
+            //    NSLog(@"%@",weakrequest.originalURL);
+            NSLog(@"%@",[weakrequest responseString]);
+            NSData *data = [weakrequest responseData];
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+            if (dic&&[[dic objectForKey:@"muzziks"]count]>0) {
+                suggestMuzzik =  [[muzzik new] makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+                [MuzzikItem SetUserInfoWithMuzziks:suggestMuzzik title:Constant_userInfo_suggest description:[NSString stringWithFormat:@"推荐列表"]];
+                [_suggestCollectionView reloadData];
+            }
+        }];
+        [request setFailedBlock:^{
+            NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
+        }];
+        [request startAsynchronous];
+    }
+   
     [self SettingShareView];
     // Do any additional setup after loading the view.
 }
@@ -100,7 +110,6 @@
 -( CGSize )collectionView:( UICollectionView *)collectionView layout:( UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:( NSIndexPath *)indexPath
 
 {
-    muzzik *tempMuzzik = [suggestMuzzik objectAtIndex:indexPath.row];
 
     return CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT-79);
     
@@ -110,9 +119,19 @@
 -(void)clickOnCell:(muzzik *)tempMuzzik{
     DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
     detail.localmuzzik = tempMuzzik;
+    detail.delegate = self;
     [self.navigationController pushViewController:detail animated:YES];
 }
+-(void)deleteMuzzik:(muzzik *)localMzzik{
+    for (muzzik *tempMuzzik in suggestMuzzik) {
+        if ([tempMuzzik.muzzik_id isEqualToString:localMzzik.muzzik_id]) {
+            [suggestMuzzik removeObject:localMzzik];
+            [_suggestCollectionView reloadData];
+            break;
+        }
+    }
 
+}
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     muzzik *tempMuzzik = [suggestMuzzik objectAtIndex:indexPath.row];
@@ -555,9 +574,10 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 }
 -(void)playSongWithSongModel:(muzzik *)songModel{
 
-    [musicPlayer shareClass].listType = SquareList;
+    [musicPlayer shareClass].listType = suggestList;
     [musicPlayer shareClass].MusicArray = suggestMuzzik;
-    [[musicPlayer shareClass] playSongWithSongModel:songModel];
+    [[musicPlayer shareClass] playSongWithSongModel:songModel Title:@"推荐列表"];
+    [MuzzikItem SetUserInfoWithMuzziks:suggestMuzzik title:Constant_userInfo_suggest description:[NSString stringWithFormat:@"推荐列表"]];
 }
 
 -(void)dataSourceMuzzikUpdate:(NSNotification *)notify{
