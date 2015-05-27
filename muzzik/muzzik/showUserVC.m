@@ -9,7 +9,6 @@
 #import "showUserVC.h"
 #import "searchUserCell.h"
 #import "UIImageView+WebCache.h"
-#import "UIScrollView+DXRefresh.h"
 #import "userDetailInfo.h"
 @interface showUserVC ()<UITableViewDataSource,UITableViewDelegate,CellDelegate>{
     UITableView *_tableView;
@@ -73,7 +72,6 @@
 }
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-    [_tableView removeFooter];
 }
 - (void)refreshFooter
 {

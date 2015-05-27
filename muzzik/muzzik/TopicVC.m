@@ -8,7 +8,6 @@
 
 #import "TopicVC.h"
 #import "topicLabel.h"
-#import "UIScrollView+DXRefresh.h"
 #import "TopicDetail.h"
 #import "UIImageView+WebCache.h"
 #import "TapImageView.h"

@@ -7,27 +7,7 @@
 //
 
 #import "topicLabel.h"
-#import "UIImageView+WebCache.h"
-#import "ASIHTTPRequest.h"
-#import "ASIFormDataRequest.h"
-#import "NormalCell.h"
-#import "TopicHeaderView.h"
-#import "appConfiguration.h"
-#import <MediaPlayer/MediaPlayer.h>
-#import "userInfo.h"
-#import "playListController.h"
-#import "TTTAttributedLabel.h"
-#import "ChooseMusicVC.h"
-#import "LoginViewController.h"
-#import "UIScrollView+DXRefresh.h"
-#import "UIButton+WebCache.h"
-#import "showUserVC.h"
-#import "NormalNoCardCell.h"
-#import "DetaiMuzzikVC.h"
-#import "MuzzikCard.h"
-#import "MuzzikNoCardCell.h"
-#import "userDetailInfo.h"
-#import "TopicDetail.h"
+
 @implementation topicLabel
 - (id)initWithFrame:(CGRect)frame
 {

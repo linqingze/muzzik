@@ -12,7 +12,6 @@
 #import "UIButton+WebCache.h"
 #import "DetaiMuzzikVC.h"
 #import "UIImageView+WebCache.h"
-#import "UIScrollView+DXRefresh.h"
 #import "UserSongVC.h"
 #import "showUsersVC.h"
 #import "AppDelegate.h"
@@ -263,7 +262,7 @@
         [userInfo checkLoginWithVC:self];
     }];
     [requestForm startAsynchronous];
-
+    [MyTableView addFooterWithTarget:self action:@selector(refreshFooter)];
     
 
 
@@ -271,11 +270,10 @@
 }
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [MyTableView addFooterWithTarget:self action:@selector(refreshFooter)];
+    
 }
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-    [MyTableView removeFooter];
 }
 -(void)refreshFooter{
     page++;

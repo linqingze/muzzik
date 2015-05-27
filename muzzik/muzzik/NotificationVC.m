@@ -7,7 +7,6 @@
 //
 
 #import "NotificationVC.h"
-#import "UIScrollView+DXRefresh.h"
 #import "NotifyObject.h"
 #import "NotifyFollowCell.h"
 #import "NotifyMuzzikCell.h"
@@ -40,7 +39,7 @@
     
     [notifyTabelView registerClass:[NotifyFollowCell class] forCellReuseIdentifier:@"NotifyFollowCell"];
     [notifyTabelView registerClass:[NotifyMuzzikCell class] forCellReuseIdentifier:@"NotifyMuzzikCell"];
-
+     [notifyTabelView addFooterWithTarget:self action:@selector(refreshFooter)];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -50,7 +49,7 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self reloadMuzzikSource];
-    [notifyTabelView addFooterWithTarget:self action:@selector(refreshFooter)];
+   
     
     // MytableView add
     
@@ -58,8 +57,7 @@
 
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-    [notifyTabelView removeFooter];
-    // [MytableView removeKeyPath];
+
 }
 -(void) refreshFooter{
   

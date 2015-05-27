@@ -7,7 +7,6 @@
 //
 
 #import "TopicHotVC.h"
-#import "UIScrollView+DXRefresh.h"
 #import "TopicModel.h"
 @interface TopicHotVC()<UISearchBarDelegate,UITableViewDelegate,UITableViewDataSource>{
     UITableView *topicTableView;
@@ -97,6 +96,7 @@
     
     [searchView setBackgroundColor:Color_NavigationBar];
     [searchView addSubview:searchBar];
+    [topicTableView addFooterWithTarget:self action:@selector(refreshFooter)];
 }
 - (void)refreshFooter
 {
@@ -144,12 +144,11 @@
 }
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [topicTableView addFooterWithTarget:self action:@selector(refreshFooter)];
+    
 }
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     [searchView removeFromSuperview];
-    [topicTableView removeFooter];
 }
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     

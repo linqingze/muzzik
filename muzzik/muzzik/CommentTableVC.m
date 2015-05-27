@@ -9,7 +9,6 @@
 #import "CommentTableVC.h"
 #import "CommentMuzzikCell.h"
 #import "UIButton+WebCache.h"
-#import "UIScrollView+DXRefresh.h"
 #import "TopicDetail.h"
 #import "userDetailInfo.h"
 #import "DetaiMuzzikVC.h"
@@ -36,7 +35,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
     // [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     [self.view setBackgroundColor:[UIColor whiteColor]];
-    MytableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
+    MytableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-94)];
     [MytableView  setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     MytableView.dataSource = self;
     MytableView.delegate = self;
@@ -67,6 +66,8 @@
         NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
     }];
     [request startAsynchronous];
+    [MytableView addHeaderWithTarget:self action:@selector(refreshHeader)];
+    [MytableView addFooterWithTarget:self action:@selector(refreshFooter)];
 }
 - (void)refreshHeader
 {
@@ -97,14 +98,12 @@
 }
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [MytableView addHeaderWithTarget:self action:@selector(refreshHeader)];
-    [MytableView addFooterWithTarget:self action:@selector(refreshFooter)];
+
     [self.keeper followScrollView:MytableView];
 }
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-    [MytableView removeHeader];
-    [MytableView removeFooter];
+
     
 }
 - (void)refreshFooter

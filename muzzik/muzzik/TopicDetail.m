@@ -20,7 +20,6 @@
 #import "DetaiMuzzikVC.h"
 #import "userDetailInfo.h"
 #import "TopicDetail.h"
-#import "UIScrollView+DXRefresh.h"
 #import "UIButton+WebCache.h"
 #import "LoginViewController.h"
 #import "AppDelegate.h"
@@ -83,7 +82,8 @@
     [self followScrollView:MytableView];
     [self loadTopicTittle];
     [self SettingShareView];
-
+    [MytableView addHeaderWithTarget:self action:@selector(refreshHeader)];
+    [MytableView addFooterWithTarget:self action:@selector(refreshFooter)];
 }
 - (void)refreshHeader
 {
@@ -150,8 +150,7 @@
     [super viewWillAppear:animated];
     [self reloadMuzzikSource];
     [self.view setNeedsLayout];
-    [MytableView addHeaderWithTarget:self action:@selector(refreshHeader)];
-    [MytableView addFooterWithTarget:self action:@selector(refreshFooter)];
+
     
     // MytableView add
     
@@ -159,9 +158,7 @@
 
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-    [MytableView removeFooter];
-    [MytableView removeHeader];
-    // [MytableView removeKeyPath];
+
 }
 
 

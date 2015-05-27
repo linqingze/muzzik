@@ -8,7 +8,6 @@
 
 #import "SearchLibraryMusicVC.h"
 #import "SearchMusicCell.h"
-#import "UIScrollView+DXRefresh.h"
 #import "MessageStepViewController.h"
 @interface SearchLibraryMusicVC (){
     NSInteger indexOfMuzzik;

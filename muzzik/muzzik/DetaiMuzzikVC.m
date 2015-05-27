@@ -20,7 +20,6 @@
 #import "TopicDetail.h"
 #import "TopicHotVC.h"
 #import "Globle.h"
-#import "UIScrollView+DXRefresh.h"
 #import "AppDelegate.h"
 #import <TencentOpenAPI/TencentOAuth.h>
 @interface DetaiMuzzikVC ()<UITableViewDataSource,UITableViewDelegate,TTTAttributedLabelDelegate,HPGrowingTextViewDelegate,CellDelegate>{
@@ -1562,7 +1561,6 @@
     
     MuzzikObject *mobject = [MuzzikObject shareClass];
     [mobject clearObject];
-    [muzzikTableView removeFooter];
     [super tapAction:tap];
     
 }
@@ -1894,7 +1892,6 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
             NSLog(@"%d",[weakrequest responseStatusCode]);
             if ([weakrequest responseStatusCode] == 200 && [[dic objectForKey:@"result"] boolValue]) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:String_Muzzik_Delete object:self.localmuzzik];
-                [muzzikTableView removeFooter];
                 [self.navigationController popViewControllerAnimated:YES];
             }
         }];

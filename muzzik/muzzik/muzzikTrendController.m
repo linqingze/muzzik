@@ -18,7 +18,6 @@
 #import "TTTAttributedLabel.h"
 #import "ChooseMusicVC.h"
 #import "LoginViewController.h"
-#import "UIScrollView+DXRefresh.h"
 #import "UIButton+WebCache.h"
 #import "showUserVC.h"
 #import "NormalNoCardCell.h"
@@ -92,7 +91,8 @@
     
     [newButton addTarget:self action:@selector(newOrLogin) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:newButton];
-    
+    [MytableView addHeaderWithTarget:self action:@selector(refreshHeader)];
+    [MytableView addFooterWithTarget:self action:@selector(refreshFooter)];
     
 }
 - (void)refreshHeader
@@ -198,8 +198,7 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self.view setNeedsLayout];
-    [MytableView addHeaderWithTarget:self action:@selector(refreshHeader)];
-    [MytableView addFooterWithTarget:self action:@selector(refreshFooter)];
+
     [MytableView reloadData];
    // MytableView add
 
@@ -207,8 +206,6 @@
 
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-    [MytableView removeFooter];
-    [MytableView removeHeader];
    // [MytableView removeKeyPath];
 }
 

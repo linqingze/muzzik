@@ -19,7 +19,6 @@
 #import "TTTAttributedLabel.h"
 #import "ChooseMusicVC.h"
 #import "LoginViewController.h"
-#import "UIScrollView+DXRefresh.h"
 #import "UIButton+WebCache.h"
 #import "showUserVC.h"
 #import "NormalNoCardCell.h"
@@ -58,8 +57,12 @@
     [super viewDidLoad];
     if ([self.requstType  isEqualToString:@"moved"]) {
         [self initNagationBar:@"喜欢的Muzzik" leftBtn:Constant_backImage rightBtn:0];
+        MytableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     }else if([self.requstType isEqualToString:@"feeds"]){
         [self initNagationBar:@"关注" leftBtn:Constant_backImage rightBtn:0];
+        MytableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
+    }else{
+        MytableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-94)];
     }
     page = 2;
     self.uid = [userInfo shareClass].uid;
@@ -69,7 +72,7 @@
     // [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     _musicplayer = [musicPlayer shareClass];
     [self.view setBackgroundColor:[UIColor whiteColor]];
-    MytableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
+    
     [MytableView  setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     MytableView.dataSource = self;
     MytableView.delegate = self;
@@ -80,7 +83,8 @@
     [MytableView registerClass:[MuzzikNoCardCell class] forCellReuseIdentifier:@"MuzzikNoCardCell"];
     [self reloadMuzzikSource];
     [self SettingShareView];
-    
+    [MytableView addHeaderWithTarget:self action:@selector(refreshHeader)];
+    [MytableView addFooterWithTarget:self action:@selector(refreshFooter)];
 }
 - (void)refreshHeader
 {
@@ -189,8 +193,7 @@
         [self.keeper followScrollView:MytableView];
     }
     
-    [MytableView addHeaderWithTarget:self action:@selector(refreshHeader)];
-    [MytableView addFooterWithTarget:self action:@selector(refreshFooter)];
+
     
     // MytableView add
     
@@ -198,8 +201,6 @@
 
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-    [MytableView removeFooter];
-    [MytableView removeHeader];
 }
 
 

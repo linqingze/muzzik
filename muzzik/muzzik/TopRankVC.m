@@ -72,6 +72,7 @@
         NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
     }];
     [request startAsynchronous];
+#warning 添加刷新
     // Do any additional setup after loading the view.
 }
 #pragma mark - Table view data source

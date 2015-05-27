@@ -7,7 +7,6 @@
 //
 
 #import "showUsersVC.h"
-#import "UIScrollView+DXRefresh.h"
 #import "searchUserCell.h"
 #import "UIImageView+WebCache.h"
 #import "userDetailInfo.h"
@@ -70,6 +69,8 @@
         [userInfo checkLoginWithVC:self];
     }];
     [requestForm startAsynchronous];
+    
+    [userTableview addFooterWithTarget:self action:@selector(refreshFooter)];
 }
 
 
@@ -127,7 +128,7 @@
     [super viewWillAppear:animated];
 
     [self.view setNeedsLayout];
-    [userTableview addFooterWithTarget:self action:@selector(refreshFooter)];
+    
     
     // MytableView add
     
@@ -135,7 +136,6 @@
 
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-    [userTableview removeFooter];
 }
 #pragma mark - Table view data source
 

@@ -8,7 +8,6 @@
 
 #import "UserSongVC.h"
 #import "SongListCell.h"
-#import "UIScrollView+DXRefresh.h"
 #import "MessageStepViewController.h"
 @interface UserSongVC ()<UITableViewDataSource,UITableViewDelegate,CellDelegate>{
     UITableView *songTableView;
@@ -71,6 +70,8 @@
     }];
     [request startAsynchronous];
     // Do any additional setup after loading the view.
+    
+    [songTableView addFooterWithTarget:self action:@selector(refreshFooter)];
 }
 - (void)refreshFooter
 {

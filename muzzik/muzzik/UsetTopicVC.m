@@ -8,7 +8,6 @@
 
 #import "UsetTopicVC.h"
 #import "TopicModel.h"
-#import "UIScrollView+DXRefresh.h"
 #import "TopicDetail.h"
 @interface UsetTopicVC ()<UITableViewDelegate,UITableViewDataSource>{
     UITableView *topicTableView;
@@ -100,11 +99,10 @@
 }
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-    [topicTableView removeFooter];
 }
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [topicTableView addFooterWithTarget:self action:@selector(refreshFooter)];
+    
 }
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     
