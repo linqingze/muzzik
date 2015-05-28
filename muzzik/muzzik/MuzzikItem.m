@@ -913,7 +913,6 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     //    NSTimeZone* timeZone = [NSTimeZone timeZoneWithName:@"Asia/Shanghai"];
     //    [formatter setTimeZone:timeZone];
     NSTimeInterval interval = fabs([destinationDateNow timeIntervalSinceNow]);
-    NSLog(@"interval : %f",interval);
     NSString *timestring = [NSString stringWithFormat:@"%@",destinationDateNow];
     NSArray *timearray = [timestring componentsSeparatedByString:@" "];
     timestring = timearray[1];

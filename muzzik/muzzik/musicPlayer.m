@@ -32,7 +32,7 @@ static NSMutableArray *playList;
 }
 -(id)init{
    self = [super init];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackgroundSetSongInformation:) name:String_SetSongInformationNotification object:nil];
     _radioView = [[RFRadioView alloc] initWithFrame:CGRectMake(0,0,SCREEN_WIDTH,64)];
     _radioView.delegate = self;
     self.playModel = 0;
@@ -92,35 +92,38 @@ static NSMutableArray *playList;
 //        }
 //    }
      _radioView.playMuzzik = playMuzzik;
+     globle.isPlaying = YES;
      self.localMuzzik = playMuzzik;
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackgroundSetSongInformation:) name:String_SetSongInformationNotification object:nil];
     if (globle.isApplicationEnterBackground) {
         [self applicationDidEnterBackgroundSetSongInformation:nil];
     }
    
     //[_radioView setRadioViewLrc];
-   // globle.isPlaying = YES;
+   
    
     
     self.index = [self.MusicArray indexOfObject:playMuzzik];
-    [[NSNotificationCenter defaultCenter] postNotificationName:String_SetSongPlayNextNotification object:nil];
 }
 
 
 -(void)applicationDidEnterBackgroundSetSongInformation:(NSNotification *)notification
 {
-    if (NSClassFromString(@"MPNowPlayingInfoCenter")) {
-        NSMutableDictionary * dict = [[NSMutableDictionary alloc] init];
-        [dict setObject:_localMuzzik.music.name forKey:MPMediaItemPropertyTitle];
-        [dict setObject:_localMuzzik.music.artist  forKey:MPMediaItemPropertyArtist];
-        NSLog(@"%f",[AudioPlayer shareClass].duration);
-        [dict setObject:[NSNumber numberWithDouble:[AudioPlayer shareClass].duration] forKey:MPMediaItemPropertyPlaybackDuration];
-        
-        //音乐当前播放时间 在计时器中修改
-        [dict setObject:[NSNumber numberWithDouble:[AudioPlayer shareClass].progress] forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
-        //		[dict setObject:[[MPMediaItemArtwork alloc] initWithImage:[UIImage imageNamed:@"headerImage.png"]] forKey:MPMediaItemPropertyArtwork];
-        [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:dict];
+    Globle *glob = [Globle shareGloble];
+    if (glob.isApplicationEnterBackground) {
+        if (NSClassFromString(@"MPNowPlayingInfoCenter")) {
+            NSMutableDictionary * dict = [[NSMutableDictionary alloc] init];
+            [dict setObject:_localMuzzik.music.name forKey:MPMediaItemPropertyTitle];
+            [dict setObject:_localMuzzik.music.artist  forKey:MPMediaItemPropertyArtist];
+            NSLog(@"%f",[AudioPlayer shareClass].duration);
+            [dict setObject:[NSNumber numberWithDouble:[AudioPlayer shareClass].duration] forKey:MPMediaItemPropertyPlaybackDuration];
+            NSLog(@"%f",[AudioPlayer shareClass].progress);
+            //音乐当前播放时间 在计时器中修改
+            [dict setObject:[NSNumber numberWithDouble:[AudioPlayer shareClass].progress] forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
+            //		[dict setObject:[[MPMediaItemArtwork alloc] initWithImage:[UIImage imageNamed:@"headerImage.png"]] forKey:MPMediaItemPropertyArtwork];
+            [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:dict];
+        }
     }
+    
 }
 
 -(void)playModleIsLock
@@ -138,7 +141,7 @@ static NSMutableArray *playList;
             globle.isPause = !globle.isPause;
             [[AudioPlayer shareClass] pause];
         }
-        
+        [[NSNotificationCenter defaultCenter] postNotificationName:String_SetSongPlayNextNotification object:nil];
     }else{
         switch (self.playModel) {
             case 0:

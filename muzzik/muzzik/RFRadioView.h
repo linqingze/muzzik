@@ -81,7 +81,7 @@
 @property (nonatomic,strong) FSPlaylistItem *selectedPlaylistItem;
 @property (nonatomic,assign) id <RFRadioViewDelegate>delegate;
 @property (nonatomic,retain) UIView *smallView;
-
+@property (nonatomic,assign) BOOL playNext;
 @property (nonatomic,retain) UIView *titleView;
 @property (nonatomic,retain) UIView *playView;
 @property (nonatomic,retain) UIView *playListView;

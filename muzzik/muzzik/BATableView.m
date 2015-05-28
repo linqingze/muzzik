@@ -28,7 +28,7 @@
         [self.tableView  setSeparatorStyle:UITableViewCellSeparatorStyleNone];
         [self addSubview:self.tableView];
         [self.tableView registerClass:[AtfreindCell class] forCellReuseIdentifier:@"AtfreindCell"];
-        self.tableViewIndex = [[BATableViewIndex alloc] initWithFrame:(CGRect){300,0,20,frame.size.height}];
+        self.tableViewIndex = [[BATableViewIndex alloc] initWithFrame:(CGRect){SCREEN_WIDTH-40,0,30,frame.size.height}];
         [self addSubview:self.tableViewIndex];
         
         self.flotageLabel = [[UILabel alloc] initWithFrame:(CGRect){(self.bounds.size.width ) / 2-32,(self.bounds.size.height - 64) / 2,64,64}];

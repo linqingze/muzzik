@@ -81,7 +81,7 @@
     
     if ([[self btnImage:rightImge] isKindOfClass:[UIImage class]]) {
         UIImage *image = (UIImage *)[self btnImage:rightImge];
-        [rightBtn setImageEdgeInsets:UIEdgeInsetsMake(2,25,2,0)];
+        //[rightBtn setImageEdgeInsets:UIEdgeInsetsMake(2,25,2,0)];
         [rightBtn setImage:image forState:(UIControlStateNormal)];
         
     }else if ([[self btnImage:rightImge] isKindOfClass:[NSString class]]) {
@@ -162,7 +162,7 @@
             btnImage = [UIImage imageNamed:@"backImage"];
             break;
         case 2:
-            btnImage = [UIImage imageNamed:Image_At_button];
+            btnImage = [UIImage imageNamed:Image_Next];
             break;
         case 3:
             btnImage = [UIImage imageNamed:@"确定"];

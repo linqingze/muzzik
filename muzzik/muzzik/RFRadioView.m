@@ -44,7 +44,12 @@
         [session setActive:YES error:nil];
         [session setCategory:AVAudioSessionCategoryPlayback error:nil];
         [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
-        
+        _progressUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:1.0
+                                                                target:self
+                                                              selector:@selector(updatePlaybackProgress)
+                                                              userInfo:nil
+                                                               repeats:YES];
+        [[NSRunLoop currentRunLoop] addTimer:_progressUpdateTimer forMode:NSRunLoopCommonModes];
 //        audioController = [[FSAudioController alloc] init];
         audioPlayer = [AudioPlayer shareClass];
         audioPlayer.delegate = self;
@@ -339,8 +344,51 @@
                         ASIHTTPRequest *lyricRequest = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[[[[dic objectForKey:@"result"] objectAtIndex:0] objectForKey:@"lrc"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
                         __weak ASIHTTPRequest *lrcRequest = lyricRequest;
                         [lyricRequest setCompletionBlock:^{
+                              if ([lrcRequest responseStatusCode] == 200) {
                             NSString *lyric =  [[NSString alloc] initWithData:[lrcRequest responseData]   encoding:NSUTF8StringEncoding];
-                            [self parseLrcLine:lyric];
+                                  [self parseLrcLine:lyric];
+                              }else{
+                                  ASIHTTPRequest *requestForm1 = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Music_Lyric_get]]];
+                                  [requestForm1 addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[[NSString stringWithFormat:@"%@+%@",_playMuzzik.music.artist,_playMuzzik.music.name] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] forKey:@"q"] Method:GetMethod auth:NO];
+                                  [requestForm1 setUseCookiePersistence:NO];
+                                  __weak ASIHTTPRequest *weakrequest1 = requestForm1;
+                                  [requestForm1 setCompletionBlock :^{
+                                      //  NSLog(@"%@",[weakrequest1 responseString]);
+                                      // NSLog(@"URL:%@     status:%d",[weakrequest1 originalURL],[weakrequest1 responseStatusCode]);
+                                      if ([weakrequest1 responseStatusCode] == 200) {
+                                          NSData *data = [weakrequest1 responseData];
+                                          NSDictionary *dic1 = [NSJSONSerialization JSONObjectWithData:data  options:NSJSONReadingMutableContainers error:nil];
+                                          if ([[dic1 objectForKey:@"music"] count]>0) {
+                                              ASIHTTPRequest *lyricRequest1 = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[[[[dic1 objectForKey:@"music"] objectAtIndex:0] objectForKey:@"lyric"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+                                              __weak ASIHTTPRequest *lrcRequest1 = lyricRequest1;
+                                              [lyricRequest1 setCompletionBlock:^{
+                                                  NSString *lyric =  [[NSString alloc] initWithData:[lrcRequest1 responseData]   encoding:NSUTF8StringEncoding];
+                                                  [self parseLrcLine:lyric];
+                                                  // NSLog(@"%@",self.lyricArray);
+                                                  //  NSLog(@"%@",[lrcRequest1 responseString]);
+                                                  //  NSLog(@"URL:%@     status:%d",[lrcRequest1 originalURL],[lrcRequest1 responseStatusCode]);
+                                              }];
+                                              [lyricRequest1 setFailedBlock:^{
+                                                  NSLog(@"%@",lrcRequest1.error);
+                                              }];
+                                              [lyricRequest1 startAsynchronous];
+                                          }
+                                          else{
+                                              NSDictionary *dic = [NSDictionary dictionaryWithObject:@"暂无歌词" forKey:@"00:05"];
+                                              [self.lyricArray addObject:dic];
+                                          }
+                                          
+                                      }
+                                      else{
+                                          //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+                                      }
+                                  }];
+                                  [requestForm1 setFailedBlock:^{
+                                      NSLog(@"URL:%@     status:%d",[weakrequest originalURL],[weakrequest responseStatusCode]);
+                                      NSLog(@"  kkk%@",[weakrequest error]);
+                                  }];
+                                  [requestForm1 startAsynchronous];
+                              }
                             // NSLog(@"%@",self.lyricArray);
                             // NSLog(@"%@",[lrcRequest responseString]);
                             // NSLog(@"URL:%@     status:%d",[lrcRequest originalURL],[lrcRequest responseStatusCode]);
@@ -378,7 +426,8 @@
                                     [lyricRequest1 startAsynchronous];
                                 }
                                 else{
-                                    
+                                    NSDictionary *dic = [NSDictionary dictionaryWithObject:@"暂无歌词" forKey:@"00:05"];
+                                    [self.lyricArray addObject:dic];
                                 }
                                 
                             }
@@ -648,19 +697,9 @@
     [_delegate radioView:self playListButton:btn];
 }
 
--(void)collectButtonEvent:(UIButton *)btn
-{
-    
-    
-}
 -(void)startTimer
 {
-    _progressUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:1.0
-                                                            target:self
-                                                          selector:@selector(updatePlaybackProgress)
-                                                          userInfo:nil
-                                                           repeats:YES];
-    [[NSRunLoop currentRunLoop] addTimer:_progressUpdateTimer forMode:NSRunLoopCommonModes];
+    [_progressUpdateTimer fire];
 }
 -(void)startMusic
 {
@@ -727,19 +766,19 @@
 }
 -(void)stopEverything
 {
-    Globle *glob = [Globle shareGloble];
-    glob.isPlaying = NO;
+    self.playNext = NO;
     [audioPlayer stop];
 }
 -(void)setPlayMuzzik:(muzzik *)playMuzzik{
+    
     [UIView animateWithDuration:Play_timeinterval animations:^{
         [self setAlpha:1];
     }];
-    NSLog(@"%@",[NSString stringWithFormat:@"%@/%@",playMuzzik.music.name,playMuzzik.music.artist]);
+   // NSLog(@"%@",[NSString stringWithFormat:@"%@/%@",playMuzzik.music.name,playMuzzik.music.artist]);
     if (!([playMuzzik.muzzik_id isEqualToString:_playMuzzik.muzzik_id]||([playMuzzik.muzzik_id length] == 0 &&[playMuzzik.music.music_id isEqualToString:_playMuzzik.music.music_id]))||([[musicPlayer shareClass].MusicArray count] ==1 && ![playMuzzik.muzzik_id isEqualToString:_playMuzzik.muzzik_id])) {
         [Globle shareGloble].isPause = NO;
         
-        
+        _playMuzzik.isCheckFollow = NO;
         _playMuzzik = playMuzzik;
         if (_IsShowDetail) {
             _playMuzzik.isCheckFollow = YES;
@@ -771,11 +810,52 @@
                         ASIHTTPRequest *lyricRequest = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[[[[dic objectForKey:@"result"] objectAtIndex:0] objectForKey:@"lrc"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
                         __weak ASIHTTPRequest *lrcRequest = lyricRequest;
                         [lyricRequest setCompletionBlock:^{
-                            NSString *lyric =  [[NSString alloc] initWithData:[lrcRequest responseData]   encoding:NSUTF8StringEncoding];
-                            [self parseLrcLine:lyric];
-                            // NSLog(@"%@",self.lyricArray);
-                            // NSLog(@"%@",[lrcRequest responseString]);
-                            // NSLog(@"URL:%@     status:%d",[lrcRequest originalURL],[lrcRequest responseStatusCode]);
+                            if ([lrcRequest responseStatusCode] == 200) {
+                                NSString *lyric =  [[NSString alloc] initWithData:[lrcRequest responseData]   encoding:NSUTF8StringEncoding];
+                                [self parseLrcLine:lyric];
+                            }
+                            else{
+                                ASIHTTPRequest *requestForm1 = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Music_Lyric_get]]];
+                                [requestForm1 addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[[NSString stringWithFormat:@"%@+%@",playMuzzik.music.artist,playMuzzik.music.name] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] forKey:@"q"] Method:GetMethod auth:NO];
+                                [requestForm1 setUseCookiePersistence:NO];
+                                __weak ASIHTTPRequest *weakrequest1 = requestForm1;
+                                [requestForm1 setCompletionBlock :^{
+                                    //  NSLog(@"%@",[weakrequest1 responseString]);
+                                    // NSLog(@"URL:%@     status:%d",[weakrequest1 originalURL],[weakrequest1 responseStatusCode]);
+                                    if ([weakrequest1 responseStatusCode] == 200) {
+                                        NSData *data = [weakrequest1 responseData];
+                                        NSDictionary *dic1 = [NSJSONSerialization JSONObjectWithData:data  options:NSJSONReadingMutableContainers error:nil];
+                                        if ([[dic1 objectForKey:@"music"] count]>0) {
+                                            ASIHTTPRequest *lyricRequest1 = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[[[[dic1 objectForKey:@"music"] objectAtIndex:0] objectForKey:@"lyric"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+                                            __weak ASIHTTPRequest *lrcRequest1 = lyricRequest1;
+                                            [lyricRequest1 setCompletionBlock:^{
+                                                NSString *lyric =  [[NSString alloc] initWithData:[lrcRequest1 responseData]   encoding:NSUTF8StringEncoding];
+                                                [self parseLrcLine:lyric];
+                                                // NSLog(@"%@",self.lyricArray);
+                                                //  NSLog(@"%@",[lrcRequest1 responseString]);
+                                                //  NSLog(@"URL:%@     status:%d",[lrcRequest1 originalURL],[lrcRequest1 responseStatusCode]);
+                                            }];
+                                            [lyricRequest1 setFailedBlock:^{
+                                                NSLog(@"%@",lrcRequest1.error);
+                                            }];
+                                            [lyricRequest1 startAsynchronous];
+                                        }
+                                        else{
+                                            NSDictionary *dic = [NSDictionary dictionaryWithObject:@"暂无歌词" forKey:@"00:05"];
+                                            [self.lyricArray addObject:dic];
+                                        }
+                                        
+                                    }
+                                    else{
+                                        //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+                                    }
+                                }];
+                                [requestForm1 setFailedBlock:^{
+                                    NSLog(@"URL:%@     status:%d",[weakrequest originalURL],[weakrequest responseStatusCode]);
+                                    NSLog(@"  kkk%@",[weakrequest error]);
+                                }];
+                                [requestForm1 startAsynchronous];
+                            }
                         }];
                         [lyricRequest setFailedBlock:^{
                             NSLog(@"%@",lrcRequest.error);
@@ -810,7 +890,8 @@
                                     [lyricRequest1 startAsynchronous];
                                 }
                                 else{
-                                    
+                                    NSDictionary *dic = [NSDictionary dictionaryWithObject:@"暂无歌词" forKey:@"00:05"];
+                                    [self.lyricArray addObject:dic];
                                 }
                                 
                             }
@@ -921,6 +1002,9 @@
                 NSString *str2 = [tempStr substringWithRange:NSMakeRange(6, 1)];
                 if ([str1 isEqualToString:@":"] && [str2 isEqualToString:@"."]) {
                     NSString *lrcStr = [lineArray lastObject];
+                    [lrcStr stringByReplacingOccurrencesOfString:@"xiami" withString:@""];
+                    [lrcStr stringByReplacingOccurrencesOfString:@"Xiami" withString:@""];
+                    [lrcStr stringByReplacingOccurrencesOfString:@"虾米" withString:@""];
                     NSString *timeStr = [[lineArray objectAtIndex:j] substringWithRange:NSMakeRange(1, 8)];//分割区间求歌词时间
                     //把时间 和 歌词 加入词典
                     NSDictionary *dic = [NSDictionary dictionaryWithObject:lrcStr forKey:[timeStr substringToIndex:5]];
@@ -949,6 +1033,19 @@
             [self.lyricArray removeObjectAtIndex:[larray indexOfObject:dic]];
         }
     }
+    if ([self.lyricArray count] == 0) {
+        while ([sourceLineText rangeOfString:@"  "].location != NSNotFound) {
+        sourceLineText = [sourceLineText stringByReplacingOccurrencesOfString:@"  " withString:@" "];
+        }
+        NSArray *tarray = [NSMutableArray arrayWithArray:[sourceLineText componentsSeparatedByString:@"\r"]];
+        for (long i = tarray.count-1; i>0; i--) {
+            NSString *string = tarray[i];
+            string = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            if ([string length] != 0 ) {
+                [self.lyricArray insertObject:[NSDictionary dictionaryWithObject:string forKey:@"s"] atIndex:0];
+            }
+        }
+    }
     [lyricTableView reloadData];
     return nil;
 }
@@ -967,17 +1064,19 @@
 {
     Globle *glob = [Globle shareGloble];
     if (audioPlayer.state == AudioPlayerStateStopped) {
-        if (glob.isPlaying) {
+        
+        if (self.playNext) {
             [_delegate radioView:self musicStop:isPlayBack];
         }
-        glob.isPlaying = NO;
+        self.playNext = NO;
     }else if (audioPlayer.state == AudioPlayerStateReady){
         
     }else if (audioPlayer.state == AudioPlayerStateRunning){
         
     }else if (audioPlayer.state == AudioPlayerStatePlaying){
+        [[NSNotificationCenter defaultCenter] postNotificationName:String_SetSongPlayNextNotification object:nil];
         glob.isPlaying = YES;
-        
+        self.playNext = YES;
     }else if (audioPlayer.state == AudioPlayerStateError){
          [_delegate radioView:self musicStop:isPlayBack];
         glob.isPlaying = YES;
@@ -1009,9 +1108,12 @@
         _progress.value = 0;
         return;
     }
+    NSLog(@"progress:%f",audioPlayer.progress);
     _progress.minimumValue = 0;
     _progress.maximumValue = audioPlayer.duration;
-    
+    if (audioPlayer.progress<3.0) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:String_SetSongInformationNotification object:nil userInfo:nil];
+    }
     [_progress setValue:audioPlayer.progress animated:YES];
     _currentPlaybackTime.attributedText =[self TimeformatFromSeconds:audioPlayer.progress total:audioPlayer.duration];
   
@@ -1110,6 +1212,7 @@
     musicPlayer *player = [musicPlayer shareClass];
     [player play];
     [[NSNotificationCenter defaultCenter] postNotificationName:String_SetSongPlayNextNotification object:nil];
+    
 }
 
 
@@ -1120,7 +1223,7 @@
     Globle *glob = [Globle shareGloble];
     _playMuzzik = nil;
     glob.isPause = NO;
-    glob.isPlaying = NO;
+    self.playNext = NO;
     [[NSNotificationCenter defaultCenter] postNotificationName:String_SetSongPlayNextNotification object:nil];
     CABasicAnimation *animation2 = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
     animation2.duration = 0.825; // 持续时间
@@ -1178,6 +1281,7 @@
                 [self setAlpha:0];
             } completion:^(BOOL finished) {
                 [UIView animateWithDuration:Play_timeinterval animations:^{
+                     glob.isPlaying = NO;
                     AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
                     UINavigationController *nac = (UINavigationController *)app.window.rootViewController;
                     if ([[[nac viewControllers] lastObject] isKindOfClass:[AMScrollingNavbarViewController class]]) {
@@ -1190,14 +1294,14 @@
             }];
         }];
         [UIView animateWithDuration:0.6 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+           
             [self.playView setFrame:CGRectMake(0, -366, SCREEN_WIDTH, 338)];
         } completion:nil];
     }
 
 }
 -(void)nextAction{
-    [_delegate radioView:self musicStop:isPlayBack];
-    [Globle shareGloble].isPlaying = YES;
+    [audioPlayer stop];
 }
 //收起播放器
 -(void)closeView{

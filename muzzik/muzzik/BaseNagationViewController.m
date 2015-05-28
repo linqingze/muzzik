@@ -110,7 +110,6 @@
         [self dismissViewControllerAnimated:YES completion:NULL];
     }
     
-    NSLog(@"我貌似点击了吧??");
 }
 
 - (void)longPressAction:(UILongPressGestureRecognizer *)longPressGesture

@@ -118,7 +118,10 @@
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     [Globle shareGloble].isApplicationEnterBackground = YES;
-    [[NSNotificationCenter defaultCenter] postNotificationName:String_SetSongInformationNotification object:nil userInfo:nil];
+    if([Globle shareGloble].isPlaying){
+        [[NSNotificationCenter defaultCenter] postNotificationName:String_SetSongInformationNotification object:nil userInfo:nil];
+    }
+    
 }
 
 - (BOOL)canBecomeFirstResponder
@@ -145,6 +148,7 @@
             case UIEventSubtypeRemoteControlPlay:
                 [player play];
                 NSLog(@"RemoteControlEvents: play");
+                [[NSNotificationCenter defaultCenter] postNotificationName:String_SetSongInformationNotification object:nil userInfo:nil];
                 break;
             case UIEventSubtypeRemoteControlNextTrack:
                 [player playNext];

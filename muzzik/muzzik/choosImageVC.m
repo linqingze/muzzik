@@ -13,7 +13,7 @@
 @implementation choosImageVC
 -(void)viewDidLoad{
     [super viewDidLoad];
-    [self initNagationBar:@"添加图片（2/3）" leftBtn:Constant_backImage rightBtn:0];
+    [self initNagationBar:@"添加图片（2/3）" leftBtn:Constant_backImage rightBtn:2];
      headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
     [headerView setBackgroundColor:[UIColor whiteColor]];
     UIImageView *defaultImage = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-25,SCREEN_WIDTH/2-50 , 50, 50)];
@@ -47,15 +47,11 @@
     NSString *itemStr = @"点击图片，";
     NSAttributedString *item = [self formatAttrItem:itemStr color:[UIColor colorWithHexString:@"a8acbb"] font:font];
     [text appendAttributedString:item];
-    NSString *itemStr1 = @"更换图片";
+    NSString *itemStr1 = @"更换";
     NSAttributedString *item1 = [self formatAttrItem:itemStr1 color:[UIColor colorWithHexString:@"366ab3"] font:font];
     [text appendAttributedString:item1];
     notifyLabel.attributedText = text;
     notifyLabel.textAlignment = NSTextAlignmentCenter;
-    UIButton *nextButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-67, SCREEN_HEIGHT-113, 54, 52)];
-    [nextButton setImage:[UIImage imageNamed:Image_Next] forState:UIControlStateNormal];
-    [self.view addSubview: nextButton];
-    [nextButton addTarget:self action:@selector(summitAction) forControlEvents:UIControlEventTouchUpInside];
 }
 -(void) getPicture{
     TWPhotoPickerController *photoPicker = [[TWPhotoPickerController alloc] init];
@@ -86,10 +82,9 @@
                                           attributes:attrDict];
     return attrStr;
 }
--(void) summitAction{
+-(void)rightBtnAction:(UIButton *)sender{
     ChooseLyricVC *chooselyricvc = [[ChooseLyricVC alloc] init];
     chooselyricvc.image = headImage.image;
     [self.navigationController pushViewController:chooselyricvc animated:YES];
-    
 }
 @end

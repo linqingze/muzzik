@@ -24,6 +24,7 @@
     UILabel *artist;
     BOOL isPrivate;
     UITextField *_textfield;
+    UIButton *AtButton;
 }
 @end
 
@@ -81,10 +82,9 @@
     artist.font = [UIFont boldSystemFontOfSize:17];
     [self.view addSubview:artist];
     
-    UIButton *nextButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-67, SCREEN_HEIGHT-113, 54, 52)];
-    [nextButton setImage:[UIImage imageNamed:Image_Next] forState:UIControlStateNormal];
-    [self.view addSubview: nextButton];
-    [nextButton addTarget:self action:@selector(nextAction) forControlEvents:UIControlEventTouchUpInside];
+    AtButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-100, 20, 44, 44)];
+    [AtButton setImage:[UIImage imageNamed:Image_At_button] forState:UIControlStateNormal];
+    [AtButton addTarget:self action:@selector(AtFriend) forControlEvents:UIControlEventTouchUpInside];
     UITapGestureRecognizer *tapOnview = [[UITapGestureRecognizer alloc] initWithTarget:self.view action:@selector(endEditing:)];
     [self.view addGestureRecognizer:tapOnview];
     // Do any additional setup after loading the view.
@@ -92,6 +92,7 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    [self.navigationController.view addSubview:AtButton];
     MuzzikObject *mobject = [MuzzikObject shareClass];
     mobject.isMessageVCOpen = YES;
     if (mobject.music) {
@@ -104,7 +105,10 @@
         mobject.tempmessage = nil;
     }
 }
-
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    [AtButton removeFromSuperview];
+}
 #pragma textView Delegate
 -(void)textViewDidChange:(UITextView *)textView{
     if (textview.text.length == 0) {
@@ -119,7 +123,7 @@
     if (textview.text.length>140) {
         textview.text =[textview.text substringToIndex:140];
     }
-    charaterLabel.text = [NSString stringWithFormat:@"%d",140 - textview.text.length ];
+    charaterLabel.text = [NSString stringWithFormat:@"%d",140 - textview.text.length];
     
 }
 #pragma -mark action
@@ -137,27 +141,28 @@
     TopicHotVC *topicvc = [[TopicHotVC alloc] init];
     [self.navigationController pushViewController:topicvc animated:YES];
 }
--(void) nextAction{
-    MuzzikObject *mobject = [MuzzikObject shareClass];
-    mobject.message = textview.text;
-    mobject.isPrivate = isPrivate;
-    choosImageVC *chooseimgevc = [[choosImageVC alloc] init];
-    [self.navigationController pushViewController:chooseimgevc animated:YES];
-}
+
 -(void) changsongAction{
     ChooseMusicVC *choosevc = [[ChooseMusicVC alloc] init];
     [self.navigationController pushViewController:choosevc animated:YES];
 }
 
-
+-(void)AtFriend{
+    FriendVC *friendvc = [[FriendVC alloc] init];
+    [self.navigationController pushViewController:friendvc animated:YES];
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 -(void)rightBtnAction:(UIButton *)sender{
-    FriendVC *friendvc = [[FriendVC alloc] init];
-    [self.navigationController pushViewController:friendvc animated:YES];
+    MuzzikObject *mobject = [MuzzikObject shareClass];
+    mobject.message = textview.text;
+    mobject.isPrivate = isPrivate;
+    choosImageVC *chooseimgevc = [[choosImageVC alloc] init];
+    [self.navigationController pushViewController:chooseimgevc animated:YES];
+    
 }
 -(void)tapAction:(UITapGestureRecognizer *)tap{
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"是否保存编辑信息至草稿箱" message:@"" delegate:self cancelButtonTitle:@"放弃" otherButtonTitles:nil];
