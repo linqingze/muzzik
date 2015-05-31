@@ -174,9 +174,11 @@
 #define Image_PlayershareImage              @"PlayershareImage"
 #define Image_PlayerstopImage               @"PlayerstopImage"
 #define Image_Notify_clockButton            @"notificationImage"
-#define Image_NotifynewnotificationImage          @"newnotificationImage"
-#define Image_user_placeHolder                @"User_PlaceHolder"
+#define Image_NotifynewnotificationImage    @"newnotificationImage"
+#define Image_user_placeHolder              @"User_PlaceHolder"
 #define Image_placeholdImage                @"placeholderImage"
+#define Image_playerbarcoverImage           @"playerbarcoverImage"
+#define Image_cover_CD                      @"cover1080"
 
 
 #define Parameter_Id              @"_id"

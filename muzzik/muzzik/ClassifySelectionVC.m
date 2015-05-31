@@ -22,7 +22,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self initNagationBar:@"选择风格" leftBtn:Constant_backImage rightBtn:0];
+    [self initNagationBar:@"选择风格" leftBtn:Constant_backImage rightBtn:3];
     UICollectionViewFlowLayout  *flowLayout=[[ UICollectionViewFlowLayout alloc ] init ];
     Fdictionary = [NSMutableDictionary dictionary];
     [flowLayout setScrollDirection : UICollectionViewScrollDirectionVertical];

@@ -49,6 +49,6 @@ typedef enum {
 - (void)unbindAlias:(NSString *)aAlias;
 -(void) downLoadLyricByMusic:(music *)music;
 - (void) sendImageContent:(UIImage *)image;
--(void) sendMusicContentByMuzzik:(muzzik*)localMuzzik scen:(int)scene;
+-(void) sendMusicContentByMuzzik:(muzzik*)localMuzzik scen:(int)scene image:(UIImage *)image;
 @end
 

@@ -72,9 +72,6 @@
     
     // Override point for customization after application launch.
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    Globle * globle = [Globle shareGloble];
-//    [globle copySqlitePath];
-    globle.isPlaying = YES;
     [ASIHTTPRequest clearSession];
     
     RootViewController *rootvc = [[RootViewController alloc] init];
@@ -558,14 +555,15 @@
                 }];
                 [request startAsynchronous];
                 UINavigationController *nac = (UINavigationController *)self.window.rootViewController;
-                for (UIViewController *vc in nac.viewControllers) {
-                    if ([vc isKindOfClass:[settingSystemVC class]]) {
-                        settingSystemVC *settingvc = (settingSystemVC*)vc;
-                        [settingvc reloadTable];
-                        break;
-                    }
+                UIViewController *vc  = [nac.viewControllers lastObject];
+                if ([vc isKindOfClass:[settingSystemVC class]]) {
+                    settingSystemVC *settingvc = (settingSystemVC*)vc;
+                    [settingvc reloadTable];
+                     [nac popViewControllerAnimated:YES];
+                }else {
+                     [nac popViewControllerAnimated:YES];
                 }
-                [nac popViewControllerAnimated:YES];
+               
         
             }
         }];
@@ -589,10 +587,10 @@
 - (void) sendImageContent:(UIImage *)image
 {
     WXMediaMessage *message = [WXMediaMessage message];
-    [message setThumbImage:image];
+    [message setThumbImage:nil];
     
     WXImageObject *ext = [WXImageObject object];
-    ext.imageData = UIImagePNGRepresentation(image);
+    ext.imageData = UIImageJPEGRepresentation(image, 1);
     message.mediaObject = ext;
     message.mediaTagName = @"WECHAT_TAG_JUMP_APP";
     message.messageExt = @"这是第三方带的测试字段";
@@ -606,16 +604,13 @@
     [WXApi sendReq:req];
 }
 
--(void) sendMusicContentByMuzzik:(muzzik*)localMuzzik scen:(int)scene;
+-(void) sendMusicContentByMuzzik:(muzzik*)localMuzzik scen:(int)scene image:(UIImage *)image
 {
     WXMediaMessage *message = [WXMediaMessage message];
     message.title = localMuzzik.music.name;
     message.description = localMuzzik.music.artist;
-    UIImageView *webimage = [[UIImageView alloc] init];
-    [webimage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,localMuzzik.MuzzikUser.avatar]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-     
-    }];
-    [message setThumbImage:webimage.image];
+
+    [message setThumbImage:image];
     WXMusicObject *ext = [WXMusicObject object];
     ext.musicUrl = [NSString stringWithFormat:@"%@%@",URL_Muzzik_SharePage,localMuzzik.muzzik_id];
     ext.musicDataUrl = [NSString stringWithFormat:@"%@%@",BaseURL_audio,localMuzzik.music.key];

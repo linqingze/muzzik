@@ -56,7 +56,7 @@ static IQLabelView *lastTouchedView;
     
     CGAffineTransform startTransform;
     CGRect beginBounds;
-    
+    BOOL allowPan;
     CAShapeLayer *border;
 }
 
@@ -359,7 +359,7 @@ static IQLabelView *lastTouchedView;
 //        self.point = self.smallImageview.center;
 //        allowPan = NO;
 //    }
-//    
+
 //}
 -(void)moveGesture:(UIPanGestureRecognizer *)recognizer
 {
@@ -371,6 +371,11 @@ static IQLabelView *lastTouchedView;
     if (recognizer.state == UIGestureRecognizerStateBegan) {
         beginningPoint = touchLocation;
         beginningCenter = self.center;
+        allowPan = YES;
+//        if (CGRectGetMinX(self.frame) >= 0  && CGRectGetMinY(self.frame) >= 0 && CGRectGetMaxY(self.frame)<=CGRectGetMaxY([self superview].frame)-64 && CGRectGetMaxX(self.frame)<=SCREEN_WIDTH)
+//        {
+//            allowPan = YES;
+//        }
         
 //        [self setCenter:CGPointMake(beginningCenter.x+(touchLocation.x-beginningPoint.x), beginningCenter.y+(touchLocation.y-beginningPoint.y))];
 
@@ -379,26 +384,54 @@ static IQLabelView *lastTouchedView;
         if([_delegate respondsToSelector:@selector(labelViewDidBeginEditing:)]) {
             [_delegate labelViewDidBeginEditing:self];
         }
-    } else if (recognizer.state == UIGestureRecognizerStateChanged && CGRectGetMaxY(self.frame)<=CGRectGetMaxY(self.superview.frame) && CGRectGetMinY(self.frame)>=CGRectGetMinY(self.superview.frame)) {
-        [self setCenter:CGPointMake(beginningCenter.x+(touchLocation.x-beginningPoint.x), beginningCenter.y+(touchLocation.y-beginningPoint.y))];
+    } else if (recognizer.state == UIGestureRecognizerStateChanged && allowPan == YES)
+    {
+        // 移动的操作
+        CGPoint translation = [recognizer translationInView:self];
+        self.center = CGPointMake(self.center.x + translation.x,
+                                  self.center.y + translation.y);
+        //判断左边超过区域
+        if ((self.center.x-CGRectGetWidth(self.frame)/2)<0) {
+            self.frame = CGRectMake(0, CGRectGetMinY(self.frame), CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
+        }
+        //判断上部超过区域
+        if ((self.center.y-CGRectGetHeight(self.frame)/2)<0) {
+            self.frame = CGRectMake(CGRectGetMinX(self.frame), 0, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
+        }
+        //判断上部和左边超过区域
+        if ((self.center.x-CGRectGetWidth(self.frame)/2)<0 && (self.center.y-CGRectGetHeight(self.frame)/2)<0) {
+            self.frame = CGRectMake(0, 0, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
+        }
+        //判断下部超过区域
+        if ((self.center.y+CGRectGetHeight(self.frame)/2)>CGRectGetMaxY([self superview].frame)) {
+            self.frame = CGRectMake(CGRectGetMinX(self.frame), CGRectGetMaxY([self superview].frame)-CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
+        }
+        //判断下部和左边超过区域
+        if ((self.center.y+CGRectGetHeight(self.frame)/2)>CGRectGetMaxY([self superview].frame)-64 && (self.center.x-CGRectGetWidth(self.frame)/2)<0) {
+            self.frame = CGRectMake(0, CGRectGetMaxY([self superview].frame)-64-CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
+        }
+        //判断右边超过区域
+        if ((self.center.x+CGRectGetWidth(self.frame)/2)>SCREEN_WIDTH) {
+            self.frame = CGRectMake(SCREEN_WIDTH-CGRectGetWidth(self.frame), CGRectGetMinY(self.frame), CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
+        }
+        //判断右边和上部超过区域
+        if ((self.center.x+CGRectGetWidth(self.frame)/2)>SCREEN_WIDTH && (self.center.y-CGRectGetHeight(self.frame)/2)<0) {
+            self.frame = CGRectMake(SCREEN_WIDTH-CGRectGetWidth(self.frame), 0, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
+        }
+        //判断右边和下部超过区域
+        if ((self.center.x+CGRectGetWidth(self.frame)/2)>SCREEN_WIDTH && (self.center.y+CGRectGetHeight(self.frame)/2)>CGRectGetMaxY([self superview].frame)-64) {
+            self.frame = CGRectMake(SCREEN_WIDTH-CGRectGetWidth(self.frame), CGRectGetMaxY([self superview].frame)-64-CGRectGetHeight(self.frame), CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
+        }
         
+        [recognizer setTranslation:CGPointZero
+                     inView:self];
         if([_delegate respondsToSelector:@selector(labelViewDidChangeEditing:)]) {
             [_delegate labelViewDidChangeEditing:self];
         }
+    
     } else if (recognizer.state == UIGestureRecognizerStateEnded) {
        // [self setCenter:CGPointMake(beginningCenter.x+(touchLocation.x-beginningPoint.x), beginningCenter.y+(touchLocation.y-beginningPoint.y))];
-        if (CGRectGetMaxX(self.frame)>CGRectGetMaxX(self.superview.frame)) {
-            self.frame = CGRectMake(CGRectGetMaxX(self.superview.frame)-self.frame.size.width, self.frame.origin.y, self.frame.size.width, self.frame.size.height);
-        }
-        if(CGRectGetMaxY(self.frame)>CGRectGetMaxY(self.superview.frame)){
-            self.frame = CGRectMake(self.frame.origin.x,CGRectGetMaxY(self.superview.frame)-self.frame.size.height, self.frame.size.width, self.frame.size.height);
-        }
-        if(CGRectGetMinX(self.frame)<CGRectGetMinX(self.superview.frame)){
-            self.frame = CGRectMake(0, self.frame.origin.y, self.frame.size.width, self.frame.size.height);
-        }
-        if(CGRectGetMinY(self.frame)<CGRectGetMinY(self.superview.frame)){
-            self.frame = CGRectMake(self.frame.origin.x,CGRectGetMinY(self.superview.frame), self.frame.size.width, self.frame.size.height);
-        }
+        allowPan = NO;
         if([_delegate respondsToSelector:@selector(labelViewDidEndEditing:)]) {
             [_delegate labelViewDidEndEditing:self];
         }
@@ -427,8 +460,8 @@ static IQLabelView *lastTouchedView;
         
         float angleDiff = deltaAngle - ang;
 //        float angleDiff = -ang;
-        [self setTransform:CGAffineTransformMakeRotation(-angleDiff)];
-        [self setNeedsDisplay];
+//        [self setTransform:CGAffineTransformMakeRotation(-angleDiff)];
+//        [self setNeedsDisplay];
         
         //Finding scale between current touchPoint and previous touchPoint
         double scale = sqrtf(CGPointGetDistance(center, touchLocation)/initialDistance);

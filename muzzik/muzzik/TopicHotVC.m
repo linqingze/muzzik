@@ -278,7 +278,7 @@
             
             if ([weakrequest responseStatusCode] == 200) {
                 NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
-                searchArray = [[TopicModel new] makeTopicssByMuzzikArray:[dic objectForKey:@"music"]];
+                searchArray = [[TopicModel new] makeTopicssByMuzzikArray:[dic objectForKey:@"topics"]];
                 if ([searchArray count] == 0) {
                     isNew = YES;
                     searchArray = [NSMutableArray arrayWithArray:@[[NSString stringWithFormat:@"添加新话题：#%@#",localsearchBar.text]]];

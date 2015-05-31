@@ -29,5 +29,6 @@
     self.lyricArray = nil;
     self.isPrivate = NO;
     self.isMessageVCOpen = NO;
+    self.lyricArray = nil;
 }
 @end

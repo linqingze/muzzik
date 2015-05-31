@@ -92,7 +92,7 @@
 }
 -(void)shareAction{
     NSLog(@"share");
-    [self.delegate shareActionWithMuzzik:self.songModel];
+    [self.delegate shareActionWithMuzzik:self.songModel image:[self.headImage imageForState:UIControlStateNormal] ];
 }
 -(void)commentAction{
     [self.delegate commentAtMuzzik:self.songModel];

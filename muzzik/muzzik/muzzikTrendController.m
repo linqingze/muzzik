@@ -36,7 +36,7 @@
     BOOL isPlaying;
     UIButton *newButton;
     NSString *lastId;
-    
+    UIImage *shareImage;
     
     //shareView
     muzzik *shareMuzzik;
@@ -198,7 +198,11 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self.view setNeedsLayout];
-
+    userInfo *user = [userInfo shareClass];
+    if (user.poMuzzik) {
+        [self.muzziks insertObject:user.poMuzzik atIndex:0];
+        user.poMuzzik = nil;
+    }
     [MytableView reloadData];
    // MytableView add
 
@@ -316,7 +320,7 @@
         if ([tempMuzzik.type isEqualToString:@"repost"] ){
             NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
             cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
-            if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.localMuzzik.muzzik_id] &&!glob.isPause) {
+            if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.localMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                 cell.isPlaying = YES;
             }else{
                 cell.isPlaying = NO;
@@ -379,7 +383,7 @@
         }else if([tempMuzzik.type isEqualToString:@"normal"]){
             NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
             cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
-            if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.localMuzzik.muzzik_id] &&!glob.isPause) {
+            if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.localMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                 cell.isPlaying = YES;
             }else{
                 cell.isPlaying = NO;
@@ -444,7 +448,7 @@
         }else if([tempMuzzik.type isEqualToString:@"muzzikCard"]){
             MuzzikCard *cell = [tableView dequeueReusableCellWithIdentifier:@"MuzzikCard" forIndexPath:indexPath];
             cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
-            if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.localMuzzik.muzzik_id] &&!glob.isPause) {
+            if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.localMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                 cell.isPlaying = YES;
             }else{
                 cell.isPlaying = NO;
@@ -489,7 +493,7 @@
         if ([tempMuzzik.type isEqualToString:@"repost"] ){
             NormalNoCardCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalNoCardCell" forIndexPath:indexPath];
             cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
-           if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.localMuzzik.muzzik_id] &&!glob.isPause) {
+           if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.localMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                 cell.isPlaying = YES;
             }else{
                 cell.isPlaying = NO;
@@ -557,7 +561,7 @@
         }else if([tempMuzzik.type isEqualToString:@"normal"]){
             NormalNoCardCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalNoCardCell" forIndexPath:indexPath];
             cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
-            if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.localMuzzik.muzzik_id] &&!glob.isPause) {
+            if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.localMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                 cell.isPlaying = YES;
             }else{
                 cell.isPlaying = NO;
@@ -627,7 +631,7 @@
         }else if([tempMuzzik.type isEqualToString:@"muzzikCard"]){
             MuzzikCard *cell = [tableView dequeueReusableCellWithIdentifier:@"MuzzikCard" forIndexPath:indexPath];
             cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
-            if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.localMuzzik.muzzik_id] &&!glob.isPause) {
+            if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.localMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                 cell.isPlaying = YES;
             }else{
                 cell.isPlaying = NO;
@@ -773,8 +777,9 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     }
     
 }
--(void)shareActionWithMuzzik:(muzzik *)localMuzzik{
+-(void)shareActionWithMuzzik:(muzzik *)localMuzzik image:(UIImage *) image{
     shareMuzzik = localMuzzik;
+    shareImage = image;
     [self addShareView];
 }
 -(void)reloadMuzzikSource{
@@ -1122,12 +1127,12 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 }
 -(void) shareTimeLine{
     AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    [app sendMusicContentByMuzzik:shareMuzzik scen:1];
+    [app sendMusicContentByMuzzik:shareMuzzik scen:1 image:shareImage];
 }
 
 -(void) shareWeChat{
     AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    [app sendMusicContentByMuzzik:shareMuzzik scen:0];
+    [app sendMusicContentByMuzzik:shareMuzzik scen:0 image:shareImage];
 }
 -(void)dataSourceMuzzikUpdate:(NSNotification *)notify{
     muzzik *tempMuzzik = (muzzik *)notify.object;

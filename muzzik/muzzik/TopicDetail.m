@@ -36,7 +36,7 @@
     NSString *topicName;
     NSString *lastId;
     NSString *headId;
-    
+    UIImage *shareImage;
     //shareView
     muzzik *shareMuzzik;
     UIView *shareViewFull;
@@ -692,9 +692,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     }];
     [requestForm startAsynchronous];
 }
--(void)shareActionWithMuzzik_id:(NSString *)muzzik_id atIndex:(NSInteger)index{
-    
-}
+
 -(void)reloadMuzzikSource{
     NSDictionary *requestDic;
     if ([lastId length]>0) {
@@ -815,8 +813,9 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 }
 
 
--(void)shareActionWithMuzzik:(muzzik *)localMuzzik{
+-(void)shareActionWithMuzzik:(muzzik *)localMuzzik image:(UIImage *) image{
     shareMuzzik = localMuzzik;
+    shareImage = image;
     [self addShareView];
 }
 
@@ -1055,12 +1054,12 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 }
 -(void) shareTimeLine{
     AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    [app sendMusicContentByMuzzik:shareMuzzik scen:1];
+    [app sendMusicContentByMuzzik:shareMuzzik scen:1 image:shareImage];
 }
 
 -(void) shareWeChat{
     AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    [app sendMusicContentByMuzzik:shareMuzzik scen:0];
+    [app sendMusicContentByMuzzik:shareMuzzik scen:0 image:shareImage];
 }
 -(void)dataSourceMuzzikUpdate:(NSNotification *)notify{
     muzzik *tempMuzzik = (muzzik *)notify.object;

@@ -1837,12 +1837,12 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 }
 -(void) shareTimeLine{
     AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    [app sendMusicContentByMuzzik:self.localmuzzik scen:1];
+    [app sendMusicContentByMuzzik:self.localmuzzik scen:1 image:[self.userImage imageForState:UIControlStateNormal]];
 }
 
 -(void) shareWeChat{
     AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    [app sendMusicContentByMuzzik:self.localmuzzik scen:0];
+    [app sendMusicContentByMuzzik:self.localmuzzik scen:0 image:[self.userImage imageForState:UIControlStateNormal]];
 }
 
 -(void)dataSourceUserUpdate:(NSNotification *)notify{

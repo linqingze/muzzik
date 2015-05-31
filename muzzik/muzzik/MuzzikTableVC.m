@@ -30,6 +30,7 @@
 #import "AppDelegate.h"
 #import <TencentOpenAPI/TencentOAuth.h>
 @interface MuzzikTableVC (){
+    UIImage *shareImage;
     int numberOfProducts;
     BOOL needsLoad;
     UITableView *MytableView;
@@ -790,9 +791,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     }];
     [requestForm startAsynchronous];
 }
--(void)shareActionWithMuzzik_id:(NSString *)muzzik_id atIndex:(NSInteger)index{
-    
-}
+
 -(void)reloadMuzzikSource{
     NSDictionary *requestDic;
     
@@ -955,11 +954,12 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 }
 
 
--(void)shareActionWithMuzzik:(muzzik *)localMuzzik{
+
+-(void)shareActionWithMuzzik:(muzzik *)localMuzzik image:(UIImage *) image{
     shareMuzzik = localMuzzik;
+    shareImage = image;
     [self addShareView];
 }
-
 -(void)SettingShareView{
     CGFloat screenWidth = SCREEN_WIDTH;
     
@@ -1195,12 +1195,12 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 }
 -(void) shareTimeLine{
     AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    [app sendMusicContentByMuzzik:shareMuzzik scen:1];
+    [app sendMusicContentByMuzzik:shareMuzzik scen:1 image:shareImage];
 }
 
 -(void) shareWeChat{
     AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    [app sendMusicContentByMuzzik:shareMuzzik scen:0];
+    [app sendMusicContentByMuzzik:shareMuzzik scen:0 image:shareImage];
 }
 -(void)dataSourceMuzzikUpdate:(NSNotification *)notify{
     muzzik *tempMuzzik = (muzzik *)notify.object;

@@ -7,8 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-
 @interface userInfo : NSObject
+@property (nonatomic,retain) muzzik *poMuzzik;
 @property (nonatomic,copy) NSString *token;
 @property (nonatomic,copy) NSString *uid;
 @property (nonatomic,copy) NSString *avatar;

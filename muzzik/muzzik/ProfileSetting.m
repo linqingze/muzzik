@@ -59,7 +59,7 @@
     [self.view addSubview:mainTableView];
     mainTableView.delegate = self;
     frameHeight = 152;
-    [self initNagationBar:@"编辑个人资料" leftBtn:Constant_backImage rightBtn:0];
+    [self initNagationBar:@"编辑个人资料" leftBtn:Constant_backImage rightBtn:3];
     headimage = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-38, 16, 76, 76)];
     [headimage setImage:[UIImage imageNamed:Image_settingavatarscover] forState:UIControlStateNormal];
     headimage.layer.cornerRadius = 38;

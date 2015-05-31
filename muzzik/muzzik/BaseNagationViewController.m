@@ -84,7 +84,7 @@
     
     if ([[self btnImage:rightImge] isKindOfClass:[UIImage class]]) {
         UIImage *image = (UIImage *)[self btnImage:rightImge];
-        [rightBtn setImageEdgeInsets:UIEdgeInsetsMake(2,25,2,0)];
+        //[rightBtn setImageEdgeInsets:UIEdgeInsetsMake(2,25,2,0)];
         [rightBtn setImage:image forState:(UIControlStateNormal)];
         
     }else if ([[self btnImage:rightImge] isKindOfClass:[NSString class]]) {

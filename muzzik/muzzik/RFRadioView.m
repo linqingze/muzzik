@@ -76,6 +76,9 @@
         showButton = [[UIButton alloc] initWithFrame:CGRectMake(8, 21, 40, 40)];
         [showButton setImage:[UIImage imageNamed:Image_PlayercontrolImage] forState:UIControlStateNormal];
         [showButton addTarget:self action:@selector(showFullPlayer:) forControlEvents:UIControlEventTouchUpInside];
+        UIImageView *coverBar = [[UIImageView alloc] initWithFrame:CGRectMake(0, 20, 63, 44)];
+        [coverBar setImage:[UIImage imageNamed:Image_playerbarcoverImage]];
+        [self addSubview:coverBar];
         [self addSubview: showButton];
         
         
@@ -945,22 +948,22 @@
         
         
         UIColor *color;
-        if ([playMuzzik.color intValue] == 1) {
-            color = Color_Action_Button_1;
+        if ([playMuzzik.color intValue] == 2) {
+            color = Color_Action_Button_2;
             if (playMuzzik.ismoved) {
                 [movedButton setImage:[UIImage imageNamed:Image_PlayeryellowlikedImage] forState:UIControlStateNormal];
             }else{
                 [movedButton setImage:[UIImage imageNamed:Image_PlayeryellowlikeImage] forState:UIControlStateNormal];
             }
-        }else if ([playMuzzik.color intValue] == 2){
-            color = Color_Action_Button_2;
+        }else if ([playMuzzik.color intValue] == 3){
+            color = Color_Action_Button_3;
             if (playMuzzik.ismoved) {
                 [movedButton setImage:[UIImage imageNamed:Image_PlayerbluelikedImage] forState:UIControlStateNormal];
             }else{
                 [movedButton setImage:[UIImage imageNamed:Image_PlayerbluelikeImage] forState:UIControlStateNormal];
             }
         }else{
-            color = Color_Action_Button_3;
+            color = Color_Action_Button_1;
             if (playMuzzik.ismoved) {
                 [movedButton setImage:[UIImage imageNamed:Image_PlayerredlikedImage] forState:UIControlStateNormal];
             }else{
@@ -986,11 +989,11 @@
     }
 
 }
--(NSString*) parseLrcLine:(NSString *)sourceLineText
+-(void) parseLrcLine:(NSString *)sourceLineText
 {
     [self.lyricArray removeAllObjects];
     if (!sourceLineText || sourceLineText.length <= 0)
-        return nil;
+        return ;
     NSArray *array = [sourceLineText componentsSeparatedByString:@"\n"];
     for (int i = 0; i < array.count; i++) {
         NSString *tempStr = [array objectAtIndex:i];
@@ -1034,9 +1037,6 @@
         }
     }
     if ([self.lyricArray count] == 0) {
-        while ([sourceLineText rangeOfString:@"  "].location != NSNotFound) {
-        sourceLineText = [sourceLineText stringByReplacingOccurrencesOfString:@"  " withString:@" "];
-        }
         NSArray *tarray = [NSMutableArray arrayWithArray:[sourceLineText componentsSeparatedByString:@"\r"]];
         for (long i = tarray.count-1; i>0; i--) {
             NSString *string = tarray[i];
@@ -1047,7 +1047,6 @@
         }
     }
     [lyricTableView reloadData];
-    return nil;
 }
 
 -(void) seek
@@ -1083,21 +1082,22 @@
     }
     
     [smallPlayButton setImage:glob.isPlaying&&!glob.isPause?[UIImage imageNamed:Image_PlayerstopImage]:[UIImage imageNamed:Image_PlayerplayImage] forState:UIControlStateNormal];
-    if (glob.isPause) {
-        if ([_playMuzzik.color intValue] == 1) {
-            [playButton setImage:[UIImage imageNamed:Image_PlayeryellowcircleplayImage] forState:UIControlStateNormal];
-        }else if ([_playMuzzik.color intValue] == 2) {
-            [playButton setImage:[UIImage imageNamed:Image_PlayerbluecircleplayImage] forState:UIControlStateNormal];
-        }else{
-            [playButton setImage:[UIImage imageNamed:Image_PlayerredcircleplayImage] forState:UIControlStateNormal];
-        }
-    }else{
-        if ([_playMuzzik.color intValue] == 1) {
+    if (!glob.isPause && glob.isPlaying) {
+        if ([_playMuzzik.color intValue] == 2) {
             [playButton setImage:[UIImage imageNamed:Image_PlayeryellowcirclestopImage] forState:UIControlStateNormal];
-        }else if ([_playMuzzik.color intValue] == 2) {
+        }else if ([_playMuzzik.color intValue] == 3) {
             [playButton setImage:[UIImage imageNamed:Image_PlayerbluecirclestopImage] forState:UIControlStateNormal];
         }else{
             [playButton setImage:[UIImage imageNamed:Image_PlayerredcirclestopImage] forState:UIControlStateNormal];
+        }
+        
+    }else{
+        if ([_playMuzzik.color intValue] == 2) {
+            [playButton setImage:[UIImage imageNamed:Image_PlayeryellowcircleplayImage] forState:UIControlStateNormal];
+        }else if ([_playMuzzik.color intValue] == 3) {
+            [playButton setImage:[UIImage imageNamed:Image_PlayerbluecircleplayImage] forState:UIControlStateNormal];
+        }else{
+            [playButton setImage:[UIImage imageNamed:Image_PlayerredcircleplayImage] forState:UIControlStateNormal];
         }
     }
     
@@ -1551,14 +1551,14 @@
         _playMuzzik.shares = tempMuzzik.shares;
         _playMuzzik.comments = tempMuzzik.comments;
         UIColor *color;
-        if ([_playMuzzik.color intValue] == 1) {
+        if ([_playMuzzik.color intValue] == 2) {
             color = Color_Action_Button_1;
             if (_playMuzzik.ismoved) {
                 [movedButton setImage:[UIImage imageNamed:Image_PlayeryellowlikedImage] forState:UIControlStateNormal];
             }else{
                 [movedButton setImage:[UIImage imageNamed:Image_PlayeryellowlikeImage] forState:UIControlStateNormal];
             }
-        }else if ([_playMuzzik.color intValue] == 2){
+        }else if ([_playMuzzik.color intValue] == 3){
             color = Color_Action_Button_2;
             if (_playMuzzik.ismoved) {
                 [movedButton setImage:[UIImage imageNamed:Image_PlayerbluelikedImage] forState:UIControlStateNormal];

@@ -188,7 +188,8 @@ static NSMutableArray *playList;
             [self playSongWithSongModel:[self.MusicArray objectAtIndex:self.index] Title:nil];
         }else{
             [[AudioPlayer shareClass] stop];
-            
+            globle.isPlaying = NO;
+            [[NSNotificationCenter defaultCenter] postNotificationName:String_SetSongPlayNextNotification object:nil];
         }
         
     }

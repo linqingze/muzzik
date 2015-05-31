@@ -40,12 +40,12 @@
         NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:text
                                                                              attributes:@{ NSFontAttributeName : font }];
         
-        CGRect rectSize = [attributedText boundingRectWithSize:CGSizeMake(CGRectGetWidth(newBounds)-24, CGFLOAT_MAX)
+        CGRect rectSize = [attributedText boundingRectWithSize:CGSizeMake(CGRectGetWidth(newBounds)-10, CGFLOAT_MAX)
                                                        options:NSStringDrawingUsesLineFragmentOrigin
                                                        context:nil];
         
         if (CGRectGetHeight(rectSize) <= CGRectGetHeight(newBounds)) {
-            ((IQLabelView *)self.superview).fontSize = (CGFloat)i-1;
+            ((IQLabelView *)self.superview).fontSize = (CGFloat)i-3  ;
             break;
         }
     }
@@ -58,15 +58,15 @@
     NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:text
                                                                          attributes:@{ NSFontAttributeName : font }];
     
-    CGRect rectSize = [attributedText boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGRectGetHeight(self.frame)-24)
+    CGRect rectSize = [attributedText boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGRectGetHeight(self.frame)-10)
                                                    options:NSStringDrawingUsesLineFragmentOrigin
                                                    context:nil];
     
-    float w1 = (ceilf(rectSize.size.width) + 24 < 50) ? self.frame.size.width : ceilf(rectSize.size.width) + 24;
-    float h1 =(ceilf(rectSize.size.height) + 24 < 50) ? 50 : ceilf(rectSize.size.height) + 24;
+    float w1 = (ceilf(rectSize.size.width) + 10 < 50) ? self.frame.size.width : ceilf(rectSize.size.width) + 10;
+    float h1 =(ceilf(rectSize.size.height) + 10 < 50) ? 50 : ceilf(rectSize.size.height) + 10;
     
     CGRect viewFrame = self.superview.bounds;
-    viewFrame.size.width = w1 + 24;
+    viewFrame.size.width = w1 + 10;
     viewFrame.size.height = h1;
     self.superview.bounds = viewFrame;
 }

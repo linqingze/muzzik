@@ -23,7 +23,7 @@
 -(void)downMusicWithModel:(muzzik *)model;
 -(void)moveMuzzik:(muzzik *) tempMuzzik;
 -(void)repostActionWithMuzzik:(muzzik *) tempMuzzik;
--(void)shareActionWithMuzzik:(muzzik *)localMuzzik;
+-(void)shareActionWithMuzzik:(muzzik *)localMuzzik image:(UIImage *)image;
 -(void)reloadMuzzikSource;
 -(void)payAttention:(NSString *)uid;
 -(void)showFollow:(NSString *)uid;

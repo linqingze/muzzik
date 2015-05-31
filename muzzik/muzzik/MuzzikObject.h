@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @interface MuzzikObject : NSObject
+
 @property (nonatomic,retain) music *music;
 @property (nonatomic,copy) NSString *message;
 @property (nonatomic,copy) NSString *tempmessage;   //保存话题的选择的临时字段，添加到文本后，清空该字段数据。

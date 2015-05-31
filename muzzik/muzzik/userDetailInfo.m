@@ -32,6 +32,7 @@
     UIButton *shareToQQZoneButton;
     CGFloat maxScaleY;
     BOOL isDataSourceUpdated;
+    UIImage *shareImage;
 }
 @property (nonatomic,retain) NSMutableDictionary *profileDic;
 @property (nonatomic,retain) NSMutableArray *muzziks;
@@ -1023,8 +1024,9 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 }
 
 
--(void)shareActionWithMuzzik:(muzzik *)localMuzzik{
+-(void)shareActionWithMuzzik:(muzzik *)localMuzzik image:(UIImage *) image{
     shareMuzzik = localMuzzik;
+    shareImage = image;
     [self addShareView];
 }
 
@@ -1263,12 +1265,12 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 }
 -(void) shareTimeLine{
     AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    [app sendMusicContentByMuzzik:shareMuzzik scen:1];
+    [app sendMusicContentByMuzzik:shareMuzzik scen:1 image:shareImage];
 }
 
 -(void) shareWeChat{
     AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    [app sendMusicContentByMuzzik:shareMuzzik scen:0];
+    [app sendMusicContentByMuzzik:shareMuzzik scen:0 image:shareImage];
 }
 
 -(void)dataSourceMuzzikUpdate:(NSNotification *)notify{
