@@ -10,6 +10,7 @@
 #import "TTTAttributedLabel.h"
 #import "muzzikTrendController.h"
 @interface NormalCell : UITableViewCell
+@property (nonatomic,retain) UIView *innerView;
 @property (nonatomic) UILabel *repostUserName;                 //转发用户名
 @property (nonatomic) UIImageView *repostImage;                //muzzik类型图标
 @property (nonatomic) UIButton *userImage;                  //用户头像

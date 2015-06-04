@@ -72,7 +72,7 @@
     [MytableView  setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     MytableView.dataSource = self;
     MytableView.delegate = self;
-    [MytableView setBackgroundColor:Color_line_2];
+    [MytableView setBackgroundColor:[UIColor whiteColor]];
     [self.view addSubview:MytableView];
     [MytableView registerClass:[NormalCell class] forCellReuseIdentifier:@"NormalCell"];
     [MytableView registerClass:[NormalNoCardCell class] forCellReuseIdentifier:@"NormalNoCardCell"];
@@ -254,13 +254,14 @@
     TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(75, 0, SCREEN_WIDTH-110, 500)];
     muzzik *tempMuzzik = [self.muzziks objectAtIndex:indexPath.row];
     [label setText:tempMuzzik.message];
+    [label setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
     CGFloat textHeight = [MuzzikItem heightForLabel:label WithText:label.text];
     if (textHeight>limitHeight) {
         if ([tempMuzzik.image length]>0) {
             if ([tempMuzzik.type isEqualToString:@"normal"] ||[tempMuzzik.type isEqualToString:@"repost"]) {
-                return (int)(240+limitHeight+SCREEN_WIDTH*3/4);
+                return (int)(240+limitHeight+SCREEN_WIDTH*3/4)+6;
             }else if([tempMuzzik.type isEqualToString:@"muzzikCard"]){
-                return SCREEN_WIDTH*9/8+textHeight+36;
+                return SCREEN_WIDTH*9/8+textHeight+36+6;
             }else if ([tempMuzzik.type isEqualToString:@"userCard"] ){
                 return limitHeight;
             }else {
@@ -269,7 +270,7 @@
         }
         else{
             if ([tempMuzzik.type isEqualToString:@"normal"] ||[tempMuzzik.type isEqualToString:@"repost"]) {
-                return 240+limitHeight;
+                return 240+limitHeight+6;
             }else if([tempMuzzik.type isEqualToString:@"muzzikCard"]){
                 return limitHeight;
             }else if ([tempMuzzik.type isEqualToString:@"userCard"] ){
@@ -281,9 +282,9 @@
     }else{
         if ([tempMuzzik.image length]>0) {
             if ([tempMuzzik.type isEqualToString:@"normal"] ||[tempMuzzik.type isEqualToString:@"repost"]) {
-                return (int)(240+textHeight+SCREEN_WIDTH*3/4);
+                return (int)(240+textHeight+SCREEN_WIDTH*3/4)+10;
             }else if([tempMuzzik.type isEqualToString:@"muzzikCard"]){
-                return SCREEN_WIDTH*9/8+textHeight+36;
+                return SCREEN_WIDTH*9/8+textHeight+36+6;
             }else if ([tempMuzzik.type isEqualToString:@"userCard"] ){
                 return limitHeight;
             }else {
@@ -292,7 +293,7 @@
         }
         else{
             if ([tempMuzzik.type isEqualToString:@"normal"] ||[tempMuzzik.type isEqualToString:@"repost"]) {
-                return (int)(240+textHeight);
+                return (int)(240+textHeight)+10;
             }else if([tempMuzzik.type isEqualToString:@"muzzikCard"]){
                 return limitHeight;
             }else if ([tempMuzzik.type isEqualToString:@"userCard"] ){
@@ -345,13 +346,14 @@
             cell.isReposted = tempMuzzik.isReposted;
             cell.index = indexPath.row;
             cell.muzzikMessage.delegate = self;
-            CGSize msize = [cell.muzzikMessage sizeThatFits:CGSizeMake(SCREEN_WIDTH-110, 2000)];
-            if (msize.height>limitHeight) {
-                [cell.muzzikMessage setFrame:CGRectMake((int)floor(cell.muzzikMessage.frame.origin.x), (int)floor(cell.muzzikMessage.frame.origin.y), msize.width, limitHeight)];
+            CGFloat textHeight = [MuzzikItem heightForLabel:cell.muzzikMessage WithText:cell.muzzikMessage.text];
+            if (textHeight>limitHeight) {
+                [cell.muzzikMessage setFrame:CGRectMake((int)floor(cell.muzzikMessage.frame.origin.x), (int)floor(cell.muzzikMessage.frame.origin.y), cell.muzzikMessage.frame.size.width, limitHeight)];
             }else{
-                [cell.muzzikMessage setFrame:CGRectMake((int)floor(cell.muzzikMessage.frame.origin.x), (int)floor(cell.muzzikMessage.frame.origin.y), msize.width, msize.height)];
+                [cell.muzzikMessage setFrame:CGRectMake((int)floor(cell.muzzikMessage.frame.origin.x), (int)floor(cell.muzzikMessage.frame.origin.y), cell.muzzikMessage.frame.size.width, textHeight)];
             }
             [cell.musicPlayView setFrame:CGRectMake(0, (int)floor(95+cell.muzzikMessage.bounds.size.height), SCREEN_WIDTH, cell.musicPlayView.frame.size.height)];
+            [cell.innerView setFrame:CGRectMake(cell.innerView.frame.origin.x, cell.innerView.frame.origin.y, SCREEN_WIDTH-20, 95+cell.muzzikMessage.bounds.size.height+cell.musicPlayView.frame.size.height)];
             cell.musicArtist.text =tempMuzzik.music.artist;
             cell.musicName.text = tempMuzzik.music.name;
             cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.repostDate];
@@ -410,13 +412,15 @@
             cell.isReposted = tempMuzzik.isReposted;
             cell.index = indexPath.row;
             cell.muzzikMessage.delegate = self;
-            CGSize msize = [cell.muzzikMessage sizeThatFits:CGSizeMake(SCREEN_WIDTH-110, 2000)];
-            if (msize.height>limitHeight) {
-                [cell.muzzikMessage setFrame:CGRectMake((int)floor(cell.muzzikMessage.frame.origin.x), (int)floor(cell.muzzikMessage.frame.origin.y), msize.width, limitHeight)];
+            CGFloat textHeight = [MuzzikItem heightForLabel:cell.muzzikMessage WithText:cell.muzzikMessage.text];
+            if (textHeight>limitHeight) {
+                [cell.muzzikMessage setFrame:CGRectMake((int)floor(cell.muzzikMessage.frame.origin.x), (int)floor(cell.muzzikMessage.frame.origin.y), cell.muzzikMessage.frame.size.width, limitHeight)];
             }else{
-                [cell.muzzikMessage setFrame:CGRectMake((int)floor(cell.muzzikMessage.frame.origin.x), (int)floor(cell.muzzikMessage.frame.origin.y), msize.width, msize.height)];
+                [cell.muzzikMessage setFrame:CGRectMake((int)floor(cell.muzzikMessage.frame.origin.x), (int)floor(cell.muzzikMessage.frame.origin.y), cell.muzzikMessage.frame.size.width, textHeight)];
             }
             [cell.musicPlayView setFrame:CGRectMake(0,(int) floor(95+cell.muzzikMessage.bounds.size.height), SCREEN_WIDTH, cell.musicPlayView.frame.size.height)];
+            
+            [cell.innerView setFrame:CGRectMake(cell.innerView.frame.origin.x, cell.innerView.frame.origin.y, SCREEN_WIDTH-20, 95+cell.muzzikMessage.bounds.size.height+cell.musicPlayView.frame.size.height)];
             cell.musicArtist.text =tempMuzzik.music.artist;
             cell.musicName.text = tempMuzzik.music.name;
             cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.date];
@@ -523,13 +527,14 @@
             cell.isReposted = tempMuzzik.isReposted;
             cell.index = indexPath.row;
             cell.muzzikMessage.delegate = self;
-            CGSize msize = [cell.muzzikMessage sizeThatFits:CGSizeMake(SCREEN_WIDTH-110, 2000)];
-            if (msize.height>limitHeight) {
-                [cell.muzzikMessage setFrame:CGRectMake((int)floor(cell.muzzikMessage.frame.origin.x),(int) floor(cell.muzzikMessage.frame.origin.y), msize.width, limitHeight)];
+            CGFloat textHeight = [MuzzikItem heightForLabel:cell.muzzikMessage WithText:cell.muzzikMessage.text];
+            if (textHeight>limitHeight) {
+                [cell.muzzikMessage setFrame:CGRectMake((int)floor(cell.muzzikMessage.frame.origin.x), (int)floor(cell.muzzikMessage.frame.origin.y), cell.muzzikMessage.frame.size.width, limitHeight)];
             }else{
-                [cell.muzzikMessage setFrame:CGRectMake((int)floor(cell.muzzikMessage.frame.origin.x), (int)floor(cell.muzzikMessage.frame.origin.y), msize.width, msize.height)];
+                [cell.muzzikMessage setFrame:CGRectMake((int)floor(cell.muzzikMessage.frame.origin.x), (int)floor(cell.muzzikMessage.frame.origin.y), cell.muzzikMessage.frame.size.width, textHeight)];
             }
             [cell.musicPlayView setFrame:CGRectMake(0,(int)floor( 95+cell.muzzikMessage.bounds.size.height), SCREEN_WIDTH, (int)cell.musicPlayView.frame.size.height)];
+            [cell.innerView setFrame:CGRectMake(cell.innerView.frame.origin.x, cell.innerView.frame.origin.y, SCREEN_WIDTH-20, 95+cell.muzzikMessage.bounds.size.height+cell.musicPlayView.frame.size.height)];
             cell.musicArtist.text =tempMuzzik.music.artist;
             cell.musicName.text = tempMuzzik.music.name;
             cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.repostDate];
@@ -592,14 +597,14 @@
             cell.isReposted = tempMuzzik.isReposted;
             cell.index = indexPath.row;
             cell.muzzikMessage.delegate = self;
-            CGSize msize = [cell.muzzikMessage sizeThatFits:CGSizeMake(SCREEN_WIDTH-110, 2000)];
-            
-            if (msize.height>limitHeight) {
-                [cell.muzzikMessage setFrame:CGRectMake((int)floor(cell.muzzikMessage.frame.origin.x),(int) floor(cell.muzzikMessage.frame.origin.y), msize.width, limitHeight)];
+            CGFloat textHeight = [MuzzikItem heightForLabel:cell.muzzikMessage WithText:cell.muzzikMessage.text];
+            if (textHeight>limitHeight) {
+                [cell.muzzikMessage setFrame:CGRectMake((int)floor(cell.muzzikMessage.frame.origin.x), (int)floor(cell.muzzikMessage.frame.origin.y), cell.muzzikMessage.frame.size.width, limitHeight)];
             }else{
-                [cell.muzzikMessage setFrame:CGRectMake((int)floor(cell.muzzikMessage.frame.origin.x), (int)floor(cell.muzzikMessage.frame.origin.y), msize.width, msize.height)];
+                [cell.muzzikMessage setFrame:CGRectMake((int)floor(cell.muzzikMessage.frame.origin.x), (int)floor(cell.muzzikMessage.frame.origin.y), cell.muzzikMessage.frame.size.width, textHeight)];
             }
             [cell.musicPlayView setFrame:CGRectMake(0, (int)floor(95+cell.muzzikMessage.bounds.size.height), SCREEN_WIDTH, floor(cell.musicPlayView.frame.size.height))];
+            [cell.innerView setFrame:CGRectMake(cell.innerView.frame.origin.x, cell.innerView.frame.origin.y, SCREEN_WIDTH-20, 95+cell.muzzikMessage.bounds.size.height+cell.musicPlayView.frame.size.height)];
             cell.musicArtist.text =tempMuzzik.music.artist;
             cell.musicName.text = tempMuzzik.music.name;
             cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.date];

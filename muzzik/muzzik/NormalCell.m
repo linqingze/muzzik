@@ -20,64 +20,68 @@
     return self;
 }
 -(void)setup{
-    [self setBackgroundColor:[UIColor whiteColor]];
+    [self setBackgroundColor:Color_line_1];
     [self setSelectionStyle:UITableViewCellSelectionStyleNone];
-    _userImage = [[UIButton alloc] initWithFrame:CGRectMake(16, 36, 50, 50)];
+    _innerView = [[UIView alloc] initWithFrame:CGRectMake(innerWidth, innerHeight, SCREEN_WIDTH-2*innerWidth, 300)];
+    _innerView.layer.cornerRadius = 5;
+    _innerView.clipsToBounds = YES;
+    [self addSubview:_innerView];
+    [_innerView setBackgroundColor:[UIColor  whiteColor]];
+    _userImage = [[UIButton alloc] initWithFrame:CGRectMake(16-innerWidth, 36, 50, 50)];
     [_userImage addTarget:self action:@selector(goToUser) forControlEvents:UIControlEventTouchUpInside];
     _userImage.layer.cornerRadius = 25;
     _userImage.layer.masksToBounds = YES;
-    [self.userImage setAlpha:0];
     //    _userImage.layer.borderColor = [UIColor whiteColor].CGColor;
     //    _userImage.layer.borderWidth = 2.0f;
-    [self addSubview:_userImage];
-    _repostImage = [[UIImageView alloc] initWithFrame:CGRectMake(66, 36, 8, 8)];
-    [self addSubview:_repostImage];
-    _repostUserName = [[UILabel alloc] initWithFrame:CGRectMake(80, 35, 150, 10)];
+    [_innerView addSubview:_userImage];
+    _repostImage = [[UIImageView alloc] initWithFrame:CGRectMake(66-innerWidth, 36, 8, 8)];
+    [_innerView addSubview:_repostImage];
+    _repostUserName = [[UILabel alloc] initWithFrame:CGRectMake(80-innerWidth, 35, 150, 10)];
     [_repostUserName setTextColor:Color_Additional_5];
     [_repostUserName setFont:[UIFont fontWithName:Font_Next_DemiBold size:8]];
-    [self addSubview:_repostUserName];
+    [_innerView addSubview:_repostUserName];
     
     _songModel = [muzzik new];
-    _timeStamp = [[UILabel alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-130, 15, 96, 9)];
+    _timeStamp = [[UILabel alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-130-innerWidth, 15, 96, 9)];
     [_timeStamp setTextColor:Color_Additional_5];
     [_timeStamp setFont:[UIFont fontWithName:Font_Next_medium size:9]];
     _timeStamp.textAlignment = NSTextAlignmentRight;
-    [self.contentView addSubview:_timeStamp];
-    _timeImage = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-30, 15, 9, 9)];
+    [_innerView addSubview:_timeStamp];
+    _timeImage = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-30-innerWidth, 15, 9, 9)];
     [_timeImage setImage:[UIImage imageNamed:Image_timeImage]];
-    [self.contentView addSubview:_timeImage];
+    [_innerView addSubview:_timeImage];
     
-    _userName = [[UILabel alloc] initWithFrame:CGRectMake(80, 55, 180, 20)];
+    _userName = [[UILabel alloc] initWithFrame:CGRectMake(80-innerWidth, 55, 180, 20)];
     //  [_userName setTextColor:Color_LightGray];
     [_userName setFont:[UIFont fontWithName:Font_Next_DemiBold size:15]];
     [_userName setTextColor:Color_Text_1];
-    [self.contentView addSubview:_userName];
-    _muzzikMessage = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake( 80, 83, SCREEN_WIDTH-110, 2000)];
+    [_innerView addSubview:_userName];
+    _muzzikMessage = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake( 80-innerWidth, 83, SCREEN_WIDTH-110, 2000)];
     [_muzzikMessage setTextColor:Color_Text_1];
     [_muzzikMessage setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
-    [self.contentView addSubview:_muzzikMessage];
-    _musicPlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 75, SCREEN_WIDTH, 145)];
+    [_innerView addSubview:_muzzikMessage];
+    _musicPlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 75, SCREEN_WIDTH-2*innerWidth, 145)];
     [_musicPlayView setBackgroundColor:[UIColor whiteColor]];
-    [self.contentView addSubview:_musicPlayView];
-    _progress = [[UIProgressView alloc] initWithFrame:CGRectMake(16, 0, SCREEN_WIDTH-32, 1)];
+    [_innerView addSubview:_musicPlayView];
+    _progress = [[UIProgressView alloc] initWithFrame:CGRectMake(16-innerWidth, 0, SCREEN_WIDTH-32, 1)];
     [_progress setProgress:1];
     [_musicPlayView addSubview:_progress];
-    _musicName = [[UILabel alloc] initWithFrame:CGRectMake(80, 12, SCREEN_WIDTH-150, 20)];
+    _musicName = [[UILabel alloc] initWithFrame:CGRectMake(80-innerWidth, 12, SCREEN_WIDTH-150, 20)];
     [_musicName setFont:[UIFont fontWithName:Font_Next_Bold size:16]];
     [_musicPlayView addSubview:_musicName];
-    _musicArtist = [[UILabel alloc] initWithFrame:CGRectMake(80, 31, SCREEN_WIDTH-150, 25)];
+    _musicArtist = [[UILabel alloc] initWithFrame:CGRectMake(80-innerWidth, 31, SCREEN_WIDTH-150, 25)];
     [_musicArtist setFont:[UIFont fontWithName:Font_Next_Bold size:13]];
     [_musicPlayView addSubview:_musicArtist];
-    _likeButton = [[UIButton alloc] initWithFrame:CGRectMake(16, 13, 34, 34)];
+    _likeButton = [[UIButton alloc] initWithFrame:CGRectMake(11, 13, 34, 34)];
     [_likeButton addTarget:self action:@selector(moveAction) forControlEvents:UIControlEventTouchUpInside];
     [_musicPlayView addSubview:_likeButton];
     
-    _playButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-50, 13, 34, 34)];
+    _playButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-50-innerWidth, 13, 34, 34)];
 
     [_playButton addTarget:self action:@selector(playMusicAction:) forControlEvents:UIControlEventTouchUpInside];
     [_musicPlayView addSubview:_playButton];
     
-    _upperLine = [[UIImageView alloc] initWithFrame:CGRectMake((int)SCREEN_WIDTH/8, 60, SCREEN_WIDTH*3/4, 1)];
+    _upperLine = [[UIImageView alloc] initWithFrame:CGRectMake((int)SCREEN_WIDTH/8, 60, SCREEN_WIDTH*3/4-10, 1)];
     [_upperLine setImage:[UIImage imageNamed:Image_lineImage]];
     [_musicPlayView addSubview:_upperLine];
     
@@ -119,7 +123,7 @@
     
     
     
-    _downLine = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/8, 100, SCREEN_WIDTH*3/4, 1)];
+    _downLine = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/8-innerWidth, 100, SCREEN_WIDTH*3/4, 1)];
     [_downLine setImage:[UIImage imageNamed:Image_lineImage]];
     [_musicPlayView addSubview:_downLine];
     
@@ -137,7 +141,6 @@
     [_commentButton setImage:[UIImage imageNamed:Image_replyImage] forState:UIControlStateNormal];
     [_commentButton addTarget:self action:@selector(commentAction) forControlEvents:UIControlEventTouchUpInside];
     [_musicPlayView addSubview:_commentButton];
-    [MuzzikItem addLineOnView:_musicPlayView heightPoint:145 toLeft:16 toRight:16 withColor:Color_line_1];
 }
 -(void)downloadMusicAction:(id)sender{
     NSLog(@"download");

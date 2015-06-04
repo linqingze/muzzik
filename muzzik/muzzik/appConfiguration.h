@@ -147,7 +147,8 @@
 #define Is_Table_Create @"IsTableCreate"
 #define IOS_8_OR_LATER    ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0)
 #define SCREEN_TYPE_is_4S [ UIScreen mainScreen ].bounds.size.height == 480.0
-
+#define innerWidth   10
+#define innerHeight  10
 
 #pragma -mark Constant
 #define limitHeight 65
