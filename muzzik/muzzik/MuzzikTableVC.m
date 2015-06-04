@@ -129,6 +129,7 @@
         }
     }];
     [request setFailedBlock:^{
+        [MytableView headerEndRefreshing];
         NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
     }];
     [request startAsynchronous];
@@ -180,6 +181,7 @@
         }
     }];
     [request setFailedBlock:^{
+        [MytableView footerEndRefreshing];
         NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
     }];
     [request startAsynchronous];
@@ -793,7 +795,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 }
 
 -(void)reloadMuzzikSource{
-    NSDictionary *requestDic;
+    NSDictionary *requestDic = [NSDictionary dictionaryWithObject:@"20" forKey:Parameter_Limit];
     
     ASIHTTPRequest *request;
     if ([self.requstType  isEqualToString:@"moved"]) {
@@ -803,13 +805,6 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     }else{
         request= [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@/muzziks",BaseURL,self.uid]]];
   
-    }
-    if ([lastId length]>0) {
-        
-        requestDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%d",self.muzziks.count],Parameter_Limit,lastId,Parameter_tail, nil];
-    }else{
-        requestDic = [NSDictionary dictionaryWithObject:@"20" forKey:Parameter_Limit];
-        
     }
     [request addBodyDataSourceWithJsonByDic:requestDic Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = request;

@@ -138,7 +138,7 @@
     [requestForm setFailedBlock:^{
         NSLog(@"%@",[weakrequest error]);
         NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-        [userInfo checkLoginWithVC:self];
+        [topicTableView footerEndRefreshing];
     }];
     [requestForm startAsynchronous];
 }

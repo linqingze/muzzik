@@ -86,16 +86,21 @@
             page++;
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
             [userArray addObjectsFromArray:[[MuzzikUser new] makeMuzziksByUserArray:[dic objectForKey:@"users"]]];
-            if ([[dic objectForKey:@"users"] count]<[Limit_Constant integerValue]) {
-                [_tableView removeFooter];
-            }
-            [_tableView reloadData];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                if ([[dic objectForKey:@"users"] count]<[Limit_Constant integerValue]) {
+                    [_tableView removeFooter];
+                }
+                [_tableView footerEndRefreshing];
+                [_tableView reloadData];
+            });
+            
         }
         else{
             //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
         }
     }];
     [request setFailedBlock:^{
+        [_tableView footerEndRefreshing];
         NSLog(@"%@,%@",[weakrequest responseHeaders],[weakrequest responseString]);
     }];
     [request startAsynchronous];

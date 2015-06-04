@@ -65,4 +65,5 @@
 +(BOOL) checkMutableArray:(NSMutableArray*) array isContainUser:(MuzzikUser *)localUser;
 
 +(void)SetUserInfoWithMuzziks:(NSMutableArray *)muzziks title:(NSString *)title description:(NSString *)descrip;
++(NSString*)customFontWithPath:(NSString*)path;
 @end

@@ -179,7 +179,8 @@
 #define Image_placeholdImage                @"placeholderImage"
 #define Image_playerbarcoverImage           @"playerbarcoverImage"
 #define Image_cover_CD                      @"cover1080"
-
+#define Image_fontclickImage                @"fontclickImage"
+#define Image_fontImage                     @"fontImage"
 
 #define Parameter_Id              @"_id"
 #define Parameter_avatar          @"avatar"

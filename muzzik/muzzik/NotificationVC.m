@@ -40,6 +40,30 @@
     [notifyTabelView registerClass:[NotifyFollowCell class] forCellReuseIdentifier:@"NotifyFollowCell"];
     [notifyTabelView registerClass:[NotifyMuzzikCell class] forCellReuseIdentifier:@"NotifyMuzzikCell"];
      [notifyTabelView addFooterWithTarget:self action:@selector(refreshFooter)];
+    NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,[NSNumber numberWithBool:YES],@"full", nil];
+
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Notify]]];
+    [request addBodyDataSourceWithJsonByDic:requestDic Method:GetMethod auth:YES];
+    __weak ASIHTTPRequest *weakrequest = request;
+    [request setCompletionBlock :^{
+        //    NSLog(@"%@",weakrequest.originalURL);
+        NSLog(@"%@",[weakrequest responseString]);
+        NSData *data = [weakrequest responseData];
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+        if (dic) {
+            page++;
+            notifyArray = [[NotifyObject new] makeMuzziksByNotifyArray:[dic objectForKey:@"notifies"]];
+            [notifyTabelView reloadData];
+            
+            if (notifyArray.count < [Limit_Constant longLongValue]) {
+                [notifyTabelView removeFooter];
+            }
+        }
+    }];
+    [request setFailedBlock:^{
+        NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
+    }];
+    [request startAsynchronous];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -48,8 +72,7 @@
 }
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self reloadMuzzikSource];
-   
+    [notifyTabelView reloadData];
     
     // MytableView add
     
@@ -73,9 +96,18 @@
             notifyArray = [[NotifyObject new] makeMuzziksByNotifyArray:[dic objectForKey:@"notifies"]];
             [notifyTabelView reloadData];
             page++;
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [notifyTabelView footerEndRefreshing];
+                [notifyTabelView reloadData];
+                
+                if ([[dic objectForKey:@"muzziks"] count]<[Limit_Constant integerValue] ) {
+                    [notifyTabelView removeFooter];
+                }
+            });
         }
     }];
     [request setFailedBlock:^{
+        [notifyTabelView footerEndRefreshing];
         NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
     }];
     [request startAsynchronous];
@@ -195,7 +227,7 @@
         [self.navigationController pushViewController:detailuser animated:YES];
     }else{
         muzzik *tempMuzzik = tempNotify.muzzik;
-        tempMuzzik.MuzzikUser = tempNotify.user;
+        tempMuzzik.MuzzikUser = tempNotify.muzzik.MuzzikUser;
         DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
         detail.localmuzzik = tempMuzzik;
         [self.navigationController pushViewController:detail animated:YES];
@@ -239,35 +271,4 @@
     
 }
 
--(void)reloadMuzzikSource{
-    NSDictionary *requestDic;
-    if (page>1) {
-        
-        requestDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%d",notifyArray.count],Parameter_Limit,[NSNumber numberWithBool:YES],@"full", nil];
-    }else{
-        requestDic = [NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,[NSNumber numberWithBool:YES],@"full", nil];
-        page++;
-    }
-    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Notify]]];
-    [request addBodyDataSourceWithJsonByDic:requestDic Method:GetMethod auth:YES];
-    __weak ASIHTTPRequest *weakrequest = request;
-    [request setCompletionBlock :^{
-        //    NSLog(@"%@",weakrequest.originalURL);
-        NSLog(@"%@",[weakrequest responseString]);
-        NSData *data = [weakrequest responseData];
-        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-        if (dic) {
-            notifyArray = [[NotifyObject new] makeMuzziksByNotifyArray:[dic objectForKey:@"notifies"]];
-            [notifyTabelView reloadData];
-            
-            if (notifyArray.count < [Limit_Constant longLongValue]) {
-                [notifyTabelView removeFooter];
-            }
-        }
-    }];
-    [request setFailedBlock:^{
-        NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
-    }];
-    [request startAsynchronous];
-}
 @end

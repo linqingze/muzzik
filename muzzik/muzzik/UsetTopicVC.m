@@ -79,8 +79,9 @@
              [TopicArray addObjectsFromArray:[[TopicModel new] makeTopicssByMuzzikArray:[dic objectForKey:@"topics"]]];
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [topicTableView reloadData];
                 [topicTableView footerEndRefreshing];
+                [topicTableView reloadData];
+                
                 if ([[dic objectForKey:@"topics"] count]<[Limit_Constant integerValue]) {
                     [topicTableView removeFooter];
                 }
@@ -91,9 +92,9 @@
         }
     }];
     [requestForm setFailedBlock:^{
+        [topicTableView footerEndRefreshing];
         NSLog(@"%@",[weakrequest error]);
         NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-        [userInfo checkLoginWithVC:self];
     }];
     [requestForm startAsynchronous];
 }

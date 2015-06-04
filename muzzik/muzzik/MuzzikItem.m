@@ -8,6 +8,7 @@
 
 #import "MuzzikItem.h"
 #import "MuzzikObject.h"
+#import <CoreText/CTFontManager.h>
 @implementation MuzzikItem
 static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 +(MuzzikItem *) shareClass{
@@ -643,7 +644,7 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
         return NSOrderedSame;
     }]];
     if ([lyricArray count] == 0) {
-        NSArray *tarray = [NSMutableArray arrayWithArray:[sourceLineText componentsSeparatedByString:@"\r"]];
+        NSArray *tarray = [NSMutableArray arrayWithArray:[sourceLineText componentsSeparatedByString:@"\n"]];
         for (long i = tarray.count-1; i>0; i--) {
             NSString *string = tarray[i];
             string = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
@@ -1048,6 +1049,20 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     if (descrip && [descrip length]>0) {
         [[user.playList objectForKey:title] setValue:descrip forKey:UserInfo_description];
     }
+}
+
++(NSString*)customFontWithPath:(NSString*)path
+{
+    NSURL *fontUrl = [NSURL fileURLWithPath:path];
+    CGDataProviderRef fontDataProvider = CGDataProviderCreateWithURL((__bridge CFURLRef)fontUrl);
+    CGFontRef fontRef = CGFontCreateWithDataProvider(fontDataProvider);
+    CGDataProviderRelease(fontDataProvider);
+    CTFontManagerRegisterGraphicsFont(fontRef, NULL);
+    NSString *fontName = CFBridgingRelease(CGFontCopyPostScriptName(fontRef));
+    NSLog(@"%@",fontName);
+    //UIFont *font = [UIFont fontWithName:fontName size:size];
+    CGFontRelease(fontRef);
+    return fontName;
 }
 @end
 

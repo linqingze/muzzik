@@ -39,14 +39,22 @@
             newmuzzik.reposter.user_id = [[[dic  objectForKey:@"muzzik"] objectForKey:@"repostUser"] objectForKey:@"_id"];
             newmuzzik.reposter.avatar = [[[dic  objectForKey:@"muzzik"] objectForKey:@"repostUser"] objectForKey:@"avatar"];
             newmuzzik.reposter.gender = [[[dic  objectForKey:@"muzzik"] objectForKey:@"repostUser"] objectForKey:@"gender"];
+            userInfo *user = [userInfo shareClass];
+            if ([[[dic  objectForKey:@"muzzik"] allKeys] containsObject:@"user"]  ) {
+                newmuzzik.MuzzikUser = [MuzzikUser new];
+                newmuzzik.MuzzikUser.user_id = [[dic  objectForKey:@"muzzik"] objectForKey:@"user"];
+
+            }
+            if ([[[dic  objectForKey:@"muzzik"] allKeys] containsObject:@"music"]) {
+                newmuzzik.music = [music new];
+                newmuzzik.music.music_id = [[[dic  objectForKey:@"muzzik"] objectForKey:@"music"] objectForKey:@"_id"];
+                newmuzzik.music.artist = [[[dic  objectForKey:@"muzzik"] objectForKey:@"music"] objectForKey:@"artist"];
+                //NSLog(@"%@",[[dic objectForKey:@"music"] objectForKey:@"artist"]);
+                newmuzzik.music.key = [[[dic  objectForKey:@"muzzik"] objectForKey:@"music"] objectForKey:@"key"];
+                // newmuzzik.music.block = [[[dic objectForKey:@"music"] objectForKey:@"block"] boolValue];
+                newmuzzik.music.name = [[[dic  objectForKey:@"muzzik"] objectForKey:@"music"] objectForKey:@"name"];
+            }
             
-            newmuzzik.music = [music new];
-            newmuzzik.music.music_id = [[[dic  objectForKey:@"muzzik"] objectForKey:@"music"] objectForKey:@"_id"];
-            newmuzzik.music.artist = [[[dic  objectForKey:@"muzzik"] objectForKey:@"music"] objectForKey:@"artist"];
-            //NSLog(@"%@",[[dic objectForKey:@"music"] objectForKey:@"artist"]);
-            newmuzzik.music.key = [[[dic  objectForKey:@"muzzik"] objectForKey:@"music"] objectForKey:@"key"];
-            // newmuzzik.music.block = [[[dic objectForKey:@"music"] objectForKey:@"block"] boolValue];
-            newmuzzik.music.name = [[[dic  objectForKey:@"muzzik"] objectForKey:@"music"] objectForKey:@"name"];
             if ([[dic allKeys ] containsObject:@"reply"]) {
                 newmuzzik.reply = [ReplyObject new];
                 newmuzzik.reply.reply_id = [[dic objectForKey:@"reply"] objectForKey:@"_id"];

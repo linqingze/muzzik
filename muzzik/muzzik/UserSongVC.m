@@ -112,6 +112,7 @@
         }
     }];
     [request setFailedBlock:^{
+        [songTableView footerEndRefreshing];
         NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
     }];
     [request startAsynchronous];

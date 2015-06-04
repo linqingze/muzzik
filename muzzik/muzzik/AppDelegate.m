@@ -592,8 +592,8 @@
     WXImageObject *ext = [WXImageObject object];
     ext.imageData = UIImageJPEGRepresentation(image, 1);
     message.mediaObject = ext;
-    message.mediaTagName = @"WECHAT_TAG_JUMP_APP";
-    message.messageExt = @"这是第三方带的测试字段";
+    message.mediaTagName = @"Muzzik";
+    message.messageExt = @"share Image";
     message.messageAction = @"<action>dotalist</action>";
     
     SendMessageToWXReq* req = [[SendMessageToWXReq alloc] init];

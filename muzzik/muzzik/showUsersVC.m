@@ -112,9 +112,9 @@
         }
     }];
     [requestForm setFailedBlock:^{
+        [userTableview footerEndRefreshing];
         NSLog(@"%@",[weakrequest error]);
         NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-        [userInfo checkLoginWithVC:self];
     }];
     [requestForm startAsynchronous];
     

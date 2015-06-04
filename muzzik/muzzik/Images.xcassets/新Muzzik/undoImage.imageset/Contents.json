@@ -3,16 +3,17 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "qqImage.png"
+      "filename" : "undoImage.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "qqImage@2x.png"
+      "filename" : "undoImage@2x.png"
     },
     {
       "idiom" : "universal",
-      "scale" : "3x"
+      "scale" : "3x",
+      "filename" : "undoImage@3x.png"
     }
   ],
   "info" : {

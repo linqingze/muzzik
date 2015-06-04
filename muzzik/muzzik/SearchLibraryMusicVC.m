@@ -67,6 +67,8 @@
     NSDictionary  *paraDic;
     if ([_searchText length]>0) {
         paraDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%d",page],Parameter_page,[_searchText stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],@"q", nil];
+    }else{
+        paraDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%d",page],Parameter_page, nil];
     }
     [requestForm addBodyDataSourceWithJsonByDic:paraDic Method:GetMethod auth:NO];
     __weak ASIHTTPRequest *weakrequest = requestForm;
@@ -94,9 +96,9 @@
         }
     }];
     [requestForm setFailedBlock:^{
+        [self.tableView footerEndRefreshing];
         NSLog(@"%@",[weakrequest error]);
         NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-        [userInfo checkLoginWithVC:self];
     }];
     [requestForm startAsynchronous];
 }

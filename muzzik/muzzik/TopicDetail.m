@@ -84,6 +84,29 @@
     [self SettingShareView];
     [MytableView addHeaderWithTarget:self action:@selector(refreshHeader)];
     [MytableView addFooterWithTarget:self action:@selector(refreshFooter)];
+    NSDictionary *requestDic = [NSDictionary dictionaryWithObject:@"20" forKey:Parameter_Limit];
+    
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/topic/%@",BaseURL,self.topic_id]]];
+    [request addBodyDataSourceWithJsonByDic:requestDic Method:GetMethod auth:YES];
+    __weak ASIHTTPRequest *weakrequest = request;
+    [request setCompletionBlock :^{
+        //    NSLog(@"%@",weakrequest.originalURL);
+        NSLog(@"%@",[weakrequest responseString]);
+        NSData *data = [weakrequest responseData];
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+        if (dic) {
+            muzzik *muzzikToy = [muzzik new];
+            TopicArray = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+            lastId = [dic objectForKey:@"tail"];
+            headId = [dic objectForKey:@"from"];
+            [MytableView reloadData];
+            
+        }
+    }];
+    [request setFailedBlock:^{
+        NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
+    }];
+    [request startAsynchronous];
 }
 - (void)refreshHeader
 {
@@ -109,6 +132,7 @@
         }
     }];
     [request setFailedBlock:^{
+        [MytableView headerEndRefreshing];
         NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
     }];
     [request startAsynchronous];
@@ -141,6 +165,7 @@
         }
     }];
     [request setFailedBlock:^{
+        [MytableView footerEndRefreshing];
         NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
     }];
     [request startAsynchronous];
@@ -148,7 +173,6 @@
 }
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self reloadMuzzikSource];
     [self.view setNeedsLayout];
 
     
@@ -693,37 +717,6 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     [requestForm startAsynchronous];
 }
 
--(void)reloadMuzzikSource{
-    NSDictionary *requestDic;
-    if ([lastId length]>0) {
-        
-        requestDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%d",TopicArray.count],Parameter_Limit,lastId,Parameter_tail, nil];
-    }else{
-        requestDic = [NSDictionary dictionaryWithObject:@"20" forKey:Parameter_Limit];
-        
-    }
-    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/topic/%@",BaseURL,self.topic_id]]];
-    [request addBodyDataSourceWithJsonByDic:requestDic Method:GetMethod auth:YES];
-    __weak ASIHTTPRequest *weakrequest = request;
-    [request setCompletionBlock :^{
-        //    NSLog(@"%@",weakrequest.originalURL);
-        NSLog(@"%@",[weakrequest responseString]);
-        NSData *data = [weakrequest responseData];
-        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-        if (dic) {
-            muzzik *muzzikToy = [muzzik new];
-            TopicArray = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
-            lastId = [dic objectForKey:@"tail"];
-            headId = [dic objectForKey:@"from"];
-            [MytableView reloadData];
-            
-        }
-    }];
-    [request setFailedBlock:^{
-        NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
-    }];
-    [request startAsynchronous];
-}
 
 -(void)playnextMuzzikUpdate{
     [MytableView reloadData];

@@ -171,7 +171,7 @@
             btnImage = [UIImage imageNamed:@"searchImage_white"];
             break;
         case 5:
-            btnImage = [NSString stringWithFormat:@"下一步"];
+            btnImage = [UIImage imageNamed:Image_done];
             break;
         case 6:
             btnImage = [NSString stringWithFormat:@"提交"];

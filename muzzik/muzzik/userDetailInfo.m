@@ -302,6 +302,7 @@
         }
     }];
     [request setFailedBlock:^{
+        [MyTableView footerEndRefreshing];
         NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
     }];
     [request startAsynchronous];

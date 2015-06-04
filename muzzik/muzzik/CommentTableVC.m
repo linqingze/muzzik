@@ -121,8 +121,9 @@
             [commentArray addObjectsFromArray:[muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]]];
             lastId = [dic objectForKey:@"tail"];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [MytableView reloadData];
                 [MytableView footerEndRefreshing];
+                [MytableView reloadData];
+                
                 if ([[dic objectForKey:@"muzziks"] count]<[Limit_Constant integerValue] ) {
                     [MytableView removeFooter];
                 }

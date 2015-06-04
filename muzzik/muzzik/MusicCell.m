@@ -40,7 +40,7 @@
     [self.DeleButton setImage:[UIImage imageNamed:@"deleteImage"] forState:UIControlStateNormal];
     [self.DeleButton addTarget:self action:@selector(DeleAction) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.DeleButton];
-    [MuzzikItem addLineOnView:self heightPoint:50 toLeft:13 toRight:13 withColor:Color_underLine];
+    [MuzzikItem addLineOnView:self heightPoint:49 toLeft:13 toRight:13 withColor:Color_underLine];
     
 }
 

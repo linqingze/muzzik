@@ -101,6 +101,13 @@
 		E1FA13431AB1911D005EDA1D /* id3_parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1FA133E1AB1911D005EDA1D /* id3_parser.cpp */; };
 		E1FA13461AB195E0005EDA1D /* Globle.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FA13451AB195E0005EDA1D /* Globle.m */; };
 		E1FA13491AB1ABDD005EDA1D /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FA13481AB1ABDD005EDA1D /* Reachability.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F208EF4B1B1E1D2E00DB5A68 /* RJTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = F208EF4A1B1E1D2E00DB5A68 /* RJTextView.m */; };
+		F208EF4D1B1F783A00DB5A68 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F208EF4C1B1F783A00DB5A68 /* CoreText.framework */; };
+		F208EF4F1B1F7A7700DB5A68 /* VNI_HLThuphap.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F208EF4E1B1F7A7700DB5A68 /* VNI_HLThuphap.ttf */; };
+		F208EF511B1F7D5500DB5A68 /* kilsonburg.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F208EF501B1F7D5500DB5A68 /* kilsonburg.ttf */; };
+		F208EF541B1F7D6100DB5A68 /* Bluehigh.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F208EF521B1F7D6100DB5A68 /* Bluehigh.ttf */; };
+		F208EF551B1F7D6100DB5A68 /* calico_cyrillic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F208EF531B1F7D6100DB5A68 /* calico_cyrillic.ttf */; };
+		F208EF581B1F85B800DB5A68 /* FontTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F208EF571B1F85B800DB5A68 /* FontTableCell.m */; };
 		F20B102F1AF674540067EBD3 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F20B102E1AF674540067EBD3 /* RootViewController.m */; };
 		F20B10321AF69D8D0067EBD3 /* searchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F20B10311AF69D8D0067EBD3 /* searchViewController.m */; };
 		F20B10361AF6B4A30067EBD3 /* UserHomePage.m in Sources */ = {isa = PBXBuildFile; fileRef = F20B10351AF6B4A30067EBD3 /* UserHomePage.m */; };
@@ -157,9 +164,6 @@
 		F2A7F9871AEF78BD000FCC57 /* TWPhotoPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A7F9841AEF78BD000FCC57 /* TWPhotoPickerController.m */; };
 		F2A7F98A1AEF810E000FCC57 /* ChooseLyricVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A7F9891AEF810E000FCC57 /* ChooseLyricVC.m */; };
 		F2A7F9931AEFFB0C000FCC57 /* TableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A7F9921AEFFB0C000FCC57 /* TableViewCell.m */; };
-		F2A7F99A1AF00A38000FCC57 /* IQLabelView.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A7F9961AF00A38000FCC57 /* IQLabelView.m */; };
-		F2A7F99B1AF00A38000FCC57 /* IQLabelView.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F2A7F9971AF00A38000FCC57 /* IQLabelView.bundle */; };
-		F2A7F99C1AF00A38000FCC57 /* UITextField+DynamicFontSize.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A7F9991AF00A38000FCC57 /* UITextField+DynamicFontSize.m */; };
 		F2AEC6981B09075800DA676E /* ReplyObject.m in Sources */ = {isa = PBXBuildFile; fileRef = F2AEC6971B09075800DA676E /* ReplyObject.m */; };
 		F2AEC69B1B0908B500DA676E /* NotifyObject.m in Sources */ = {isa = PBXBuildFile; fileRef = F2AEC69A1B0908B500DA676E /* NotifyObject.m */; };
 		F2AEC69E1B090FF100DA676E /* NotifyFollowCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2AEC69D1B090FF100DA676E /* NotifyFollowCell.m */; };
@@ -423,6 +427,15 @@
 		E1FA13451AB195E0005EDA1D /* Globle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Globle.m; sourceTree = "<group>"; };
 		E1FA13471AB1ABDD005EDA1D /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		E1FA13481AB1ABDD005EDA1D /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		F208EF491B1E1D2E00DB5A68 /* RJTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RJTextView.h; sourceTree = "<group>"; };
+		F208EF4A1B1E1D2E00DB5A68 /* RJTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RJTextView.m; sourceTree = "<group>"; };
+		F208EF4C1B1F783A00DB5A68 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		F208EF4E1B1F7A7700DB5A68 /* VNI_HLThuphap.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = VNI_HLThuphap.ttf; sourceTree = "<group>"; };
+		F208EF501B1F7D5500DB5A68 /* kilsonburg.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = kilsonburg.ttf; sourceTree = "<group>"; };
+		F208EF521B1F7D6100DB5A68 /* Bluehigh.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Bluehigh.ttf; sourceTree = "<group>"; };
+		F208EF531B1F7D6100DB5A68 /* calico_cyrillic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = calico_cyrillic.ttf; sourceTree = "<group>"; };
+		F208EF561B1F85B800DB5A68 /* FontTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FontTableCell.h; sourceTree = "<group>"; };
+		F208EF571B1F85B800DB5A68 /* FontTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FontTableCell.m; sourceTree = "<group>"; };
 		F20B102D1AF674540067EBD3 /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
 		F20B102E1AF674540067EBD3 /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
 		F20B10301AF69D8D0067EBD3 /* searchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = searchViewController.h; sourceTree = "<group>"; };
@@ -536,11 +549,6 @@
 		F2A7F9891AEF810E000FCC57 /* ChooseLyricVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChooseLyricVC.m; sourceTree = "<group>"; };
 		F2A7F9911AEFFB0C000FCC57 /* TableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableViewCell.h; sourceTree = "<group>"; };
 		F2A7F9921AEFFB0C000FCC57 /* TableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TableViewCell.m; sourceTree = "<group>"; };
-		F2A7F9951AF00A38000FCC57 /* IQLabelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQLabelView.h; sourceTree = "<group>"; };
-		F2A7F9961AF00A38000FCC57 /* IQLabelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQLabelView.m; sourceTree = "<group>"; };
-		F2A7F9971AF00A38000FCC57 /* IQLabelView.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = IQLabelView.bundle; sourceTree = "<group>"; };
-		F2A7F9981AF00A38000FCC57 /* UITextField+DynamicFontSize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITextField+DynamicFontSize.h"; sourceTree = "<group>"; };
-		F2A7F9991AF00A38000FCC57 /* UITextField+DynamicFontSize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITextField+DynamicFontSize.m"; sourceTree = "<group>"; };
 		F2AEC6961B09075800DA676E /* ReplyObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReplyObject.h; sourceTree = "<group>"; };
 		F2AEC6971B09075800DA676E /* ReplyObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReplyObject.m; sourceTree = "<group>"; };
 		F2AEC6991B0908B500DA676E /* NotifyObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotifyObject.h; sourceTree = "<group>"; };
@@ -646,6 +654,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F208EF4D1B1F783A00DB5A68 /* CoreText.framework in Frameworks */,
 				E162BD7F1AB444370001A61C /* libstdc++.dylib in Frameworks */,
 				F2B703681AC67EBF005F0903 /* TencentOpenAPI.framework in Frameworks */,
 				E162BD7D1AB4442B0001A61C /* CoreTelephony.framework in Frameworks */,
@@ -682,6 +691,7 @@
 		E11245E91AAAAE4B0014D461 = {
 			isa = PBXGroup;
 			children = (
+				F208EF4C1B1F783A00DB5A68 /* CoreText.framework */,
 				E112461C1AAAB0D10014D461 /* Framework */,
 				E11245F41AAAAE4B0014D461 /* muzzik */,
 				E112460E1AAAAE4B0014D461 /* muzzikTests */,
@@ -1006,6 +1016,10 @@
 		E16716221AAD5EF90068AE98 /* user */ = {
 			isa = PBXGroup;
 			children = (
+				F208EF4E1B1F7A7700DB5A68 /* VNI_HLThuphap.ttf */,
+				F208EF521B1F7D6100DB5A68 /* Bluehigh.ttf */,
+				F208EF531B1F7D6100DB5A68 /* calico_cyrillic.ttf */,
+				F208EF501B1F7D5500DB5A68 /* kilsonburg.ttf */,
 				E16716231AAD77830068AE98 /* userInfo.h */,
 				E16716241AAD77830068AE98 /* userInfo.m */,
 				F2B81FEF1ADD6C6A00012ED6 /* MuzzikItem.h */,
@@ -1321,6 +1335,8 @@
 				F2A7F9891AEF810E000FCC57 /* ChooseLyricVC.m */,
 				F2A7F9911AEFFB0C000FCC57 /* TableViewCell.h */,
 				F2A7F9921AEFFB0C000FCC57 /* TableViewCell.m */,
+				F208EF561B1F85B800DB5A68 /* FontTableCell.h */,
+				F208EF571B1F85B800DB5A68 /* FontTableCell.m */,
 			);
 			name = Step3;
 			sourceTree = "<group>";
@@ -1341,11 +1357,8 @@
 		F2A7F9941AF00A0B000FCC57 /* FixableText */ = {
 			isa = PBXGroup;
 			children = (
-				F2A7F9951AF00A38000FCC57 /* IQLabelView.h */,
-				F2A7F9961AF00A38000FCC57 /* IQLabelView.m */,
-				F2A7F9971AF00A38000FCC57 /* IQLabelView.bundle */,
-				F2A7F9981AF00A38000FCC57 /* UITextField+DynamicFontSize.h */,
-				F2A7F9991AF00A38000FCC57 /* UITextField+DynamicFontSize.m */,
+				F208EF491B1E1D2E00DB5A68 /* RJTextView.h */,
+				F208EF4A1B1E1D2E00DB5A68 /* RJTextView.m */,
 			);
 			name = FixableText;
 			sourceTree = "<group>";
@@ -1538,9 +1551,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F208EF551B1F7D6100DB5A68 /* calico_cyrillic.ttf in Resources */,
+				F208EF541B1F7D6100DB5A68 /* Bluehigh.ttf in Resources */,
 				E142A3141AB7E4C2002BBCB0 /* myDataBase.db in Resources */,
+				F208EF4F1B1F7A7700DB5A68 /* VNI_HLThuphap.ttf in Resources */,
 				E11246061AAAAE4B0014D461 /* LaunchScreen.xib in Resources */,
 				F2E558A71B164D420080F9C9 /* MJRefresh.bundle in Resources */,
+				F208EF511B1F7D5500DB5A68 /* kilsonburg.ttf in Resources */,
 				E167163A1AAED0990068AE98 /* localizable.strings in Resources */,
 				F2F0FC8D1ADD8B7100668103 /* TeachViewController.xib in Resources */,
 				E1E857B11ABD6EC2006B1BA6 /* WeiboSDK.bundle in Resources */,
@@ -1549,7 +1566,6 @@
 				E11246031AAAAE4B0014D461 /* Images.xcassets in Resources */,
 				F2F7EE271AEE213200265596 /* flotageBackgroud@2x.png in Resources */,
 				E16716331AAECF720068AE98 /* InfoPilst.strings in Resources */,
-				F2A7F99B1AF00A38000FCC57 /* IQLabelView.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1586,6 +1602,7 @@
 				F261312B1ADE4DD90042F1D4 /* setHeadImageVC.m in Sources */,
 				F2E933701AFD232600B2C6B4 /* CommentMuzzikCell.m in Sources */,
 				F2A62EE51AE94FDE00FAAA01 /* SongTableViewController.m in Sources */,
+				F208EF581B1F85B800DB5A68 /* FontTableCell.m in Sources */,
 				F20B68201AF340FE0058820D /* PlayListObject.m in Sources */,
 				F25C504D1B034B5E00F03A61 /* showUsersVC.m in Sources */,
 				E1FA12E41AB18252005EDA1D /* FSCheckContentTypeRequest.m in Sources */,
@@ -1644,6 +1661,7 @@
 				F2E558A91B164D420080F9C9 /* MJRefreshConst.m in Sources */,
 				E11246491AAAB1F20014D461 /* ASINetworkQueue.m in Sources */,
 				F2A7F9861AEF78BD000FCC57 /* TWPhotoCollectionViewCell.m in Sources */,
+				F208EF4B1B1E1D2E00DB5A68 /* RJTextView.m in Sources */,
 				F2F7EE2A1AEE22B900265596 /* MuzzikObject.m in Sources */,
 				F2641F201AD988CC003BECDD /* registerVC.m in Sources */,
 				E1FA12C41AB1499F005EDA1D /* AutoRecoveringHttpDataSource.m in Sources */,
@@ -1654,7 +1672,6 @@
 				E1FA12D01AB14CEF005EDA1D /* NSDate+Additions.m in Sources */,
 				F2F7EE4C1AEE676F00265596 /* TopicHotVC.m in Sources */,
 				E112468F1AAAB2CD0014D461 /* NormalCell.m in Sources */,
-				F2A7F99A1AF00A38000FCC57 /* IQLabelView.m in Sources */,
 				F21814501AF234CE00AA06AA /* HPTextViewInternal.m in Sources */,
 				F2F7EE521AEEABC100265596 /* AtfreindCell.m in Sources */,
 				E112466D1AAAB20B0014D461 /* NSData+ImageContentType.m in Sources */,
@@ -1732,7 +1749,6 @@
 				F2FBE9031AFBBE6B0070831D /* ClassifySelectionVC.m in Sources */,
 				E1B2303C1AB5BF22004E50DA /* FMDatabaseQueue.m in Sources */,
 				F2F0FC901ADE0E9100668103 /* checkVerifyCode.m in Sources */,
-				F2A7F99C1AF00A38000FCC57 /* UITextField+DynamicFontSize.m in Sources */,
 				F26131241ADE1C200042F1D4 /* setNameVc.m in Sources */,
 				E1FA13421AB1911D005EDA1D /* http_stream.cpp in Sources */,
 				E1FA12D11AB14CEF005EDA1D /* NSError+Additions.m in Sources */,

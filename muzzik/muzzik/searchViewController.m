@@ -49,11 +49,12 @@
     }
     if(!(searchField == nil)) {
         searchField.textColor = [UIColor whiteColor];
-        [searchField setFrame:CGRectMake(30, 5, _searchBar.frame.size.width-30, _searchBar.frame.size.height - 10)];
+       // [searchField setFrame:CGRectMake(30, 5, _searchBar.frame.size.width-30, _searchBar.frame.size.height - 10)];
         [searchField setBackgroundColor:Color_search_background];//在这添加灰色的图片
         [searchField setBorderStyle:UITextBorderStyleNone];
         searchField.layer.cornerRadius = 5;
         searchField.clipsToBounds = YES;
+        searchField.textAlignment = NSTextAlignmentLeft;
     }
     _searchBar.returnKeyType = UIReturnKeySearch;
     _searchView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-150, 20, 0, 40)];
