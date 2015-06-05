@@ -5,7 +5,7 @@
 //  Created by kevin's mac on 14-10-23.
 //  Copyright (c) 2014年 IOS. All rights reserved.
 //
-
+#import "TTTAttributedLabel.h"
 #import "MuzzikItem.h"
 #import "MuzzikObject.h"
 #import <CoreText/CTFontManager.h>
@@ -42,8 +42,8 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
     paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
     paragraphStyle.lineSpacing = Font_LineSapce;
-    if ([view isKindOfClass:[UILabel class]]) {
-        UILabel *label = (UILabel *)view;
+    if ([view isKindOfClass:[TTTAttributedLabel class]]) {
+        TTTAttributedLabel *label = (TTTAttributedLabel *)view;
         attributes = @{NSFontAttributeName:label.font, NSParagraphStyleAttributeName:paragraphStyle};
     }
 

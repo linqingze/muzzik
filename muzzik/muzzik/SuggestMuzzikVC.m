@@ -19,7 +19,7 @@
 @interface SuggestMuzzikVC ()<UICollectionViewDataSource,UICollectionViewDelegate,CellDelegate>{
     NSMutableArray *suggestMuzzik;
     StyledPageControl *pagecontrol;
-    
+    NSMutableDictionary *RefreshDic;
     //shareView
     muzzik *shareMuzzik;
     UIView *shareViewFull;
@@ -43,7 +43,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceMuzzikUpdate:) name:String_MuzzikDataSource_update object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
     pagecontrol = [[StyledPageControl alloc] initWithFrame:CGRectMake(0, 5, SCREEN_WIDTH, 10)];
-
+    RefreshDic = [NSMutableDictionary dictionary];
     
     [pagecontrol setCoreSelectedColor:Color_Active_Button_1];
     [pagecontrol setCoreNormalColor:Color_line_1];
@@ -137,6 +137,11 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     muzzik *tempMuzzik = [suggestMuzzik objectAtIndex:indexPath.row];
     suggestCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"suggestCollectionCell" forIndexPath:indexPath];
+    if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
+        [cell.muzzikImage setAlpha:0];
+        [cell.headImage setAlpha:0];
+        [RefreshDic setObject:indexPath forKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
+    }
     [cell.muzzikImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/600/h/600",BaseURL_image,tempMuzzik.image]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
         [UIView animateWithDuration:0.5 animations:^{
             [cell.muzzikImage setAlpha:1];

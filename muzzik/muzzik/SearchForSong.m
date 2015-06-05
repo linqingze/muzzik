@@ -10,6 +10,7 @@
 #import "MusicAndArtistCell.h"
 #import "MessageStepViewController.h"
 #import "MuzzikObject.h"
+#import "songDetailVCViewController.h"
 @interface SearchForSong ()<searchSource,UITableViewDataSource,UITableViewDelegate>{
     UITableView *myTableView;
     NSInteger indexOfMuzzik;
@@ -17,9 +18,9 @@
     NSString *pageID;
     NSInteger _index;
     NSString *_searchText;
-    NSInteger page;
     UIView *searchView;
     UILabel *searchLabel;
+    int page;
 }
 @property(nonatomic,retain)NSMutableArray *searchArray;
 @end
@@ -48,6 +49,7 @@
     [MuzzikItem addLineOnView:searchView heightPoint:50 toLeft:13 toRight:13 withColor:Color_line_1];
     [myTableView registerClass:[MusicAndArtistCell class] forCellReuseIdentifier:@"MusicAndArtistCell"];
     
+    
 }
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
@@ -59,6 +61,47 @@
     }
 
 }
+
+- (void)refreshFooter
+{
+    // [self updateSomeThing];
+    if ([_searchText length]>0) {
+        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Music_Search]]];
+        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,[NSNumber numberWithInt:page],Parameter_page,[_searchText stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],@"q", nil] Method:GetMethod auth:NO];
+        __weak ASIHTTPRequest *weakrequest = requestForm;
+        [requestForm setCompletionBlock :^{
+            NSLog(@"%@",[weakrequest responseString]);
+            NSLog(@"%d",[weakrequest responseStatusCode]);
+            
+            if ([weakrequest responseStatusCode] == 200) {
+                
+                NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
+                [self.searchArray addObjectsFromArray:[[muzzik new] makeMuzziksByMusicArray:[dic objectForKey:@"music"]]];
+                
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    [myTableView reloadData];
+                    [myTableView footerEndRefreshing];
+                    if ([[dic objectForKey:@"music"] count]<[Limit_Constant integerValue] ) {
+                        [myTableView removeFooter];
+                    }else{
+                        page ++;
+                    }
+                });
+            }
+            else{
+                //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+            }
+        }];
+        [requestForm setFailedBlock:^{
+            NSLog(@"%@",[weakrequest error]);
+            NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
+            [userInfo checkLoginWithVC:self];
+        }];
+        [requestForm startAsynchronous];
+    }
+    
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -89,12 +132,9 @@
     return 60.0;
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    musicPlayer *player = [musicPlayer shareClass];
-    player.listType = TempList;
-    player.MusicArray = self.searchArray;
-    player.index = indexPath.row;
-    [player playSongWithSongModel:self.searchArray[indexPath.row] Title:[NSString stringWithFormat:@"搜索 %@ 的歌曲",_searchText]];
-    [MuzzikItem SetUserInfoWithMuzziks:self.searchArray title:Constant_userInfo_temp description:[NSString stringWithFormat:@"搜索 %@ 的歌曲",_searchText]];
+    songDetailVCViewController *songDetail = [[songDetailVCViewController alloc] init];
+    songDetail.detailMuzzik = self.searchArray[indexPath.row];
+    [self.keeper.navigationController pushViewController:songDetail animated:YES];
 }
 -(void)updateDataSource:(NSString *)searchText{
     [self.searchArray removeAllObjects];
@@ -113,7 +153,7 @@
     [self.searchArray removeAllObjects];
     if ([searchText length]>0) {
         ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Music_Search]]];
-        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[searchText stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] forKey:@"q"] Method:GetMethod auth:NO];
+        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,[searchText stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],@"q", nil] Method:GetMethod auth:NO];
         __weak ASIHTTPRequest *weakrequest = requestForm;
         [requestForm setCompletionBlock :^{
             NSLog(@"%@",[weakrequest responseString]);
@@ -122,6 +162,10 @@
             if ([weakrequest responseStatusCode] == 200) {
                 NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
                 self.searchArray = [[muzzik new] makeMuzziksByMusicArray:[dic objectForKey:@"music"]];
+                if ([[dic objectForKey:@"music"] count] == [Limit_Constant integerValue]) {
+                    [myTableView addFooterWithTarget:self action:@selector(refreshFooter)];
+                    page = 2;
+                }
                 [myTableView reloadData];
             }
             else{
@@ -142,15 +186,20 @@
     [self.searchArray removeAllObjects];
     if ([self.keeper.searchBar.text length]>0) {
         ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Music_Search]]];
-        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[self.keeper.searchBar.text stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] forKey:@"q"] Method:GetMethod auth:NO];
+        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,[_searchText stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],@"q", nil] Method:GetMethod auth:NO];
         __weak ASIHTTPRequest *weakrequest = requestForm;
         [requestForm setCompletionBlock :^{
             NSLog(@"%@",[weakrequest responseString]);
             NSLog(@"%d",[weakrequest responseStatusCode]);
             
             if ([weakrequest responseStatusCode] == 200) {
+            
                 NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
                 self.searchArray = [[muzzik new] makeMuzziksByMusicArray:[dic objectForKey:@"music"]];
+                if ([[dic objectForKey:@"music"] count] == [Limit_Constant integerValue]) {
+                    page = 2;
+                    [myTableView addFooterWithTarget:self action:@selector(refreshFooter)];
+                }
                 [myTableView reloadData];
             }
             else{
@@ -167,11 +216,7 @@
 }
 
 -(void)playnextMuzzikUpdate{
-    if ([musicPlayer shareClass].listType == TempList) {
         [myTableView reloadData];
-    }
-    
-    
 }
 -(void)playMuzzikWithIndex:(NSInteger)index{
     musicPlayer *player = [musicPlayer shareClass];

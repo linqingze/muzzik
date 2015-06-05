@@ -183,6 +183,7 @@
 		F2EB60F21AF9FA1F000B7579 /* userDetailInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = F2EB60F11AF9FA1F000B7579 /* userDetailInfo.m */; };
 		F2ED22D81B12AC0C001F7787 /* TTTAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = F2ED22D71B12AC0C001F7787 /* TTTAttributedLabel.m */; };
 		F2ED22DB1B136029001F7787 /* UIButton_UserMuzzik.m in Sources */ = {isa = PBXBuildFile; fileRef = F2ED22DA1B136029001F7787 /* UIButton_UserMuzzik.m */; };
+		F2ED53711B20B73E0087D4BA /* songDetailVCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F2ED53701B20B73E0087D4BA /* songDetailVCViewController.m */; };
 		F2EDF71D1B0B240800400A85 /* StyledPageControl.m in Sources */ = {isa = PBXBuildFile; fileRef = F2EDF71C1B0B240800400A85 /* StyledPageControl.m */; };
 		F2F089D91B00920D00FB1639 /* settingSystemVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F089D71B00920D00FB1639 /* settingSystemVC.m */; };
 		F2F089E01B009CCA00FB1639 /* SettingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F089DF1B009CCA00FB1639 /* SettingCell.m */; };
@@ -586,6 +587,8 @@
 		F2ED22D71B12AC0C001F7787 /* TTTAttributedLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTAttributedLabel.m; sourceTree = "<group>"; };
 		F2ED22D91B136029001F7787 /* UIButton_UserMuzzik.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIButton_UserMuzzik.h; sourceTree = "<group>"; };
 		F2ED22DA1B136029001F7787 /* UIButton_UserMuzzik.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIButton_UserMuzzik.m; sourceTree = "<group>"; };
+		F2ED536F1B20B73E0087D4BA /* songDetailVCViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = songDetailVCViewController.h; sourceTree = "<group>"; };
+		F2ED53701B20B73E0087D4BA /* songDetailVCViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = songDetailVCViewController.m; sourceTree = "<group>"; };
 		F2EDF71B1B0B240800400A85 /* StyledPageControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StyledPageControl.h; sourceTree = "<group>"; };
 		F2EDF71C1B0B240800400A85 /* StyledPageControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StyledPageControl.m; sourceTree = "<group>"; };
 		F2F089D61B00920D00FB1639 /* settingSystemVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = settingSystemVC.h; sourceTree = "<group>"; };
@@ -1184,6 +1187,8 @@
 				F20FDD681AF74A05008A71C0 /* SearchForSong.m */,
 				F20FDD701AF75074008A71C0 /* MusicAndArtistCell.h */,
 				F20FDD711AF75074008A71C0 /* MusicAndArtistCell.m */,
+				F2ED536F1B20B73E0087D4BA /* songDetailVCViewController.h */,
+				F2ED53701B20B73E0087D4BA /* songDetailVCViewController.m */,
 				F20FDD6A1AF74B0C008A71C0 /* SearchForUser.h */,
 				F20FDD6B1AF74B0C008A71C0 /* SearchForUser.m */,
 				F20FDD731AF77ECE008A71C0 /* searchUserCell.h */,
@@ -1696,6 +1701,7 @@
 				F20B682D1AF3E39A0058820D /* MuzzikNoCardCell.m in Sources */,
 				F2AEC69B1B0908B500DA676E /* NotifyObject.m in Sources */,
 				E11246911AAAB2CD0014D461 /* TopicHeaderView.m in Sources */,
+				F2ED53711B20B73E0087D4BA /* songDetailVCViewController.m in Sources */,
 				E1FA12E61AB18252005EDA1D /* FSParseRssPodcastFeedRequest.m in Sources */,
 				F2E558AD1B164D420080F9C9 /* UIScrollView+MJRefresh.m in Sources */,
 				F20B10391AF6B4DE0067EBD3 /* NotificationVC.m in Sources */,
