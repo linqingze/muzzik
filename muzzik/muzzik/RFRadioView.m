@@ -774,9 +774,7 @@
 }
 -(void)setPlayMuzzik:(muzzik *)playMuzzik{
     
-    [UIView animateWithDuration:Play_timeinterval animations:^{
-        [self setAlpha:1];
-    }];
+    
    // NSLog(@"%@",[NSString stringWithFormat:@"%@/%@",playMuzzik.music.name,playMuzzik.music.artist]);
     if (!([playMuzzik.muzzik_id isEqualToString:_playMuzzik.muzzik_id]||([playMuzzik.muzzik_id length] == 0 &&[playMuzzik.music.music_id isEqualToString:_playMuzzik.music.music_id]))||([[musicPlayer shareClass].MusicArray count] ==1 && ![playMuzzik.muzzik_id isEqualToString:_playMuzzik.muzzik_id])) {
         [Globle shareGloble].isPause = NO;

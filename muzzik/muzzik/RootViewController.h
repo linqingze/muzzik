@@ -13,6 +13,8 @@
 @property (strong, nonatomic) UIPageViewController *pageViewController;
 @property (nonatomic) RFRadioView *musicView;
 @property (nonatomic,assign) BOOL isLaunched;
+@property (nonatomic,retain) StyledPageControl *pagecontrol;
+@property (nonatomic,retain) UIView *titleShowView;
 -(void) showMusicView;
 -(void) hideMusicView;
 -(void)checkShowMusicView;

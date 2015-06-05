@@ -19,8 +19,6 @@
 @interface RootViewController ()<UIPageViewControllerDelegate,UIPageViewControllerDataSource,UIScrollViewDelegate>{
     NSArray *pageControllers;
     UIView *nacView;
-    StyledPageControl *_pagecontrol;
-    UILabel *titleLable;
     muzzikTrendController* muzzikvc;
     TopicVC *topicvc ;
     UserHomePage *userHome;
@@ -53,12 +51,9 @@
 
     
     [nacView addSubview:_pagecontrol];
-    titleLable = [[UILabel alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-50, 25, 100, 15)];
-    titleLable.text = @"广场";
-    [titleLable setTextColor:[UIColor whiteColor]];
-    [titleLable setFont:[UIFont boldSystemFontOfSize:15]];
-    titleLable.textAlignment = NSTextAlignmentCenter;
-    [nacView addSubview:titleLable];
+    _titleShowView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-50, 25, 100, 15)];
+
+    [nacView addSubview:_titleShowView];
     notifyButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-80, 24, 36, 36)];
     [notifyButton setImage:[UIImage imageNamed:Image_Notify_clockButton] forState:UIControlStateNormal];
     [notifyButton addTarget:self action:@selector(seeNotify) forControlEvents:UIControlEventTouchUpInside];
@@ -103,10 +98,13 @@
     
     
     muzzikvc = [[muzzikTrendController alloc] init];
+    muzzikvc.parentRoot = self;
     AppDelegate *mydelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     mydelegate.viewcontroller = muzzikvc;
     topicvc = [[TopicVC alloc] init];
+    topicvc.parentRoot = self;
     userHome = [[UserHomePage alloc] init];
+    userHome.parentRoot = self;
     
    
     pageControllers = @[muzzikvc,topicvc];
@@ -153,6 +151,7 @@
                                            animated:NO
                                          completion:nil];
             userHome = [[UserHomePage alloc] init];
+            userHome.parentRoot = self;
             pageControllers = @[muzzikvc,topicvc,userHome];
         }
         
@@ -198,25 +197,10 @@
 
 -(UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController{
     NSUInteger index = [pageControllers indexOfObject:viewController];
-    switch (index) {
-        case 0:
-            titleLable.text = @"广场";
-            break;
-        case 1:
-            titleLable.text = @"推荐";
-            break;
-        case 2:
-            titleLable.text = @"个人主页";
-            break;
-            
-        default:
-            break;
-    }
-    [_pagecontrol setCurrentPage:index];
+
     if (index == NSNotFound) {
         return nil;
     }
-     NSLog(@"%d",index);
     index++;
    
     if (index == [pageControllers count]) {
@@ -228,25 +212,6 @@
 
 -(UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController{
     NSUInteger index = [pageControllers indexOfObject:viewController];
-     NSLog(@"%d",index);
-    switch (index) {
-        case 0:
-            titleLable.text = @"广场";
-            break;
-        case 1:
-            titleLable.text = @"推荐";
-            break;
-        case 2:
-            titleLable.text = @"通知";
-            break;
-        case 3:
-            titleLable.text = @"个人主页";
-            break;
-            
-        default:
-            break;
-    }
-    [_pagecontrol setCurrentPage:index];
     if ((index == 0) || (index == NSNotFound)) {
         return nil;
     }

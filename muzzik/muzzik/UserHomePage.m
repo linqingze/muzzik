@@ -180,6 +180,18 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    if (self.parentRoot) {
+        for (UIView *view in [self.parentRoot.titleShowView subviews]) {
+            [view removeFromSuperview];
+        }
+        UILabel *headLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 5, self.parentRoot.titleShowView.frame.size.width, self.parentRoot.titleShowView.frame.size.height-5)];
+        [headLabel setTextColor:[UIColor whiteColor]];
+        [headLabel setText:@"个人中心"];
+        headLabel.textAlignment = NSTextAlignmentCenter;
+        [headLabel setFont:[UIFont boldSystemFontOfSize:15]];
+        [self.parentRoot.titleShowView addSubview:headLabel];
+        [self.parentRoot.pagecontrol setCurrentPage:2];
+    }
     userInfo *user = [userInfo shareClass];
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@",BaseURL,user.uid]]];
     [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];

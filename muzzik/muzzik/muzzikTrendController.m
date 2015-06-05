@@ -198,6 +198,13 @@
 }
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    for (UIView *view in [self.parentRoot.titleShowView subviews]) {
+        [view removeFromSuperview];
+    }
+    UIImageView *headImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:Image_MuzzikImage]];
+    [headImage setFrame:CGRectMake((self.parentRoot.titleShowView.frame.size.width-headImage.frame.size.width)/2, 5, headImage.frame.size.width, headImage.frame.size.height)];
+    [self.parentRoot.pagecontrol setCurrentPage:0];
+    [self.parentRoot.titleShowView addSubview:headImage];
     [self.view setNeedsLayout];
     userInfo *user = [userInfo shareClass];
     if (user.poMuzzik) {

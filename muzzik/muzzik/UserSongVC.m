@@ -9,6 +9,7 @@
 #import "UserSongVC.h"
 #import "SongListCell.h"
 #import "MessageStepViewController.h"
+#import "DetaiMuzzikVC.h"
 @interface UserSongVC ()<UITableViewDataSource,UITableViewDelegate,CellDelegate>{
     UITableView *songTableView;
     NSString *lastId;
@@ -202,7 +203,15 @@
     return cell;
 }
 
-
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    if ([self.muzziks[indexPath.row] isKindOfClass:[muzzik class]]) {
+        muzzik *tempMuzzik = self.muzziks[indexPath.row];
+        DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
+        detail.localmuzzik = tempMuzzik;
+        [self.navigationController pushViewController:detail animated:YES];
+    }
+}
 
 
 

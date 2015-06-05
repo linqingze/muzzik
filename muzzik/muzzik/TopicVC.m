@@ -147,6 +147,16 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    for (UIView *view in [self.parentRoot.titleShowView subviews]) {
+        [view removeFromSuperview];
+    }
+    UILabel *headLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 5, self.parentRoot.titleShowView.frame.size.width, self.parentRoot.titleShowView.frame.size.height-5)];
+    [headLabel setTextColor:[UIColor whiteColor]];
+    [headLabel setText:@"推荐"];
+    headLabel.textAlignment = NSTextAlignmentCenter;
+    [headLabel setFont:[UIFont boldSystemFontOfSize:15]];
+    [self.parentRoot.titleShowView addSubview:headLabel];
+    [self.parentRoot.pagecontrol setCurrentPage:1];
     if ([[userInfo shareClass].token length]>0) {
         [mainScroll addSubview:attentionView];
         topicView.frame = CGRectMake(8, 76, SCREEN_WIDTH-16, 234);

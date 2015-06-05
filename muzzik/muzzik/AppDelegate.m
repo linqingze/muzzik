@@ -668,7 +668,7 @@
     [requestsquare setFailedBlock:^{
         NSLog(@"%@,%@",[weakrequestsquare error],[weakrequestsquare responseString]);
     }];
-    [requestsquare startSynchronous];
+    [requestsquare startAsynchronous];
     
     
     
@@ -689,7 +689,7 @@
     [request setFailedBlock:^{
         NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
     }];
-    [request startSynchronous];
+    [request startAsynchronous];
     
     
     userInfo *user = [userInfo shareClass];
@@ -710,7 +710,7 @@
             [requestOwn setFailedBlock:^{
                 NSLog(@"%@",[weakrequestOwn error]);
             }];
-            [requestOwn startSynchronous];
+            [requestOwn startAsynchronous];
         
         ASIHTTPRequest *requestfollow = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/feeds",BaseURL]]];
         [requestfollow addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:30] forKey:Parameter_Limit] Method:GetMethod auth:YES];
@@ -746,7 +746,7 @@
         [requestmove setFailedBlock:^{
             NSLog(@"%@,%@",[weakrequestmove error],[weakrequestmove responseString]);
         }];
-        [requestmove startSynchronous];
+        [requestmove startAsynchronous];
     }
     
     

@@ -76,6 +76,9 @@ static NSMutableArray *playList;
 -(void)playSongWithSongModel:(muzzik *)playMuzzik Title:(NSString *)title{
     if (title && [title length]>0) {
         [self.radioView setTitleString:[NSString stringWithFormat:@"正在播放 %@",title]];
+        [UIView animateWithDuration:Play_timeinterval animations:^{
+            [self.radioView setAlpha:1];
+        }];
     }
     
     globle = [Globle shareGloble];

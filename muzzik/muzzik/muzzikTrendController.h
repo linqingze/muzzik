@@ -27,4 +27,5 @@
 @property(nonatomic) musicPlayer *musicplayer;
 @property(nonatomic) NSString *topicName;
 @property(nonatomic) NSURL *imageURL;
+@property (nonatomic,weak) RootViewController *parentRoot;
 @end
