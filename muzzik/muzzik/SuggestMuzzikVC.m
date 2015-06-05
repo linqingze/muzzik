@@ -16,7 +16,7 @@
 #import "AppDelegate.h"
 #import <TencentOpenAPI/TencentOAuth.h>
 #import "TopicDetail.h"
-@interface SuggestMuzzikVC ()<UICollectionViewDataSource,UICollectionViewDelegate,CellDelegate>{
+@interface SuggestMuzzikVC ()<UICollectionViewDataSource,UICollectionViewDelegate,CellDelegate,TTTAttributedLabelDelegate>{
     NSMutableArray *suggestMuzzik;
     StyledPageControl *pagecontrol;
     NSMutableDictionary *RefreshDic;
@@ -158,6 +158,7 @@
     cell.timeLabel.text = [MuzzikItem transtromTime:tempMuzzik.date];
     
     cell.message.text = tempMuzzik.message;
+    cell.message.delegate = self;
     [cell.message addClickMessageForAt];
     [cell.message addClickMessagewithTopics:tempMuzzik.topics];
     CGFloat height = [MuzzikItem heightForLabel:cell.message WithText:cell.message.text];
@@ -253,15 +254,28 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         topicDetail.topic_id = [components objectForKey:@"topic_id"];
         [self.navigationController pushViewController:topicDetail animated:YES];
     }else if([[components allKeys] containsObject:@"at_name"]){
-        userDetailInfo *uInfo = [[userDetailInfo alloc] init];
-        uInfo.uid = [[components objectForKey:@"at_name"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        [self.navigationController pushViewController:uInfo animated:YES];
+        
+        userInfo *user = [userInfo shareClass];
+        if ([[components objectForKey:@"at_name"] isEqualToString:user.name]) {
+            UserHomePage *home = [[UserHomePage alloc] init];
+            [self.navigationController pushViewController:home animated:YES];
+        }else{
+            userDetailInfo *uInfo = [[userDetailInfo alloc] init];
+            uInfo.uid = [[components objectForKey:@"at_name"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            [self.navigationController pushViewController:uInfo animated:YES];
+        }
     }
 }
 -(void)userDetail:(NSString *)user_id{
-    userDetailInfo *detailuser = [[userDetailInfo alloc] init];
-    detailuser.uid = user_id;
-    [self.navigationController pushViewController:detailuser animated:YES];
+    userInfo *user = [userInfo shareClass];
+    if ([user_id isEqualToString:user.uid]) {
+        UserHomePage *home = [[UserHomePage alloc] init];
+        [self.navigationController pushViewController:home animated:YES];
+    }else{
+        userDetailInfo *detailuser = [[userDetailInfo alloc] init];
+        detailuser.uid = user_id;
+        [self.navigationController pushViewController:detailuser animated:YES];
+    }
     
     
 }

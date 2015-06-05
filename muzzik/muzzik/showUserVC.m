@@ -153,9 +153,15 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     MuzzikUser *attentionuser = userArray[indexPath.row];
-    userDetailInfo *detailuser = [[userDetailInfo alloc] init];
-    detailuser.uid = attentionuser.user_id;
-    [self.navigationController pushViewController:detailuser animated:YES];
+    userInfo *user = [userInfo shareClass];
+    if ([attentionuser.user_id isEqualToString:user.uid]) {
+        UserHomePage *home = [[UserHomePage alloc] init];
+        [self.navigationController pushViewController:home animated:YES];
+    }else{
+        userDetailInfo *detailuser = [[userDetailInfo alloc] init];
+        detailuser.uid = attentionuser.user_id;
+        [self.navigationController pushViewController:detailuser animated:YES];
+    }
     
 }
 

@@ -44,5 +44,6 @@
 @property (nonatomic) BOOL isReposted;
 @property (nonatomic) BOOL isPlaying;
 @property (nonatomic) UIImageView *poImage;
+@property (nonatomic) UIImageView *privateImage;
 -(void) colorViewWithColorString:(NSString *) colorString;
 @end

@@ -222,9 +222,15 @@
     }];
     [request startAsynchronous];
     if ([tempNotify.type isEqualToString:@"follow"] ||[tempNotify.type isEqualToString:@"friend_registered"] || [tempNotify.type isEqualToString:@"frient_exists"]) {
-        userDetailInfo *detailuser = [[userDetailInfo alloc] init];
-        detailuser.uid = tempNotify.user.user_id;
-        [self.navigationController pushViewController:detailuser animated:YES];
+        userInfo *user = [userInfo shareClass];
+        if ([tempNotify.user.user_id isEqualToString:user.uid]) {
+            UserHomePage *home = [[UserHomePage alloc] init];
+            [self.navigationController pushViewController:home animated:YES];
+        }else{
+            userDetailInfo *detailuser = [[userDetailInfo alloc] init];
+            detailuser.uid = tempNotify.user.user_id;
+            [self.navigationController pushViewController:detailuser animated:YES];
+        }
     }else{
         muzzik *tempMuzzik = tempNotify.muzzik;
         tempMuzzik.MuzzikUser = tempNotify.muzzik.MuzzikUser;
@@ -264,11 +270,15 @@
     return  text;
 }
 -(void)userDetail:(NSString *)user_id{
-    userDetailInfo *detailuser = [[userDetailInfo alloc] init];
-    detailuser.uid = user_id;
-    [self.navigationController pushViewController:detailuser animated:YES];
-    
-    
+    userInfo *user = [userInfo shareClass];
+    if ([user_id isEqualToString:user.uid]) {
+        UserHomePage *home = [[UserHomePage alloc] init];
+        [self.navigationController pushViewController:home animated:YES];
+    }else{
+        userDetailInfo *detailuser = [[userDetailInfo alloc] init];
+        detailuser.uid = user_id;
+        [self.navigationController pushViewController:detailuser animated:YES];
+    }
 }
 
 @end

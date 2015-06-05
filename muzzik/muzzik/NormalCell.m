@@ -47,7 +47,12 @@
     [_timeImage setImage:[UIImage imageNamed:Image_timeImage]];
     [self.contentView addSubview:_timeImage];
     
-    _userName = [[UILabel alloc] initWithFrame:CGRectMake(80, 55, 180, 20)];
+    _privateImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
+    [_privateImage setImage:[UIImage imageNamed:Image_detailinvisibleImage]];
+    [_privateImage setHidden:YES];
+    [self addSubview:_privateImage];
+    
+    _userName = [[UILabel alloc] initWithFrame:CGRectMake(80, 55, SCREEN_WIDTH-120, 20)];
     //  [_userName setTextColor:Color_LightGray];
     [_userName setFont:[UIFont fontWithName:Font_Next_DemiBold size:15]];
     [_userName setTextColor:Color_Text_1];

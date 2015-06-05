@@ -526,12 +526,15 @@
     [self.navigationController pushViewController:suggsetvc animated:YES];
 }
 -(void)goToUser{
-    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
-        self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+    userInfo *user = [userInfo shareClass];
+    if ([suggestMuzzik.MuzzikUser.user_id isEqualToString:user.uid]) {
+        UserHomePage *home = [[UserHomePage alloc] init];
+        [self.navigationController pushViewController:home animated:YES];
+    }else{
+        userDetailInfo *detailuser = [[userDetailInfo alloc] init];
+        detailuser.uid = suggestMuzzik.MuzzikUser.user_id;
+        [self.navigationController pushViewController:detailuser animated:YES];
     }
-    userDetailInfo *detailuser = [[userDetailInfo alloc] init];
-    detailuser.uid = suggestMuzzik.MuzzikUser.user_id;
-    [self.navigationController pushViewController:detailuser animated:YES];
 }
 -(void)moveAction{
     
@@ -678,9 +681,15 @@
 }
 
 -(void) seeVipUser:(UIButton_UserMuzzik *)button{
-    userDetailInfo *detailuser = [[userDetailInfo alloc] init];
-    detailuser.uid = button.user.user_id;
-    [self.navigationController pushViewController:detailuser animated:YES];
+    userInfo *user = [userInfo shareClass];
+    if ([button.user.user_id isEqualToString:user.uid]) {
+        UserHomePage *home = [[UserHomePage alloc] init];
+        [self.navigationController pushViewController:home animated:YES];
+    }else{
+        userDetailInfo *detailuser = [[userDetailInfo alloc] init];
+        detailuser.uid = button.user.user_id;
+        [self.navigationController pushViewController:detailuser animated:YES];
+    }
 }
 -(void)follwUser:(UIButton_UserMuzzik *)button{
     if ([button.followType isEqualToString:@"0"]) {

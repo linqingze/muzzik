@@ -627,7 +627,7 @@
     [deleButton setImage:[UIImage imageNamed:Image_deletesongImage] forState:UIControlStateNormal];
     [deleButton addTarget:self action:@selector(deleSong) forControlEvents:UIControlEventTouchUpInside];
     [songView addSubview:deleButton];
-    [muzzikTableView addFooterWithTarget:self action:@selector(refreshFooter)];
+    
     
 }
 -(void)viewWillAppear:(BOOL)animated{
@@ -689,7 +689,7 @@
 
 -(void) loadComment{
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/%@/comments",BaseURL,self.localmuzzik.muzzik_id]]];
-    [request addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
+    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit, nil] Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakre = request;
     [request setCompletionBlock :^{
         NSLog(@"%@",[weakre responseString]);
@@ -698,6 +698,9 @@
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakre responseData]  options:NSJSONReadingMutableContainers error:nil];
             lastID = [dic objectForKey:@"tail"];
             commentArray = [[muzzik new] makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+            if ([[dic objectForKey:@"muzziks"] count] == [Limit_Constant integerValue]) {
+                [muzzikTableView addFooterWithTarget:self action:@selector(refreshFooter)];
+            }
             if ([commentArray count]>0) {
                 [_muzzikView addSubview:commentTitle];
             }
@@ -812,6 +815,7 @@
     }];
     
     cell.delegate = self;
+    cell.message.delegate = self;
     Globle *glob = [Globle shareGloble];
     BOOL ispalying = false;
     if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.localMuzzik.muzzik_id] &&!glob.isPause) {
@@ -1170,9 +1174,15 @@
     }
 }
 -(void)goToUser{
-    userDetailInfo *detailuser = [[userDetailInfo alloc] init];
-    detailuser.uid = self.localmuzzik.MuzzikUser.user_id;
-    [self.navigationController pushViewController:detailuser animated:YES];
+    userInfo *user = [userInfo shareClass];
+    if ([self.localmuzzik.MuzzikUser.user_id isEqualToString:user.uid]) {
+        UserHomePage *home = [[UserHomePage alloc] init];
+        [self.navigationController pushViewController:home animated:YES];
+    }else{
+        userDetailInfo *detailuser = [[userDetailInfo alloc] init];
+        detailuser.uid = self.localmuzzik.MuzzikUser.user_id;
+        [self.navigationController pushViewController:detailuser animated:YES];
+    }
 }
 -(void)pushRepost{
     showUserVC *showvc = [[showUserVC alloc] init];
@@ -1401,9 +1411,15 @@
     [self.navigationController pushViewController:choosevc animated:YES];
 }
 -(void)userDetail:(NSString *)user_id{
-    userDetailInfo *detailuser = [[userDetailInfo alloc] init];
-    detailuser.uid = user_id;
-    [self.navigationController pushViewController:detailuser animated:YES];
+    userInfo *user = [userInfo shareClass];
+    if ([user_id isEqualToString:user.uid]) {
+        UserHomePage *home = [[UserHomePage alloc] init];
+        [self.navigationController pushViewController:home animated:YES];
+    }else{
+        userDetailInfo *detailuser = [[userDetailInfo alloc] init];
+        detailuser.uid = user_id;
+        [self.navigationController pushViewController:detailuser animated:YES];
+    }
     
     
 }
@@ -1580,9 +1596,16 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         topicDetail.topic_id = [components objectForKey:@"topic_id"];
         [self.navigationController pushViewController:topicDetail animated:YES];
     }else if([[components allKeys] containsObject:@"at_name"]){
-        userDetailInfo *uInfo = [[userDetailInfo alloc] init];
-        uInfo.uid = [[components objectForKey:@"at_name"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        [self.navigationController pushViewController:uInfo animated:YES];
+        
+        userInfo *user = [userInfo shareClass];
+        if ([[components objectForKey:@"at_name"] isEqualToString:user.name]) {
+            UserHomePage *home = [[UserHomePage alloc] init];
+            [self.navigationController pushViewController:home animated:YES];
+        }else{
+            userDetailInfo *uInfo = [[userDetailInfo alloc] init];
+            uInfo.uid = [[components objectForKey:@"at_name"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            [self.navigationController pushViewController:uInfo animated:YES];
+        }
     }
 }
 #pragma -mark cellDelegate

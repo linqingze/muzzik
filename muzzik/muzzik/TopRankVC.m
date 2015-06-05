@@ -173,9 +173,15 @@
     // Dispose of any resources that can be recreated.
 }
 -(void)userDetail:(NSString *)uid{
-    userDetailInfo *userdetail = [[userDetailInfo alloc] init];
-    userdetail.uid = uid;
-    [self.navigationController pushViewController:userdetail animated:YES];
+    userInfo *user = [userInfo shareClass];
+    if ([uid isEqualToString:user.uid]) {
+        UserHomePage *home = [[UserHomePage alloc] init];
+        [self.navigationController pushViewController:home animated:YES];
+    }else{
+        userDetailInfo *detailuser = [[userDetailInfo alloc] init];
+        detailuser.uid = uid;
+        [self.navigationController pushViewController:detailuser animated:YES];
+    }
 }
 /*
 #pragma mark - Navigation

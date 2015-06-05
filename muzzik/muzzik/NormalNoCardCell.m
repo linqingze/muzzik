@@ -81,7 +81,10 @@
     _poImage.clipsToBounds = YES;
     [_poImage setImage:[UIImage imageNamed:Image_yellowretweetImage]];
     [_musicPlayView addSubview:_poImage];
-    
+    _privateImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
+    [_privateImage setImage:[UIImage imageNamed:Image_detailinvisibleImage]];
+    [_privateImage setHidden:YES];
+    [self addSubview:_privateImage];
     _reposts = [[UIButton alloc] initWithFrame:CGRectMake((int)(SCREEN_WIDTH)/8.0, (int)SCREEN_WIDTH*3/4+60, (int)(SCREEN_WIDTH*3)/16.0, 40)];
     [_reposts setTitle:@"转发数" forState:UIControlStateNormal];
     [_reposts setTitleColor:Color_Additional_5 forState:UIControlStateNormal];

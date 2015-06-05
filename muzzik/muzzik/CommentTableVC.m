@@ -143,9 +143,17 @@
     // Dispose of any resources that can be recreated.
 }
 -(void)userDetail:(NSString *)user_id{
-    userDetailInfo *detailuser = [[userDetailInfo alloc] init];
-    detailuser.uid = user_id;
-     [self.keeper.navigationController pushViewController:detailuser animated:YES];
+
+    userInfo *user = [userInfo shareClass];
+    if ([user_id isEqualToString:user.uid]) {
+        UserHomePage *home = [[UserHomePage alloc] init];
+        [self.keeper.navigationController pushViewController:home animated:YES];
+    }else{
+        userDetailInfo *detailuser = [[userDetailInfo alloc] init];
+        detailuser.uid = user_id;
+        [self.keeper.navigationController pushViewController:detailuser animated:YES];
+    }
+
 }
 
 #pragma -mark tableView Delegate
@@ -198,6 +206,7 @@
     cell.message.text = tempMuzzik.message;
     [cell.message addClickMessageForAt];
     [cell.message addClickMessagewithTopics:tempMuzzik.topics];
+    cell.message.delegate = self;
     CGSize msize = [cell.message sizeThatFits:CGSizeMake(SCREEN_WIDTH-140, 2000)];
     [cell.message setFrame:CGRectMake(cell.message.frame.origin.x, cell.message.frame.origin.y, msize.width, msize.height)];
     cell.timeLabel.text = [MuzzikItem transtromTime:tempMuzzik.date];
@@ -275,22 +284,25 @@
     }
     
 }
--(void)pressWithUrl:(NSURL *)url AndRange:(NSRange)rang{
-    
-    NSString *urlId = [url.lastPathComponent substringFromIndex:1];
-    NSLog(@"%@",url.lastPathComponent);
-    if ([[url.lastPathComponent substringToIndex:1] isEqualToString:@"#"]) {
+- (void)attributedLabel:(TTTAttributedLabel *)label
+didSelectLinkWithTransitInformation:(NSDictionary *)components{
+    NSLog(@"%@",components);
+    if ([[components allKeys] containsObject:@"topic_id"]) {
         TopicDetail *topicDetail = [[TopicDetail alloc] init];
-        topicDetail.topic_id = urlId;
-        [self.keeper.navigationController pushViewController:topicDetail animated:YES];
+        topicDetail.topic_id = [components objectForKey:@"topic_id"];
+        [self.navigationController pushViewController:topicDetail animated:YES];
+    }else if([[components allKeys] containsObject:@"at_name"]){
         
-    }else {
-        userDetailInfo *uInfo = [[userDetailInfo alloc] init];
-        uInfo.uid = [urlId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        [self.keeper.navigationController pushViewController:uInfo animated:YES];
-        NSLog(@"好友");
+        userInfo *user = [userInfo shareClass];
+        if ([[components objectForKey:@"at_name"] isEqualToString:user.name]) {
+            UserHomePage *home = [[UserHomePage alloc] init];
+            [self.navigationController pushViewController:home animated:YES];
+        }else{
+            userDetailInfo *uInfo = [[userDetailInfo alloc] init];
+            uInfo.uid = [[components objectForKey:@"at_name"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            [self.navigationController pushViewController:uInfo animated:YES];
+        }
     }
-    // [SVProgressHUD showSuccessWithStatus:[NSString stringWithFormat:@"%@",url]];
 }
 -(void)playSongWithSongModel:(muzzik *)songModel{
     [musicPlayer shareClass].listType = TempList;

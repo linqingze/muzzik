@@ -104,9 +104,15 @@
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     MuzzikUser *attentionuser = self.searchArray[indexPath.row];
-    userDetailInfo *detailuser = [[userDetailInfo alloc] init];
-    detailuser.uid = attentionuser.user_id;
-    [self.keeper.navigationController pushViewController:detailuser animated:YES];
+    userInfo *user = [userInfo shareClass];
+    if ([attentionuser.user_id isEqualToString:user.uid]) {
+        UserHomePage *home = [[UserHomePage alloc] init];
+        [self.keeper.navigationController pushViewController:home animated:YES];
+    }else{
+        userDetailInfo *detailuser = [[userDetailInfo alloc] init];
+        detailuser.uid = attentionuser.user_id;
+        [self.keeper.navigationController pushViewController:detailuser animated:YES];
+    }
     
 }
 -(void)updateDataSource:(NSString *)searchText{
@@ -205,9 +211,15 @@
     }
 }
 -(void)userDetail:(NSString *)user_id{
-    userDetailInfo *detailuser = [[userDetailInfo alloc] init];
-    detailuser.uid = user_id;
-    [self.keeper.navigationController pushViewController:detailuser animated:YES];
+    userInfo *user = [userInfo shareClass];
+    if ([user_id isEqualToString:user.uid]) {
+        UserHomePage *home = [[UserHomePage alloc] init];
+        [self.keeper.navigationController pushViewController:home animated:YES];
+    }else{
+        userDetailInfo *detailuser = [[userDetailInfo alloc] init];
+        detailuser.uid = user_id;
+        [self.keeper.navigationController pushViewController:detailuser animated:YES];
+    }
 }
 -(void)dataSourceUserUpdate:(NSNotification *)notify{
     MuzzikUser *user = notify.object;

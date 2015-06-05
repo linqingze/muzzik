@@ -101,7 +101,7 @@
     [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:Limit_Constant forKey:Parameter_Limit] Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = request;
     [request setCompletionBlock :^{
-       // NSLog(@"%@",[weakrequest responseString]);
+        NSLog(@"%@",[weakrequest responseString]);
         NSData *data = [weakrequest responseData];
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         if (dic) {
@@ -336,6 +336,7 @@
                 }];
                 
             }];
+            
             cell.userName.text = tempMuzzik.MuzzikUser.name;
             [cell.repostImage setHidden:NO];
             cell.repostUserName.text = tempMuzzik.reposter.name;
@@ -402,8 +403,17 @@
                 }];
                 
             }];
-           
+
             cell.userName.text = tempMuzzik.MuzzikUser.name;
+            if (tempMuzzik.isprivate ) {
+                [cell.privateImage setHidden:NO];
+                [cell.userName sizeToFit];
+                [cell.privateImage setFrame:CGRectMake(cell.userName.frame.origin.x+cell.userName.frame.size.width+5, cell.userName.frame.origin.y, 20, 20)];
+            }else{
+                [cell.privateImage setHidden:YES];
+                [cell.userName setFrame:CGRectMake(80, 55, SCREEN_WIDTH-120, 20)];
+            }
+            
             cell.repostUserName.text = @"";
             [cell.repostImage setHidden:YES];
             cell.repostUserName.text = tempMuzzik.reposter.name;
@@ -593,6 +603,7 @@
                 }];
                 
             }];
+
             //[cell.poImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempMuzzik.image]]];
             [cell.poImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/600/h/600",BaseURL_image,tempMuzzik.image]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                 [UIView animateWithDuration:0.5 animations:^{
@@ -600,6 +611,14 @@
                 }];
             }];
             cell.userName.text = tempMuzzik.MuzzikUser.name;
+            if (tempMuzzik.isprivate ) {
+                [cell.privateImage setHidden:NO];
+                [cell.userName sizeToFit];
+                [cell.privateImage setFrame:CGRectMake(cell.userName.frame.origin.x+cell.userName.frame.size.width+5, cell.userName.frame.origin.y, 20, 20)];
+            }else{
+                [cell.privateImage setHidden:YES];
+                [cell.userName setFrame:CGRectMake(80, 55, SCREEN_WIDTH-120, 20)];
+            }
             cell.repostUserName.text = @"";
             [cell.repostImage setHidden:YES];
             cell.repostUserName.text = tempMuzzik.reposter.name;
@@ -726,9 +745,16 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         topicDetail.topic_id = [components objectForKey:@"topic_id"];
         [self.navigationController pushViewController:topicDetail animated:YES];
     }else if([[components allKeys] containsObject:@"at_name"]){
-        userDetailInfo *uInfo = [[userDetailInfo alloc] init];
-        uInfo.uid = [[components objectForKey:@"at_name"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        [self.navigationController pushViewController:uInfo animated:YES];
+        
+        userInfo *user = [userInfo shareClass];
+        if ([[components objectForKey:@"at_name"] isEqualToString:user.name]) {
+            UserHomePage *home = [[UserHomePage alloc] init];
+            [self.navigationController pushViewController:home animated:YES];
+        }else{
+            userDetailInfo *uInfo = [[userDetailInfo alloc] init];
+            uInfo.uid = [[components objectForKey:@"at_name"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            [self.navigationController pushViewController:uInfo animated:YES];
+        }
     }
 }
 -(void)moveMuzzik:(muzzik *) tempMuzzik{
@@ -901,9 +927,15 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 }
 
 -(void)userDetail:(NSString *)user_id{
-    userDetailInfo *detailuser = [[userDetailInfo alloc] init];
-    detailuser.uid = user_id;
-    [self.navigationController pushViewController:detailuser animated:YES];
+    userInfo *user = [userInfo shareClass];
+    if ([user_id isEqualToString:user.uid]) {
+        UserHomePage *home = [[UserHomePage alloc] init];
+        [self.navigationController pushViewController:home animated:YES];
+    }else{
+        userDetailInfo *detailuser = [[userDetailInfo alloc] init];
+        detailuser.uid = user_id;
+        [self.navigationController pushViewController:detailuser animated:YES];
+    }
 
     
 }

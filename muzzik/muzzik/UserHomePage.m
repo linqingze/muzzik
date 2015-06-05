@@ -46,6 +46,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self initNagationBar:@"个人主页" leftBtn:Constant_backImage rightBtn:0];
     mainView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     [self.view addSubview:mainTableView];
