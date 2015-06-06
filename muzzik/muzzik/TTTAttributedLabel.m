@@ -366,7 +366,7 @@ static inline CGSize CTFramesetterSuggestFrameSizeForAttributedStringWithConstra
 
     self.textInsets = UIEdgeInsetsZero;
     self.lineHeightMultiple = 1.0f;
-
+    self.numberOfLines = 0;
     self.links = [NSArray array];
 
     self.linkBackgroundEdgeInset = UIEdgeInsetsMake(0.0f, -1.0f, 0.0f, -1.0f);
@@ -414,7 +414,7 @@ static inline CGSize CTFramesetterSuggestFrameSizeForAttributedStringWithConstra
     self.inactiveLinkAttributes = [NSDictionary dictionaryWithDictionary:mutableInactiveLinkAttributes];
     
     
-    self.numberOfLines = 0;
+    
     //self.linkAttributes = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:(__bridge NSString *)kCTUnderlineStyleAttributeName];
     self.lineSpacing = Font_LineSapce;
     NSMutableDictionary *LocalmutableActiveLinkAttributes = [NSMutableDictionary dictionary];
@@ -740,6 +740,7 @@ static inline CGSize CTFramesetterSuggestFrameSizeForAttributedStringWithConstra
     }
 
     CFArrayRef lines = CTFrameGetLines(frame);
+    
     NSInteger numberOfLines = self.numberOfLines > 0 ? MIN(self.numberOfLines, CFArrayGetCount(lines)) : CFArrayGetCount(lines);
     if (numberOfLines == 0) {
         CFRelease(frame);

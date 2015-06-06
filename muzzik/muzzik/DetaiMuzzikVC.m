@@ -50,6 +50,7 @@
     CGFloat MuzzikViewheight;
     BOOL isComment;                  //评论时，关闭键盘自动滚到表头；
     NSString *lastID;
+    UITapGestureRecognizer *tapOnview;
     
     //shareView
     UIView *shareViewFull;
@@ -123,6 +124,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceMuzzikUpdate:) name:String_MuzzikDataSource_update object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceUserUpdate:) name:String_UserDataSource_update object:nil];
@@ -139,6 +142,8 @@
     muzzikTableView.dataSource = self;
      muzzikTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:muzzikTableView];
+    tapOnview = [[UITapGestureRecognizer alloc] initWithTarget:self.view action:@selector(endEditing:)];
+    
     [self followScrollView:muzzikTableView];
     commentView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT-119, SCREEN_WIDTH, 55)];
     
@@ -343,6 +348,8 @@
         if ([weakrequest responseStatusCode] == 200) {
             _profileDic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData]  options:NSJSONReadingMutableContainers error:nil];
             if (_profileDic) {
+                self.localmuzzik.MuzzikUser.name = [_profileDic objectForKey:@"name"];
+                commentToMuzzik.MuzzikUser.name =[_profileDic objectForKey:@"name"];
                 comnentTextView.placeholder = [NSString stringWithFormat:@"评论 %@",[_profileDic objectForKey:@"name"]];
                 [_userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,[_profileDic objectForKey:@"avatar"]]] forState:UIControlStateNormal];
                 _userName.text = [_profileDic objectForKey:@"name"];
@@ -1472,6 +1479,7 @@
 
 - (void)keyboardWillShow:(NSNotification *)notification
 {
+    [self.view addGestureRecognizer:tapOnview];
     NSDictionary *userInfo = [notification userInfo];
     NSValue* aValue = [userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];
     
@@ -1521,6 +1529,9 @@
 
 - (void)keyboardWillHide:(NSNotification *)notification
 {
+    [self.view removeGestureRecognizer:tapOnview];
+    commentToMuzzik = self.localmuzzik;
+    comnentTextView.placeholder = [NSString stringWithFormat:@"回复 %@",commentToMuzzik.MuzzikUser.name];
     NSDictionary* userInfo = [notification userInfo];
     
     // 键盘的动画时间，设定与其完全保持一致
@@ -1552,11 +1563,11 @@
         firstLoad = YES;
         if (!isComment) {
             if ([commentArray count]==0) {
-                [muzzikTableView setContentOffset:CGPointMake(0, _muzzikView.frame.size.height-SCREEN_WIDTH+64) animated:NO];
+                [muzzikTableView setContentOffset:CGPointMake(0, _muzzikView.frame.size.height-SCREEN_WIDTH+64) animated:YES];
             }else if([commentArray count]<=2){
-                [muzzikTableView setContentOffset:CGPointMake(0, _muzzikView.frame.size.height-SCREEN_WIDTH+64+[commentArray count]*70+20) animated:NO];
+                [muzzikTableView setContentOffset:CGPointMake(0, _muzzikView.frame.size.height-SCREEN_WIDTH+64+[commentArray count]*70+20) animated:YES];
             }else{
-                [muzzikTableView setContentOffset:CGPointMake(0, _muzzikView.frame.size.height-SCREEN_WIDTH+64+160) animated:NO];
+                [muzzikTableView setContentOffset:CGPointMake(0, _muzzikView.frame.size.height-SCREEN_WIDTH+64+160) animated:YES];
             }
             
         }else{

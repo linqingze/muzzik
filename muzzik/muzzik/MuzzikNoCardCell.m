@@ -29,32 +29,33 @@
     [self.cardTitle setFont:[UIFont boldSystemFontOfSize:10]];
     [self.cardTitle setTextColor:Color_Text_1];
     
-    self.userImage = [[UIButton alloc] initWithFrame:CGRectMake( 32, 28, ScreenWidth/4-20, ScreenWidth/4-20)];
-    self.userImage.layer.cornerRadius = ScreenWidth/8-10;
+    self.userImage = [[UIButton alloc] initWithFrame:CGRectMake( 32, 28, 50, 50)];
+    self.userImage.layer.cornerRadius = 25;
     self.userImage.clipsToBounds = YES;
     [_userImage addTarget:self action:@selector(goToUser) forControlEvents:UIControlEventTouchUpInside];
-    self.userName = [[UILabel alloc] initWithFrame:CGRectMake(ScreenWidth/4+20, 28, ScreenWidth/2-70, ScreenWidth/8-10)];
+    self.userName = [[UILabel alloc] initWithFrame:CGRectMake(90, 43, ScreenWidth-180, 20)];
     [self.userName setFont:[UIFont boldSystemFontOfSize:16]];
     [self.userName setTextColor:Color_Text_1];
     
-    _timeStamp = [[UILabel alloc] initWithFrame:CGRectMake(ScreenWidth-150, 28, 60, 10)];
-    [_timeStamp setFont:[UIFont systemFontOfSize:7.0]];
+    _timeStamp = [[UILabel alloc] initWithFrame:CGRectMake(ScreenWidth-145, 43, 60, 10)];
+    [_timeStamp setFont:[UIFont systemFontOfSize:8.0]];
     _timeStamp.textAlignment = NSTextAlignmentRight;
+    [_timeStamp setTextColor:Color_Text_3];
     
-    _timeImage = [[UIImageView alloc] initWithFrame:CGRectMake(ScreenWidth-90, 28, 10, 10)];
+    _timeImage = [[UIImageView alloc] initWithFrame:CGRectMake(ScreenWidth-76, 43, 10, 10)];
     [_timeImage setImage:[UIImage imageNamed:Image_timeImage]];
-    _muzzikMessage = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(32, CGRectGetMaxY(_userImage.frame)+15, ScreenWidth-80, 200)];
+    _muzzikMessage = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(32, CGRectGetMaxY(_userImage.frame)+10, ScreenWidth-96, 200)];
     [_muzzikMessage setTextColor:Color_Text_1];
     [_muzzikMessage setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
-    _musicPlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 0 , ScreenWidth-16, 60)];
+    _musicPlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 0 , ScreenWidth-16, 70)];
     [self.contentView addSubview:_musicPlayView];
-    _progress = [[UIProgressView alloc] initWithFrame:CGRectMake(32, 0, ScreenWidth-80, 2)];
+    _progress = [[UIProgressView alloc] initWithFrame:CGRectMake(32, 0, ScreenWidth-96, 2)];
     [_progress setProgress:1];
     [_musicPlayView addSubview:_progress];
-    _musicName = [[UILabel alloc] initWithFrame:CGRectMake(75, 7, ScreenWidth-155, 25)];
+    _musicName = [[UILabel alloc] initWithFrame:CGRectMake(80, 7, ScreenWidth-155, 25)];
     [_musicName setFont:[UIFont boldSystemFontOfSize:16]];
     [_musicPlayView addSubview:_musicName];
-    _musicArtist = [[UILabel alloc] initWithFrame:CGRectMake(75, 30, ScreenWidth-155, 25)];
+    _musicArtist = [[UILabel alloc] initWithFrame:CGRectMake(80, 30, ScreenWidth-155, 25)];
     [_musicArtist setFont:[UIFont boldSystemFontOfSize:13]];
     [_musicPlayView addSubview:_musicArtist];
     _likeButton = [[UIButton alloc] initWithFrame:CGRectMake(32,14 , 30, 30)];
@@ -62,7 +63,7 @@
     
     [_musicPlayView addSubview:_likeButton];
     
-    _playButton = [[UIButton alloc] initWithFrame:CGRectMake(ScreenWidth-110, 14, 30, 30)];
+    _playButton = [[UIButton alloc] initWithFrame:CGRectMake(ScreenWidth-96, 14, 30, 30)];
     
     [_playButton addTarget:self action:@selector(playMusicAction:) forControlEvents:UIControlEventTouchUpInside];
     [_musicPlayView addSubview:_playButton];

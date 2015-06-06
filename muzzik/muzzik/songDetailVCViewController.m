@@ -240,7 +240,7 @@
     if (textHeight>limitHeight) {
         if ([tempMuzzik.image length]>0) {
             if ([tempMuzzik.type isEqualToString:@"normal"] ||[tempMuzzik.type isEqualToString:@"repost"]) {
-                return (int)(240+limitHeight+SCREEN_WIDTH*3/4);
+                return (int)(240+limitHeight+SCREEN_WIDTH*3/4)+10;
             }else if([tempMuzzik.type isEqualToString:@"muzzikCard"]){
                 return SCREEN_WIDTH*9/8+textHeight+36;
             }else if ([tempMuzzik.type isEqualToString:@"userCard"] ){

@@ -279,6 +279,13 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     
     
 }
+-(void) commentAtMuzzik:(muzzik *)localMuzzik{
+    muzzik *tempMuzzik = localMuzzik;
+    DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
+    detail.localmuzzik = tempMuzzik;
+    detail.showType = Constant_Comment;
+    [self.navigationController pushViewController:detail animated:YES];
+}
 -(void)moveMuzzik:(muzzik *) tempMuzzik{
     
     userInfo *user = [userInfo shareClass];
