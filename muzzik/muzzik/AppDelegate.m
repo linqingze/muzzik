@@ -5,6 +5,7 @@
 //  Created by 林清泽 on 15/3/7.
 //  Copyright (c) 2015年 muzziker. All rights reserved.
 //
+#import <AssetsLibrary/AssetsLibrary.h>
 #import "WXApi.h"
 #import "WeiboSDK.h"
 #import "AppDelegate.h"
@@ -84,6 +85,9 @@
     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
     [self becomeFirstResponder];
     [[UIApplication sharedApplication]setStatusBarStyle:UIStatusBarStyleLightContent];
+    if (![[MuzzikItem getStringForKey:@"Muzzik_Create_Album"] isEqualToString:@"yes"]) {
+        [self createAlbum];
+    }
     return YES;
 }
 
@@ -397,13 +401,15 @@
 {
     if ([response isKindOfClass:WBSendMessageToWeiboResponse.class])
     {
-        NSString *title = NSLocalizedString(@"发送结果", nil);
-        NSString *message = [NSString stringWithFormat:@"%@: %d\n%@: %@\n%@: %@", NSLocalizedString(@"响应状态", nil), (int)response.statusCode, NSLocalizedString(@"响应UserInfo数据", nil), response.userInfo, NSLocalizedString(@"原请求UserInfo数据", nil),response.requestUserInfo];
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
-                                                        message:message
-                                                       delegate:nil
-                                              cancelButtonTitle:NSLocalizedString(@"确定", nil)
-                                              otherButtonTitles:nil];
+        if ((int)response.statusCode == 0) {
+            [MuzzikItem showNotifyOnView:self.window.rootViewController.view text:@"分享成功"];
+        }
+        else if ((int)response.statusCode == -1) {
+            [MuzzikItem showNotifyOnView:self.window.rootViewController.view text:@"取消分享"];
+        }else if ((int)response.statusCode == -2) {
+            [MuzzikItem showNotifyOnView:self.window.rootViewController.view text:@"分享失败"];
+        }
+        
         WBSendMessageToWeiboResponse* sendMessageToWeiboResponse = (WBSendMessageToWeiboResponse*)response;
         NSString* accessToken = [sendMessageToWeiboResponse.authResponse accessToken];
         if (accessToken)
@@ -414,7 +420,6 @@
         if (userID) {
             self.wbCurrentUserID = userID;
         }
-        [alert show];
     }
     else if ([response isKindOfClass:WBAuthorizeResponse.class])
     {
@@ -496,24 +501,27 @@
 //    
 //    [WXApi sendAuthReq:req viewController:self.viewController delegate:self];
 //}
-- (void)sendAuthRequest
+- (void)sendAuthRequestByVC:(UIViewController *)vc
 {
     SendAuthReq* req = [[SendAuthReq alloc] init];
     req.scope = @"snsapi_userinfo"; // @"post_timeline,sns"
     req.state = @"123";
     
-    [WXApi sendAuthReq:req viewController:self.loginVC delegate:self];
+    [WXApi sendAuthReq:req viewController:vc delegate:self];
 }
 
 -(void) onResp:(BaseResp*)resp
 {
     if([resp isKindOfClass:[SendMessageToWXResp class]])
     {
-        NSString *strTitle = [NSString stringWithFormat:@"发送媒体消息结果"];
-        NSString *strMsg = [NSString stringWithFormat:@"errcode:%d", resp.errCode];
-        
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:strTitle message:strMsg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-        [alert show];
+        if (resp.errCode == 0) {
+            [MuzzikItem showNotifyOnViewUpon:self.window.rootViewController.view text:@"分享成功"];
+        }
+        else if (resp.errCode == -1) {
+            [MuzzikItem showNotifyOnViewUpon:self.window.rootViewController.view text:@"分享失败"];
+        }else if (resp.errCode == -2) {
+            [MuzzikItem showNotifyOnViewUpon:self.window.rootViewController.view text:@"取消分享"];
+        }
     }
     else if([resp isKindOfClass:[SendAuthResp class]])
     {
@@ -751,5 +759,49 @@
     
     
     
+}
+#pragma mark - 创建相册
+-(void) createAlbum{
+    ALAssetsLibrary *assetsLibrary = [[ALAssetsLibrary alloc] init];
+    NSMutableArray *groups=[[NSMutableArray alloc]init];
+    ALAssetsLibraryGroupsEnumerationResultsBlock listGroupBlock = ^(ALAssetsGroup *group, BOOL *stop)
+    {
+        if (group)
+        {
+            [groups addObject:group];
+        }
+        
+        else
+        {
+            BOOL haveHDRGroup = NO;
+            
+            for (ALAssetsGroup *gp in groups)
+            {
+                NSString *name =[gp valueForProperty:ALAssetsGroupPropertyName];
+                
+                if ([name isEqualToString:@"Muzzik相册"])
+                {
+                    haveHDRGroup = YES;
+                }
+            }
+            
+            if (!haveHDRGroup)
+            {
+                //do add a group named "XXXX"
+                [assetsLibrary addAssetsGroupAlbumWithName:@"Muzzik相册"
+                                               resultBlock:^(ALAssetsGroup *group)
+                 {
+                     [groups addObject:group];
+                     [MuzzikItem addStringToLocal:@"yes" ForKey:@"Muzzik_Create_Album"];
+                     
+                 }
+                                              failureBlock:nil];
+                haveHDRGroup = YES;
+            }
+        }
+        
+    };
+    //创建相簿
+    [assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupAlbum usingBlock:listGroupBlock failureBlock:nil];
 }
 @end

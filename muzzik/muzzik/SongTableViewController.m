@@ -46,7 +46,7 @@
         if ([weakrequest responseStatusCode] == 200) {
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
             pageID = [dic objectForKey:@"page"];
-             pageID = [NSString stringWithFormat:@"%d",[pageID integerValue]+1];
+             pageID = [NSString stringWithFormat:@"%ld",[pageID integerValue]+1];
             muzzik *tempMuzzik = [muzzik new];
             self.movedMusicArray = [tempMuzzik makeMuzziksByMusicArray:[dic objectForKey:@"music"]];
             [self.tableView reloadData];
@@ -73,7 +73,7 @@
     page++;
 
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Get_Moved_music]]];
-    [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%d",page],Parameter_page,Limit_Constant,Parameter_Limit,[_searchText stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],@"search", nil] Method:GetMethod auth:YES];
+    [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%ld",(long)page],Parameter_page,Limit_Constant,Parameter_Limit,[_searchText stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],@"search", nil] Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = requestForm;
     [requestForm setCompletionBlock :^{
         NSLog(@"%@",[weakrequest responseString]);
@@ -173,6 +173,7 @@
         }else{
             mobject.music = tempMuzzik.music;
             MessageStepViewController *msgVC = [[MessageStepViewController alloc] init];
+            msgVC.isNewSelected = YES;
             [self.keeper.navigationController pushViewController:msgVC animated:YES];
         }
     }

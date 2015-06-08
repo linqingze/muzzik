@@ -8,6 +8,7 @@
 
 #import "settingSystemVC.h"
 #import "SettingCell.h"
+#import "TeachViewController.h"
 @interface settingSystemVC ()<UITableViewDataSource,UITableViewDelegate>{
     UITableView *settingTable;
     BOOL isopen;
@@ -41,10 +42,10 @@
         NSString * shakeSwitch = [MuzzikItem getStringForKey:@"User_shakeActionSwitch"];
         if ([shakeSwitch isEqualToString:@"open"]) {
             isopen = YES;
-            [Scell.shakeButton setImage:[UIImage imageNamed:Image_settingonImage] forState:UIControlStateNormal];
+            [Scell.shakeButton setImage:[UIImage imageNamed:Image_settingonImage]];
         }else{
             isopen = NO;
-            [Scell.shakeButton setImage:[UIImage imageNamed:Image_settingoffImage] forState:UIControlStateNormal];
+            [Scell.shakeButton setImage:[UIImage imageNamed:Image_settingoffImage]];
         }
         return Scell;
     }else if (indexPath.row == 1) {
@@ -88,9 +89,13 @@
     }else if (indexPath.row == 2) {
         
     }else if (indexPath.row == 3) {
-        
+        TeachViewController *teach = [[TeachViewController alloc] initWithNibName:@"TeachViewController" bundle:nil];
+        teach.showType = @"QA";
+        [self.navigationController pushViewController:teach animated:YES];
     }else if (indexPath.row == 4) {
-        
+        TeachViewController *teach = [[TeachViewController alloc] initWithNibName:@"TeachViewController" bundle:nil];
+        teach.showType = @"about";
+        [self.navigationController pushViewController:teach animated:YES];
     }
 }
 

@@ -11,6 +11,6 @@
 @interface TeachViewController :BaseNagationViewController <UIWebViewDelegate>
 
 @property (nonatomic,retain)UIWebView *teachWebView;
-
+@property (nonatomic,copy) NSString *showType;
 
 @end

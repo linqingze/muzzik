@@ -30,5 +30,4 @@
 
 
 @interface LoginViewController : UIViewController
-@property (nonatomic, assign) id<sendMsgToWeChatViewDelegate,NSObject> delegate;
 @end

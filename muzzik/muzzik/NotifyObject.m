@@ -39,7 +39,6 @@
             newmuzzik.reposter.user_id = [[[dic  objectForKey:@"muzzik"] objectForKey:@"repostUser"] objectForKey:@"_id"];
             newmuzzik.reposter.avatar = [[[dic  objectForKey:@"muzzik"] objectForKey:@"repostUser"] objectForKey:@"avatar"];
             newmuzzik.reposter.gender = [[[dic  objectForKey:@"muzzik"] objectForKey:@"repostUser"] objectForKey:@"gender"];
-            userInfo *user = [userInfo shareClass];
             if ([[[dic  objectForKey:@"muzzik"] allKeys] containsObject:@"user"]  ) {
                 newmuzzik.MuzzikUser = [MuzzikUser new];
                 newmuzzik.MuzzikUser.user_id = [[dic  objectForKey:@"muzzik"] objectForKey:@"user"];

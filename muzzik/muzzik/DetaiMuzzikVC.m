@@ -5,7 +5,7 @@
 //  Created by muzzik on 15/5/2.
 //  Copyright (c) 2015年 muzziker. All rights reserved.
 //
-
+#import <AssetsLibrary/AssetsLibrary.h>
 #import "DetaiMuzzikVC.h"
 #import "UIImageView+WebCache.h"
 #import "UIButton+WebCache.h"
@@ -22,7 +22,8 @@
 #import "Globle.h"
 #import "AppDelegate.h"
 #import <TencentOpenAPI/TencentOAuth.h>
-@interface DetaiMuzzikVC ()<UITableViewDataSource,UITableViewDelegate,TTTAttributedLabelDelegate,HPGrowingTextViewDelegate,CellDelegate>{
+#import "PhotoImageView.h"
+@interface DetaiMuzzikVC ()<UITableViewDataSource,UITableViewDelegate,TTTAttributedLabelDelegate,HPGrowingTextViewDelegate,CellDelegate,PhotoImageViewDelegate,UIActionSheetDelegate>{
     UITableView *muzzikTableView;
     UIView *headView;
     NSMutableArray *commentArray;
@@ -61,6 +62,8 @@
     UIButton *shareToQQButton;
     UIButton *shareToQQZoneButton;
     CGFloat maxScaleY;
+    
+    UIImage *saveImage;           //保存图片
 }
 @property (nonatomic,retain) NSMutableDictionary *profileDic;
 @property(nonatomic,retain)UIImageView *headimage;
@@ -115,7 +118,7 @@
 @property (nonatomic) BOOL hasLoad;
 @property (nonatomic) BOOL isReposted;
 @property (nonatomic) BOOL isPlaying;
-@property (nonatomic) UIImageView *poImage;
+@property (nonatomic) PhotoImageView *poImage;
 @property (nonatomic) UIButton *addFriendButton;
 
 @end
@@ -256,7 +259,8 @@
     [_playButton addTarget:self action:@selector(playMusicLocal) forControlEvents:UIControlEventTouchUpInside];
     [_muzzikView addSubview:_playButton];
     if ([self.localmuzzik.image length]>0) {
-        _poImage = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/8, CGRectGetMaxY(_progress.frame)+60, SCREEN_WIDTH*3/4, SCREEN_WIDTH*3/4)];
+        _poImage = [[PhotoImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/8, CGRectGetMaxY(_progress.frame)+60, SCREEN_WIDTH*3/4, SCREEN_WIDTH*3/4)];
+        _poImage.delegate = self;
         _poImage.layer.cornerRadius = 3;
         _poImage.clipsToBounds = YES;
         [_poImage  sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/600/h/600",BaseURL_image,self.localmuzzik.image]]];
@@ -1018,6 +1022,99 @@
    
 }
 #pragma mark - action
+-(void)tappedToSave:(PhotoImageView *)sender{
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"保存图片", nil];
+    saveImage = sender.image;
+    [sheet showInView:self.view.window];
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if(buttonIndex==actionSheet.cancelButtonIndex){
+        return;
+    }
+    
+    [self saveToAlbumWithMetadata:nil imageData:UIImagePNGRepresentation(saveImage) customAlbumName:@"Muzzik相册" completionBlock:^
+     {
+         //这里可以创建添加成功的方法
+         
+     }
+                     failureBlock:^(NSError *error)
+     {
+         //处理添加失败的方法显示alert让它回到主线程执行，不然那个框框死活不肯弹出来
+         dispatch_async(dispatch_get_main_queue(), ^{
+             
+             //添加失败一般是由用户不允许应用访问相册造成的，这边可以取出这种情况加以判断一下
+             if([error.localizedDescription rangeOfString:@"User denied access"].location != NSNotFound ||[error.localizedDescription rangeOfString:@"用户拒绝访问"].location!=NSNotFound){
+                 
+                 UIAlertView *alert=[[UIAlertView alloc]initWithTitle:error.localizedDescription message:error.localizedFailureReason delegate:nil cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles: nil];
+                 
+                 [alert show];
+                 
+             }
+         });
+     }];
+}
+
+
+- (void)saveToAlbumWithMetadata:(NSDictionary *)metadata
+                      imageData:(NSData *)imageData
+                customAlbumName:(NSString *)customAlbumName
+                completionBlock:(void (^)(void))completionBlock
+                   failureBlock:(void (^)(NSError *error))failureBlock
+{
+    
+    ALAssetsLibrary *assetsLibrary = [[ALAssetsLibrary alloc] init];
+    void (^AddAsset)(ALAssetsLibrary *, NSURL *) = ^(ALAssetsLibrary *assetsLibrary, NSURL *assetURL) {
+        [assetsLibrary assetForURL:assetURL resultBlock:^(ALAsset *asset) {
+            [assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupAll usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
+                
+                if ([[group valueForProperty:ALAssetsGroupPropertyName] isEqualToString:customAlbumName]) {
+                    [group addAsset:asset];
+                    if (completionBlock) {
+                        completionBlock();
+                    }
+                }
+            } failureBlock:^(NSError *error) {
+                if (failureBlock) {
+                    failureBlock(error);
+                }
+            }];
+        } failureBlock:^(NSError *error) {
+            if (failureBlock) {
+                failureBlock(error);
+            }
+        }];
+    };
+    __weak ALAssetsLibrary *weakassetsLibrary = assetsLibrary;
+    [assetsLibrary writeImageDataToSavedPhotosAlbum:imageData metadata:metadata completionBlock:^(NSURL *assetURL, NSError *error) {
+        if (customAlbumName) {
+            [assetsLibrary addAssetsGroupAlbumWithName:customAlbumName resultBlock:^(ALAssetsGroup *group) {
+                if (group) {
+                    [weakassetsLibrary assetForURL:assetURL resultBlock:^(ALAsset *asset) {
+                        [group addAsset:asset];
+                        if (completionBlock) {
+                            completionBlock();
+                        }
+                    } failureBlock:^(NSError *error) {
+                        if (failureBlock) {
+                            failureBlock(error);
+                        }
+                    }];
+                } else {
+                    AddAsset(weakassetsLibrary, assetURL);
+                }
+            } failureBlock:^(NSError *error) {
+                AddAsset(weakassetsLibrary, assetURL);
+            }];
+        } else {
+            if (completionBlock) {
+                completionBlock();
+            }
+        }
+    }];
+}
+
 -(void)PrivateAction{
     MuzzikObject *mobject = [MuzzikObject shareClass];
     if (mobject.isPrivate) {
@@ -1297,7 +1394,7 @@
     [comnentTextView becomeFirstResponder];
 }
 -(void)deleMuzzikAction{
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"是否保存编辑信息至草稿箱" message:@"" delegate:self cancelButtonTitle:@"放弃" otherButtonTitles:nil];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"是否删除该Muzzik信息" message:@"" delegate:self cancelButtonTitle:@"放弃" otherButtonTitles:nil];
     // optional - add more buttons:
     [alert addButtonWithTitle:@"确定"];
     [alert show];

@@ -1112,6 +1112,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     //QQApiSendResultCode sent = [QQApiInterface SendReqToQZone:req];
 
 }
+
 - (void)handleSendResult:(QQApiSendResultCode)sendResult
 {
     switch (sendResult)
@@ -1163,6 +1164,10 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         }
     }
 }
++ (BOOL)handleOpenURL:(NSURL *)url delegate:(id<QQApiInterfaceDelegate>)delegate{
+    
+    return YES;
+}
 -(void) shareQQZone{
     TencentOAuth *tencentOAuth = [[TencentOAuth alloc] initWithAppId:ID_QQ_APP
                                                          andDelegate:nil];
@@ -1171,7 +1176,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     
     QQApiNewsObject* img = [QQApiNewsObject objectWithURL:[NSURL URLWithString:url] title:@"在Muzzik上分享了首歌" description:[NSString stringWithFormat:@"%@  %@",shareMuzzik.music.name,shareMuzzik.music.artist] previewImageURL:previewURL];
     SendMessageToQQReq* req = [SendMessageToQQReq reqWithContent:img];
-
+    
    
     //将被容分享到qzone
     QQApiSendResultCode sent = [QQApiInterface SendReqToQZone:req];
@@ -1194,4 +1199,5 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     }
     
 }
+
 @end

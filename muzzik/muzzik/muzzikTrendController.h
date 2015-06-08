@@ -17,7 +17,6 @@
 #import "TencentOpenAPI/QQApi.h"
 
 
-
 @interface muzzikTrendController : AMScrollingNavbarViewController<UITableViewDataSource,UITableViewDelegate,TTTAttributedLabelDelegate,CellDelegate,WBHttpRequestDelegate>{
      AudioPlayer* audioPlayer;
     NSInteger isPlayBack;

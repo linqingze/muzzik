@@ -123,7 +123,7 @@
     if (textview.text.length>140) {
         textview.text =[textview.text substringToIndex:140];
     }
-    charaterLabel.text = [NSString stringWithFormat:@"%d",140 - textview.text.length];
+    charaterLabel.text = [NSString stringWithFormat:@"%lu",140 - textview.text.length];
     
 }
 #pragma -mark action
@@ -165,10 +165,15 @@
     
 }
 -(void)tapAction:(UITapGestureRecognizer *)tap{
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"是否保存编辑信息至草稿箱" message:@"" delegate:self cancelButtonTitle:@"放弃" otherButtonTitles:nil];
-    // optional - add more buttons:
-    [alert addButtonWithTitle:@"确定"];
-    [alert show];
+    if (_isNewSelected) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"是否保存编辑信息至草稿箱" message:@"" delegate:self cancelButtonTitle:@"放弃" otherButtonTitles:nil];
+        // optional - add more buttons:
+        [alert addButtonWithTitle:@"确定"];
+        [alert show];
+    }else{
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+    
 }
 
 
@@ -184,6 +189,7 @@
     mobject.music = nil;
     mobject.isMessageVCOpen = NO;
     mobject.tempmessage = @"";
+
     [self.navigationController popToRootViewControllerAnimated:YES];
     
 }

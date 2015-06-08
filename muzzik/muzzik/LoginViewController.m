@@ -214,9 +214,6 @@
     weiboButton.layer.cornerRadius = 3;
     weiboButton.clipsToBounds = YES;
     [self.view addSubview:weiboButton];
-    AppDelegate *appdelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    appdelegate.loginVC = self;
-    self.delegate = appdelegate;
     
     
 }
@@ -325,10 +322,7 @@
 
 
 -(void) WeiChatlogin{
-    if (_delegate)
-    {
-        [_delegate sendAuthRequest];
-    }
+    [(AppDelegate*)[UIApplication sharedApplication].delegate sendAuthRequestByVC:self];
 
 }
 #pragma -mark QQlogin

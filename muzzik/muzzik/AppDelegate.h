@@ -12,7 +12,6 @@
 #import "WeiboSDK.h"
 #import "muzzikTrendController.h"
 #import "Reachability.h"
-#import "LoginViewController.h"
 typedef enum {
     SdkStatusStoped,
     SdkStatusStarting,
@@ -23,8 +22,7 @@ typedef enum {
 @interface AppDelegate : UIResponder <UIApplicationDelegate,GexinSdkDelegate,WeiboSDKDelegate,WXApiDelegate>{
      NSString *_deviceToken;
 }
-@property (nonatomic) muzzikTrendController *viewcontroller;
-@property (nonatomic) LoginViewController *loginVC;
+@property (nonatomic,weak) muzzikTrendController *viewcontroller;
 @property (strong, nonatomic) UIWindow *window;
 @property (strong, nonatomic) GexinSdk *gexinPusher;
 @property (strong, nonatomic) NSString *wbtoken;
@@ -47,8 +45,9 @@ typedef enum {
 
 - (void)bindAlias:(NSString *)aAlias;
 - (void)unbindAlias:(NSString *)aAlias;
--(void) downLoadLyricByMusic:(music *)music;
+//-(void) downLoadLyricByMusic:(music *)music;
 - (void) sendImageContent:(UIImage *)image;
 -(void) sendMusicContentByMuzzik:(muzzik*)localMuzzik scen:(int)scene image:(UIImage *)image;
+- (void)sendAuthRequestByVC:(UIViewController *)vc;
 @end
 

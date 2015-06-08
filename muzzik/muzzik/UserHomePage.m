@@ -240,12 +240,14 @@
             [constellationImage setImage:[UIImage imageNamed:Image_profileconstellationImage]];
             [mainView addSubview:constellationImage];
             constellationLabel.frame = CGRectMake(35, recordHeight, SCREEN_WIDTH/2-50, 20);
-            [constellationLabel setText:[_profileDic objectForKey:@"astro"]];
+            [constellationLabel setText:[MuzzikItem transtromAstroToChinese:[_profileDic objectForKey:@"astro"]]];
             [constellationLabel setTextColor:Color_Text_4];
             [constellationLabel setFont:[UIFont systemFontOfSize:12]];
             [mainView addSubview:constellationLabel];
             recordHeight = recordHeight-28;
             
+        }else{
+        
         }
         if ([dicKeys containsObject:@"birthday"] && [_profileDic objectForKey:@"birthday"]>0) {
             double unixTimeStamp = [[NSString stringWithFormat:@"%@",[_profileDic objectForKey:@"birthday"]] doubleValue]/1000;

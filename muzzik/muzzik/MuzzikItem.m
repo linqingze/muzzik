@@ -812,7 +812,7 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     [alterLabel setBackgroundColor:Color_line_2];
     alterLabel.text = text;
     [alterLabel sizeToFit];
-    [alterLabel setFrame:CGRectMake(SCREEN_WIDTH/2-alterLabel.frame.size.width/2, 100, alterLabel.frame.size.width+20, alterLabel.frame.size.height+20)];
+    [alterLabel setFrame:CGRectMake(SCREEN_WIDTH/2-alterLabel.frame.size.width/2-10, 100, alterLabel.frame.size.width+20, alterLabel.frame.size.height+20)];
     alterLabel.layer.cornerRadius = 5;
     alterLabel.clipsToBounds = YES;
     alterLabel.layer.shadowColor = [UIColor blackColor].CGColor;//shadowColor阴影颜色
@@ -873,7 +873,7 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     [alterLabel setBackgroundColor:Color_line_2];
     alterLabel.text = text;
     [alterLabel sizeToFit];
-    [alterLabel setFrame:CGRectMake(SCREEN_WIDTH/2-alterLabel.frame.size.width/2, SCREEN_HEIGHT-150, alterLabel.frame.size.width+20, alterLabel.frame.size.height+20)];
+    [alterLabel setFrame:CGRectMake(SCREEN_WIDTH/2-alterLabel.frame.size.width/2-10, SCREEN_HEIGHT-150, alterLabel.frame.size.width+20, alterLabel.frame.size.height+20)];
     alterLabel.layer.cornerRadius = 5;
     alterLabel.clipsToBounds = YES;
     alterLabel.layer.shadowColor = [UIColor blackColor].CGColor;//shadowColor阴影颜色
@@ -927,8 +927,67 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
         }];
     }];
 }
-+(void) showView:(UILabel *)view Text:(NSString *)string pointY:(CGFloat) pointY{
++(void) showOnView:(UIView *)view Text:(NSString *)string pointY:(CGFloat) pointY{
+    UILabel *alterLabel = [[UILabel alloc] init];
+    [alterLabel setFont:[UIFont boldSystemFontOfSize:14]];
+    [alterLabel setTextColor:Color_Orange];
+    [alterLabel setBackgroundColor:Color_line_2];
+    alterLabel.text = string;
+    [alterLabel sizeToFit];
+    [alterLabel setFrame:CGRectMake(SCREEN_WIDTH-alterLabel.frame.size.width-40, pointY, alterLabel.frame.size.width+20, alterLabel.frame.size.height+20)];
+    alterLabel.layer.cornerRadius = 5;
+    alterLabel.clipsToBounds = YES;
+    alterLabel.layer.shadowColor = [UIColor blackColor].CGColor;//shadowColor阴影颜色
+    alterLabel.layer.shadowOffset = CGSizeMake(0,0);//shadowOffset阴影偏移，默认(0, -3),这个跟shadowRadius配合使用
+    alterLabel.layer.shadowOpacity = 1;//阴影透明度，默认0
+    alterLabel.layer.shadowRadius = 3;//阴影半径，默认3
+    alterLabel.textAlignment = NSTextAlignmentCenter;
+    //路径阴影
+    UIBezierPath *path = [UIBezierPath bezierPath];
     
+    float width = alterLabel.bounds.size.width;
+    float height = alterLabel.bounds.size.height;
+    float x = alterLabel.bounds.origin.x;
+    float y = alterLabel.bounds.origin.y;
+    float addWH = 10;
+    
+    CGPoint topLeft      = alterLabel.bounds.origin;
+    CGPoint topMiddle = CGPointMake(x+(width/2),y-addWH);
+    CGPoint topRight     = CGPointMake(x+width,y);
+    
+    CGPoint rightMiddle = CGPointMake(x+width+addWH,y+(height/2));
+    
+    CGPoint bottomRight  = CGPointMake(x+width,y+height);
+    CGPoint bottomMiddle = CGPointMake(x+(width/2),y+height+addWH);
+    CGPoint bottomLeft   = CGPointMake(x,y+height);
+    
+    
+    CGPoint leftMiddle = CGPointMake(x-addWH,y+(height/2));
+    
+    [path moveToPoint:topLeft];
+    //添加四个二元曲线
+    [path addQuadCurveToPoint:topRight
+                 controlPoint:topMiddle];
+    [path addQuadCurveToPoint:bottomRight
+                 controlPoint:rightMiddle];
+    [path addQuadCurveToPoint:bottomLeft
+                 controlPoint:bottomMiddle];
+    [path addQuadCurveToPoint:topLeft
+                 controlPoint:leftMiddle];
+    //设置阴影路径
+    alterLabel.layer.shadowPath = path.CGPath;
+    [alterLabel setAlpha:0];
+    [view addSubview:alterLabel];
+    [UIView animateWithDuration:0.4 animations:^{
+        [alterLabel setAlpha:1];
+    } completion:^(BOOL finished) {
+        [UIView animateWithDuration:2 animations:^{
+            [alterLabel setAlpha:0];
+        } completion:^(BOOL finished) {
+            [alterLabel removeFromSuperview];
+        }];
+    }];
+
 }
 
 
@@ -1063,6 +1122,33 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     //UIFont *font = [UIFont fontWithName:fontName size:size];
     CGFontRelease(fontRef);
     return fontName;
+}
++(NSString *)transtromAstroToChinese:(NSString *)astroEnglish{
+    if ([astroEnglish isEqualToString:@"leo"]) {
+        return @"狮子座";
+    }else if ([astroEnglish isEqualToString:@"virgo"]) {
+        return @"处女座";
+    }else if ([astroEnglish isEqualToString:@"libra"]) {
+        return @"天秤座";
+    }else if ([astroEnglish isEqualToString:@"scorpio"]) {
+        return @"天蝎座";
+    }else if ([astroEnglish isEqualToString:@"sagittarius"]) {
+        return @"射手座";
+    }else if ([astroEnglish isEqualToString:@"capricorn"]) {
+        return @"摩羯座";
+    }else if ([astroEnglish isEqualToString:@"aquarius"]) {
+        return @"水瓶座";
+    }else if ([astroEnglish isEqualToString:@"pisces"]) {
+        return @"双鱼座";
+    }else if ([astroEnglish isEqualToString:@"aries"]) {
+        return @"白羊座";
+    }else if ([astroEnglish isEqualToString:@"taurus"]) {
+        return @"金牛座";
+    }else if ([astroEnglish isEqualToString:@"gemini"]) {
+        return @"双子座";
+    }else{
+        return @"巨蟹座";
+    }
 }
 @end
 

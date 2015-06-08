@@ -242,7 +242,7 @@
 */
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)sView
 {
-    NSInteger index = fabs(sView.contentOffset.x) / sView.frame.size.width;
+    int index = fabs(sView.contentOffset.x) / sView.frame.size.width;
     //NSLog(@"%d",index);
     [pagecontrol setCurrentPage:index];
 }

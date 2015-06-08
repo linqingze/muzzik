@@ -10,5 +10,4 @@
 #import "ViewPagerController.h"
 
 @interface HostViewController : ViewPagerController<UIAlertViewDelegate>
--(void)checkShowMusicView;
 @end

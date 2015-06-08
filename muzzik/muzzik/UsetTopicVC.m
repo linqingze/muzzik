@@ -30,7 +30,7 @@
     topicTableView.dataSource = self;
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/topic/byInitiator/%@",BaseURL,[userInfo shareClass].uid]]];
     NSDictionary  *paraDic;
-    paraDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%d",page],Parameter_page, Limit_Constant,Parameter_Limit,nil];
+    paraDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%ld",(long)page],Parameter_page, Limit_Constant,Parameter_Limit,nil];
     [requestForm addBodyDataSourceWithJsonByDic:paraDic Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = requestForm;
     [requestForm setCompletionBlock :^{
@@ -67,7 +67,7 @@
     page++;
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/topic/byInitiator/%@",BaseURL,[userInfo shareClass].uid]]];
     NSDictionary  *paraDic;
-    paraDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%d",page],Parameter_page, Limit_Constant,Parameter_Limit,nil];
+    paraDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%ld",(long)page],Parameter_page, Limit_Constant,Parameter_Limit,nil];
     [requestForm addBodyDataSourceWithJsonByDic:paraDic Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = requestForm;
     [requestForm setCompletionBlock :^{

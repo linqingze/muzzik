@@ -118,12 +118,12 @@
 //        return [NSString stringWithFormat:@"%d天前", ABS([gap day])];
     }else if(ABS([gap hour]) > 0)
     {
-        return [NSString stringWithFormat:@"%d小时前", ABS([gap hour])];
+        return [NSString stringWithFormat:@"%ld小时前", (long)(ABS([gap hour]))];
     }else{
         if (ABS([gap minute])==0) {
             return [NSString stringWithFormat:@"刚刚"];
         }
-        return [NSString stringWithFormat:@"%d分钟前",  ABS([gap minute])];
+        return [NSString stringWithFormat:@"%ld分钟前",  (long)ABS([gap minute])];
     }
 }
 @end

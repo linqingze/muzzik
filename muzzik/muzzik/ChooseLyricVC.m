@@ -673,8 +673,6 @@
     [self presentViewController:photoPicker animated:YES completion:NULL];
 }
 
--(void) summitAction{
-    }
 -(void)setPoMuzzikMessage:(NSDictionary *)dic{
     userInfo *user = [userInfo shareClass];
     MuzzikObject *mobject = [MuzzikObject shareClass];

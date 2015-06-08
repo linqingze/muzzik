@@ -14,6 +14,8 @@
 #import "TWPhotoPickerController.h"
 #import "ASIFormDataRequest.h"
 @interface ProfileSetting ()<HPGrowingTextViewDelegate,UITextFieldDelegate,ZHPickViewDelegate,UITableViewDelegate>{
+    BOOL isChanged;
+    BOOL changedBirth;
     UIButton *headimage;
     UITextField *NameText;
     HPGrowingTextView *decripText;
@@ -33,14 +35,6 @@
     UIView *classifyBiew;
     UILabel *addClassifyLabel;
     CGFloat frameHeight;
-    BOOL changImage;
-    BOOL changeName;
-    BOOL changeDescrip;
-    BOOL changeSchool;
-    BOOL ChangeCompany;
-    BOOL changeBirth;
-    BOOL changClass;
-    BOOL changeGenres;
     UIImage *localImage;
     UITableView *mainTableView;
     UIView *mainView;
@@ -212,6 +206,7 @@
     [MuzzikItem addLineOnView:belowView heightPoint:1 toLeft:0 toRight:26 withColor:Color_line_1];
     [self.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(endEditOnView)]];
     [mainTableView setTableHeaderView:mainView];
+    [mainTableView  setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     // Do any additional setup after loading the view.
 }
 
@@ -228,7 +223,6 @@
 }
 
 - (void)growingTextViewDidChange:(HPGrowingTextView *)growingTextView{
-    changeDescrip = YES;
     if ([growingTextView.text length]>60) {
         growingTextView.text = [growingTextView.text substringToIndex:60];
     }
@@ -241,6 +235,7 @@
 
 -(BOOL)textFieldShouldBeginEditing:(UITextField *)textField{
     if (textField == birthText) {
+        isChanged = YES;
         [self.view endEditing:YES];
          [_pickview remove];
         NSDate *date=[NSDate dateWithTimeIntervalSince1970:654150000];
@@ -254,6 +249,7 @@
 }
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
+    isChanged = YES;
      [_pickview remove];
     if (textField !=NameText) {
         CGRect frame = textField.frame;
@@ -294,47 +290,6 @@
     [self.view endEditing:YES];
     [UIView commitAnimations];
 }
--(void)textFieldDidEndEditing:(UITextField *)textField{
-    if (textField == NameText && ![NameText.text isEqualToString:[_profileDic objectForKey:@"name"]]) {
-        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@%@",BaseURL,URL_check_phone]]];
-        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:textField.text forKey:@"name"] Method:PostMethod auth:NO];
-        __weak ASIHTTPRequest *weakrequest = requestForm;
-        [requestForm setCompletionBlock :^{
-            NSLog(@"%@",[weakrequest responseString]);
-            NSLog(@"%d",[weakrequest responseStatusCode]);
-            if ([weakrequest responseStatusCode] == 200) {
-                changeName = YES;
-                //
-            }
-            else if([weakrequest responseStatusCode] == 400){
-                [MuzzikItem showNotifyOnView:self.view text:@"用户名超过15个字"];
-                [[[AFViewShaker alloc] initWithView:textField] shake];
-                [textField becomeFirstResponder];
-            }
-            else if([weakrequest responseStatusCode] == 406){
-                [MuzzikItem showNotifyOnView:self.view text:@"用户名含非法字符"];
-                [[[AFViewShaker alloc] initWithView:textField] shake];
-                [textField becomeFirstResponder];
-            }
-            else if([weakrequest responseStatusCode] == 409){
-                [MuzzikItem showNotifyOnView:self.view text:@"用户名已被使用"];
-                [[[AFViewShaker alloc] initWithView:textField] shake];
-                [textField becomeFirstResponder];
-            }
-        }];
-        [requestForm setFailedBlock:^{
-            // [SVProgressHUD showErrorWithStatus:@"network error"];
-        }];
-        [requestForm startAsynchronous];
-    }else if(textField == companyText && ![NameText.text isEqualToString:[_profileDic objectForKey:@"company"]]){
-        ChangeCompany = YES;
-    }
-    else if(textField == schoolText && ![NameText.text isEqualToString:[_profileDic objectForKey:@"school"]]){
-        changeSchool = YES;
-    }
-
-    
-}
 -(void) changeHeadImage{
     TWPhotoPickerController *photoPicker = [[TWPhotoPickerController alloc] init];
     photoPicker.cropBlock = ^(UIImage *image) {
@@ -364,122 +319,251 @@
     [self.navigationController pushViewController:class animated:YES];
 }
 -(void)rightBtnAction:(UIButton *)sender{
-
-    ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@%@",BaseURL,URL_Update_Profile]]];
-    NSMutableDictionary *dic= [NSMutableDictionary dictionary];
-   
-    if (changeName) {
-        [dic setObject:NameText.text forKey:@"name"];
-    }
-    if (changeSchool) {
-        [dic setObject:schoolText.text forKey:@"school"];
-    }
-    if (ChangeCompany) {
-        [dic setObject:companyText.text forKey:@"company"];
-    }
-    if ([_birthString length]>0) {
-        [dic setObject:_birthString forKey:@"birthday"];
-    }
-    if (changeDescrip) {
-        [dic setObject:decripText.text forKey:@"description"];
-    }
-    if ([_genderString length]>0) {
-        [dic setObject:_genderString forKey:@"gender"];
-    }
-    if (changeGenres) {
-        [dic setObject:[_profileDic objectForKey:@"genres"] forKey:@"genres"];
-    }
-    if (localImage) {
-        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@%@",BaseURL,URL_Upload_Image]]];
+    if (isChanged ||localImage) {
         
-        [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
-        __weak ASIHTTPRequest *weakrequest = requestForm;
-        [requestForm setCompletionBlock :^{
-            NSLog(@"%@    %@",[weakrequest originalURL],[weakrequest requestHeaders]);
-            NSLog(@"%@",[weakrequest responseHeaders]);
-            NSLog(@"%@",[weakrequest responseString]);
-            NSLog(@"%d",[weakrequest responseStatusCode]);
-            if ([weakrequest responseStatusCode] == 200) {
-                NSDictionary *imagedic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
-                
-                ASIFormDataRequest *interRequest = [[ASIFormDataRequest alloc] initWithURL:[NSURL URLWithString:[imagedic objectForKey:@"url"]]];
-                [ASIFormDataRequest clearSession];
-                [interRequest setPostFormat:ASIMultipartFormDataPostFormat];
-                [interRequest addRequestHeader:@"Host" value:@"upload.qiniu.com"];
-                [interRequest setPostValue:[[imagedic objectForKey:@"data"] objectForKey:@"token"] forKey:@"token"];
-                NSData *imageData = UIImageJPEGRepresentation(localImage, 0.75);
-                [interRequest addData:imageData forKey:@"file"];
-                __weak ASIFormDataRequest *form = interRequest;
-                [interRequest buildRequestHeaders];
-                NSLog(@"header:%@",interRequest.requestHeaders);
-                [interRequest setCompletionBlock:^{
-                    NSDictionary *keydic = [NSJSONSerialization JSONObjectWithData:[form responseData] options:NSJSONReadingMutableContainers error:nil];
-                    ASIHTTPRequest *updateImageRequest = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL,URL_Update_Profile]]];
-                    [dic setObject:[keydic objectForKey:@"key"] forKey:@"avatar"];
-                    [updateImageRequest addBodyDataSourceWithJsonByDic:dic Method:PostMethod auth:YES];
-                    __weak ASIHTTPRequest *WeakImageRequest = updateImageRequest;
-                    [updateImageRequest setCompletionBlock:^{
-                        if ([WeakImageRequest responseStatusCode]==200) {
-                            self.userhome.headimage.image = localImage;
+        if (![NameText.text isEqualToString:[_profileDic objectForKey:@"name"]]) {
+            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@%@",BaseURL,URL_check_phone]]];
+            [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:NameText.text forKey:@"name"] Method:PostMethod auth:NO];
+            __weak ASIHTTPRequest *weakrequest = requestForm;
+            [requestForm setCompletionBlock :^{
+                NSLog(@"%@",[weakrequest responseString]);
+                NSLog(@"%d",[weakrequest responseStatusCode]);
+                if ([weakrequest responseStatusCode] == 200) {
+                    
+                    ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@%@",BaseURL,URL_Update_Profile]]];
+                    NSMutableDictionary *dic= [NSMutableDictionary dictionary];
+                    [dic setObject:NameText.text forKey:@"name"];
+                    [dic setObject:schoolText.text forKey:@"school"];
+                    [dic setObject:companyText.text forKey:@"company"];
+                    if (changedBirth) {
+                        [dic setObject:_birthString forKey:@"birthday"];
+                    }
+                    
+                    [dic setObject:decripText.text forKey:@"description"];
+                    if (_genderString) {
+                        [dic setObject:_genderString forKey:@"gender"];
+                    }
+                    
+                    [dic setObject:[_profileDic objectForKey:@"genres"] forKey:@"genres"];
+                    if (localImage) {
+                        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@%@",BaseURL,URL_Upload_Image]]];
+                        
+                        [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
+                        __weak ASIHTTPRequest *weakrequest = requestForm;
+                        [requestForm setCompletionBlock :^{
+                            NSLog(@"%@    %@",[weakrequest originalURL],[weakrequest requestHeaders]);
+                            NSLog(@"%@",[weakrequest responseHeaders]);
+                            NSLog(@"%@",[weakrequest responseString]);
+                            NSLog(@"%d",[weakrequest responseStatusCode]);
+                            if ([weakrequest responseStatusCode] == 200) {
+                                NSDictionary *imagedic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
+                                
+                                ASIFormDataRequest *interRequest = [[ASIFormDataRequest alloc] initWithURL:[NSURL URLWithString:[imagedic objectForKey:@"url"]]];
+                                [ASIFormDataRequest clearSession];
+                                [interRequest setPostFormat:ASIMultipartFormDataPostFormat];
+                                [interRequest addRequestHeader:@"Host" value:@"upload.qiniu.com"];
+                                [interRequest setPostValue:[[imagedic objectForKey:@"data"] objectForKey:@"token"] forKey:@"token"];
+                                NSData *imageData = UIImageJPEGRepresentation(localImage, 0.75);
+                                [interRequest addData:imageData forKey:@"file"];
+                                __weak ASIFormDataRequest *form = interRequest;
+                                [interRequest buildRequestHeaders];
+                                NSLog(@"header:%@",interRequest.requestHeaders);
+                                [interRequest setCompletionBlock:^{
+                                    NSDictionary *keydic = [NSJSONSerialization JSONObjectWithData:[form responseData] options:NSJSONReadingMutableContainers error:nil];
+                                    ASIHTTPRequest *updateImageRequest = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL,URL_Update_Profile]]];
+                                    [dic setObject:[keydic objectForKey:@"key"] forKey:@"avatar"];
+                                    [updateImageRequest addBodyDataSourceWithJsonByDic:dic Method:PostMethod auth:YES];
+                                    __weak ASIHTTPRequest *WeakImageRequest = updateImageRequest;
+                                    [updateImageRequest setCompletionBlock:^{
+                                        if ([WeakImageRequest responseStatusCode]==200) {
+                                            self.userhome.headimage.image = localImage;
+                                            [self.navigationController popViewControllerAnimated:YES];
+                                            
+                                        }
+                                    }];
+                                    [updateImageRequest setFailedBlock:^{
+                                        NSLog(@"%@",[WeakImageRequest error]);
+                                    }];
+                                    [updateImageRequest startAsynchronous];
+                                }];
+                                [interRequest setFailedBlock:^{
+                                    NSLog(@"%@",[form responseString]);
+                                }];
+                                [interRequest startAsynchronous];
+                                
+                            }
+                            else if([weakrequest responseStatusCode] == 400){
+                            }
+                            else if([weakrequest responseStatusCode] == 409){
+                                
+                            }
+                        }];
+                        [requestForm setFailedBlock:^{
+                            // [SVProgressHUD showErrorWithStatus:@"network error"];
+                        }];
+                        [requestForm startAsynchronous];
+                    }
+                    else{
+                        ASIHTTPRequest *updateImageRequest = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL,URL_Update_Profile]]];
+                        [updateImageRequest addBodyDataSourceWithJsonByDic:dic Method:PostMethod auth:YES];
+                        __weak ASIHTTPRequest *WeakImageRequest = updateImageRequest;
+                        [updateImageRequest setCompletionBlock:^{
+                            if ([WeakImageRequest responseStatusCode]==200) {
+                                [self.navigationController popViewControllerAnimated:YES];
+                            }
+                        }];
+                        [updateImageRequest setFailedBlock:^{
+                            NSLog(@"%@",[WeakImageRequest error]);
+                        }];
+                        [updateImageRequest startAsynchronous];
+                    }
+                    [requestForm addBodyDataSourceWithJsonByDic:dic Method:PostMethod auth:YES];
+                    __weak ASIHTTPRequest *weakrequest = requestForm;
+                    [requestForm setCompletionBlock :^{
+                        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
+                        NSLog(@"%@",[weakrequest responseString]);
+                        NSLog(@"%d",[weakrequest responseStatusCode]);
+                        if ([weakrequest responseStatusCode] == 200 && [[dic objectForKey:@"result"] boolValue]) {
                             [self.navigationController popViewControllerAnimated:YES];
-                            
+                            //
                         }
                     }];
-                    [updateImageRequest setFailedBlock:^{
-                        NSLog(@"%@",[WeakImageRequest error]);
+                    [requestForm setFailedBlock:^{
+                        // [SVProgressHUD showErrorWithStatus:@"network error"];
                     }];
-                    [updateImageRequest startAsynchronous];
-                }];
-                [interRequest setFailedBlock:^{
-                    NSLog(@"%@",[form responseString]);
-                }];
-                [interRequest startAsynchronous];
+                    [requestForm startAsynchronous];
+                }
+                else if([weakrequest responseStatusCode] == 400){
+                    [MuzzikItem showOnView:self.view Text:@"用户名超过15个字" pointY:NameText.frame.origin.y];
+                    [[[AFViewShaker alloc] initWithView:NameText] shake];
+                    [NameText becomeFirstResponder];
+                }
+                else if([weakrequest responseStatusCode] == 406){
+                    [MuzzikItem showOnView:self.view Text:@"用户名含非法字符" pointY:NameText.frame.origin.y];
+                    [[[AFViewShaker alloc] initWithView:NameText] shake];
+                    [NameText becomeFirstResponder];
+                }
+                else if([weakrequest responseStatusCode] == 409){
+                    [MuzzikItem showOnView:self.view Text:@"用户名已被使用" pointY:NameText.frame.origin.y];
+                    [[[AFViewShaker alloc] initWithView:NameText] shake];
+                    [NameText becomeFirstResponder];
+                }
+            }];
+            [requestForm setFailedBlock:^{
+                // [SVProgressHUD showErrorWithStatus:@"network error"];
+            }];
+            [requestForm startAsynchronous];
+        }else{
+            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@%@",BaseURL,URL_Update_Profile]]];
+            NSMutableDictionary *dic= [NSMutableDictionary dictionary];
+            [dic setObject:schoolText.text forKey:@"school"];
+            [dic setObject:companyText.text forKey:@"company"];
+            if (changedBirth) {
+                [dic setObject:_birthString forKey:@"birthday"];
+            }
+            [dic setObject:decripText.text forKey:@"description"];
+            if (_genderString) {
+                [dic setObject:_genderString forKey:@"gender"];
+            }
+            [dic setObject:[_profileDic objectForKey:@"genres"] forKey:@"genres"];
+            if (localImage) {
+                ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@%@",BaseURL,URL_Upload_Image]]];
                 
+                [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
+                __weak ASIHTTPRequest *weakrequest = requestForm;
+                [requestForm setCompletionBlock :^{
+                    NSLog(@"%@    %@",[weakrequest originalURL],[weakrequest requestHeaders]);
+                    NSLog(@"%@",[weakrequest responseHeaders]);
+                    NSLog(@"%@",[weakrequest responseString]);
+                    NSLog(@"%d",[weakrequest responseStatusCode]);
+                    if ([weakrequest responseStatusCode] == 200) {
+                        NSDictionary *imagedic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
+                        
+                        ASIFormDataRequest *interRequest = [[ASIFormDataRequest alloc] initWithURL:[NSURL URLWithString:[imagedic objectForKey:@"url"]]];
+                        [ASIFormDataRequest clearSession];
+                        [interRequest setPostFormat:ASIMultipartFormDataPostFormat];
+                        [interRequest addRequestHeader:@"Host" value:@"upload.qiniu.com"];
+                        [interRequest setPostValue:[[imagedic objectForKey:@"data"] objectForKey:@"token"] forKey:@"token"];
+                        NSData *imageData = UIImageJPEGRepresentation(localImage, 0.75);
+                        [interRequest addData:imageData forKey:@"file"];
+                        __weak ASIFormDataRequest *form = interRequest;
+                        [interRequest buildRequestHeaders];
+                        NSLog(@"header:%@",interRequest.requestHeaders);
+                        [interRequest setCompletionBlock:^{
+                            NSDictionary *keydic = [NSJSONSerialization JSONObjectWithData:[form responseData] options:NSJSONReadingMutableContainers error:nil];
+                            ASIHTTPRequest *updateImageRequest = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL,URL_Update_Profile]]];
+                            [dic setObject:[keydic objectForKey:@"key"] forKey:@"avatar"];
+                            [updateImageRequest addBodyDataSourceWithJsonByDic:dic Method:PostMethod auth:YES];
+                            __weak ASIHTTPRequest *WeakImageRequest = updateImageRequest;
+                            [updateImageRequest setCompletionBlock:^{
+                                if ([WeakImageRequest responseStatusCode]==200) {
+                                    self.userhome.headimage.image = localImage;
+                                    [self.navigationController popViewControllerAnimated:YES];
+                                    
+                                }
+                            }];
+                            [updateImageRequest setFailedBlock:^{
+                                NSLog(@"%@",[WeakImageRequest error]);
+                            }];
+                            [updateImageRequest startAsynchronous];
+                        }];
+                        [interRequest setFailedBlock:^{
+                            NSLog(@"%@",[form responseString]);
+                        }];
+                        [interRequest startAsynchronous];
+                        
+                    }
+                    else if([weakrequest responseStatusCode] == 400){
+                    }
+                    else if([weakrequest responseStatusCode] == 409){
+                        
+                    }
+                }];
+                [requestForm setFailedBlock:^{
+                    // [SVProgressHUD showErrorWithStatus:@"network error"];
+                }];
+                [requestForm startAsynchronous];
             }
-            else if([weakrequest responseStatusCode] == 400){
+            else{
+                ASIHTTPRequest *updateImageRequest = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL,URL_Update_Profile]]];
+                [updateImageRequest addBodyDataSourceWithJsonByDic:dic Method:PostMethod auth:YES];
+                __weak ASIHTTPRequest *WeakImageRequest = updateImageRequest;
+                [updateImageRequest setCompletionBlock:^{
+                    if ([WeakImageRequest responseStatusCode]==200) {
+                        [self.navigationController popViewControllerAnimated:YES];
+                    }
+                }];
+                [updateImageRequest setFailedBlock:^{
+                    NSLog(@"%@",[WeakImageRequest error]);
+                }];
+                [updateImageRequest startAsynchronous];
             }
-            else if([weakrequest responseStatusCode] == 409){
-                
-            }
-        }];
-        [requestForm setFailedBlock:^{
-            // [SVProgressHUD showErrorWithStatus:@"network error"];
-        }];
-        [requestForm startAsynchronous];
-    }
-    else{
-        ASIHTTPRequest *updateImageRequest = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL,URL_Update_Profile]]];
-        [updateImageRequest addBodyDataSourceWithJsonByDic:dic Method:PostMethod auth:YES];
-        __weak ASIHTTPRequest *WeakImageRequest = updateImageRequest;
-        [updateImageRequest setCompletionBlock:^{
-            if ([WeakImageRequest responseStatusCode]==200) {
-                [self.navigationController popViewControllerAnimated:YES];
-            }
-        }];
-        [updateImageRequest setFailedBlock:^{
-            NSLog(@"%@",[WeakImageRequest error]);
-        }];
-        [updateImageRequest startAsynchronous];
-    }
-    [requestForm addBodyDataSourceWithJsonByDic:dic Method:PostMethod auth:YES];
-    __weak ASIHTTPRequest *weakrequest = requestForm;
-    [requestForm setCompletionBlock :^{
-        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
-        NSLog(@"%@",[weakrequest responseString]);
-        NSLog(@"%d",[weakrequest responseStatusCode]);
-        if ([weakrequest responseStatusCode] == 200 && [[dic objectForKey:@"result"] boolValue]) {
-            [self.navigationController popViewControllerAnimated:YES];
-            //
+            [requestForm addBodyDataSourceWithJsonByDic:dic Method:PostMethod auth:YES];
+            __weak ASIHTTPRequest *weakrequest = requestForm;
+            [requestForm setCompletionBlock :^{
+                NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
+                NSLog(@"%@",[weakrequest responseString]);
+                NSLog(@"%d",[weakrequest responseStatusCode]);
+                if ([weakrequest responseStatusCode] == 200 && [[dic objectForKey:@"result"] boolValue]) {
+                    [self.navigationController popViewControllerAnimated:YES];
+                    //
+                }
+            }];
+            [requestForm setFailedBlock:^{
+                // [SVProgressHUD showErrorWithStatus:@"network error"];
+            }];
+            [requestForm startAsynchronous];
         }
-    }];
-    [requestForm setFailedBlock:^{
-        // [SVProgressHUD showErrorWithStatus:@"network error"];
-    }];
-    [requestForm startAsynchronous];
+        
+    }else{
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+    
 }
 #pragma mark ZhpickVIewDelegate
 
 -(void)toobarDonBtnHaveClick:(ZHPickView *)pickView resultString:(NSString *)resultString{
+    changedBirth = YES;
     _birthString = resultString;
     birthText.text = [_birthString stringByReplacingOccurrencesOfString:@"-" withString:@"."];
     

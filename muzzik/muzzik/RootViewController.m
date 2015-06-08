@@ -167,13 +167,14 @@
                                          completion:nil];
             [userHome.view removeFromSuperview];
             pageControllers = @[muzzikvc,topicvc];
+            [userHome.view removeFromSuperview];
             userHome = nil;
         }
         
         
     }
     
-    _pagecontrol.numberOfPages = pageControllers.count;
+    _pagecontrol.numberOfPages = (int)pageControllers.count;
     
   //  [self reloadData];
 
@@ -291,4 +292,5 @@
     NotificationVC *notifyvc = [[NotificationVC alloc] init];
     [self.navigationController pushViewController:notifyvc animated:YES];
 }
+
 @end

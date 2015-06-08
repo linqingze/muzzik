@@ -64,8 +64,6 @@ typedef NS_ENUM(NSUInteger, ViewPagerComponent) {
 #pragma mark Methods
 // Reload all tabs and contents
 - (void)reloadData;
--(void) showMusicView;
--(void) hideMusicView;
 @end
 
 #pragma mark dataSource

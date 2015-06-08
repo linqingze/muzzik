@@ -59,11 +59,13 @@
 
 +(void) showNotifyOnView:(UIView *)view text:(NSString *)text;
 +(void) showNotifyOnViewUpon:(UIView *)view text:(NSString *)text;
-
++(void) showOnView:(UIView *)view Text:(NSString *)string pointY:(CGFloat) pointY;
 //处理广播
 +(BOOL) checkMutableArray:(NSMutableArray*) array isContainMuzzik:(muzzik *)localMuzzik;
 +(BOOL) checkMutableArray:(NSMutableArray*) array isContainUser:(MuzzikUser *)localUser;
 
 +(void)SetUserInfoWithMuzziks:(NSMutableArray *)muzziks title:(NSString *)title description:(NSString *)descrip;
 +(NSString*)customFontWithPath:(NSString*)path;
+
++(NSString *)transtromAstroToChinese:(NSString *)astroEnglish;
 @end

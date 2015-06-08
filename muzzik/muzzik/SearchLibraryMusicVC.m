@@ -66,9 +66,9 @@
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Music_Search]]];
     NSDictionary  *paraDic;
     if ([_searchText length]>0) {
-        paraDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%d",page],Parameter_page,[_searchText stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],@"q", nil];
+        paraDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%ld",(long)page],Parameter_page,[_searchText stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],@"q", nil];
     }else{
-        paraDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%d",page],Parameter_page, nil];
+        paraDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%ld",(long)page],Parameter_page, nil];
     }
     [requestForm addBodyDataSourceWithJsonByDic:paraDic Method:GetMethod auth:NO];
     __weak ASIHTTPRequest *weakrequest = requestForm;
@@ -169,6 +169,7 @@
         }else{
             mobject.music = tempMuzzik.music;
             MessageStepViewController *msgVC = [[MessageStepViewController alloc] init];
+            msgVC.isNewSelected = YES;
             [self.keeper.navigationController pushViewController:msgVC animated:YES];
         }
     }

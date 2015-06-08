@@ -10,5 +10,5 @@
 
 @interface SettingCell : UITableViewCell
 @property (nonatomic,retain)UILabel *label;
-@property (nonatomic,retain)UIButton *shakeButton;
+@property (nonatomic,retain)UIImageView *shakeButton;
 @end

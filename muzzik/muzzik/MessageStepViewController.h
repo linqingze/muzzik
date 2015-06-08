@@ -11,4 +11,5 @@
 @interface MessageStepViewController : shareBaseController
 @property (nonatomic,copy) NSString *message;
 @property (nonatomic,retain) music *muzzikmusic;
+@property (nonatomic,assign) BOOL isNewSelected;
 @end

@@ -151,7 +151,25 @@
     }
 }
 
+- (BOOL)canBecomeFirstResponder
+{
+    return YES;// default is NO
+}
 
+- (void) motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event
+
+{
+    NSString * shakeSwitch = [MuzzikItem getStringForKey:@"User_shakeActionSwitch"];
+    if ([shakeSwitch isEqualToString:@"open"]) {
+        musicPlayer *player = [musicPlayer shareClass];
+        //摇动结束
+        if (event.subtype == UIEventSubtypeMotionShake && [player.MusicArray count]>0) {
+            [player playNext];
+        }
+    }
+    
+    
+}
 
 
 

@@ -25,9 +25,9 @@
     [_label setFont:[UIFont systemFontOfSize:14]];
     _label.textColor = Color_Text_1;
     [self addSubview:_label];
-    _shakeButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-50, 0, 60, 60)];
+    _shakeButton = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-50, 12, 36, 36)];
     [self addSubview:_shakeButton];
-    [MuzzikItem addLineOnView:self heightPoint:60 toLeft:13 toRight:13 withColor:Color_line_1];
+    [MuzzikItem addLineOnView:self heightPoint:59 toLeft:13 toRight:13 withColor:Color_line_1];
 }
 
 @end

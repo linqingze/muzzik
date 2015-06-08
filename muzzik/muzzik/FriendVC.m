@@ -63,7 +63,7 @@
 }
 -(void) requestForFriend{
     ASIHTTPRequest *requestfriend = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL,URL_Friends_get]]];
-    [requestfriend addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:@"100",Parameter_Limit,[NSString stringWithFormat:@"%d",page],Parameter_page, nil] Method:GetMethod auth:YES];
+    [requestfriend addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:@"100",Parameter_Limit,[NSString stringWithFormat:@"%ld",(long)page],Parameter_page, nil] Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = requestfriend;
     [requestfriend setCompletionBlock:^{
 //        NSLog(@"%@",[weakrequest originalURL]);
@@ -140,7 +140,7 @@
     cell.label.text = muzzikuser.name;
     BOOL isSelected = NO;
     for (NSString *string in [Fdictionary allKeys]) {
-        if ([string isEqualToString:[NSString stringWithFormat:@"%d-%d",indexPath.section,indexPath.row]]) {
+        if ([string isEqualToString:[NSString stringWithFormat:@"%ld-%ld",(long)indexPath.section,(long)indexPath.row]]) {
             isSelected = YES;
             break;
         }
@@ -161,15 +161,15 @@
     NSLog(@"%@",indexPath.description);
     BOOL isSelected = NO;
     for (NSString *string in [Fdictionary allKeys]) {
-        if ([string isEqualToString:[NSString stringWithFormat:@"%d-%d",indexPath.section,indexPath.row]]) {
+        if ([string isEqualToString:[NSString stringWithFormat:@"%ld-%ld",(long)indexPath.section,(long)indexPath.row]]) {
             isSelected = YES;
             break;
         }
     }
     if (isSelected) {
-        [Fdictionary removeObjectForKey:[NSString stringWithFormat:@"%d-%d",indexPath.section,indexPath.row]];
+        [Fdictionary removeObjectForKey:[NSString stringWithFormat:@"%ld-%ld",(long)indexPath.section,(long)indexPath.row]];
     }else{
-        [Fdictionary setObject:indexPath forKey:[NSString stringWithFormat:@"%d-%d",indexPath.section,indexPath.row]];
+        [Fdictionary setObject:indexPath forKey:[NSString stringWithFormat:@"%ld-%ld",(long)indexPath.section,(long)indexPath.row]];
         
     }
     if ([[Fdictionary allKeys] count]>0) {

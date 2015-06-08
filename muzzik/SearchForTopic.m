@@ -51,7 +51,7 @@
     self.keeper.activityVC = self;
     [self.keeper followScrollView:myTableView];
     if ([self.keeper.searchBar.text length]>0 &&![_searchText isEqualToString:self.keeper.searchBar.text]&& [self.searchArray count] == 0) {
-        searchLabel.text = [NSString stringWithFormat:@"搜索相关音乐:%@",self.keeper.searchBar.text];
+        searchLabel.text = [NSString stringWithFormat:@"搜索相关话题:%@",self.keeper.searchBar.text];
         [self.view addSubview:searchView];
     }
     

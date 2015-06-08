@@ -130,7 +130,7 @@
                     [_constellationImage setImage:[UIImage imageNamed:Image_profileconstellationImage]];
                     [_headView addSubview:_constellationImage];
                     _constellationLabel.frame = CGRectMake(35, recordHeight, SCREEN_WIDTH/2-50, 20);
-                    [_constellationLabel setText:[_profileDic objectForKey:@"astro"]];
+                    [_constellationLabel setText:[MuzzikItem transtromAstroToChinese:[_profileDic objectForKey:@"astro"]]];
                     [_constellationLabel setTextColor:Color_Text_4];
                     [_constellationLabel setFont:[UIFont systemFontOfSize:12]];
                     [_headView addSubview:_constellationLabel];
@@ -920,7 +920,6 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     _musicplayer.listType = TempList;
     [_musicplayer playSongWithSongModel:songModel Title:[NSString stringWithFormat:@"#%@#的Muzzik",songModel.MuzzikUser.name]];
     [MuzzikItem SetUserInfoWithMuzziks:self.muzziks title:Constant_userInfo_temp description:[NSString stringWithFormat:@"#%@#的Muzzik",songModel.MuzzikUser.name]];
-   // [self.homeNav checkShowMusicView];
 }
 
 -(void) commentAtMuzzik:(muzzik *)localMuzzik{

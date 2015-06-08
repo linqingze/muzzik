@@ -190,12 +190,6 @@
 #pragma mark - ViewPagerDelegate
 
 #pragma -mark Player
--(void)checkShowMusicView{
-    if ([[musicPlayer shareClass].MusicArray count]>0) {
-        [self showMusicView];
-    }
-    
-}
 
 
 - (void) motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event
@@ -204,7 +198,6 @@
     
     //摇动结束
     if (event.subtype == UIEventSubtypeMotionShake && [[musicPlayer shareClass].MusicArray count]>0) {
-        [self showMusicView];
         }
     
 }

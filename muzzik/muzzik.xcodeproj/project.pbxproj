@@ -190,6 +190,9 @@
 		F2F0FC8C1ADD8B7100668103 /* TeachViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F0FC8A1ADD8B7100668103 /* TeachViewController.m */; };
 		F2F0FC8D1ADD8B7100668103 /* TeachViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = F2F0FC8B1ADD8B7100668103 /* TeachViewController.xib */; };
 		F2F0FC901ADE0E9100668103 /* checkVerifyCode.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F0FC8F1ADE0E9100668103 /* checkVerifyCode.m */; };
+		F2F68F5B1B23FAEA005F19E6 /* DraftBoxVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F68F5A1B23FAEA005F19E6 /* DraftBoxVC.m */; };
+		F2F68F5E1B23FB49005F19E6 /* DraftsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F68F5D1B23FB49005F19E6 /* DraftsCell.m */; };
+		F2F68F641B25C9C1005F19E6 /* PhotoImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F68F631B25C9C1005F19E6 /* PhotoImageView.m */; };
 		F2F7EE0D1AED333C00265596 /* SearchMusicCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F7EE0C1AED333C00265596 /* SearchMusicCell.m */; };
 		F2F7EE141AED60A400265596 /* shareBaseController.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F7EE131AED60A400265596 /* shareBaseController.m */; };
 		F2F7EE1A1AED69B600265596 /* MessageStepViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F7EE191AED69B600265596 /* MessageStepViewController.m */; };
@@ -600,6 +603,12 @@
 		F2F0FC8B1ADD8B7100668103 /* TeachViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TeachViewController.xib; sourceTree = "<group>"; };
 		F2F0FC8E1ADE0E9100668103 /* checkVerifyCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = checkVerifyCode.h; sourceTree = "<group>"; };
 		F2F0FC8F1ADE0E9100668103 /* checkVerifyCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = checkVerifyCode.m; sourceTree = "<group>"; };
+		F2F68F591B23FAEA005F19E6 /* DraftBoxVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DraftBoxVC.h; sourceTree = "<group>"; };
+		F2F68F5A1B23FAEA005F19E6 /* DraftBoxVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DraftBoxVC.m; sourceTree = "<group>"; };
+		F2F68F5C1B23FB49005F19E6 /* DraftsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DraftsCell.h; sourceTree = "<group>"; };
+		F2F68F5D1B23FB49005F19E6 /* DraftsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DraftsCell.m; sourceTree = "<group>"; };
+		F2F68F621B25C9C1005F19E6 /* PhotoImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoImageView.h; sourceTree = "<group>"; };
+		F2F68F631B25C9C1005F19E6 /* PhotoImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoImageView.m; sourceTree = "<group>"; };
 		F2F7EE0B1AED333C00265596 /* SearchMusicCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchMusicCell.h; sourceTree = "<group>"; };
 		F2F7EE0C1AED333C00265596 /* SearchMusicCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchMusicCell.m; sourceTree = "<group>"; };
 		F2F7EE121AED60A400265596 /* shareBaseController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = shareBaseController.h; sourceTree = "<group>"; };
@@ -729,6 +738,10 @@
 				F2F089D71B00920D00FB1639 /* settingSystemVC.m */,
 				F2F089DE1B009CCA00FB1639 /* SettingCell.h */,
 				F2F089DF1B009CCA00FB1639 /* SettingCell.m */,
+				F2F68F591B23FAEA005F19E6 /* DraftBoxVC.h */,
+				F2F68F5A1B23FAEA005F19E6 /* DraftBoxVC.m */,
+				F2F68F5C1B23FB49005F19E6 /* DraftsCell.h */,
+				F2F68F5D1B23FB49005F19E6 /* DraftsCell.m */,
 				E142A3131AB7E4C2002BBCB0 /* myDataBase.db */,
 				E159C31C1AC11F76007D2254 /* HostViewController.h */,
 				E159C31D1AC11F76007D2254 /* HostViewController.m */,
@@ -801,6 +814,7 @@
 		E112461D1AAAB0E50014D461 /* muzzik class */ = {
 			isa = PBXGroup;
 			children = (
+				F2F68F611B25C888005F19E6 /* Addition Class */,
 				F2A5E20D1AD9123000FD8B3E /* model */,
 				E1FA12B41AB1499F005EDA1D /* AudioPlayer */,
 				E1FA12AB1AB148B6005EDA1D /* musicPlay */,
@@ -1221,8 +1235,6 @@
 				F2A2E9041B08C44D00D65514 /* SuggestMuzzikVC.m */,
 				F2A2E9061B08C69B00D65514 /* suggestCollectionCell.h */,
 				F2A2E9071B08C69B00D65514 /* suggestCollectionCell.m */,
-				F22AB3A41B068A6000C61677 /* TapImageView.h */,
-				F22AB3A51B068A6000C61677 /* TapImageView.m */,
 				F25C50511B038AAB00F03A61 /* topicLabel.h */,
 				F25C50521B038AAB00F03A61 /* topicLabel.m */,
 				F2ED22D91B136029001F7787 /* UIButton_UserMuzzik.h */,
@@ -1410,6 +1422,17 @@
 				F2EDF71C1B0B240800400A85 /* StyledPageControl.m */,
 			);
 			name = pageControl;
+			sourceTree = "<group>";
+		};
+		F2F68F611B25C888005F19E6 /* Addition Class */ = {
+			isa = PBXGroup;
+			children = (
+				F22AB3A41B068A6000C61677 /* TapImageView.h */,
+				F22AB3A51B068A6000C61677 /* TapImageView.m */,
+				F2F68F621B25C9C1005F19E6 /* PhotoImageView.h */,
+				F2F68F631B25C9C1005F19E6 /* PhotoImageView.m */,
+			);
+			name = "Addition Class";
 			sourceTree = "<group>";
 		};
 		F2F7EE071AEC998800265596 /* Refresh */ = {
@@ -1661,10 +1684,12 @@
 				F2F7EE1A1AED69B600265596 /* MessageStepViewController.m in Sources */,
 				E1B2303A1AB5BF22004E50DA /* FMDatabaseAdditions.m in Sources */,
 				E11246481AAAB1F20014D461 /* ASIInputStream.m in Sources */,
+				F2F68F641B25C9C1005F19E6 /* PhotoImageView.m in Sources */,
 				F2F7EE431AEE241A00265596 /* FriendVC.m in Sources */,
 				F2F7EE141AED60A400265596 /* shareBaseController.m in Sources */,
 				F2E558A91B164D420080F9C9 /* MJRefreshConst.m in Sources */,
 				E11246491AAAB1F20014D461 /* ASINetworkQueue.m in Sources */,
+				F2F68F5E1B23FB49005F19E6 /* DraftsCell.m in Sources */,
 				F2A7F9861AEF78BD000FCC57 /* TWPhotoCollectionViewCell.m in Sources */,
 				F208EF4B1B1E1D2E00DB5A68 /* RJTextView.m in Sources */,
 				F2F7EE2A1AEE22B900265596 /* MuzzikObject.m in Sources */,
@@ -1754,6 +1779,7 @@
 				F26167321ADEDD6300E1B11E /* setGenderVC.m in Sources */,
 				F2FBE9031AFBBE6B0070831D /* ClassifySelectionVC.m in Sources */,
 				E1B2303C1AB5BF22004E50DA /* FMDatabaseQueue.m in Sources */,
+				F2F68F5B1B23FAEA005F19E6 /* DraftBoxVC.m in Sources */,
 				F2F0FC901ADE0E9100668103 /* checkVerifyCode.m in Sources */,
 				F26131241ADE1C200042F1D4 /* setNameVc.m in Sources */,
 				E1FA13421AB1911D005EDA1D /* http_stream.cpp in Sources */,

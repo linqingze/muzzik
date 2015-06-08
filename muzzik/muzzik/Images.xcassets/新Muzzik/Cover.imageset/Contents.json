@@ -3,16 +3,17 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "share.png"
+      "filename" : "sharevinyl(1).png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "share@2x.png"
+      "filename" : "sharevinyl@2x(5).png"
     },
     {
       "idiom" : "universal",
-      "scale" : "3x"
+      "scale" : "3x",
+      "filename" : "sharevinyl@3x(2).png"
     }
   ],
   "info" : {

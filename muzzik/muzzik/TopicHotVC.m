@@ -105,10 +105,10 @@
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Get_Topic]]];
     NSDictionary  *paraDic;
     if ([searchBar.text length]>0) {
-        paraDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%d",page],Parameter_page,[searchBar.text stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],@"q", nil];
+        paraDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%ld",(long)page],Parameter_page,[searchBar.text stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],@"q", nil];
         
     }else{
-         paraDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%d",page],Parameter_page, nil];
+         paraDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%ld",(long)page],Parameter_page, nil];
     }
     [requestForm addBodyDataSourceWithJsonByDic:paraDic Method:GetMethod auth:NO];
     __weak ASIHTTPRequest *weakrequest = requestForm;

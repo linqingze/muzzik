@@ -120,7 +120,7 @@
     [self.searchArray removeAllObjects];
     [myTableView reloadData];
     if ([searchText length]>0) {
-        searchLabel.text = [NSString stringWithFormat:@"搜索相关音乐:%@",self.keeper.searchBar.text];
+        searchLabel.text = [NSString stringWithFormat:@"搜索相关用户:%@",self.keeper.searchBar.text];
         [self.view addSubview:searchView];
     }else {
         [searchView removeFromSuperview];

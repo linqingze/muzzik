@@ -95,15 +95,15 @@
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     BOOL isSelected = NO;
     for (NSString *string in [Fdictionary allKeys]) {
-        if ([string isEqualToString:[NSString stringWithFormat:@"%d",indexPath.row]]) {
+        if ([string isEqualToString:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
             isSelected = YES;
             break;
         }
     }
     if (isSelected) {
-        [Fdictionary removeObjectForKey:[NSString stringWithFormat:@"%d",indexPath.row]];
+        [Fdictionary removeObjectForKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
     }else{
-        [Fdictionary setObject:indexPath forKey:[NSString stringWithFormat:@"%d",indexPath.row]];
+        [Fdictionary setObject:indexPath forKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
         
     }
     if (!ischange) {
@@ -127,7 +127,7 @@
     cell.topicLabel.clipsToBounds = YES;
     BOOL isSelected = NO;
     for (NSString *string in [Fdictionary allKeys]) {
-        if ([string isEqualToString:[NSString stringWithFormat:@"%d",indexPath.row]]) {
+        if ([string isEqualToString:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
             isSelected = YES;
             break;
         }

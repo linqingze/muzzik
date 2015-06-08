@@ -20,15 +20,26 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    [self initNagationBar:@"muzzik用户协议" leftBtn:Constant_backImage rightBtn:0];
+    
+    
     
     self.teachWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
 //    self.teachWebView.scrollView.contentInset = UIEdgeInsetsMake(-64, 0, 0, 0);
     self.teachWebView.delegate = self;
     [self.teachWebView setBackgroundColor:[UIColor whiteColor]];
     [self.view addSubview:self.teachWebView];
+    NSURL *url;
+    if ([self.showType isEqualToString:@"QA"]) {
+         url = [NSURL URLWithString:@"http://www.muzziker.com/qa.html"];
+        [self initNagationBar:@"Q&A" leftBtn:Constant_backImage rightBtn:0];
+    }else if([self.showType isEqualToString:@"about"]){
+        url = [NSURL URLWithString:URL_protocol];
+        [self initNagationBar:@"关于Muzzik" leftBtn:Constant_backImage rightBtn:0];
+    }else{
+        url = [NSURL URLWithString:URL_protocol];
+        [self initNagationBar:@"muzzik用户协议" leftBtn:Constant_backImage rightBtn:0];
+    }
     
-    NSURL *url = [NSURL URLWithString:URL_protocol];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     [self.teachWebView loadRequest:request];
     
