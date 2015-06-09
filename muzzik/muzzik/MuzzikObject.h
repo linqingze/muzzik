@@ -17,6 +17,7 @@
 @property (nonatomic,retain)NSMutableArray *lyricArray;
 @property (nonatomic,assign) BOOL isPrivate;
 @property (nonatomic,assign) BOOL isMessageVCOpen;    //信息选择界面是否已经开启，若是，选择音乐后会pop回该界面，否则push一个新的信息选择界面。
+@property (nonatomic,copy) NSString *lastDate;
 +(MuzzikObject *) shareClass;
 -(void) clearObject;
 @end

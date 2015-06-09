@@ -28,6 +28,7 @@
     _shakeButton = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-50, 12, 36, 36)];
     [self addSubview:_shakeButton];
     [MuzzikItem addLineOnView:self heightPoint:59 toLeft:13 toRight:13 withColor:Color_line_1];
+    
 }
 
 @end

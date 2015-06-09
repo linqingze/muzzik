@@ -12,6 +12,6 @@
 @property (nonatomic,retain) UIImageView *timeImage;
 @property (nonatomic,retain) UILabel *timeLabel;
 @property (nonatomic,retain) UILabel *message;
-@property (nonatomic,retain) UIButton *deleButton;
-@property (nonatomic,retain) UIButton *editButton;
+@property (nonatomic,retain) UILabel *songName;
+@property (nonatomic,retain) UILabel *Artist;
 @end

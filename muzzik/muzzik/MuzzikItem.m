@@ -393,8 +393,24 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     [userDefault removeObjectForKey:string];
     
 }
++ (NSArray *)muzzikDraftsFromLocal{
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    if ([userDefault mutableArrayValueForKey:@"Muzzik_MuzzikDrafts"].count != 0) {
+        return [userDefault mutableArrayValueForKey:@"Muzzik_MuzzikDrafts"];
+    }
+    return nil;
+}
 
-+ (NSMutableDictionary *)messageFromLocal
++ (void)addMuzzikDraftsToLocal:(NSArray *)message
+{
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    [userDefault removeObjectForKey:@"Muzzik_MuzzikDrafts"];
+    [userDefault setObject:message forKey:@"Muzzik_MuzzikDrafts"];
+    [userDefault synchronize];
+}
+
+
++ (NSDictionary *)messageFromLocal
 {
     NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
     if ([[userDefault dictionaryForKey:@"LoginAcess"] allKeys].count!=0) {

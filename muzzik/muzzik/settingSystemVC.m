@@ -9,6 +9,7 @@
 #import "settingSystemVC.h"
 #import "SettingCell.h"
 #import "TeachViewController.h"
+
 @interface settingSystemVC ()<UITableViewDataSource,UITableViewDelegate>{
     UITableView *settingTable;
     BOOL isopen;

@@ -35,6 +35,10 @@
 + (void)addMessageToLocal:(NSDictionary *)message;
 + (void)addStringToLocal:(NSString *)string ForKey:(NSString *)key;
 + (void)removeMessageFromLocal:(NSString *)string;
+
++ (NSArray *)muzzikDraftsFromLocal;
++ (void)addMuzzikDraftsToLocal:(NSArray *)message;
+
 +(NSString *)getStringForKey:(NSString *)key;
 + (NSDictionary *)messageFromLocal;
 +(BOOL)isLocalMusicContainKey:(NSString *)key;

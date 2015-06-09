@@ -87,6 +87,12 @@
     [AtButton addTarget:self action:@selector(AtFriend) forControlEvents:UIControlEventTouchUpInside];
     UITapGestureRecognizer *tapOnview = [[UITapGestureRecognizer alloc] initWithTarget:self.view action:@selector(endEditing:)];
     [self.view addGestureRecognizer:tapOnview];
+    //草稿箱进入的文本复制
+    if ([self.message length]>0) {
+        [placeHolder setHidden:YES];
+        textview.text = self.message;
+    }
+    
     // Do any additional setup after loading the view.
 }
 
@@ -165,14 +171,10 @@
     
 }
 -(void)tapAction:(UITapGestureRecognizer *)tap{
-    if (_isNewSelected) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"是否保存编辑信息至草稿箱" message:@"" delegate:self cancelButtonTitle:@"放弃" otherButtonTitles:nil];
         // optional - add more buttons:
         [alert addButtonWithTitle:@"确定"];
         [alert show];
-    }else{
-        [self.navigationController popViewControllerAnimated:YES];
-    }
     
 }
 
@@ -180,17 +182,34 @@
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (buttonIndex == 1) {
         // do stuff
+        NSArray *muzzikDrafts = [MuzzikItem muzzikDraftsFromLocal];
+        MuzzikObject *mobject = [MuzzikObject shareClass];
+
+        NSDate *  senddate=[NSDate date];
         
+        NSDateFormatter  *dateformatter=[[NSDateFormatter alloc] init];
+        
+        [dateformatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+        
+NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:textview.text,@"message",[dateformatter stringFromDate:senddate],@"lastdate",mobject.music.music_id,@"music_id",mobject.music.name,@"music_name",mobject.music.artist,@"music_artist", nil];
+        if ([muzzikDrafts count] == 0) {
+            muzzikDrafts = @[dic];
+        }else{
+            muzzikDrafts = [muzzikDrafts arrayByAddingObject:dic];
+        }
+        [MuzzikItem addMuzzikDraftsToLocal:muzzikDrafts];
        
-    }else{
-    
     }
     MuzzikObject *mobject = [MuzzikObject shareClass];
     mobject.music = nil;
     mobject.isMessageVCOpen = NO;
     mobject.tempmessage = @"";
-
-    [self.navigationController popToRootViewControllerAnimated:YES];
+    if (_isNewSelected) {
+        [self.navigationController popToRootViewControllerAnimated:YES];
+    }else{
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+    
     
 }
 /*

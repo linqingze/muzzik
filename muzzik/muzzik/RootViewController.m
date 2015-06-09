@@ -16,6 +16,7 @@
 #import "NotificationVC.h"
 #import "KxMenu.h"
 #import "AFViewShaker.h"
+#import "DraftBoxVC.h"
 @interface RootViewController ()<UIPageViewControllerDelegate,UIPageViewControllerDataSource,UIScrollViewDelegate>{
     NSArray *pageControllers;
     UIView *nacView;
@@ -274,7 +275,8 @@
                  menuItems:menuItems];
 }
 -(void) DraftAction{
-   
+    DraftBoxVC *draftvc = [[DraftBoxVC alloc] init];
+    [self.navigationController pushViewController:draftvc animated:YES];
     
 }
 -(void)getMessage{
