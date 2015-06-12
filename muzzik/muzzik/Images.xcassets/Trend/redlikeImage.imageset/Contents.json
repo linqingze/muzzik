@@ -3,16 +3,17 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "redlikeImage-拷贝-2.png"
+      "filename" : "redlikeImage.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "redlikeImage-拷贝-2@2x.png"
+      "filename" : "redlikeImage@2x.png"
     },
     {
       "idiom" : "universal",
-      "scale" : "3x"
+      "scale" : "3x",
+      "filename" : "redlikeImage@3x.png"
     }
   ],
   "info" : {

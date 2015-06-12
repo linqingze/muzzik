@@ -164,7 +164,12 @@
 }
 -(void)rightBtnAction:(UIButton *)sender{
     MuzzikObject *mobject = [MuzzikObject shareClass];
-    mobject.message = textview.text;
+    if ([textview.text length]>0) {
+        mobject.message = textview.text;
+    }else{
+        mobject.message = @"I Love This Muzzik!";
+    }
+    
     mobject.isPrivate = isPrivate;
     choosImageVC *chooseimgevc = [[choosImageVC alloc] init];
     [self.navigationController pushViewController:chooseimgevc animated:YES];

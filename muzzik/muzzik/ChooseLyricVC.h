@@ -7,7 +7,11 @@
 //
 
 #import "shareBaseController.h"
-
+#import "SDProgressView.h"
 @interface ChooseLyricVC : shareBaseController
 @property(nonatomic,retain) UIImage *image;
+@property(nonatomic,retain) NSMutableArray *downLoadList;
+@property(nonatomic,retain) SDTransparentPieProgressView *pieProgress;
+-(void)startDownload;
+-(void) reloadTableView;
 @end

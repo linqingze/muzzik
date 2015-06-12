@@ -42,6 +42,7 @@
 @property (nonatomic, assign, readonly) BOOL isEditting;
 @property (assign, nonatomic) BOOL        hideView;
 @property (nonatomic,copy) NSString *textType;
+@property (nonatomic,assign) CGFloat fontsize;
 - (void)showTextViewBox;
 - (void)hideTextViewBox;
 @end

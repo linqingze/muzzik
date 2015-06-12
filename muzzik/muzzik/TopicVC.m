@@ -19,6 +19,7 @@
 #import "ActivityUserVC.h"
 #import "TopRankVC.h"
 #import "UIButton_UserMuzzik.h"
+
 #define width_For_Cell 60.0
 @interface TopicVC ()<UIScrollViewDelegate,TapLabelDelegate,TapImageViewDelegate>{
     UIScrollView *mainScroll;
@@ -635,16 +636,16 @@
 
 -(void)dataSourceUserUpdate:(NSNotification *)notify{
     MuzzikUser *user = notify.object;
-    for (TapImageView *tap in userImageArray) {
+    for (UIButton_UserMuzzik *tap in userImageArray) {
         if ([tap.user.user_id isEqualToString:user.user_id]) {
             tap.user.isFollow = user.isFollow;
             tap.user.isFans = user.isFans;
             if (user.isFans &&user.isFollow) {
-                [tap setImage:[UIImage imageNamed:Image_recommendfollowedeachother]];
+                [tap setImage:[UIImage imageNamed:Image_recommendfollowedeachother] forState:UIControlStateNormal];
             }else if (user.isFollow){
-                [tap setImage:[UIImage imageNamed:Image_recommendfollowed]];
+                [tap setImage:[UIImage imageNamed:Image_recommendfollowed] forState:UIControlStateNormal];
             }else{
-                 [tap setImage:[UIImage imageNamed:Image_recommendfollow]];
+                 [tap setImage:[UIImage imageNamed:Image_recommendfollow] forState:UIControlStateNormal];
             }
             break;
         }

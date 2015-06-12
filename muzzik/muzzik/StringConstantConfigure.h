@@ -27,7 +27,7 @@
 #define Image_Cover                     @"Cover"
 #define Image_SuggestUserImage          @"SuggestUserImage"
 #define Image_nopictweetImage           @"nopictweetImage"
-#define Image_followImageNormal         @"followImageNormal"
+#define Image_followImageNormal         @"recommendfollow"
 #define Image_timeImage                 @"timeImage"
 #define Image_retweetImage              @"retweetImage"
 #define Image_replyImage                @"replyImage"
@@ -182,7 +182,7 @@
 #define Image_fontclickImage                @"fontclickImage"
 #define Image_fontImage                     @"fontImage"
 #define Image_MuzzikImage                   @"MuzzikImage"
-
+#define Image_shareplay                     @"shareplay"
 
 #define Parameter_Id              @"_id"
 #define Parameter_avatar          @"avatar"

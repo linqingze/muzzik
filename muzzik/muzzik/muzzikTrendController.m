@@ -186,16 +186,6 @@
 
 }
 
-
--(void)viewDidLayoutSubviews{
-    userInfo *user = [userInfo shareClass];
-    if ([user.token length]>0) {
-        [newButton setImage:[UIImage imageNamed:@"addsongImage"] forState:UIControlStateNormal];
-    }
-    else{
-        [newButton setImage:[UIImage imageNamed:@"yellowlikedImage"] forState:UIControlStateNormal];
-    }
-}
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     for (UIView *view in [self.parentRoot.titleShowView subviews]) {
@@ -205,13 +195,18 @@
     [headImage setFrame:CGRectMake((self.parentRoot.titleShowView.frame.size.width-headImage.frame.size.width)/2, 5, headImage.frame.size.width, headImage.frame.size.height)];
     [self.parentRoot.pagecontrol setCurrentPage:0];
     [self.parentRoot.titleShowView addSubview:headImage];
-    [self.view setNeedsLayout];
     userInfo *user = [userInfo shareClass];
     if (user.poMuzzik) {
         [self.muzziks insertObject:user.poMuzzik atIndex:0];
         user.poMuzzik = nil;
     }
     [MytableView reloadData];
+    if ([user.token length]>0) {
+        [newButton setImage:[UIImage imageNamed:@"addsongImage"] forState:UIControlStateNormal];
+    }
+    else{
+        [newButton setImage:[UIImage imageNamed:@"yellowlikedImage"] forState:UIControlStateNormal];
+    }
    // MytableView add
 
 }

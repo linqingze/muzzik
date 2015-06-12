@@ -7,7 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "ChooseLyricVC.h"
 @interface FontTableCell : UITableViewCell
 @property (nonatomic,retain) UILabel *label;
+@property (nonatomic,retain) UIProgressView *downloadProgress;
+@property (nonatomic,retain) UIButton *downButton;
+@property (nonatomic,copy) NSString *urlString;
+@property (nonatomic,retain) ASIHTTPRequest *asiRequest;
+@property (nonatomic,retain) NSDictionary *dic;
+@property (nonatomic,weak) ChooseLyricVC *keeperVC;
+@property(nonatomic,retain) SDTransparentPieProgressView *pieProgress;
 @end

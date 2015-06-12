@@ -74,6 +74,7 @@
         if (sExtend || oExtend /*|| ![text length]*/) return nil;
         
         [self setBackgroundColor:[UIColor clearColor]];
+        self.fontsize = font.pointSize;
         self.tColor = color; self.curFont = font; self.minFontSize = font.pointSize;
         [self createTextViewWithFrame:CGRectZero text:nil font:nil];
 
@@ -395,6 +396,7 @@
                 cFont = (cFont < MAX_FONT_SIZE) ? cFont : self.minFontSize;
                 [self.textView setFont:[self.curFont fontWithSize:--cFont]];
                 self.minFontSize = cFont;
+                self.fontsize = cFont;
             }
             else
             {
@@ -411,6 +413,7 @@
                 }
                 
                 [self.textView setFont:[self.curFont fontWithSize:cFont]];
+                self.fontsize = cFont;
             }
         }
         

@@ -537,11 +537,6 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
                                     }];
                                     [lyricRequest1 startAsynchronous];
                                 }
-                                else{
-                                    NSDictionary *dic = [NSDictionary dictionaryWithObject:@"暂无歌词" forKey:@"00:05"];
-                                    mobject.lyricArray = [NSMutableArray array];
-                                    [mobject.lyricArray addObject:dic];
-                                }
                                 
                             }
                             else{
@@ -589,11 +584,6 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
                                 NSLog(@"%@",lrcRequest1.error);
                             }];
                             [lyricRequest1 startAsynchronous];
-                        }
-                        else{
-                            NSDictionary *dic = [NSDictionary dictionaryWithObject:@"暂无歌词" forKey:@"00:05"];
-                            mobject.lyricArray = [NSMutableArray array];
-                            [mobject.lyricArray addObject:dic];
                         }
                         
                     }

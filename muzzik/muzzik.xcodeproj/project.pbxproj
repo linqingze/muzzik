@@ -101,6 +101,14 @@
 		E1FA13431AB1911D005EDA1D /* id3_parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1FA133E1AB1911D005EDA1D /* id3_parser.cpp */; };
 		E1FA13461AB195E0005EDA1D /* Globle.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FA13451AB195E0005EDA1D /* Globle.m */; };
 		E1FA13491AB1ABDD005EDA1D /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FA13481AB1ABDD005EDA1D /* Reachability.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F200B7A21B28B727002A6F61 /* SDBallProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = F200B7941B28B727002A6F61 /* SDBallProgressView.m */; };
+		F200B7A31B28B727002A6F61 /* SDBaseProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = F200B7961B28B727002A6F61 /* SDBaseProgressView.m */; };
+		F200B7A41B28B727002A6F61 /* SDLoopProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = F200B7981B28B727002A6F61 /* SDLoopProgressView.m */; };
+		F200B7A51B28B727002A6F61 /* SDPieLoopProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = F200B79A1B28B727002A6F61 /* SDPieLoopProgressView.m */; };
+		F200B7A61B28B727002A6F61 /* SDPieProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = F200B79C1B28B727002A6F61 /* SDPieProgressView.m */; };
+		F200B7A71B28B727002A6F61 /* SDRotationLoopProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = F200B79F1B28B727002A6F61 /* SDRotationLoopProgressView.m */; };
+		F200B7A81B28B727002A6F61 /* SDTransparentPieProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = F200B7A11B28B727002A6F61 /* SDTransparentPieProgressView.m */; };
+		F200B7AC1B2ABF6E002A6F61 /* Copperplate_00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F200B7AB1B2ABF6E002A6F61 /* Copperplate_00.ttf */; };
 		F208EF4B1B1E1D2E00DB5A68 /* RJTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = F208EF4A1B1E1D2E00DB5A68 /* RJTextView.m */; };
 		F208EF4D1B1F783A00DB5A68 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F208EF4C1B1F783A00DB5A68 /* CoreText.framework */; };
 		F208EF4F1B1F7A7700DB5A68 /* VNI_HLThuphap.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F208EF4E1B1F7A7700DB5A68 /* VNI_HLThuphap.ttf */; };
@@ -431,6 +439,22 @@
 		E1FA13451AB195E0005EDA1D /* Globle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Globle.m; sourceTree = "<group>"; };
 		E1FA13471AB1ABDD005EDA1D /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		E1FA13481AB1ABDD005EDA1D /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		F200B7931B28B727002A6F61 /* SDBallProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDBallProgressView.h; sourceTree = "<group>"; };
+		F200B7941B28B727002A6F61 /* SDBallProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDBallProgressView.m; sourceTree = "<group>"; };
+		F200B7951B28B727002A6F61 /* SDBaseProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDBaseProgressView.h; sourceTree = "<group>"; };
+		F200B7961B28B727002A6F61 /* SDBaseProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDBaseProgressView.m; sourceTree = "<group>"; };
+		F200B7971B28B727002A6F61 /* SDLoopProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLoopProgressView.h; sourceTree = "<group>"; };
+		F200B7981B28B727002A6F61 /* SDLoopProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDLoopProgressView.m; sourceTree = "<group>"; };
+		F200B7991B28B727002A6F61 /* SDPieLoopProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDPieLoopProgressView.h; sourceTree = "<group>"; };
+		F200B79A1B28B727002A6F61 /* SDPieLoopProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDPieLoopProgressView.m; sourceTree = "<group>"; };
+		F200B79B1B28B727002A6F61 /* SDPieProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDPieProgressView.h; sourceTree = "<group>"; };
+		F200B79C1B28B727002A6F61 /* SDPieProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDPieProgressView.m; sourceTree = "<group>"; };
+		F200B79D1B28B727002A6F61 /* SDProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDProgressView.h; sourceTree = "<group>"; };
+		F200B79E1B28B727002A6F61 /* SDRotationLoopProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDRotationLoopProgressView.h; sourceTree = "<group>"; };
+		F200B79F1B28B727002A6F61 /* SDRotationLoopProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDRotationLoopProgressView.m; sourceTree = "<group>"; };
+		F200B7A01B28B727002A6F61 /* SDTransparentPieProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDTransparentPieProgressView.h; sourceTree = "<group>"; };
+		F200B7A11B28B727002A6F61 /* SDTransparentPieProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDTransparentPieProgressView.m; sourceTree = "<group>"; };
+		F200B7AB1B2ABF6E002A6F61 /* Copperplate_00.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Copperplate_00.ttf; sourceTree = "<group>"; };
 		F208EF491B1E1D2E00DB5A68 /* RJTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RJTextView.h; sourceTree = "<group>"; };
 		F208EF4A1B1E1D2E00DB5A68 /* RJTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RJTextView.m; sourceTree = "<group>"; };
 		F208EF4C1B1F783A00DB5A68 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
@@ -761,6 +785,11 @@
 		E11245F51AAAAE4B0014D461 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				F208EF4E1B1F7A7700DB5A68 /* VNI_HLThuphap.ttf */,
+				F200B7AB1B2ABF6E002A6F61 /* Copperplate_00.ttf */,
+				F208EF521B1F7D6100DB5A68 /* Bluehigh.ttf */,
+				F208EF531B1F7D6100DB5A68 /* calico_cyrillic.ttf */,
+				F208EF501B1F7D5500DB5A68 /* kilsonburg.ttf */,
 				E11245F61AAAAE4B0014D461 /* Info.plist */,
 				E167163C1AAED0990068AE98 /* localizable.strings */,
 				E16716351AAECF720068AE98 /* InfoPilst.strings */,
@@ -827,6 +856,7 @@
 		E112461E1AAAB0F60014D461 /* 3plus-in */ = {
 			isa = PBXGroup;
 			children = (
+				F200B7921B28B712002A6F61 /* progressView */,
 				F2E558961B164D060080F9C9 /* MJRefresh */,
 				F288A4CE1B0E50BB00B89860 /* kxMenu */,
 				F2EDF71A1B0B23EB00400A85 /* pageControl */,
@@ -1033,10 +1063,6 @@
 		E16716221AAD5EF90068AE98 /* user */ = {
 			isa = PBXGroup;
 			children = (
-				F208EF4E1B1F7A7700DB5A68 /* VNI_HLThuphap.ttf */,
-				F208EF521B1F7D6100DB5A68 /* Bluehigh.ttf */,
-				F208EF531B1F7D6100DB5A68 /* calico_cyrillic.ttf */,
-				F208EF501B1F7D5500DB5A68 /* kilsonburg.ttf */,
 				E16716231AAD77830068AE98 /* userInfo.h */,
 				E16716241AAD77830068AE98 /* userInfo.m */,
 				F2B81FEF1ADD6C6A00012ED6 /* MuzzikItem.h */,
@@ -1159,6 +1185,28 @@
 				E1FA133F1AB1911D005EDA1D /* id3_parser.h */,
 			);
 			name = Astreamer;
+			sourceTree = "<group>";
+		};
+		F200B7921B28B712002A6F61 /* progressView */ = {
+			isa = PBXGroup;
+			children = (
+				F200B7931B28B727002A6F61 /* SDBallProgressView.h */,
+				F200B7941B28B727002A6F61 /* SDBallProgressView.m */,
+				F200B7951B28B727002A6F61 /* SDBaseProgressView.h */,
+				F200B7961B28B727002A6F61 /* SDBaseProgressView.m */,
+				F200B7971B28B727002A6F61 /* SDLoopProgressView.h */,
+				F200B7981B28B727002A6F61 /* SDLoopProgressView.m */,
+				F200B7991B28B727002A6F61 /* SDPieLoopProgressView.h */,
+				F200B79A1B28B727002A6F61 /* SDPieLoopProgressView.m */,
+				F200B79B1B28B727002A6F61 /* SDPieProgressView.h */,
+				F200B79C1B28B727002A6F61 /* SDPieProgressView.m */,
+				F200B79D1B28B727002A6F61 /* SDProgressView.h */,
+				F200B79E1B28B727002A6F61 /* SDRotationLoopProgressView.h */,
+				F200B79F1B28B727002A6F61 /* SDRotationLoopProgressView.m */,
+				F200B7A01B28B727002A6F61 /* SDTransparentPieProgressView.h */,
+				F200B7A11B28B727002A6F61 /* SDTransparentPieProgressView.m */,
+			);
+			name = progressView;
 			sourceTree = "<group>";
 		};
 		F20B10331AF6B41A0067EBD3 /* 我 */ = {
@@ -1591,6 +1639,7 @@
 				E1E857B11ABD6EC2006B1BA6 /* WeiboSDK.bundle in Resources */,
 				F2B703671AC67EBF005F0903 /* TencentOpenApi_IOS_Bundle.bundle in Resources */,
 				F2F7EE401AEE23E400265596 /* unicode_to_hanyu_pinyin.txt in Resources */,
+				F200B7AC1B2ABF6E002A6F61 /* Copperplate_00.ttf in Resources */,
 				E11246031AAAAE4B0014D461 /* Images.xcassets in Resources */,
 				F2F7EE271AEE213200265596 /* flotageBackgroud@2x.png in Resources */,
 				E16716331AAECF720068AE98 /* InfoPilst.strings in Resources */,
@@ -1624,6 +1673,7 @@
 				E11246431AAAB1F20014D461 /* ASIDataCompressor.m in Sources */,
 				E11245FB1AAAAE4B0014D461 /* AppDelegate.m in Sources */,
 				F2A62EE81AE956A700FAAA01 /* MusicCell.m in Sources */,
+				F200B7A41B28B727002A6F61 /* SDLoopProgressView.m in Sources */,
 				E1FA12C91AB1499F005EDA1D /* LocalFileDataSource.m in Sources */,
 				E11245F81AAAAE4B0014D461 /* main.m in Sources */,
 				F2A7F9851AEF78BD000FCC57 /* TWImageScrollView.m in Sources */,
@@ -1698,6 +1748,7 @@
 				F2F7EE3B1AEE23E400265596 /* ChineseToPinyinResource.m in Sources */,
 				F2E558AE1B164D420080F9C9 /* UIView+MJExtension.m in Sources */,
 				F2F7EE0D1AED333C00265596 /* SearchMusicCell.m in Sources */,
+				F200B7A81B28B727002A6F61 /* SDTransparentPieProgressView.m in Sources */,
 				E112466F1AAAB20B0014D461 /* SDWebImageCompat.m in Sources */,
 				E1FA12D01AB14CEF005EDA1D /* NSDate+Additions.m in Sources */,
 				F2F7EE4C1AEE676F00265596 /* TopicHotVC.m in Sources */,
@@ -1708,6 +1759,7 @@
 				F22AB3A61B068A6000C61677 /* TapImageView.m in Sources */,
 				F2A7F98A1AEF810E000FCC57 /* ChooseLyricVC.m in Sources */,
 				F20FDD6F1AF74B24008A71C0 /* SearchForTopic.m in Sources */,
+				F200B7A31B28B727002A6F61 /* SDBaseProgressView.m in Sources */,
 				F2AEC69E1B090FF100DA676E /* NotifyFollowCell.m in Sources */,
 				F2E558AB1B164D420080F9C9 /* MJRefreshHeaderView.m in Sources */,
 				E112469A1AAAC02A0014D461 /* AMScrollingNavbarViewController.m in Sources */,
@@ -1737,14 +1789,17 @@
 				F29A17021AEA98B600200EAE /* SearchLibraryMusicVC.m in Sources */,
 				F20FDD721AF75074008A71C0 /* MusicAndArtistCell.m in Sources */,
 				F2EDF71D1B0B240800400A85 /* StyledPageControl.m in Sources */,
+				F200B7A71B28B727002A6F61 /* SDRotationLoopProgressView.m in Sources */,
 				F288A4CD1B0DC81900B89860 /* TopRankVC.m in Sources */,
 				F2F7EE261AEE213200265596 /* BATableViewIndex.m in Sources */,
+				F200B7A21B28B727002A6F61 /* SDBallProgressView.m in Sources */,
 				F2F7EE3F1AEE23E400265596 /* PinyinHelper.m in Sources */,
 				F25C50501B034BA000F03A61 /* UserSongVC.m in Sources */,
 				F20B10321AF69D8D0067EBD3 /* searchViewController.m in Sources */,
 				F2A2E8FF1B08A81300D65514 /* ActivityUserVC.m in Sources */,
 				F288A4CA1B0DC7EF00B89860 /* topicRankCell.m in Sources */,
 				E112466C1AAAB20B0014D461 /* MKAnnotationView+WebCache.m in Sources */,
+				F200B7A51B28B727002A6F61 /* SDPieLoopProgressView.m in Sources */,
 				E11246761AAAB20B0014D461 /* UIImage+GIF.m in Sources */,
 				F25C50531B038AAB00F03A61 /* topicLabel.m in Sources */,
 				F2A2E9081B08C69B00D65514 /* suggestCollectionCell.m in Sources */,
@@ -1779,6 +1834,7 @@
 				F26167321ADEDD6300E1B11E /* setGenderVC.m in Sources */,
 				F2FBE9031AFBBE6B0070831D /* ClassifySelectionVC.m in Sources */,
 				E1B2303C1AB5BF22004E50DA /* FMDatabaseQueue.m in Sources */,
+				F200B7A61B28B727002A6F61 /* SDPieProgressView.m in Sources */,
 				F2F68F5B1B23FAEA005F19E6 /* DraftBoxVC.m in Sources */,
 				F2F0FC901ADE0E9100668103 /* checkVerifyCode.m in Sources */,
 				F26131241ADE1C200042F1D4 /* setNameVc.m in Sources */,
