@@ -52,7 +52,7 @@
 @property (assign, nonatomic) CGPoint     textCenter;
 @property (assign, nonatomic) CGSize      minSize;
 @property (assign, nonatomic) CGFloat     minFontSize;
-@property (retain, nonatomic) UIFont      *curFont;
+
 
 @end
 

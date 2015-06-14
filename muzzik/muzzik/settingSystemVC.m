@@ -9,7 +9,7 @@
 #import "settingSystemVC.h"
 #import "SettingCell.h"
 #import "TeachViewController.h"
-
+#import "FeedBackVC.h"
 @interface settingSystemVC ()<UITableViewDataSource,UITableViewDelegate>{
     UITableView *settingTable;
     BOOL isopen;
@@ -60,8 +60,6 @@
     }else if (indexPath.row == 2) {
         cell.textLabel.text = @"反馈";
     }else if (indexPath.row == 3) {
-        cell.textLabel.text = @"Q&A";
-    }else if (indexPath.row == 4) {
         cell.textLabel.text = @"关于MUzzik";
     }
     return cell;
@@ -88,12 +86,9 @@
         }
         
     }else if (indexPath.row == 2) {
-        
+        FeedBackVC *feedback = [[FeedBackVC alloc] init];
+        [self.navigationController pushViewController:feedback animated:YES];
     }else if (indexPath.row == 3) {
-        TeachViewController *teach = [[TeachViewController alloc] initWithNibName:@"TeachViewController" bundle:nil];
-        teach.showType = @"QA";
-        [self.navigationController pushViewController:teach animated:YES];
-    }else if (indexPath.row == 4) {
         TeachViewController *teach = [[TeachViewController alloc] initWithNibName:@"TeachViewController" bundle:nil];
         teach.showType = @"about";
         [self.navigationController pushViewController:teach animated:YES];
@@ -105,7 +100,7 @@
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return 5;
+    return 4;
 }
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return 1;

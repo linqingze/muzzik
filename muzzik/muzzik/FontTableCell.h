@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "ChooseLyricVC.h"
 @interface FontTableCell : UITableViewCell
-@property (nonatomic,retain) UILabel *label;
+@property (nonatomic,retain) UIImageView *fontImage;
 @property (nonatomic,retain) UIProgressView *downloadProgress;
 @property (nonatomic,retain) UIButton *downButton;
 @property (nonatomic,copy) NSString *urlString;

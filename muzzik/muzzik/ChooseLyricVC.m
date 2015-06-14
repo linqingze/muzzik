@@ -237,8 +237,7 @@
             [cell.pieProgress setHidden:YES];
         }
         cell.keeperVC = self;
-        cell.label.text = [dic objectForKey:@"fontname"];
-        cell.label.font = [UIFont fontWithName:[dic objectForKey:@"fontname"] size:15];
+        [cell.fontImage setImage:[UIImage imageNamed:[NSString stringWithFormat:@"Muzzik%ld",(long)indexPath.row]]];
         cell.dic = dic;
         if ([[dic objectForKey:@"islocal"] boolValue]) {
             [cell.downButton setHidden:YES];
@@ -293,8 +292,10 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     if (tableView == fontTableView) {
         NSDictionary *dic = fontArray[indexPath.row];
-        if ([dic objectForKey:@"islocal"]) {
+        if ([[dic objectForKey:@"islocal"] boolValue]) {
+            NSLog(@"%@",[dic objectForKey:@"fontname"]);
             shareLabel.textView.font = [UIFont fontWithName:[dic objectForKey:@"fontname"]  size:shareLabel.fontsize];
+            shareLabel.curFont = [UIFont fontWithName:[dic objectForKey:@"fontname"]  size:shareLabel.fontsize];
         }
     }else{
         
@@ -371,24 +372,27 @@
 }
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)sView
 {
-    [self.view endEditing:YES];
-    NSInteger index = fabs(sView.contentOffset.x) / sView.frame.size.width;
-    //NSLog(@"%d",index);
-    [PageControl setCurrentPage:index];
-    if (index == 0) {
-        shareLabel = lyricTextView;
-    }else if(index == 1){
-        shareLabel = famousTextView;
-    }else if(index == 2){
-        [editTextView.textView becomeFirstResponder];
-        if (editTextView.textView.text.length >0) {
-            shareLabel = editTextView;
-        }else{
-            shareLabel = nil;
+    if (sView == Scroll) {
+        [self.view endEditing:YES];
+        NSInteger index = fabs(sView.contentOffset.x) / sView.frame.size.width;
+        //NSLog(@"%d",index);
+        [PageControl setCurrentPage:index];
+        if (index == 0) {
+            shareLabel = lyricTextView;
+        }else if(index == 1){
+            shareLabel = famousTextView;
+        }else if(index == 2){
+            [editTextView.textView becomeFirstResponder];
+            if (editTextView.textView.text.length >0) {
+                shareLabel = editTextView;
+            }else{
+                shareLabel = nil;
+            }
+            
         }
-        
+        [self checkNext];
     }
-    [self checkNext];
+    
 }
 -(void)checkNext{
     userInfo *user = [userInfo shareClass];
@@ -557,6 +561,7 @@
                                 NSLog(@"data:%@",[weakShare responseString]);
                                 NSDictionary *muzzikDic = [NSJSONSerialization JSONObjectWithData:[weakShare responseData] options:NSJSONReadingMutableContainers error:nil];
                                 if ([weakShare responseStatusCode] == 200) {
+                                    
                                     if (isShareToWeiChat) {
                                         UIView *weChatShareView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 1324, 749)];
                                         UIImageView *CDcover = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 1064, 738)];
@@ -853,8 +858,7 @@
     newmuzzik.music.artist = mobject.music.artist;
     newmuzzik.music.key = mobject.music.key;
     newmuzzik.music.name = mobject.music.name;
-    
-    user.poMuzzik = newmuzzik;
+    [[NSNotificationCenter defaultCenter] postNotificationName:String_SendNewMuzzikDataSource_update object:newmuzzik];
 }
 
 #pragma mark - Request
@@ -867,10 +871,12 @@
 
 -(void) loadFont{
     fontArray = [NSMutableArray array];
-    NSString *fontPath = [[NSBundle mainBundle] pathForResource:@"VNI_HLThuphap" ofType:@"ttf"];
-    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:[MuzzikItem customFontWithPath:fontPath],@"fontname",[NSNumber numberWithBool:YES],@"islocal", nil];
-    [fontArray addObject:dic];
+    NSDictionary *dicFirst = [NSDictionary dictionaryWithObjectsAndKeys:Font_Next_Bold,@"fontname",[NSNumber numberWithBool:YES],@"islocal", nil];
+    [fontArray addObject:dicFirst];
     
+    NSString *fontPathC = [[NSBundle mainBundle] pathForResource:@"Copperplate_00" ofType:@"ttf"];
+    NSDictionary *dicC = [NSDictionary dictionaryWithObjectsAndKeys:[MuzzikItem customFontWithPath:fontPathC],@"fontname",[NSNumber numberWithBool:YES],@"islocal", nil];
+    [fontArray addObject:dicC];
     
     NSString *fontPath1 = [[NSBundle mainBundle] pathForResource:@"Bluehigh" ofType:@"ttf"];
     NSDictionary *dic1 = [NSDictionary dictionaryWithObjectsAndKeys:[MuzzikItem customFontWithPath:fontPath1],@"fontname",[NSNumber numberWithBool:YES],@"islocal", nil];
@@ -884,17 +890,26 @@
     NSDictionary *dic3 = [NSDictionary dictionaryWithObjectsAndKeys:[MuzzikItem customFontWithPath:fontPath3],@"fontname",[NSNumber numberWithBool:YES],@"islocal", nil];
     [fontArray addObject:dic3];
     
+    NSString *fontPath = [[NSBundle mainBundle] pathForResource:@"VNI_HLThuphap" ofType:@"ttf"];
+    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:[MuzzikItem customFontWithPath:fontPath],@"fontname",[NSNumber numberWithBool:YES],@"islocal", nil];
+    [fontArray addObject:dic];
+    
+    
+    
+    
+    
+    
+    
+    
     NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
-    NSDictionary *fontDic = [userDefault dictionaryForKey:@"Font_Array_local_Address"];
-    if ([[fontDic allKeys] count] == 0) {
-        fontDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSDictionary dictionaryWithObjectsAndKeys:@"http://7d9m5z.com1.z0.glb.clouddn.com/SongTiHeiTi.ttf",@"urladdress",[NSNumber numberWithBool:NO],@"islocal",@"SongTiHeiTi",@"fontname", nil],@"SongTiHeiTi",[NSDictionary dictionaryWithObjectsAndKeys:@"http://7d9m5z.com1.z0.glb.clouddn.com/FangZhengLiBianFanTi.ttf",@"urladdress",[NSNumber numberWithBool:NO],@"islocal",@"FangZhengLiBianFanTi",@"fontname", nil],@"FangZhengLiBianFanTi",[NSDictionary dictionaryWithObjectsAndKeys:@"http://7d9m5z.com1.z0.glb.clouddn.com/HanYiYanKaiTi.ttf",@"urladdress",[NSNumber numberWithBool:NO],@"islocal",@"HanYiYanKaiTi",@"fontname", nil],@"HanYiYanKaiTi",[NSDictionary dictionaryWithObjectsAndKeys:@"http://7d9m5z.com1.z0.glb.clouddn.com/HuaKangWaWaTi.ttf",@"urladdress",[NSNumber numberWithBool:NO],@"islocal",@"HuaKangWaWaTi",@"fontname", nil],@"HuaKangWaWaTi", nil];
+    NSArray *fontDic = [userDefault arrayForKey:@"Font_Array_local_Address"];
+    if ([fontDic count] == 0) {
+        fontDic = @[[NSDictionary dictionaryWithObjectsAndKeys:@"http://7d9m5z.com1.z0.glb.clouddn.com/HanYiYanKaiTi.ttf",@"urladdress",[NSNumber numberWithBool:NO],@"islocal",@"HYx4gf",@"fontname", nil],[NSDictionary dictionaryWithObjectsAndKeys:@"http://7d9m5z.com1.z0.glb.clouddn.com/HuaKangWaWaTi.ttf",@"urladdress",[NSNumber numberWithBool:NO],@"islocal",@"DFPWaWaW5",@"fontname", nil], [NSDictionary dictionaryWithObjectsAndKeys:@"http://7d9m5z.com1.z0.glb.clouddn.com/FangZhengLiBianFanTi.ttf",@"urladdress",[NSNumber numberWithBool:NO],@"islocal",@"FZLBFW--GB1-0",@"fontname", nil],[NSDictionary dictionaryWithObjectsAndKeys:@"http://7d9m5z.com1.z0.glb.clouddn.com/SongTiHeiTi.ttf",@"urladdress",[NSNumber numberWithBool:NO],@"islocal",@"STSongti-SC-Black",@"fontname", nil]];
         [userDefault setObject:fontDic forKey:@"Font_Array_local_Address"];
         [userDefault synchronize];
     }
-    
-    for (NSString *tempString in [fontDic allKeys]) {
-        [fontArray addObject:[fontDic objectForKey:tempString]];
-    }
+    //STHeitiSC-Medium
+    [fontArray addObjectsFromArray:fontDic];
     
     
 }
@@ -927,22 +942,26 @@
         [_asiRequest setCompletionBlock:^{
             _curSize = 0;
             NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
-            NSMutableDictionary *fontDic = [[userDefault dictionaryForKey:@"Font_Array_local_Address"] mutableCopy];
+            NSMutableArray *fontDicArray = [[userDefault arrayForKey:@"Font_Array_local_Address"] mutableCopy];
             NSString *fontName = [MuzzikItem customFontWithPath:savePath];
-            [fontDic setObject:[NSDictionary dictionaryWithObjectsAndKeys:fontName,@"fontname",[NSNumber numberWithBool:YES],@"islocal", nil] forKey:fontName];
-            NSDictionary *localDic = [fontDic copy];
-            [userDefault setObject:localDic forKey:@"Font_Array_local_Address"];
-            [userDefault synchronize];
+            for (int i = 0; i<fontDicArray.count; i++) {
+                if ([[fontDicArray[i] objectForKey:@"fontname"] isEqualToString:[dic objectForKey:@"fontname"]]) {
+                    [fontDicArray replaceObjectAtIndex:i withObject:[NSDictionary dictionaryWithObjectsAndKeys:[dic objectForKey:@"fontname"],@"fontname",[NSNumber numberWithBool:YES],@"islocal", nil]];
+                    [fontArray replaceObjectAtIndex:[fontArray indexOfObject:dic] withObject:[NSDictionary dictionaryWithObjectsAndKeys:[dic objectForKey:@"fontname"],@"fontname",[NSNumber numberWithBool:YES],@"islocal", nil]];
+                }
+            }
             
-            [fontArray insertObject:[NSDictionary dictionaryWithObjectsAndKeys:fontName,@"fontname",[NSNumber numberWithBool:YES],@"islocal", nil] atIndex:[fontArray indexOfObject:dic]];
-            [fontArray removeObject:dic];
+            [userDefault setObject:[fontDicArray copy] forKey:@"Font_Array_local_Address"];
+            [userDefault synchronize];
             [fontTableView reloadData];
             [self.downLoadList removeObject:dic];
             if ([self.downLoadList count]>0) {
                 [self startDownload];
             }
         }];
-        
+        [_asiRequest setFailedBlock:^{
+            NSLog(@"%@",[weakrequest error]);
+        }];
 //        [_asiRequest setDownloadSizeIncrementedBlock:^(long long size) {
 //            NSLog(@"%lld",size);
 //            NSLog(@"%@          %@",[weakrequest responseHeaders],[weakrequest responseData]);
@@ -954,5 +973,8 @@
 }
 -(void) reloadTableView{
     [fontTableView reloadData];
+}
+-(void)changShare{
+    
 }
 @end

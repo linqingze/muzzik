@@ -9,6 +9,6 @@
 #import "BaseNagationViewController.h"
 #import "UserHomePage.h"
 @interface ProfileSetting : BaseNagationViewController
-@property (nonatomic,retain) NSDictionary *profileDic;
+@property (nonatomic,retain) NSMutableDictionary *profileDic;
 @property (nonatomic,weak) UserHomePage *userhome;
 @end

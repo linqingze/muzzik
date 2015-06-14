@@ -427,6 +427,7 @@
         self.wbtoken = [(WBAuthorizeResponse *)response accessToken];
         self.wbCurrentUserID = [(WBAuthorizeResponse *)response userID];
         ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@%@",BaseURL,URL_WeiBo_AUTH,[(WBAuthorizeResponse *)response accessToken]]]];
+        requestForm.shouldAttemptPersistentConnection = NO;
         [requestForm setUseCookiePersistence:NO];
         __weak ASIHTTPRequest *weakrequest = requestForm;
         [requestForm setCompletionBlock :^{
@@ -526,9 +527,10 @@
     else if([resp isKindOfClass:[SendAuthResp class]])
     {
         SendAuthResp *temp = (SendAuthResp*)resp;
-        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@%@",BaseURL,URL_WeiChat_AUTH,temp.code]]];
+        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_WeiChat_AUTH]]];
+        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:@"json",@"result",temp.code,@"code", nil] Method:PostMethod auth:NO];
         [requestForm setUseCookiePersistence:NO];
-        
+        requestForm.shouldAttemptPersistentConnection = NO;
         __weak ASIHTTPRequest *weakrequest = requestForm;
         [requestForm setCompletionBlock :^{
               NSLog(@"%@",[weakrequest responseString]);

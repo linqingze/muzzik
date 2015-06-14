@@ -21,12 +21,9 @@
 }
 
 -(void)setup{
-    self.label = [[UILabel alloc] initWithFrame:CGRectMake(40, 10, SCREEN_WIDTH-80, 30)];
-    self.label.numberOfLines = 0;
-    self.label.lineBreakMode = NSLineBreakByWordWrapping;
-    self.label.font = [UIFont boldSystemFontOfSize:15];
+    _fontImage = [[UIImageView alloc] initWithFrame:CGRectMake(20, 15, 85, 20)];
     [self setSelectionStyle:UITableViewCellSelectionStyleNone];
-    [self addSubview:self.label];
+    [self addSubview:_fontImage];
     _downloadProgress = [[UIProgressView alloc] initWithFrame:CGRectMake(0, 48, SCREEN_WIDTH, 2)];
     [self addSubview:_downloadProgress];
     _downButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-60, 5, 40, 40)];

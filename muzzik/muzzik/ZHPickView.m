@@ -26,6 +26,7 @@
 @property(nonatomic,strong)NSMutableArray *dicKeyArray;
 @property(nonatomic,copy)NSMutableArray *state;
 @property(nonatomic,copy)NSMutableArray *city;
+@property(nonatomic,retain) UIView *clickView;
 @end
 
 @implementation ZHPickView
@@ -82,6 +83,9 @@
     
     self=[super init];
     if (self) {
+        _clickView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+        [_clickView setBackgroundColor:[UIColor colorWithIntegerRed:.8 green:.8 blue:.8 alpha:.2]];
+        [_clickView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(remove)]];
         _defaulDate=defaulDate;
         [self setUpDatePickerWithdatePickerMode:(UIDatePickerMode)datePickerMode];
         [self setFrameWith:isHaveNavControler];
@@ -283,11 +287,11 @@
 }
 
 -(void)remove{
-    
+    [_clickView removeFromSuperview];
     [self removeFromSuperview];
 }
 -(void)show{
-    
+    [[UIApplication sharedApplication].keyWindow addSubview:_clickView];
     [[UIApplication sharedApplication].keyWindow addSubview:self];
     
 }
@@ -333,6 +337,7 @@
     if ([self.delegate respondsToSelector:@selector(toobarDonBtnHaveClick:resultString:)]) {
         [self.delegate toobarDonBtnHaveClick:self resultString:_resultString];
     }
+    [_clickView removeFromSuperview];
     [self removeFromSuperview];
 }
 /**

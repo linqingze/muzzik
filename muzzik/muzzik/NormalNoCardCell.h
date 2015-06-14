@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "TTTAttributedLabel.h"
-#import "muzzikTrendController.h"
+
 @interface NormalNoCardCell : UITableViewCell
 @property (nonatomic) UILabel *repostUserName;                 //转发用户名
 @property (nonatomic) UIImageView *repostImage;                //muzzik类型图标

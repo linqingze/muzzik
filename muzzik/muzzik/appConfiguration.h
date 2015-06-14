@@ -25,7 +25,7 @@
 #define URL_WeiBo_redirectURI   @"http://muzziker.com"
 #define URL_QQ_AUTH             @"auth/qq?access_token="
 #define URL_WeiBo_AUTH          @"auth/weibo?access_token="
-#define URL_WeiChat_AUTH        @"auth/weixin/callback?result=json&code="
+#define URL_WeiChat_AUTH        @"auth/weixin/callback"
 #define URL_Muzzik_Trending     @"api/muzzik/trending"
 
 #define URL_check_phone         @"api/user/check"
@@ -112,6 +112,7 @@
 #define String_MuzzikDataSource_update              @"Muzzik_datasource_update"
 #define String_UserDataSource_update                @"User_datasource_update"
 #define String_Muzzik_Delete                        @"Muzzik_detail_deleteMuzzik"
+#define String_SendNewMuzzikDataSource_update       @"SendNewMuzzikDataSource_update"
 #pragma -mark Font_Size
 
 #define Font_Size_Muzzik_Time 7.0
@@ -128,6 +129,8 @@
 
 #define DocumentsPath [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"]
 
+
+#define APP_ID @"976583158"
 #define UMAPPKEY @"5503f6b7fd98c520c4000362"
 
 #define ID_WeiChat_APP @"wx9d1e9620b322ce35"

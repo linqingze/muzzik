@@ -11,6 +11,6 @@
 #import "RootViewController.h"
 @interface UserHomePage : AMScrollingNavbarViewController
 @property (nonatomic,retain)UIImageView *headimage;
-@property (nonatomic,retain) NSDictionary *profileDic;
+@property (nonatomic,retain) NSMutableDictionary *profileDic;
 @property (nonatomic,weak) RootViewController *parentRoot;
 @end

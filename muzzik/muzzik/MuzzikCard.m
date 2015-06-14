@@ -61,11 +61,11 @@
     _progress = [[UIProgressView alloc] initWithFrame:CGRectMake(32, 0, ScreenWidth-96, 2)];
     [_progress setProgress:1];
     [_musicPlayView addSubview:_progress];
-    _musicName = [[UILabel alloc] initWithFrame:CGRectMake(80, 7, ScreenWidth-155, 25)];
-    [_musicName setFont:[UIFont boldSystemFontOfSize:16]];
+    _musicName = [[UILabel alloc] initWithFrame:CGRectMake(80, 7, ScreenWidth-192, 25)];
+    [_musicName setFont:[UIFont fontWithName:Font_Next_Bold size:15]];
     [_musicPlayView addSubview:_musicName];
-    _musicArtist = [[UILabel alloc] initWithFrame:CGRectMake(80, 30, ScreenWidth-155, 25)];
-    [_musicArtist setFont:[UIFont boldSystemFontOfSize:13]];
+    _musicArtist = [[UILabel alloc] initWithFrame:CGRectMake(80, 30, ScreenWidth-192, 25)];
+    [_musicArtist setFont:[UIFont fontWithName:Font_Next_Bold size:12]];
     [_musicPlayView addSubview:_musicArtist];
     _likeButton = [[UIButton alloc] initWithFrame:CGRectMake(32,14 , 30, 30)];
     [_likeButton addTarget:self action:@selector(moveAction) forControlEvents:UIControlEventTouchUpInside];

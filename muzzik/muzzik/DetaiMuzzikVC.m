@@ -24,6 +24,7 @@
 #import <TencentOpenAPI/TencentOAuth.h>
 #import "PhotoImageView.h"
 @interface DetaiMuzzikVC ()<UITableViewDataSource,UITableViewDelegate,TTTAttributedLabelDelegate,HPGrowingTextViewDelegate,CellDelegate,PhotoImageViewDelegate,UIActionSheetDelegate>{
+    BOOL isforRepost;
     UITableView *muzzikTableView;
     UIView *headView;
     NSMutableArray *commentArray;
@@ -801,16 +802,16 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     muzzik *tempMuzzik = commentArray[indexPath.row];
-    TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH-140, 2000)];
-    label.text = tempMuzzik.message;
     
-    [label setFont:[UIFont systemFontOfSize:15]];
-    CGSize msize = [label  sizeThatFits:CGSizeMake(SCREEN_WIDTH-140, 2000)];
+    TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(75, 0, SCREEN_WIDTH-140, 500)];
+    [label setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
+    [label setText:tempMuzzik.message];
+    CGFloat textHeight = [MuzzikItem heightForLabel:label WithText:label.text];
     
     if ([tempMuzzik.music.key isEqualToString:self.localmuzzik.music.key]) {
-        return 70+msize.height-15;
+        return 60+textHeight;
     }else{
-        return 95+msize.height-15;
+        return 85+textHeight;
     }
     
 }
@@ -1352,40 +1353,19 @@
     
 }
 -(void)repostAction{
-    if (self.localmuzzik.isReposted) {
-        [MuzzikItem showNotifyOnView:self.view text:@"您已转发过"];
-    }else{
-        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik",BaseURL]]];
-        [requestForm setRequestMethod:@"PUT"];
+    isforRepost = YES;
+    if (!self.localmuzzik.isReposted) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"确定转发这条Muzzik吗?" message:@"" delegate:self cancelButtonTitle:@"放弃" otherButtonTitles:nil];
+        // optional - add more buttons:
+        [alert addButtonWithTitle:@"确定"];
+        [alert show];
         
-        NSDictionary *dictionary = [NSDictionary dictionaryWithObject:self.localmuzzik.muzzik_id forKey:@"repost"];
-        [requestForm addBodyDataSourceWithJsonByDic:dictionary Method:PutMethod auth:YES];
-        __weak ASIHTTPRequest *weakrequest = requestForm;
-        [requestForm setCompletionBlock :^{
-            NSLog(@"%@",[weakrequest requestHeaders]);
-            NSLog(@"%@",[weakrequest responseString]);
-            NSLog(@"%d",[weakrequest responseStatusCode]);
-            if ([weakrequest responseStatusCode] == 200) {
-                [MuzzikItem showNotifyOnView:self.view text:@"转发成功"];
-                self.localmuzzik.isReposted = YES;
-                self.localmuzzik.reposts = [NSString stringWithFormat:@"%ld",[self.localmuzzik.reposts integerValue]+1];
-                
-                [self colorViewWithColorString:self.localmuzzik.color];
-            }
-            
-            else if([weakrequest responseStatusCode] == 401){
-                [userInfo checkLoginWithVC:self];
-                //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-            }else if ([weakrequest responseStatusCode] == 400){
-                
-            }
-        }];
-        [requestForm setFailedBlock:^{
-            NSLog(@"%@",[weakrequest error]);
-            [userInfo checkLoginWithVC:self];
-        }];
-        [requestForm startAsynchronous];
-        }
+    }else{
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"确定取消转发这条Muzzik吗?" message:@"" delegate:self cancelButtonTitle:@"放弃" otherButtonTitles:nil];
+        // optional - add more buttons:
+        [alert addButtonWithTitle:@"确定"];
+        [alert show];
+    }
 }
 -(void)shareAction{
     [self addShareView];
@@ -2021,27 +2001,94 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (buttonIndex == 1) {
         // do stuff
-        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@api/muzzik/%@",BaseURL,self.localmuzzik.muzzik_id]]];
-        [requestForm addBodyDataSourceWithJsonByDic:nil Method:DeleteMethod auth:YES];
-        __weak ASIHTTPRequest *weakrequest = requestForm;
-        [requestForm setCompletionBlock :^{
-            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
-            NSLog(@"%@",[weakrequest responseString]);
-            NSLog(@"%d",[weakrequest responseStatusCode]);
-            if ([weakrequest responseStatusCode] == 200 && [[dic objectForKey:@"result"] boolValue]) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:String_Muzzik_Delete object:self.localmuzzik];
-                [self.navigationController popViewControllerAnimated:YES];
+        if (isforRepost) {
+            isforRepost = NO;
+            if (!self.localmuzzik.isReposted) {
+                ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik",BaseURL]]];
+                NSDictionary *dictionary = [NSDictionary dictionaryWithObject:self.localmuzzik.muzzik_id forKey:@"repost"];
+                [requestForm addBodyDataSourceWithJsonByDic:dictionary Method:PutMethod auth:YES];
+                __weak ASIHTTPRequest *weakrequest = requestForm;
+                [requestForm setCompletionBlock :^{
+                    NSLog(@"%@",[weakrequest requestHeaders]);
+                    NSLog(@"%@",[weakrequest responseString]);
+                    NSLog(@"%d",[weakrequest responseStatusCode]);
+                    if ([weakrequest responseStatusCode] == 200) {
+                        [MuzzikItem showNotifyOnView:self.view text:@"转发成功"];
+                        self.localmuzzik.isReposted = YES;
+                        self.localmuzzik.reposts = [NSString stringWithFormat:@"%ld",[self.localmuzzik.reposts integerValue]+1];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:self.localmuzzik];
+                    }
+                    
+                    else if([weakrequest responseStatusCode] == 401){
+                        [userInfo checkLoginWithVC:self];
+                        //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+                    }else if ([weakrequest responseStatusCode] == 400){
+                        [MuzzikItem showNotifyOnView:self.view text:@"转发成功"];
+                        self.localmuzzik.isReposted = YES;
+                        [self colorViewWithColorString:self.localmuzzik.color];
+
+                    }
+                }];
+                [requestForm setFailedBlock:^{
+                    NSLog(@"%@",[weakrequest error]);
+                    [userInfo checkLoginWithVC:self];
+                }];
+                [requestForm startAsynchronous];
             }
-        }];
-        [requestForm setFailedBlock:^{
-            
-            // [SVProgressHUD showErrorWithStatus:@"network error"];
-        }];
-        [requestForm startAsynchronous];
+            else{
+                ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/%@/repost",BaseURL,self.localmuzzik.muzzik_id]]];
+                [requestForm addBodyDataSourceWithJsonByDic:nil Method:DeleteMethod auth:YES];
+                __weak ASIHTTPRequest *weakrequest = requestForm;
+                [requestForm setCompletionBlock :^{
+                    NSLog(@"%@",[weakrequest requestHeaders]);
+                    NSLog(@"%@",[weakrequest responseString]);
+                    NSLog(@"%d",[weakrequest responseStatusCode]);
+                    if ([weakrequest responseStatusCode] == 200) {
+                        [MuzzikItem showNotifyOnView:self.view text:@"取消转发"];
+                        self.localmuzzik.isReposted = NO;
+                        self.localmuzzik.reposts = [NSString stringWithFormat:@"%ld",[self.localmuzzik.reposts integerValue]-1];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:self.localmuzzik];
+                    }
+                    
+                    else if([weakrequest responseStatusCode] == 401){
+                        [userInfo checkLoginWithVC:self];
+                        //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+                    }else if ([weakrequest responseStatusCode] == 400){
+                        
+                    }
+                }];
+                [requestForm setFailedBlock:^{
+                    NSLog(@"%@",[weakrequest error]);
+                }];
+                [requestForm startAsynchronous];
+            }
+        }
+        else{
+            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@api/muzzik/%@",BaseURL,self.localmuzzik.muzzik_id]]];
+            [requestForm addBodyDataSourceWithJsonByDic:nil Method:DeleteMethod auth:YES];
+            __weak ASIHTTPRequest *weakrequest = requestForm;
+            [requestForm setCompletionBlock :^{
+                NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
+                NSLog(@"%@",[weakrequest responseString]);
+                NSLog(@"%d",[weakrequest responseStatusCode]);
+                if ([weakrequest responseStatusCode] == 200 && [[dic objectForKey:@"result"] boolValue]) {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:String_Muzzik_Delete object:self.localmuzzik];
+                    [self.navigationController popViewControllerAnimated:YES];
+                }
+            }];
+            [requestForm setFailedBlock:^{
+                
+                // [SVProgressHUD showErrorWithStatus:@"network error"];
+            }];
+            [requestForm startAsynchronous];
+        }
+        
+        
         
     }else{
         
     }
     
 }
+
 @end

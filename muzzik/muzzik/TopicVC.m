@@ -14,18 +14,17 @@
 #import "TTTAttributedLabel.h"
 #import "UIButton+WebCache.h"
 #import "userDetailInfo.h"
-#import "MuzzikTableVC.h"
 #import "SuggestMuzzikVC.h"
 #import "ActivityUserVC.h"
 #import "TopRankVC.h"
 #import "UIButton_UserMuzzik.h"
-
+#import "muzzikTrendController.h"
 #define width_For_Cell 60.0
 @interface TopicVC ()<UIScrollViewDelegate,TapLabelDelegate,TapImageViewDelegate>{
     UIScrollView *mainScroll;
     NSArray *topicArray;
     NSArray *userArray;
-    muzzik *feedMuzzik;
+    muzzik *trendMuzzik;
     muzzik *suggestMuzzik;
     muzzik *localMuzzik;
     //feed
@@ -78,7 +77,7 @@
     
     
     attentionLabel = [[UILabel alloc] initWithFrame:CGRectMake(15,0 , 50, 40)];
-    [attentionLabel setText:@"关注"];
+    [attentionLabel setText:@"广场"];
     [attentionLabel setFont:[UIFont boldSystemFontOfSize:15]];
     [attentionLabel setTextColor:Color_Text_2];
     attentionLabel.textAlignment = NSTextAlignmentCenter;
@@ -194,17 +193,17 @@
     if (user.checkFollow) {
         if ([[[user.playList objectForKey:Constant_userInfo_follow] objectForKey:@"muzziks"] count]>0) {
             
-            feedMuzzik = [[user.playList objectForKey:Constant_userInfo_follow] objectForKey:UserInfo_muzziks][0];
-            if ([localMuzzik.muzzik_id isEqualToString:feedMuzzik.muzzik_id]) {
+            trendMuzzik = [[user.playList objectForKey:Constant_userInfo_square] objectForKey:UserInfo_muzziks][0];
+            if ([localMuzzik.muzzik_id isEqualToString:trendMuzzik.muzzik_id]) {
                 [attentionView setBackgroundColor:Color_line_2];
                 [attentionLabel setTextColor:Color_Text_2];
                 [nextImage setImage:[UIImage imageNamed:Image_recommendarrowImage]];
             }else{
-                if ([feedMuzzik.color longLongValue]==1) {
+                if ([trendMuzzik.color longLongValue]==1) {
                     [attentionView setBackgroundColor:Color_Action_Button_1];
                     [attentionLabel setTextColor:[UIColor whiteColor]];
                     [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
-                }else if ([feedMuzzik.color longLongValue]==2){
+                }else if ([trendMuzzik.color longLongValue]==2){
                     [attentionView setBackgroundColor:Color_Action_Button_2];
                     [attentionLabel setTextColor:[UIColor whiteColor]];
                     [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
@@ -216,41 +215,65 @@
             }
         }
     }else{
-        ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/feeds",BaseURL]]];
-        [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:@"1" forKey:Parameter_Limit] Method:GetMethod auth:YES];
+        ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_Trending]]];
+        [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:@"20" forKey:Parameter_Limit] Method:GetMethod auth:YES];
         __weak ASIHTTPRequest *weakrequest = request;
         [request setCompletionBlock :^{
             //    NSLog(@"%@",weakrequest.originalURL);
-            NSLog(@"%@",[weakrequest responseString]);
+            
             NSData *data = [weakrequest responseData];
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-            if (dic&&[[dic objectForKey:@"muzziks"]count]>0) {
-                feedMuzzik = [[[muzzik new] makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"] ] objectAtIndex:0];
-                if ([localMuzzik.muzzik_id isEqualToString:feedMuzzik.muzzik_id]) {
-                    [attentionView setBackgroundColor:Color_line_2];
-                    [attentionLabel setTextColor:Color_Text_2];
-                    [nextImage setImage:[UIImage imageNamed:Image_recommendarrowImage]];
-                }else{
-                    if ([feedMuzzik.color longLongValue]==1) {
-                        [attentionView setBackgroundColor:Color_Action_Button_1];
-                        [attentionLabel setTextColor:[UIColor whiteColor]];
-                        [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
-                    }else if ([feedMuzzik.color longLongValue]==2){
-                        [attentionView setBackgroundColor:Color_Action_Button_2];
-                        [attentionLabel setTextColor:[UIColor whiteColor]];
-                        [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
+            if (dic) {
+                
+                muzzik *muzzikToy = [muzzik new];
+                NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+                if ([array count]>0) {
+                    trendMuzzik = array[0];
+                    if ([localMuzzik.muzzik_id isEqualToString:trendMuzzik.muzzik_id]) {
+                        [attentionView setBackgroundColor:Color_line_2];
+                        [attentionLabel setTextColor:Color_Text_2];
+                        [nextImage setImage:[UIImage imageNamed:Image_recommendarrowImage]];
                     }else{
-                        [attentionView setBackgroundColor:Color_Action_Button_3];
-                        [attentionLabel setTextColor:[UIColor whiteColor]];
-                        [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
+                        if ([trendMuzzik.color longLongValue]==1) {
+                            [attentionView setBackgroundColor:Color_Action_Button_1];
+                            [attentionLabel setTextColor:[UIColor whiteColor]];
+                            [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
+                        }else if ([trendMuzzik.color longLongValue]==2){
+                            [attentionView setBackgroundColor:Color_Action_Button_2];
+                            [attentionLabel setTextColor:[UIColor whiteColor]];
+                            [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
+                        }else{
+                            [attentionView setBackgroundColor:Color_Action_Button_3];
+                            [attentionLabel setTextColor:[UIColor whiteColor]];
+                            [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
+                        }
                     }
                 }
+                
+                NSMutableArray *resultArray = [NSMutableArray array];
+                for (muzzik *tempmuzzik in array) {
+                    BOOL isContained = NO;
+                    for (muzzik *arrayMuzzik in resultArray) {
+                        if ([arrayMuzzik.muzzik_id isEqualToString:tempmuzzik.muzzik_id]) {
+                            isContained = YES;
+                            break;
+                        }
+                        
+                    }
+                    if (!isContained) {
+                        [resultArray addObject:tempmuzzik];
+                    }
+                    isContained = NO;
+                }
+                [MuzzikItem SetUserInfoWithMuzziks:resultArray title:Constant_userInfo_square description:nil];
+                
             }
         }];
         [request setFailedBlock:^{
             NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
         }];
         [request startAsynchronous];
+        
     }
     
     
@@ -590,9 +613,7 @@
     [MuzzikItem SetUserInfoWithMuzziks:[NSMutableArray arrayWithArray:@[suggestMuzzik]] title:Constant_userInfo_temp description:[NSString stringWithFormat:@"单曲<%@>",suggestMuzzik.music.name]];
 }
 -(void) tapForAttention{
-    localMuzzik = feedMuzzik;
-    MuzzikTableVC *muzziktablevc = [[MuzzikTableVC alloc] init];
-    muzziktablevc.requstType = @"feeds";
+    muzzikTrendController *muzziktablevc = [[muzzikTrendController alloc] init];
     [self.navigationController pushViewController:muzziktablevc animated:YES];
 }
 -(void) tapForMoreUser{

@@ -43,10 +43,11 @@
         if ([weakrequest responseStatusCode] == 200) {
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData]  options:NSJSONReadingMutableContainers error:nil];
             classArray = [dic objectForKey:@"genres"];
-            for (NSDictionary *dic in _classifys) {
+            for (NSDictionary *dic in [_profileDic objectForKey:@"genres"]) {
                 for (int i = 0; i<classArray.count; i++) {
                     if ([[classArray[i] objectForKey:@"_id"] isEqualToString:[dic objectForKey:@"_id"]])    {
                         [Fdictionary setObject:classArray[i] forKey:[NSString stringWithFormat:@"%d",i]];
+                        
                     }
                 }
             }
@@ -167,6 +168,7 @@
             NSLog(@"%@",[weakrequest responseString]);
             NSLog(@"%d",[weakrequest responseStatusCode]);
             if ([weakrequest responseStatusCode] == 200 && [[dic objectForKey:@"result"] boolValue]) {
+                [_profileDic setObject:array forKey:@"genres"];
                 [self.navigationController popViewControllerAnimated:YES];
                 //
             }

@@ -77,11 +77,12 @@
     [decripText setFont:[UIFont fontWithName:Font_Next_DemiBold size:15]];
     decripText.textColor = Color_Text_1;
     [decripText setPlaceholderColor:Color_Text_4];
+    [decripText setReturnKeyType:UIReturnKeyDone];
     decripText.textAlignment = NSTextAlignmentCenter;
     decripText.delegate = self;
     decripText.animateHeightChange = NO;
     [decripText setMaxHeight:120];
-    [decripText setReturnKeyType:UIReturnKeyDone];
+    
     if ([[_profileDic allKeys] containsObject:@"description"] && [[self.profileDic objectForKey:@"description"] length]>0) {
         decripText.text = [self.profileDic objectForKey:@"description"];
     }
@@ -139,7 +140,7 @@
     birthText.font = [UIFont systemFontOfSize:15];
     birthText.placeholder = @"填选生日";
     birthText.delegate = self;
-    if ([[_profileDic allKeys] containsObject:@"birthday"] && [[self.profileDic objectForKey:@"birthday"] doubleValue]>0) {
+    if ([[_profileDic allKeys] containsObject:@"birthday"] && [[self.profileDic objectForKey:@"birthday"] longLongValue]!=0) {
         double unixTimeStamp = [[NSString stringWithFormat:@"%@",[_profileDic objectForKey:@"birthday"]] doubleValue]/1000;
         NSTimeInterval _interval=unixTimeStamp;
         NSDate *date = [NSDate dateWithTimeIntervalSince1970:_interval];
@@ -181,7 +182,6 @@
     }
     UIView *speView = [[UIView alloc] initWithFrame:CGRectMake(belowView.frame.size.width/2+15, 160, 1, 30)];
     [speView setBackgroundColor:Color_line_1];
-    
     [belowView addSubview:speView];
     [belowView addSubview:genderLabel];
     [belowView addSubview:maleButton];
@@ -210,16 +210,87 @@
     // Do any additional setup after loading the view.
 }
 
--(void)viewDidAppear:(BOOL)animated{
-    [super viewDidAppear:animated];
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    if ([[self.profileDic objectForKey:@"genres"] count]>0) {
+        for (UIView *view in [classifyBiew subviews]) {
+            [view removeFromSuperview];
+        }
+        
+        NSMutableArray *labelArray = [NSMutableArray array];
+        for (NSDictionary * dic in [_profileDic objectForKey:@"genres"]) {
+            UILabel *tempLabel = [[UILabel alloc ] initWithFrame:CGRectMake(0, 0, 100, 20)];
+            [tempLabel setFont:[UIFont systemFontOfSize:12]];
+            [tempLabel setText:[dic objectForKey:@"data"]];
+            [tempLabel sizeToFit];
+            [tempLabel setFrame:CGRectMake(0, 0, tempLabel.frame.size.width+20, 20)];
+            tempLabel.layer.cornerRadius = 10;
+            tempLabel.clipsToBounds = YES;
+            [tempLabel setTextColor:Color_Active_Button_2];
+            tempLabel.textAlignment = NSTextAlignmentCenter;
+            [tempLabel setBackgroundColor:[UIColor colorWithRed:.8 green:.8 blue:.8 alpha:0.2]];
+            if (tempLabel.frame.size.width+10>classifyBiew.frame.size.width-20) {
+                [tempLabel setFrame:CGRectMake(0, 0, classifyBiew.frame.size.width-30, 20)];
+            }
+            [labelArray addObject:tempLabel];
+        }
+        int maxXpoint = classifyBiew.frame.size.width-20;
+        int localheight = 5;
+        int localX = 5;
+        while ([labelArray count]>0) {
+            UILabel *templabel = [labelArray firstObject];
+            if (localX + templabel.frame.size.width+5 > maxXpoint) {
+                for (int i =1; i<labelArray.count; i++) {
+                    UILabel *subTempLabel = labelArray[i];
+                    if (localX+subTempLabel.frame.size.width+5 < maxXpoint) {
+                        [subTempLabel setFrame:CGRectMake(localX, localheight, subTempLabel.frame.size.width, subTempLabel.frame.size.height)];
+                        [classifyBiew addSubview:subTempLabel];
+                        [labelArray removeObject:subTempLabel];
+                        localX = localX +subTempLabel.frame.size.width+5;
+                        break;
+                    }
+                }
+                localX = 5;
+                localheight = localheight+25;
+            }
+            else{
+                [templabel setFrame:CGRectMake(localX, localheight, templabel.frame.size.width, templabel.frame.size.height)];
+                [classifyBiew addSubview:templabel];
+                [labelArray removeObject:templabel];
+                localX = localX+templabel.frame.size.width+5;
+                
+            }
+        }
+        if (belowView.frame.origin.y+classifyBiew.frame.origin.y+localheight+25<SCREEN_HEIGHT-64) {
+            [classifyBiew setFrame:CGRectMake(classifyBiew.frame.origin.x, classifyBiew.frame.origin.y, classifyBiew.frame.size.width, SCREEN_HEIGHT-64-belowView.frame.origin.y-classifyBiew.frame.origin.y)];
+            
+        }else{
+            [classifyBiew setFrame:CGRectMake(classifyBiew.frame.origin.x, classifyBiew.frame.origin.y, classifyBiew.frame.size.width, localheight+25)];
+        }
+        
+        [belowView setFrame:CGRectMake(belowView.frame.origin.x, belowView.frame.origin.y, belowView.frame.size.width, classifyBiew.frame.origin.y + classifyBiew.frame.size.height)];
+        
+        [mainView setFrame:CGRectMake(mainView.frame.origin.x, mainView.frame.origin.y, mainView.frame.size.width, belowView.frame.origin.y+belowView.frame.size.height)];
+        [mainTableView setTableHeaderView:mainView];
+        
+    }else{
+        [classifyBiew addSubview: addClassifyLabel];
+        
+        [classifyBiew setFrame:CGRectMake(classifyBiew.frame.origin.x, classifyBiew.frame.origin.y, classifyBiew.frame.size.width, SCREEN_HEIGHT-64-belowView.frame.origin.y-classifyBiew.frame.origin.y)];
+        [belowView setFrame:CGRectMake(belowView.frame.origin.x, belowView.frame.origin.y, belowView.frame.size.width, classifyBiew.frame.origin.y + classifyBiew.frame.size.height)];
+        
+        [mainView setFrame:CGRectMake(mainView.frame.origin.x, mainView.frame.origin.y, mainView.frame.size.width, belowView.frame.origin.y+belowView.frame.size.height)];
+        [mainTableView setTableHeaderView:mainView];
+    }
 }
 - (void)growingTextView:(HPGrowingTextView *)growingTextView willChangeHeight:(float)height{
     [growingTextView setFrame:CGRectMake(30, 152, SCREEN_WIDTH-60, height)];
     frameHeight = 152+height;
-    [belowView setFrame:CGRectMake(13, 152+height, SCREEN_WIDTH-26, 260)];
-    [mainView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 152+height+260)];
+    [belowView setFrame:CGRectMake(13, 152+height, SCREEN_WIDTH-26, belowView.frame.size.height)];
+    [mainView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 152+height+belowView.frame.size.height)];
     [mainTableView setTableHeaderView:mainView];
     [mainTableView reloadData];
+    
 }
 
 - (void)growingTextViewDidChange:(HPGrowingTextView *)growingTextView{
@@ -229,6 +300,12 @@
 }
 - (BOOL)growingTextViewShouldReturn:(HPGrowingTextView *)growingTextView{
     [growingTextView resignFirstResponder];
+    [UIView beginAnimations:@"ResizeForKeyBoard" context:nil];
+    float width = self.view.frame.size.width;
+    float height = self.view.frame.size.height;
+    CGRect rect = CGRectMake(0.0f, 64.0f,width,height);
+    self.view.frame = rect;
+    [UIView commitAnimations];
     return YES;
 }
 
@@ -314,7 +391,7 @@
 
 -(void) selectClass{
     ClassifySelectionVC *class = [[ClassifySelectionVC alloc] init];
-    class.classifys = [_profileDic objectForKey:@"genres"];
+    class.profileDic = _profileDic;
 
     [self.navigationController pushViewController:class animated:YES];
 }
@@ -563,9 +640,16 @@
 #pragma mark ZhpickVIewDelegate
 
 -(void)toobarDonBtnHaveClick:(ZHPickView *)pickView resultString:(NSString *)resultString{
+    
     changedBirth = YES;
     _birthString = resultString;
     birthText.text = [_birthString stringByReplacingOccurrencesOfString:@"-" withString:@"."];
+    [UIView beginAnimations:@"ResizeForKeyBoard" context:nil];
+    float width = self.view.frame.size.width;
+    float height = self.view.frame.size.height;
+    CGRect rect = CGRectMake(0.0f, 64.0f,width,height);
+    self.view.frame = rect;
+    [UIView commitAnimations];
     
     
 }

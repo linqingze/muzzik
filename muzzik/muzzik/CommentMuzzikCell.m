@@ -22,7 +22,7 @@
 
 -(void)setup{
     [self setSelectionStyle:UITableViewCellSelectionStyleNone];
-    _lineview = [[UIView alloc] initWithFrame:CGRectMake(16, 0, SCREEN_WIDTH-32, 1)];
+    _lineview = [[UIView alloc] initWithFrame:CGRectMake(16, 1, SCREEN_WIDTH-32, 1)];
     [_lineview setBackgroundColor:Color_line_1];
     [self addSubview:_lineview];
     

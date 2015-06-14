@@ -9,5 +9,5 @@
 #import "BaseNagationViewController.h"
 
 @interface ClassifySelectionVC : BaseNagationViewController
-@property(nonatomic,retain)NSMutableArray *classifys;
+@property (nonatomic,retain) NSMutableDictionary *profileDic;
 @end

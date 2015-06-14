@@ -127,8 +127,8 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     NotifyObject *tempNotify = [notifyArray objectAtIndex:indexPath.row];
-    
-    if ([tempNotify.type isEqualToString:@"follow"] ||[tempNotify.type isEqualToString:@"friend_registered"] || [tempNotify.type isEqualToString:@"frient_exists"]) {
+    NSLog(@"%d",[tempNotify.type isEqualToString:@"friend_exists"]);
+    if ([tempNotify.type isEqualToString:@"follow"] ||[tempNotify.type isEqualToString:@"friend_registered"] || [tempNotify.type isEqualToString:@"friend_exists"]) {
       NotifyFollowCell*  cell = [tableView dequeueReusableCellWithIdentifier:@"NotifyFollowCell" forIndexPath:indexPath];
         if (tempNotify.readed) {
             [cell.preImage setImage:[UIImage imageNamed:Image_notifollowclickImage]];
@@ -146,7 +146,7 @@
             cell.message.text = @"关注了你";
         }else if ([tempNotify.type isEqualToString:@"friend_registered"]) {
             cell.message.text = @"微博好友加入了Muzzik";
-        }else if ([tempNotify.type isEqualToString:@"frient_exists"]) {
+        }else if ([tempNotify.type isEqualToString:@"friend_exists"]) {
             cell.message.text = @"微博好友在Muzzik里等候你好久好久了....";
         }
        return cell;
@@ -212,6 +212,7 @@
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     NotifyObject *tempNotify = [notifyArray objectAtIndex:indexPath.row];
+    tempNotify.readed = YES;
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Read_Notify]]];
     [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:tempNotify.notify_id,@"_id", nil] Method:PostMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = request;
@@ -221,7 +222,7 @@
         NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
     }];
     [request startAsynchronous];
-    if ([tempNotify.type isEqualToString:@"follow"] ||[tempNotify.type isEqualToString:@"friend_registered"] || [tempNotify.type isEqualToString:@"frient_exists"]) {
+    if ([tempNotify.type isEqualToString:@"follow"] ||[tempNotify.type isEqualToString:@"friend_registered"] || [tempNotify.type isEqualToString:@"friend_exists"]) {
         userInfo *user = [userInfo shareClass];
         if ([tempNotify.user.user_id isEqualToString:user.uid]) {
             UserHomePage *home = [[UserHomePage alloc] init];
@@ -253,7 +254,7 @@
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
      NotifyObject *tempNotify = [notifyArray objectAtIndex:indexPath.row];
-    if ([tempNotify.type isEqualToString:@"follow"] ||[tempNotify.type isEqualToString:@"friend_registered"] || [tempNotify.type isEqualToString:@"frient_exists"]) {
+    if ([tempNotify.type isEqualToString:@"follow"] ||[tempNotify.type isEqualToString:@"friend_registered"] || [tempNotify.type isEqualToString:@"friend_exists"]) {
         return 72.0;
     }else{
         return 152;

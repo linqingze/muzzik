@@ -183,6 +183,23 @@
 #define Image_fontImage                     @"fontImage"
 #define Image_MuzzikImage                   @"MuzzikImage"
 #define Image_shareplay                     @"shareplay"
+//歌曲播放按钮
+#define Image_playblueImage                 @"playblueImage"
+#define Image_playgreyImage                 @"playgreyImage"
+#define Image_playredImage                  @"playredImage"
+#define Image_playyellowImage               @"playyellowImage"
+#define Image_songlistbluepostweetImage     @"songlistbluepostweetImage"
+#define Image_songlistpostweetImage         @"songlistpostweetImage"
+#define Image_songlistredpostweetImage      @"songlistredpostweetImage"
+#define Image_songlistyellowpostweetImage   @"songlistyellowpostweetImage"
+#define Image_stopblueImage                 @"stopblueImage"
+#define Image_stoporangeImage               @"stoporangeImage"
+#define Image_stopredImage                  @"stopredImage"
+#define Image_stopyellowImage               @"stopyellowImage"
+
+
+
+
 
 #define Parameter_Id              @"_id"
 #define Parameter_avatar          @"avatar"
@@ -193,6 +210,8 @@
 #define Parameter_private         @"private"
 #define Parameter_reply_id        @"reply"
 #define Parameter_repost_id       @"repost"
+
+
 
 
 

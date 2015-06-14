@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "TTTAttributedLabel.h"
-#import "muzzikTrendController.h"
+
 @interface MuzzikNoCardCell : UITableViewCell
 @property (nonatomic) UIImageView *muzzikCardLogo;
 @property (nonatomic) UIView *cardView;

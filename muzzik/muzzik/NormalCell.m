@@ -68,10 +68,10 @@
     [_progress setProgress:1];
     [_musicPlayView addSubview:_progress];
     _musicName = [[UILabel alloc] initWithFrame:CGRectMake(80, 12, SCREEN_WIDTH-150, 20)];
-    [_musicName setFont:[UIFont fontWithName:Font_Next_Bold size:16]];
+    [_musicName setFont:[UIFont fontWithName:Font_Next_Bold size:15]];
     [_musicPlayView addSubview:_musicName];
     _musicArtist = [[UILabel alloc] initWithFrame:CGRectMake(80, 31, SCREEN_WIDTH-150, 25)];
-    [_musicArtist setFont:[UIFont fontWithName:Font_Next_Bold size:13]];
+    [_musicArtist setFont:[UIFont fontWithName:Font_Next_Bold size:12]];
     [_musicPlayView addSubview:_musicArtist];
     _likeButton = [[UIButton alloc] initWithFrame:CGRectMake(16, 13, 34, 34)];
     [_likeButton addTarget:self action:@selector(moveAction) forControlEvents:UIControlEventTouchUpInside];
@@ -142,7 +142,7 @@
     [_commentButton setImage:[UIImage imageNamed:Image_replyImage] forState:UIControlStateNormal];
     [_commentButton addTarget:self action:@selector(commentAction) forControlEvents:UIControlEventTouchUpInside];
     [_musicPlayView addSubview:_commentButton];
-    [MuzzikItem addLineOnView:_musicPlayView heightPoint:145 toLeft:16 toRight:16 withColor:Color_line_1];
+    [MuzzikItem addLineOnView:_musicPlayView heightPoint:144 toLeft:16 toRight:16 withColor:Color_line_1];
 }
 -(void)downloadMusicAction:(id)sender{
     NSLog(@"download");

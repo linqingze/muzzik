@@ -147,40 +147,40 @@
     UIColor *color;
     if (isplaying) {
         if ([tempMuzzik.color longLongValue] == 1) {
-            color = [UIColor colorWithHexString:@"fea42c"];
+            color =Color_Action_Button_1;
             if (!glob.isPause) {
-                [cell.playButton setImage:[UIImage imageNamed:Image_detailstopyellowImage] forState:UIControlStateNormal];
+                [cell.playButton setImage:[UIImage imageNamed:Image_stopredImage] forState:UIControlStateNormal];
             }else{
-                [cell.playButton setImage:[UIImage imageNamed:Image_detailyellowplay] forState:UIControlStateNormal];
+                [cell.playButton setImage:[UIImage imageNamed:Image_playredImage] forState:UIControlStateNormal];
             }
-            [cell.CommentButton setImage:[UIImage imageNamed:Image_songlistpostweetImage] forState:UIControlStateNormal];
-            [cell.timeImage setImage:[UIImage imageNamed:Image_timelineyellowImage]];
+            [cell.CommentButton setImage:[UIImage imageNamed:Image_songlistredpostweetImage] forState:UIControlStateNormal];
+            [cell.timeImage setImage:[UIImage imageNamed:Image_timelineredImage]];
             [cell.songName setTextColor:color];
             [cell.Artist setTextColor:color];
             
         }
         else if([tempMuzzik.color longLongValue] == 2){
             //bluelikeImage
-            color = [UIColor colorWithHexString:@"04a0bf"];
+            color = Color_Action_Button_2;
             if (!glob.isPause) {
-                [cell.playButton setImage:[UIImage imageNamed:Image_detailstopblueImage] forState:UIControlStateNormal];
+                [cell.playButton setImage:[UIImage imageNamed:Image_stopyellowImage] forState:UIControlStateNormal];
             }else{
-                [cell.playButton setImage:[UIImage imageNamed:Image_detailblueplay] forState:UIControlStateNormal];
+                [cell.playButton setImage:[UIImage imageNamed:Image_playyellowImage] forState:UIControlStateNormal];
             }
-            [cell.CommentButton setImage:[UIImage imageNamed:Image_songlistpostweetImage] forState:UIControlStateNormal];
-            [cell.timeImage setImage:[UIImage imageNamed:Image_timelineblueImage]];
+            [cell.CommentButton setImage:[UIImage imageNamed:Image_songlistyellowpostweetImage] forState:UIControlStateNormal];
+            [cell.timeImage setImage:[UIImage imageNamed:Image_timelineyellowImage]];
             [cell.songName setTextColor:color];
             [cell.Artist setTextColor:color];
         }
         else{
-            color = [UIColor colorWithHexString:@"f26d7d"];
+            color = Color_Action_Button_3;
             if (!glob.isPause) {
-                [cell.playButton setImage:[UIImage imageNamed:Image_detailstopredImage] forState:UIControlStateNormal];
+                [cell.playButton setImage:[UIImage imageNamed:Image_stopblueImage] forState:UIControlStateNormal];
             }else{
-                [cell.playButton setImage:[UIImage imageNamed:Image_detailredplay] forState:UIControlStateNormal];
+                [cell.playButton setImage:[UIImage imageNamed:Image_playblueImage] forState:UIControlStateNormal];
             }
-            [cell.CommentButton setImage:[UIImage imageNamed:Image_songlistpostweetImage] forState:UIControlStateNormal];
-            [cell.timeImage setImage:[UIImage imageNamed:Image_timelineredImage]];
+            [cell.CommentButton setImage:[UIImage imageNamed:Image_songlistbluepostweetImage] forState:UIControlStateNormal];
+            [cell.timeImage setImage:[UIImage imageNamed:Image_timelineblueImage]];
             [cell.songName setTextColor:color];
             [cell.Artist setTextColor:color];
         }
@@ -188,15 +188,15 @@
         [cell.songName setTextColor:Color_Text_2];
         [cell.Artist setTextColor:Color_Text_2];
         [cell.CommentButton setImage:[UIImage imageNamed:Image_songlistpostweetImage] forState:UIControlStateNormal];
-        [cell.playButton setImage:[UIImage imageNamed:Image_detailgreyplay] forState:UIControlStateNormal];
+        [cell.playButton setImage:[UIImage imageNamed:Image_playgreyImage] forState:UIControlStateNormal];
         if ([tempMuzzik.color longLongValue] == 1) {
-            [cell.timeImage setImage:[UIImage imageNamed:Image_timelineyellowImage]];
+            [cell.timeImage setImage:[UIImage imageNamed:Image_timelineredImage]];
         }
         else if([tempMuzzik.color longLongValue] == 2){
-            [cell.timeImage setImage:[UIImage imageNamed:Image_timelineblueImage]];
+            [cell.timeImage setImage:[UIImage imageNamed:Image_timelineyellowImage]];
         }
         else{
-             [cell.timeImage setImage:[UIImage imageNamed:Image_timelineredImage]];
+             [cell.timeImage setImage:[UIImage imageNamed:Image_timelineblueImage]];
         }
         
     }

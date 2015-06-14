@@ -122,9 +122,9 @@
     cell.songVC = self;
     Globle *glob = [Globle shareGloble];
     if ([[musicPlayer shareClass].localMuzzik.music.key isEqualToString:localMuzzik.music.key] && !glob.isPause) {
-        [cell.playButton setImage:[UIImage imageNamed:@"stopImage_new"] forState:UIControlStateNormal];
+        [cell.playButton setImage:[UIImage imageNamed:Image_stoporangeImage] forState:UIControlStateNormal];
     }else{
-        [cell.playButton setImage:[UIImage imageNamed:@"playImage_new"] forState:UIControlStateNormal];
+        [cell.playButton setImage:[UIImage imageNamed:Image_playgreyImage] forState:UIControlStateNormal];
     }
     return cell;
 }

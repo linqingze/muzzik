@@ -17,12 +17,14 @@
 #import "KxMenu.h"
 #import "AFViewShaker.h"
 #import "DraftBoxVC.h"
+#import "FeedViewController.h"
 @interface RootViewController ()<UIPageViewControllerDelegate,UIPageViewControllerDataSource,UIScrollViewDelegate>{
     NSArray *pageControllers;
     UIView *nacView;
     muzzikTrendController* muzzikvc;
     TopicVC *topicvc ;
     UserHomePage *userHome;
+    FeedViewController *feedvc;
     BOOL isLogiined;
     UIButton *notifyButton;
     UIImageView *notifyImage;
@@ -100,6 +102,7 @@
     
     muzzikvc = [[muzzikTrendController alloc] init];
     muzzikvc.parentRoot = self;
+    muzzikvc.isRootSubview = YES;
     AppDelegate *mydelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     mydelegate.viewcontroller = muzzikvc;
     topicvc = [[TopicVC alloc] init];
@@ -107,6 +110,8 @@
     userHome = [[UserHomePage alloc] init];
     userHome.parentRoot = self;
     
+    feedvc = [[FeedViewController alloc] init];
+    feedvc.parentRoot = self;
    
     pageControllers = @[muzzikvc,topicvc];
     NSArray* viewControllers = @[muzzikvc];
@@ -146,14 +151,21 @@
         hasToken = YES;
         if (isLogiined != hasToken) {
             isLogiined = YES;
-            NSArray* viewControllers = @[muzzikvc];
+            feedvc = [[FeedViewController alloc] init];
+            feedvc.parentRoot = self;
+            userHome = [[UserHomePage alloc] init];
+            userHome.parentRoot = self;
+            
+            pageControllers = @[feedvc,topicvc,userHome];
+            NSArray* viewControllers = @[feedvc];
             [_pageViewController setViewControllers:viewControllers
                                           direction:UIPageViewControllerNavigationDirectionForward
                                            animated:NO
                                          completion:nil];
-            userHome = [[UserHomePage alloc] init];
-            userHome.parentRoot = self;
-            pageControllers = @[muzzikvc,topicvc,userHome];
+            [muzzikvc.view removeFromSuperview];
+            muzzikvc = nil;
+            
+            
         }
         
     }else{
@@ -161,15 +173,20 @@
         hasToken = NO;
         if (isLogiined != hasToken) {
             isLogiined = NO;
+            muzzikvc = [[muzzikTrendController alloc] init];
+            muzzikvc.isRootSubview = YES;
+            pageControllers = @[muzzikvc,topicvc];
             NSArray* viewControllers = @[muzzikvc];
             [_pageViewController setViewControllers:viewControllers
                                           direction:UIPageViewControllerNavigationDirectionForward
                                            animated:NO
                                          completion:nil];
-            [userHome.view removeFromSuperview];
-            pageControllers = @[muzzikvc,topicvc];
+            
             [userHome.view removeFromSuperview];
             userHome = nil;
+            [feedvc.view removeFromSuperview];
+            feedvc = nil;
+            
         }
         
         

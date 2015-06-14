@@ -249,6 +249,7 @@
         }else{
         
         }
+        
         if ([dicKeys containsObject:@"birthday"] && [_profileDic objectForKey:@"birthday"]>0) {
             double unixTimeStamp = [[NSString stringWithFormat:@"%@",[_profileDic objectForKey:@"birthday"]] doubleValue]/1000;
             NSTimeInterval _interval=unixTimeStamp;
@@ -319,6 +320,7 @@
                 [tempLabel setFont:[UIFont systemFontOfSize:12]];
                 [tempLabel setText:[dic objectForKey:@"data"]];
                 [tempLabel sizeToFit];
+                if (tempLabel.frame.size.width-20>SCREEN_WIDTH/2-6) continue;
                 if (local- tempLabel.frame.size.width-20<0) {
                     localheight = localheight-28;
                     local = SCREEN_WIDTH/2-6;

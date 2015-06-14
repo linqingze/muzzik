@@ -19,7 +19,7 @@
 #import "TTTAttributedLabel.h"
 #import "AppDelegate.h"
 #import "MessageStepViewController.h"
-
+#import "DetaiMuzzikVC.h"
 #define closeInterValTime 0.5
 @implementation RFRadioView
 @synthesize delegate = _delegate;
@@ -129,13 +129,17 @@
         [Scroll setPagingEnabled:YES];
         [Scroll setContentSize:CGSizeMake(SCREEN_WIDTH*2, 100)];
         [self.playView addSubview:Scroll];
-        message =[[UILabel alloc ] initWithFrame:CGRectMake(SCREEN_WIDTH+10, 0, SCREEN_WIDTH-20, 100)];
+        messageView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH+10, 0, SCREEN_WIDTH-20, 100)];
+        [messageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(seeDetail)]];
+        message =[[UILabel alloc ] initWithFrame:CGRectMake(10, 10, SCREEN_WIDTH-20, 80)];
         message.textAlignment = NSTextAlignmentCenter;
         [message setFont:[UIFont systemFontOfSize:14]];
         message.lineBreakMode = NSLineBreakByCharWrapping;
         message.numberOfLines = 0;
         message.textColor = [UIColor whiteColor];
-        [Scroll addSubview:message];
+        [messageView addSubview:message];
+        [Scroll addSubview:messageView];
+        [Scroll setShowsHorizontalScrollIndicator:NO];
         lyricTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 100)];
         [lyricTableView setBackgroundColor:Color_NavigationBar];
         [lyricTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
@@ -231,6 +235,7 @@
 #pragma mark - 播放器控制
 -(void) showFullPlayer:(UIButton *) sender{
     if (_IsShowDetail) {
+        [self.coverView setHidden:YES];
         CABasicAnimation *animation2 = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
         animation2.duration = 0.825; // 持续时间
         animation2.removedOnCompletion = YES;
@@ -277,6 +282,7 @@
         
         
     }else{
+        [self.coverView setHidden:NO];
         CABasicAnimation *animation2 = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
         animation2.duration = 0.85; // 持续时间
         animation2.removedOnCompletion = YES;
@@ -1202,6 +1208,25 @@
 }
 
 #pragma -mark progress change
+
+-(void)seeDetail{
+    if ([self.playMuzzik.muzzik_id length]>0) {
+        UINavigationController *nac = (UINavigationController *)self.window.rootViewController;
+        UIViewController *vc  = [nac.viewControllers lastObject];
+        if ([vc isKindOfClass:[ DetaiMuzzikVC class]]) {
+            DetaiMuzzikVC *detail = (DetaiMuzzikVC *)vc;
+            if ([detail.localmuzzik.muzzik_id isEqualToString:self.playMuzzik.muzzik_id]) {
+                [self closeView];
+                return;
+            }
+        }
+        DetaiMuzzikVC *godetail = [[DetaiMuzzikVC alloc] init];
+        godetail.localmuzzik = self.playMuzzik;
+        
+        [nac pushViewController:godetail animated:YES];
+        [self closeView];
+    }
+}
 -(void)progressChange:(UISlider *) progressSlider{
     [audioPlayer seekToTime:progressSlider.value];
 }

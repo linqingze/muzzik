@@ -25,4 +25,5 @@
 @property(nonatomic,copy)NSString *uid;
 @property(nonatomic,weak) UserMuzzikVC *keeper;
 @property(nonatomic,copy) NSString *requstType;
+
 @end

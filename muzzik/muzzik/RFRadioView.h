@@ -71,6 +71,7 @@
     UILabel *PartistName;
     UIButton *playListButton;
     UITableView *plistTableView;
+    UIView *messageView;
     NSMutableArray *playListArray;
     
 }
@@ -91,6 +92,5 @@
 @property (nonatomic,retain) muzzik *playMuzzik;
 @property (nonatomic,copy) NSURL *musicUrl;
 -(void)playButtonEvent;
--(void)setRadioViewLrc;
 -(void) setTitleString:(NSString *)title;
 @end
