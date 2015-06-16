@@ -62,6 +62,7 @@
         [self initNagationBar:@"喜欢的Muzzik" leftBtn:Constant_backImage rightBtn:0];
         MytableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     }else{
+        [self initNagationBar:@"我的Muzzik" leftBtn:Constant_backImage rightBtn:0];
         MytableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-94)];
     }
     page = 2;

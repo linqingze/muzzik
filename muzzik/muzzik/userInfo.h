@@ -26,7 +26,7 @@
 @property (nonatomic,assign) BOOL checkMove;
 @property (nonatomic,assign) BOOL checkSuggest;
 @property (nonatomic,assign) BOOL checkTemp;
-
+@property (nonatomic,retain) UIImage *userHeadThumb;
 +(userInfo *) shareClass;
 +(void)checkLoginWithVC:(UIViewController *)vc;
 @end

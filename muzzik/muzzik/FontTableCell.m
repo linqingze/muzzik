@@ -39,9 +39,12 @@
     if (!self.keeperVC.downLoadList) {
         self.keeperVC.downLoadList = [NSMutableArray array];
     }
-    [self.pieProgress setHidden:NO];
-    [self.keeperVC.downLoadList addObject:self.dic];
-    [self.keeperVC startDownload];
+    if ([self.keeperVC.downLoadList count] == 0) {
+        [self.pieProgress setHidden:NO];
+        [self.keeperVC.downLoadList addObject:self.dic];
+        [self.keeperVC startDownload];
+    }
+
     
     
     

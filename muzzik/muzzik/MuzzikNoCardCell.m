@@ -45,7 +45,7 @@
     _timeImage = [[UIImageView alloc] initWithFrame:CGRectMake(ScreenWidth-76, 43, 10, 10)];
     [_timeImage setImage:[UIImage imageNamed:Image_timeImage]];
     _muzzikMessage = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(32, CGRectGetMaxY(_userImage.frame)+10, ScreenWidth-96, 200)];
-    [_muzzikMessage setTextColor:Color_Text_1];
+    [_muzzikMessage setTextColor:Color_Text_2];
     [_muzzikMessage setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
     _musicPlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 0 , ScreenWidth-16, 70)];
     [self.contentView addSubview:_musicPlayView];

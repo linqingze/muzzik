@@ -159,8 +159,6 @@
     
     cell.message.text = tempMuzzik.message;
     cell.message.delegate = self;
-    [cell.message addClickMessageForAt];
-    [cell.message addClickMessagewithTopics:tempMuzzik.topics];
     CGFloat height = [MuzzikItem heightForLabel:cell.message WithText:cell.message.text];
     [cell.message setFrame:CGRectMake(cell.message.frame.origin.x, cell.message.frame.origin.y, cell.message.frame.size.width,height )];
     [cell.ActionView setFrame:CGRectMake(25, cell.message.frame.origin.y+height+15, SCREEN_WIDTH-50, 40)];
@@ -245,26 +243,6 @@
     int index = fabs(sView.contentOffset.x) / sView.frame.size.width;
     //NSLog(@"%d",index);
     [pagecontrol setCurrentPage:index];
-}
-- (void)attributedLabel:(TTTAttributedLabel *)label
-didSelectLinkWithTransitInformation:(NSDictionary *)components{
-    NSLog(@"%@",components);
-    if ([[components allKeys] containsObject:@"topic_id"]) {
-        TopicDetail *topicDetail = [[TopicDetail alloc] init];
-        topicDetail.topic_id = [components objectForKey:@"topic_id"];
-        [self.navigationController pushViewController:topicDetail animated:YES];
-    }else if([[components allKeys] containsObject:@"at_name"]){
-        
-        userInfo *user = [userInfo shareClass];
-        if ([[components objectForKey:@"at_name"] isEqualToString:user.name]) {
-            UserHomePage *home = [[UserHomePage alloc] init];
-            [self.navigationController pushViewController:home animated:YES];
-        }else{
-            userDetailInfo *uInfo = [[userDetailInfo alloc] init];
-            uInfo.uid = [[components objectForKey:@"at_name"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-            [self.navigationController pushViewController:uInfo animated:YES];
-        }
-    }
 }
 -(void)userDetail:(NSString *)user_id{
     userInfo *user = [userInfo shareClass];

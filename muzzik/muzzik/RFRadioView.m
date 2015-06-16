@@ -382,10 +382,6 @@
                                               }];
                                               [lyricRequest1 startAsynchronous];
                                           }
-                                          else{
-                                              NSDictionary *dic = [NSDictionary dictionaryWithObject:@"暂无歌词" forKey:@"00:05"];
-                                              [self.lyricArray addObject:dic];
-                                          }
                                           
                                       }
                                       else{
@@ -433,10 +429,6 @@
                                         NSLog(@"%@",lrcRequest1.error);
                                     }];
                                     [lyricRequest1 startAsynchronous];
-                                }
-                                else{
-                                    NSDictionary *dic = [NSDictionary dictionaryWithObject:@"暂无歌词" forKey:@"00:05"];
-                                    [self.lyricArray addObject:dic];
                                 }
                                 
                             }
@@ -847,10 +839,6 @@
                                             }];
                                             [lyricRequest1 startAsynchronous];
                                         }
-                                        else{
-                                            NSDictionary *dic = [NSDictionary dictionaryWithObject:@"暂无歌词" forKey:@"00:05"];
-                                            [self.lyricArray addObject:dic];
-                                        }
                                         
                                     }
                                     else{
@@ -895,10 +883,6 @@
                                         NSLog(@"%@",lrcRequest1.error);
                                     }];
                                     [lyricRequest1 startAsynchronous];
-                                }
-                                else{
-                                    NSDictionary *dic = [NSDictionary dictionaryWithObject:@"暂无歌词" forKey:@"00:05"];
-                                    [self.lyricArray addObject:dic];
                                 }
                                 
                             }

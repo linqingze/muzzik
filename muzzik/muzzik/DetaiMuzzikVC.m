@@ -1129,7 +1129,28 @@
 -(void) colorViewWithColorString:(NSString *) colorString{
     UIColor *color;
     if ([colorString intValue] == 1) {
-        color = [UIColor colorWithHexString:@"fea42c"];
+        color = Color_Action_Button_1;
+        [self.repostImage setImage:[UIImage imageNamed:Image_redretweetImage]];
+        if (self.localmuzzik.ismoved) {
+            [self.likeButton setImage:[UIImage imageNamed:@"redlikedImage"] forState:UIControlStateNormal];
+        }else{
+            [self.likeButton setImage:[UIImage imageNamed:@"redlikeImage"] forState:UIControlStateNormal];
+        }
+        if (self.isPlaying) {
+            [self.playButton setImage:[UIImage imageNamed:@"redstopImage"] forState:UIControlStateNormal];
+        }else{
+            [self.playButton setImage:[UIImage imageNamed:@"redplayImage"] forState:UIControlStateNormal];
+        }
+        if (self.localmuzzik.isReposted) {
+            [self.repostButton setImage:[UIImage imageNamed:Image_hottweetredretweetImage] forState:UIControlStateNormal];
+        }
+        
+    }
+    else if([colorString intValue] == 2){
+        //bluelikeImage
+        
+        color = Color_Action_Button_2;
+        
         [self.repostImage setImage:[UIImage imageNamed:Image_yellowretweetImage]];
         if (self.localmuzzik.ismoved) {
             [self.likeButton setImage:[UIImage imageNamed:@"yellowlikedImage"] forState:UIControlStateNormal];
@@ -1144,11 +1165,11 @@
         if (self.localmuzzik.isReposted) {
             [self.repostButton setImage:[UIImage imageNamed:Image_hottweetyellowretweetImage] forState:UIControlStateNormal];
         }
+        
     }
-    else if([colorString intValue] == 2){
-        //bluelikeImage
+    else{
+        color = Color_Action_Button_3;
         [self.repostImage setImage:[UIImage imageNamed:Image_blueretweetImage]];
-        color = [UIColor colorWithHexString:@"04a0bf"];
         if (self.localmuzzik.ismoved) {
             [self.likeButton setImage:[UIImage imageNamed:@"bluelikedImage"] forState:UIControlStateNormal];
         }else{
@@ -1161,23 +1182,6 @@
         }
         if (self.localmuzzik.isReposted) {
             [self.repostButton setImage:[UIImage imageNamed:Image_hottweetblueretweetImage] forState:UIControlStateNormal];
-        }
-    }
-    else{
-        color = [UIColor colorWithHexString:@"f26d7d"];
-        [self.repostImage setImage:[UIImage imageNamed:Image_redretweetImage]];
-        if (self.localmuzzik.ismoved) {
-            [self.likeButton setImage:[UIImage imageNamed:@"redlikedImage"] forState:UIControlStateNormal];
-        }else{
-            [self.likeButton setImage:[UIImage imageNamed:@"redlikeImage"] forState:UIControlStateNormal];
-        }
-        if (self.isPlaying) {
-            [self.playButton setImage:[UIImage imageNamed:@"redstopImage"] forState:UIControlStateNormal];
-        }else{
-            [self.playButton setImage:[UIImage imageNamed:@"redplayImage"] forState:UIControlStateNormal];
-        }
-        if (self.localmuzzik.isReposted) {
-            [self.repostButton setImage:[UIImage imageNamed:Image_hottweetredretweetImage] forState:UIControlStateNormal];
         }
     }
     [_moves setTitle:[self.localmuzzik.moveds integerValue]>0? [NSString stringWithFormat:@"喜欢数%@",self.localmuzzik.moveds] : @"喜欢数" forState:UIControlStateNormal];

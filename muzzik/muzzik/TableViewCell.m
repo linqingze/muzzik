@@ -24,12 +24,11 @@
     self.label = [[UILabel alloc] initWithFrame:CGRectMake(40, 10, SCREEN_WIDTH-80, 30)];
     self.label.numberOfLines = 0;
     self.label.lineBreakMode = NSLineBreakByWordWrapping;
-    self.label.font = [UIFont boldSystemFontOfSize:15];
+    self.label.font = [UIFont boldSystemFontOfSize:17];
     self.label.textColor = [UIColor darkGrayColor];
     self.label.textAlignment = NSTextAlignmentCenter;
     [self setSelectionStyle:UITableViewCellSelectionStyleNone];
     [self addSubview:self.label];
     self.backgroundColor=[UIColor clearColor];
 }
-
 @end

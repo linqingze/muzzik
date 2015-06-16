@@ -54,7 +54,7 @@
 
     
     [nacView addSubview:_pagecontrol];
-    _titleShowView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-50, 25, 100, 15)];
+    _titleShowView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-50, 25, 100, 25)];
 
     [nacView addSubview:_titleShowView];
     notifyButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-80, 24, 36, 36)];

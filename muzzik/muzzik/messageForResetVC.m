@@ -47,7 +47,7 @@
     [self.view addSubview:visibleButton];
     [MuzzikItem addLineOnView:self.view heightPoint:90 toLeft:13 toRight:13 withColor:Color_underLine];
     UIButton *nextButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-67, SCREEN_HEIGHT-133, 54, 52)];
-    [nextButton setImage:[UIImage imageNamed:Image_done] forState:UIControlStateNormal];
+    [nextButton setImage:[UIImage imageNamed:@"cycledone"] forState:UIControlStateNormal];
     [self.view addSubview: nextButton];
     [nextButton addTarget:self action:@selector(summitAction) forControlEvents:UIControlEventTouchUpInside];
     UITapGestureRecognizer *tapOnview = [[UITapGestureRecognizer alloc] initWithTarget:self.view action:@selector(endEditing:)];
@@ -76,7 +76,7 @@
         [MuzzikItem showTipsAtView:self.view xPoint:20 yPoint:100 text:@"请输入正确的验证码"];
         [[[AFViewShaker alloc] initWithView:checkcode] shake];
     }else if([passwordText.text length]<6|| [passwordText.text length]>16){
-        [MuzzikItem showTipsAtView:self.view xPoint:20 yPoint:100 text:@"密码限定在6~16位..."];
+        [MuzzikItem showTipsAtView:self.view xPoint:20 yPoint:100 text:@"密码必须是由6至16位数字字母组成的"];
         [[[AFViewShaker alloc] initWithView:checkcode] shake];
     }
     else{

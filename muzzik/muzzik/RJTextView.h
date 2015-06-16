@@ -37,6 +37,7 @@
 @property (nonatomic, assign) id<RJTextViewDelegate> delegate;
 
 // read only
+@property (nonatomic,copy) NSString *fontname;
 @property (retain, nonatomic) UIFont      *curFont;
 @property (retain, nonatomic) UIButton    *closeButton;
 @property (nonatomic, retain, readonly) CTextView *textView;

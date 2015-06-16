@@ -20,7 +20,7 @@
 +(void) showView:(UILabel *)view Text:(NSString *)string;
 +(void) showTipsAtView:(UIView *)view xPoint:(CGFloat)x yPoint:(CGFloat) y text:(NSString *)text;
 +(void) alterInAndOutWithView:(UIView*)view;
-
++(void) showWarnOnView:(UIView *)view text:(NSString *)text;
 +(float) heightForLabel: (UIView *)view WithText: (NSString *) strText;
 +(float) heightForTextView: (UITextView *)textView WithText: (NSString *) strText;
 +(float) heightForAttributeString: (UILabel *)Label WithText: (NSMutableAttributedString *) strText;

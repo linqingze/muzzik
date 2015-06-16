@@ -54,7 +54,7 @@
     //screenwidth*9/8-52
     
     _muzzikMessage = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(32, CGRectGetMaxY(_userImage.frame)+10, ScreenWidth-96, 200)];
-    [_muzzikMessage setTextColor:Color_Text_1];
+    [_muzzikMessage setTextColor:Color_Text_2];
     [_muzzikMessage setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
     _musicPlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 0 , ScreenWidth-16, 70)];
     [self.contentView addSubview:_musicPlayView];

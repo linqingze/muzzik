@@ -9,14 +9,20 @@
 #import "checkVerifyCode.h"
 #import "NSString+MD5.h"
 #import "setNameVc.h"
+#import "TTTAttributedLabel.h"
 @interface checkVerifyCode ()<UITextFieldDelegate>{
     UITextField *checkcode;
+    UILabel *resendMessage;
+     NSTimer *timer;
+    int timeCount;
+    UIButton *resendButton;
 }
 @end
 @implementation checkVerifyCode
 
 -(void)viewDidLoad{
     [super viewDidLoad];
+    timeCount = 60;
     [self initNagationBar:@"验证手机号" leftBtn:Constant_backImage rightBtn:0];
     UIImageView *checkImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"messageImage"]];
     [checkImage setFrame:CGRectMake(20, 15, 15, 15)];
@@ -32,23 +38,61 @@
     [checkcode setFont:[UIFont systemFontOfSize:15]];
     [self.view addSubview:checkcode];
     [MuzzikItem addLineOnView:self.view heightPoint:45 toLeft:13 toRight:13 withColor:Color_underLine];
+    resendMessage = [[UILabel alloc] initWithFrame:CGRectMake(13, 55, SCREEN_WIDTH-40, 15)];
+    [self.view addSubview:resendMessage];
+    
     UIButton *nextButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-67, SCREEN_HEIGHT-133, 54, 52)];
-    [nextButton setImage:[UIImage imageNamed:Image_Next] forState:UIControlStateNormal];
+    [nextButton setImage:[UIImage imageNamed:@"cycleNext"] forState:UIControlStateNormal];
     [self.view addSubview: nextButton];
     [nextButton addTarget:self action:@selector(summitAction) forControlEvents:UIControlEventTouchUpInside];
     UITapGestureRecognizer *tapOnview = [[UITapGestureRecognizer alloc] initWithTarget:self.view action:@selector(endEditing:)];
     [self.view addGestureRecognizer:tapOnview];
+    timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
+    [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
+    resendButton = [[UIButton alloc] initWithFrame:CGRectMake(68, 55, 90, 15)];
+    [resendButton setTitle:@"重新获取验证码" forState:UIControlStateNormal];
+    [resendButton.titleLabel setFont:[UIFont boldSystemFontOfSize:12]];
+    [resendButton setTitleColor:Color_Additional_4 forState:UIControlStateNormal];
+    [resendButton addTarget:self action:@selector(resendCheckCode) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:resendButton];
+    [resendButton setHidden:YES];
 }
--(void)getVerifyCode{
+-(void)updateTime{
+    if (timeCount>0) {
+        [resendButton setHidden:YES];
+         UIFont *font = [UIFont boldSystemFontOfSize:12];
+        NSMutableAttributedString *text = [[NSMutableAttributedString alloc] init];
+        NSString *itemStr = @"没有收到？重新获取验证码 ";
+        NSAttributedString *item = [self formatAttrItem:itemStr color:[UIColor colorWithHexString:@"a8acbb"] font:font];
+        [text appendAttributedString:item];
+        NSString *itemStr1 = [NSString stringWithFormat:@"%d",timeCount];
+        NSAttributedString *item1 = [self formatAttrItem:itemStr1 color:Color_Active_Button_1 font:font];
+        [text appendAttributedString:item1];
+        resendMessage.attributedText = text;
+        timeCount-- ;
+    }else{
+        [timer invalidate];
+        timer = nil;
+        resendMessage.attributedText = nil;
+        [resendMessage setFont:[UIFont boldSystemFontOfSize:12]];
+        [resendMessage setTextColor:[UIColor colorWithHexString:@"a8acbb"]];
+        resendMessage.text = @"没有收到？";
+        [resendButton setHidden:NO];
+    }
+}
+- (void)resendCheckCode{
+    
+    
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_GetVerifiCode]]];
     [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:self.phoneNumber forKey:@"phone"] Method:PostMethod auth:NO];
     __weak ASIHTTPRequest *weakrequest = requestForm;
     [requestForm setCompletionBlock :^{
-         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
         NSLog(@"%@",[weakrequest responseString]);
         NSLog(@"%d",[weakrequest responseStatusCode]);
         if ([weakrequest responseStatusCode] == 200 && [[dic objectForKey:@"result"] boolValue]) {
-            
+            timeCount = 60;
+            timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
         }
     }];
     [requestForm setFailedBlock:^{
@@ -58,9 +102,10 @@
 }
 
 
+
 -(void) summitAction{
-    setNameVc *setname = [[setNameVc alloc] init];
-    [self.navigationController pushViewController:setname animated:YES];
+//    setNameVc *setname = [[setNameVc alloc] init];
+//    [self.navigationController pushViewController:setname animated:YES];
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_register]]];
     NSString *passwordInMD5 = [[NSString stringWithFormat:@"%@Muzzik%@",self.phoneNumber,self.passWord] md5Encrypt];
     
@@ -75,6 +120,8 @@
             user.token = [dic objectForKey:@"token"];
             setNameVc *setname = [[setNameVc alloc] init];
             [self.navigationController pushViewController:setname animated:YES];
+        }else{
+            [MuzzikItem showWarnOnView:self.view text:@"验证码错误"];
         }
     }];
     [requestForm setFailedBlock:^{
@@ -91,7 +138,7 @@
     paragraphStyle.minimumLineHeight = 15.f;
     paragraphStyle.lineHeightMultiple = 20.f;
     
-    NSDictionary *attrDict = @{NSParagraphStyleAttributeName: paragraphStyle,
+    NSDictionary *attrDict = @{
                                NSForegroundColorAttributeName:color,
                                NSFontAttributeName:font};
     NSMutableAttributedString *attrStr = [[NSMutableAttributedString alloc]

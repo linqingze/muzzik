@@ -397,7 +397,7 @@
 }
 -(void)rightBtnAction:(UIButton *)sender{
     if (isChanged ||localImage) {
-        
+        userInfo *user = [userInfo shareClass];
         if (![NameText.text isEqualToString:[_profileDic objectForKey:@"name"]]) {
             ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@%@",BaseURL,URL_check_phone]]];
             [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:NameText.text forKey:@"name"] Method:PostMethod auth:NO];
@@ -454,6 +454,8 @@
                                     [updateImageRequest setCompletionBlock:^{
                                         if ([WeakImageRequest responseStatusCode]==200) {
                                             self.userhome.headimage.image = localImage;
+                                            user.userHeadThumb = localImage;
+                                            user.avatar = [keydic objectForKey:@"key"];
                                             [self.navigationController popViewControllerAnimated:YES];
                                             
                                         }
@@ -530,7 +532,8 @@
                 // [SVProgressHUD showErrorWithStatus:@"network error"];
             }];
             [requestForm startAsynchronous];
-        }else{
+        }
+        else{
             ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@%@",BaseURL,URL_Update_Profile]]];
             NSMutableDictionary *dic= [NSMutableDictionary dictionary];
             [dic setObject:schoolText.text forKey:@"school"];
@@ -575,6 +578,8 @@
                             [updateImageRequest setCompletionBlock:^{
                                 if ([WeakImageRequest responseStatusCode]==200) {
                                     self.userhome.headimage.image = localImage;
+                                    user.userHeadThumb = localImage;
+                                    user.avatar = [keydic objectForKey:@"key"];
                                     [self.navigationController popViewControllerAnimated:YES];
                                     
                                 }

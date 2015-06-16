@@ -20,6 +20,7 @@
 #import "settingSystemVC.h"
 #import "UIImageView+WebCache.m"
 #import "NotificationVC.h"
+#import "UIImageView+WebCache.h"
 @interface AppDelegate ()
 
 @end
@@ -538,43 +539,43 @@
             if ([weakrequest responseStatusCode] == 200) {
                 NSData *data = [weakrequest responseData];
                 NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data  options:NSJSONReadingMutableContainers error:nil];
-                NSDictionary *fileDic = [NSDictionary dictionaryWithObjectsAndKeys:[dic objectForKey:@"_id"],@"_id",[dic objectForKey:@"token"],@"token",[dic objectForKey:@"gender"],@"gender",[dic objectForKey:@"avatar"],@"avatar",[dic objectForKey:@"name"],@"name", nil];
-                [MuzzikItem addMessageToLocal:fileDic];
-                userInfo *user = [userInfo shareClass];
-                user.uid = [dic objectForKey:@"_id"];
-                user.token = [dic objectForKey:@"token"];
-                user.gender = [dic objectForKey:@"gender"];
-                user.avatar = [dic objectForKey:@"avatar"];
-                user.name = [dic objectForKey:@"name"];
-                ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Set_Notify]]];
-                [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:user.deviceToken,@"deviceToken",@"APN",@"type", nil] Method:PostMethod auth:YES];
-                __weak ASIHTTPRequest *weakreq = request;
-                [request setCompletionBlock :^{
-                    NSLog(@"%@",[weakreq responseString]);
-                    NSLog(@"%d",[weakreq responseStatusCode]);
-                    if ([weakreq responseStatusCode] == 200) {
-                        
-                        NSLog(@"register ok");
+                if([[dic objectForKey:@"token"] length]>0){
+                    NSDictionary *fileDic = [NSDictionary dictionaryWithObjectsAndKeys:[dic objectForKey:@"_id"],@"_id",[dic objectForKey:@"token"],@"token",[dic objectForKey:@"gender"],@"gender",[dic objectForKey:@"avatar"],@"avatar",[dic objectForKey:@"name"],@"name", nil];
+                    [MuzzikItem addMessageToLocal:fileDic];
+                    userInfo *user = [userInfo shareClass];
+                    user.uid = [dic objectForKey:@"_id"];
+                    user.token = [dic objectForKey:@"token"];
+                    user.gender = [dic objectForKey:@"gender"];
+                    user.avatar = [dic objectForKey:@"avatar"];
+                    user.name = [dic objectForKey:@"name"];
+                    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Set_Notify]]];
+                    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:user.deviceToken,@"deviceToken",@"APN",@"type", nil] Method:PostMethod auth:YES];
+                    __weak ASIHTTPRequest *weakreq = request;
+                    [request setCompletionBlock :^{
+                        NSLog(@"%@",[weakreq responseString]);
+                        NSLog(@"%d",[weakreq responseStatusCode]);
+                        if ([weakreq responseStatusCode] == 200) {
+                            
+                            NSLog(@"register ok");
+                        }
+                        else{
+                            //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+                        }
+                    }];
+                    [request setFailedBlock:^{
+                        NSLog(@"%@",[weakreq error]);
+                    }];
+                    [request startAsynchronous];
+                    UINavigationController *nac = (UINavigationController *)self.window.rootViewController;
+                    UIViewController *vc  = [nac.viewControllers lastObject];
+                    if ([vc isKindOfClass:[settingSystemVC class]]) {
+                        settingSystemVC *settingvc = (settingSystemVC*)vc;
+                        [settingvc reloadTable];
+                        [nac popViewControllerAnimated:YES];
+                    }else {
+                        [nac popViewControllerAnimated:YES];
                     }
-                    else{
-                        //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-                    }
-                }];
-                [request setFailedBlock:^{
-                    NSLog(@"%@",[weakreq error]);
-                }];
-                [request startAsynchronous];
-                UINavigationController *nac = (UINavigationController *)self.window.rootViewController;
-                UIViewController *vc  = [nac.viewControllers lastObject];
-                if ([vc isKindOfClass:[settingSystemVC class]]) {
-                    settingSystemVC *settingvc = (settingSystemVC*)vc;
-                    [settingvc reloadTable];
-                     [nac popViewControllerAnimated:YES];
-                }else {
-                     [nac popViewControllerAnimated:YES];
                 }
-               
-        
             }
         }];
         [requestForm setFailedBlock:^{
@@ -646,7 +647,8 @@
     user.QQInstalled = [QQApi isQQInstalled];
 }
 -(void)loadData{
-    
+    userInfo *user = [userInfo shareClass];
+
     ASIHTTPRequest *requestsquare = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_Trending]]];
     [requestsquare addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:@"20" forKey:Parameter_Limit] Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequestsquare = requestsquare;
@@ -678,7 +680,7 @@
     [requestsquare setFailedBlock:^{
         NSLog(@"%@,%@",[weakrequestsquare error],[weakrequestsquare responseString]);
     }];
-    [requestsquare startAsynchronous];
+    [requestsquare startSynchronous];
     
     
     
@@ -699,10 +701,8 @@
     [request setFailedBlock:^{
         NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
     }];
-    [request startAsynchronous];
+    [request startSynchronous];
     
-    
-    userInfo *user = [userInfo shareClass];
     if ([user.token length]>0) {
         ASIHTTPRequest *requestOwn = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@/muzziks",BaseURL,user.uid]]];
         [requestOwn addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:30],Parameter_Limit ,nil] Method:GetMethod auth:YES];
@@ -720,7 +720,7 @@
             [requestOwn setFailedBlock:^{
                 NSLog(@"%@",[weakrequestOwn error]);
             }];
-            [requestOwn startAsynchronous];
+            [requestOwn startSynchronous];
         
         ASIHTTPRequest *requestfollow = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/feeds",BaseURL]]];
         [requestfollow addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:30] forKey:Parameter_Limit] Method:GetMethod auth:YES];
@@ -738,7 +738,7 @@
         [requestfollow setFailedBlock:^{
             NSLog(@"%@,%@",[weakrequestfollow error],[weakrequestfollow responseString]);
         }];
-        [requestfollow startAsynchronous];
+        [requestfollow startSynchronous];
         
         ASIHTTPRequest *requestmove = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/movedMuzzik",BaseURL]]];
         [requestmove addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:30] forKey:Parameter_Limit] Method:GetMethod auth:YES];
@@ -756,9 +756,18 @@
         [requestmove setFailedBlock:^{
             NSLog(@"%@,%@",[weakrequestmove error],[weakrequestmove responseString]);
         }];
-        [requestmove startAsynchronous];
+        [requestmove startSynchronous];
     }
-    
+    NSLog(@"%@",[NSString stringWithFormat:@"%@%@",BaseURL_image,user.avatar]);
+    // 2.构建网络URL对象, NSURL
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,user.avatar]];
+    // 3.创建网络请求
+    NSURLRequest *requestimage = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:10];
+    // 创建同步链接
+    NSURLResponse *response = nil;
+    NSError *error = nil;
+    NSData *data = [NSURLConnection sendSynchronousRequest:requestimage returningResponse:&response error:&error];
+    user.userHeadThumb = [UIImage imageWithData:data];
     
     
 }

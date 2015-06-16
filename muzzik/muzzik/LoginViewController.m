@@ -302,10 +302,16 @@
             }];
             [requestForm startAsynchronous];
             [self.navigationController popViewControllerAnimated:YES];
+        }else{
+            if ([weakrequest responseStatusCode] == 400) {
+                [MuzzikItem showNotifyOnView:self.view text:@"请输入正确的手机号"];
+            }else{
+                 [MuzzikItem showNotifyOnView:self.view text:@"账号密码错误"];
+            }
         }
     }];
     [requestForm setFailedBlock:^{
-        loginButton.userInteractionEnabled = NO;
+        loginButton.userInteractionEnabled = YES;
         NSLog(@"%@    %@   %@",[weakrequest responseString],[weakrequest responseHeaders],[weakrequest responseCookies]);
         // [SVProgressHUD showErrorWithStatus:@"network error"];
     }];

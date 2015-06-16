@@ -16,7 +16,6 @@
     UITextField *passwordText;
     BOOL isOk;
     UIButton *visibleButton;
-    UILabel *tipsLabel;
 }
 
 @end
@@ -77,13 +76,8 @@
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickProtol)];
     [tapview addGestureRecognizer:tap];
     [self.view addSubview:tapview];
-    
-    tipsLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 125, SCREEN_WIDTH-30, 20)];
-    tipsLabel.font = [UIFont boldSystemFontOfSize:12];
-    [tipsLabel setTextColor:[UIColor colorWithHexString:@"f26a3d"]];
-    [self.view addSubview:tipsLabel];
     UIButton *nextButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-67, SCREEN_HEIGHT-133, 54, 52)];
-    [nextButton setImage:[UIImage imageNamed:Image_Next] forState:UIControlStateNormal];
+    [nextButton setImage:[UIImage imageNamed:@"cycleNext"] forState:UIControlStateNormal];
     [self.view addSubview: nextButton];
     [nextButton addTarget:self action:@selector(checkAction) forControlEvents:UIControlEventTouchUpInside];
     UITapGestureRecognizer *tapOnview = [[UITapGestureRecognizer alloc] initWithTarget:self.view action:@selector(endEditing:)];
@@ -102,29 +96,6 @@
     }
     else{
         [visibleButton setHidden:YES];
-    }
-}
--(void)textFieldDidEndEditing:(UITextField *)textField{
-    if (textField == phoneText && [textField.text length]>0) {
-        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_check_phone]]];
-        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:phoneText.text forKey:@"phone"] Method:PostMethod auth:NO];
-        __weak ASIHTTPRequest *weakrequest = requestForm;
-        [requestForm setCompletionBlock :^{
-            NSLog(@"%@",[weakrequest responseString]);
-            NSLog(@"%d",[weakrequest responseStatusCode]);
-             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
-            if ([weakrequest responseStatusCode] == 200 && [[dic objectForKey:@"result"] boolValue]) {
-                isOk = YES;
-            }else{
-                [MuzzikItem showView:tipsLabel Text:@"手机号已被注册"];
-                
-                isOk = NO;
-            }
-        }];
-        [requestForm setFailedBlock:^{
-           // [SVProgressHUD showErrorWithStatus:@"network error"];
-        }];
-        [requestForm startAsynchronous];
     }
 }
 -(BOOL)textFieldShouldReturn:(UITextField *)textField{
@@ -148,32 +119,66 @@
     [self.navigationController pushViewController:teach animated:YES];
 }
 -(void)checkAction{
-    if (isOk) {
-        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@%@",BaseURL,URL_GetVerifiCode]]];
-        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:phoneText.text forKey:@"phone"] Method:PostMethod auth:NO];
-        __weak ASIHTTPRequest *weakrequest = requestForm;
-        [requestForm setCompletionBlock :^{
-            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
-            NSLog(@"%@",[weakrequest responseString]);
-            NSLog(@"%d",[weakrequest responseStatusCode]);
-            if ([weakrequest responseStatusCode] == 200 && [[dic objectForKey:@"result"] boolValue]) {
-                checkVerifyCode *checkVc = [[checkVerifyCode alloc] init];
-                checkVc.phoneNumber = phoneText.text;
-                checkVc.passWord = passwordText.text;
-                
-                [self.navigationController pushViewController:checkVc animated:YES];
-            }
-        }];
-        [requestForm setFailedBlock:^{
-            // [SVProgressHUD showErrorWithStatus:@"network error"];
-        }];
-        [requestForm startAsynchronous];
-    }
-    else{
-        [[[AFViewShaker alloc] initWithView:phoneText] shake];
-    }
+//    checkVerifyCode *checkVc = [[checkVerifyCode alloc] init];
+//    checkVc.phoneNumber = phoneText.text;
+//    checkVc.passWord = passwordText.text;
+//    
+//    [self.navigationController pushViewController:checkVc animated:YES];
+    if ([phoneText.text length]>0) {
+        if ([passwordText.text length]<6 ||[passwordText.text length]>16) {
+            [[[AFViewShaker alloc] initWithView:passwordText] shake];
+            [MuzzikItem showWarnOnView:self.view text:@"密码必须是由6至16位数字字母组成的"];
+        }else{
+            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_check_phone]]];
+            [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:phoneText.text forKey:@"phone"] Method:PostMethod auth:NO];
+            __weak ASIHTTPRequest *weakrequest = requestForm;
+            [requestForm setCompletionBlock :^{
+                NSLog(@"%@",[weakrequest responseString]);
+                NSLog(@"%d",[weakrequest responseStatusCode]);
+                NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
+                if ([weakrequest responseStatusCode] == 200 && [[dic objectForKey:@"result"] boolValue]) {
+                    
+                    ASIHTTPRequest *requestForm1 = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@%@",BaseURL,URL_GetVerifiCode]]];
+                    [requestForm1 addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:phoneText.text forKey:@"phone"] Method:PostMethod auth:NO];
+                    __weak ASIHTTPRequest *weakrequest1 = requestForm1;
+                    [requestForm1 setCompletionBlock :^{
+                        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest1 responseData] options:NSJSONReadingMutableContainers error:nil];
 
+                        if ([weakrequest1 responseStatusCode] == 200 && [[dic objectForKey:@"result"] boolValue]) {
+                            checkVerifyCode *checkVc = [[checkVerifyCode alloc] init];
+                            checkVc.phoneNumber = phoneText.text;
+                            checkVc.passWord = passwordText.text;
+                            
+                            [self.navigationController pushViewController:checkVc animated:YES];
+                        }else if ([weakrequest1 responseStatusCode] == 400 && [[dic allKeys] containsObject:@"error"] && [[dic objectForKey:@"error"] isEqualToString:@"phone number not support for sms services"]){
+                            [[[AFViewShaker alloc] initWithView:phoneText] shake];
+                            [MuzzikItem showWarnOnView:self.view text:@"该手机号码不支持短息服务"];
+                        }
+                    }];
+                    [requestForm1 setFailedBlock:^{
+                        // [SVProgressHUD showErrorWithStatus:@"network error"];
+                    }];
+                    [requestForm1 startAsynchronous];
+                    
+                }else if([weakrequest responseStatusCode] == 409){
+                    [MuzzikItem showWarnOnView:self.view text:@"该手机号已被注册"];
+                    [[[AFViewShaker alloc] initWithView:phoneText] shake];
+                    isOk = NO;
+                }
+            }];
+            [requestForm setFailedBlock:^{
+                // [SVProgressHUD showErrorWithStatus:@"network error"];
+            }];
+            [requestForm startAsynchronous];
+        }
+        
+    }else{
+        [[[AFViewShaker alloc] initWithView:phoneText] shake];
+        [MuzzikItem showWarnOnView:self.view text:@"手机号码不能为空"];
+    }
     
+    
+       
 }
 
 

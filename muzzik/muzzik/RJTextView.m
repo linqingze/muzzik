@@ -42,6 +42,7 @@
     CGPoint beginningCenter;
     BOOL allowPan;
     CGRect beginBounds;
+    CAShapeLayer *border;
 }
 @property (assign, nonatomic) BOOL        isEditting;
 
@@ -143,6 +144,7 @@
         #endif
         
         [self centerTextVertically];
+       
     }
     return self;
 }
@@ -152,7 +154,7 @@
     CTextView *textView = [[CTextView alloc] initWithFrame:frame];
     
     textView.scrollEnabled = NO; [textView setDelegate:self];
-    textView.keyboardType  = UIKeyboardTypeASCIICapable;
+    //textView.keyboardType  = UIKeyboardTypeASCIICapable;
     textView.returnKeyType = UIReturnKeyDone;
     textView.textAlignment = NSTextAlignmentCenter;
     //textView.selectable = NO;
@@ -172,6 +174,12 @@
     }
     
     [self setTextView:textView];
+    
+    border = [CAShapeLayer layer];
+    border.strokeColor = [UIColor redColor].CGColor;
+    border.fillColor = nil;
+    border.lineDashPattern = @[@4, @3];
+    [_textView.layer addSublayer:border];
 }
 
 - (void)layoutSubViewWithFrame:(CGRect)frame
@@ -185,8 +193,9 @@
     tRect.origin.y = (self.frame.size.height-tRect.size.height)/2.;
     
     [self.textView setFrame:tRect];
-
-    [self.closeButton setFrame:CGRectMake(0, self.frame.size.height-PEN_ICON_SIZE,
+    border.path = [UIBezierPath bezierPathWithRect:_textView.bounds].CGPath;
+    border.frame = _textView.bounds;
+    [self.closeButton setFrame:CGRectMake(0, 0,
                                          PEN_ICON_SIZE, PEN_ICON_SIZE)];
     [self.scaleView  setFrame:CGRectMake(self.frame.size.width-PEN_ICON_SIZE,
                                          0, PEN_ICON_SIZE, PEN_ICON_SIZE)];
@@ -271,7 +280,7 @@
 {
     [self.closeButton setHidden:YES];
     [self.scaleView  setHidden:YES];
-    
+    [border removeFromSuperlayer];
     [self endEditing:YES]; self.isEditting = NO;    
     self.hideView = YES; [self setNeedsDisplay];
 }
@@ -280,7 +289,11 @@
 {
     [self.closeButton setHidden:NO];
     [self.scaleView  setHidden:NO];
+
+    [_textView.layer addSublayer:border];
+
     
+
     self.hideView = NO;  [self setNeedsDisplay];
 }
 
@@ -583,24 +596,24 @@
 //    #endif
 }
 
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    
-    CGContextSetRGBStrokeColor(context, 1, 1, 1, !_hideView);
-    CGContextSetLineWidth(context, EDIT_BOX_LINE);
-    
-    CGRect drawRect       = self.textView.frame;
-    drawRect.size.width  += EDIT_BOX_LINE;
-    drawRect.size.height += EDIT_BOX_LINE;
-    drawRect.origin.x     = (self.frame.size.width-drawRect.size.width)/2.f;
-    drawRect.origin.y     = (self.frame.size.height-drawRect.size.height)/2.f;
-
-    CGContextAddRect(context, drawRect);
-    
-    CGContextStrokePath(context);
-}
+//- (void)drawRect:(CGRect)rect
+//{
+//    // Drawing code
+//    CGContextRef context = UIGraphicsGetCurrentContext();
+//    
+//    CGContextSetRGBStrokeColor(context, 1, 1, 1, !_hideView);
+//    CGContextSetLineWidth(context, EDIT_BOX_LINE);
+//    
+//    CGRect drawRect       = self.textView.frame;
+//    drawRect.size.width  += EDIT_BOX_LINE;
+//    drawRect.size.height += EDIT_BOX_LINE;
+//    drawRect.origin.x     = (self.frame.size.width-drawRect.size.width)/2.f;
+//    drawRect.origin.y     = (self.frame.size.height-drawRect.size.height)/2.f;
+//
+//    CGContextAddRect(context, drawRect);
+//    
+//    CGContextStrokePath(context);
+//}
 
 
 @end
