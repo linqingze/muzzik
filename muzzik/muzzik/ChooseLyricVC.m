@@ -67,7 +67,9 @@
             }
         }
     }
-    famousArray = @[@"此歌代表我的心",@"空气中的旋律，也是我对你的思念",@"爱在左，情在右，我在中间来回跑，只因有你",@"呼啦啦",@"Muzzik",@"I Need You",@"My name is "];
+    NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"popWords" ofType:@"plist"];
+
+    famousArray = [NSArray arrayWithContentsOfFile:plistPath];
     //    [self.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(touchOutside:)]];
     headImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
     headImage.contentMode = UIViewContentModeScaleAspectFit;

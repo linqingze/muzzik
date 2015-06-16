@@ -226,6 +226,7 @@
 		F2FBE8FA1AFB55F30070831D /* MuzzikTableVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2FBE8F91AFB55F30070831D /* MuzzikTableVC.m */; };
 		F2FBE8FD1AFB56C50070831D /* CommentTableVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2FBE8FC1AFB56C50070831D /* CommentTableVC.m */; };
 		F2FBE9031AFBBE6B0070831D /* ClassifySelectionVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2FBE9021AFBBE6B0070831D /* ClassifySelectionVC.m */; };
+		F2FD3B061B30617F001B2332 /* popWords.plist in Resources */ = {isa = PBXBuildFile; fileRef = F2FD3B051B30617F001B2332 /* popWords.plist */; };
 		F2FF11001B0A138A0022A57D /* NotifyMuzzikCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2FF10FF1B0A138A0022A57D /* NotifyMuzzikCell.m */; };
 /* End PBXBuildFile section */
 
@@ -457,7 +458,6 @@
 		F200B7AB1B2ABF6E002A6F61 /* Copperplate_00.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Copperplate_00.ttf; sourceTree = "<group>"; };
 		F200B7AD1B2AC7F6002A6F61 /* FeedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedViewController.h; sourceTree = "<group>"; };
 		F200B7AE1B2AC7F6002A6F61 /* FeedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedViewController.m; sourceTree = "<group>"; };
-		F200B7B01B2CEFF7002A6F61 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		F200B7B31B2D42D5002A6F61 /* FeedBackVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedBackVC.h; sourceTree = "<group>"; };
 		F200B7B41B2D42D5002A6F61 /* FeedBackVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedBackVC.m; sourceTree = "<group>"; };
 		F208EF491B1E1D2E00DB5A68 /* RJTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RJTextView.h; sourceTree = "<group>"; };
@@ -686,6 +686,7 @@
 		F2FBE8FC1AFB56C50070831D /* CommentTableVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentTableVC.m; sourceTree = "<group>"; };
 		F2FBE9011AFBBE6B0070831D /* ClassifySelectionVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClassifySelectionVC.h; sourceTree = "<group>"; };
 		F2FBE9021AFBBE6B0070831D /* ClassifySelectionVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClassifySelectionVC.m; sourceTree = "<group>"; };
+		F2FD3B051B30617F001B2332 /* popWords.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = popWords.plist; sourceTree = "<group>"; };
 		F2FF10FE1B0A138A0022A57D /* NotifyMuzzikCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotifyMuzzikCell.h; sourceTree = "<group>"; };
 		F2FF10FF1B0A138A0022A57D /* NotifyMuzzikCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotifyMuzzikCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -732,7 +733,6 @@
 		E11245E91AAAAE4B0014D461 = {
 			isa = PBXGroup;
 			children = (
-				F200B7B01B2CEFF7002A6F61 /* StoreKit.framework */,
 				F208EF4C1B1F783A00DB5A68 /* CoreText.framework */,
 				E112461C1AAAB0D10014D461 /* Framework */,
 				E11245F41AAAAE4B0014D461 /* muzzik */,
@@ -792,6 +792,7 @@
 				E167163C1AAED0990068AE98 /* localizable.strings */,
 				E16716351AAECF720068AE98 /* InfoPilst.strings */,
 				E11245F71AAAAE4B0014D461 /* main.m */,
+				F2FD3B051B30617F001B2332 /* popWords.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -1650,6 +1651,7 @@
 				E11246061AAAAE4B0014D461 /* LaunchScreen.xib in Resources */,
 				F2E558A71B164D420080F9C9 /* MJRefresh.bundle in Resources */,
 				F208EF511B1F7D5500DB5A68 /* kilsonburg.ttf in Resources */,
+				F2FD3B061B30617F001B2332 /* popWords.plist in Resources */,
 				E167163A1AAED0990068AE98 /* localizable.strings in Resources */,
 				F2F0FC8D1ADD8B7100668103 /* TeachViewController.xib in Resources */,
 				E1E857B11ABD6EC2006B1BA6 /* WeiboSDK.bundle in Resources */,
