@@ -9,7 +9,9 @@
 #import "UserMuzzikVC.h"
 #import "MuzzikTableVC.h"
 #import "CommentTableVC.h"
-@interface UserMuzzikVC()<baseDelegate, baseDataSource>
+@interface UserMuzzikVC()<baseDelegate, baseDataSource>{
+    UIView *lineView;
+}
 
 @end
 
@@ -25,13 +27,23 @@
     }
     
     [super viewDidLoad];
-    //[MuzzikItem addLineOnView:self.navigationController.view heightPoint:64 toLeft:0 toRight:0 withColor:Color_NavigationBar];
+    lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 64, SCREEN_WIDTH, 1)];
+    [lineView setBackgroundColor:Color_NavigationBar];
     [self.view setBackgroundColor:Color_NavigationBar];
-    [self initNagationBar:@"我的Muzzik" leftBtn:Constant_backImage rightBtn:Constant_searchImage];
+    [self initNagationBar:@"我的Muzzik" leftBtn:Constant_backImage rightBtn:0];
     // Do any additional setup after loading the view.
 }
 - (NSUInteger)numberOfTabsForViewPager:(ScrollVCBase *)viewPager {
     return 2;
+}
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self.navigationController.view addSubview:lineView];
+    
+}
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    [lineView removeFromSuperview];
 }
 - (UIView *)viewPager:(ScrollVCBase *)viewPager viewForTabAtIndex:(NSUInteger)index {
     

@@ -30,11 +30,11 @@
     //    _userImage.layer.borderColor = [UIColor whiteColor].CGColor;
     //    _userImage.layer.borderWidth = 2.0f;
     [self addSubview:_userImage];
-    _repostImage = [[UIImageView alloc] initWithFrame:CGRectMake(66, 36, 8, 8)];
+    _repostImage = [[UIImageView alloc] initWithFrame:CGRectMake(66, 39, 8, 8)];
     [self addSubview:_repostImage];
-    _repostUserName = [[UILabel alloc] initWithFrame:CGRectMake(80, 35, 150, 10)];
+    _repostUserName = [[UILabel alloc] initWithFrame:CGRectMake(80, 38, 150, 10)];
     [_repostUserName setTextColor:Color_Additional_5];
-    [_repostUserName setFont:[UIFont fontWithName:Font_Next_DemiBold size:8]];
+    [_repostUserName setFont:[UIFont fontWithName:Font_Next_DemiBold size:9]];
     [self addSubview:_repostUserName];
     
     _songModel = [muzzik new];
@@ -49,34 +49,34 @@
     
     _userName = [[UILabel alloc] initWithFrame:CGRectMake(80, 55, 180, 20)];
     //  [_userName setTextColor:Color_LightGray];
-    [_userName setFont:[UIFont fontWithName:Font_Next_DemiBold size:15]];
+    [_userName setFont:[UIFont fontWithName:Font_Next_DemiBold size:Font_size_userName]];
     [_userName setTextColor:Color_Text_1];
     [self.contentView addSubview:_userName];
     _muzzikMessage = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake( 80, 83, SCREEN_WIDTH-110, 2000)];
     [_muzzikMessage setTextColor:Color_Text_2];
     [_muzzikMessage setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
     [self.contentView addSubview:_muzzikMessage];
-    _musicPlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 75, SCREEN_WIDTH, (int)145+SCREEN_WIDTH*3/4)];
+    _musicPlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 75, SCREEN_WIDTH, 165+(int)SCREEN_WIDTH*3/4)];
     [self.contentView addSubview:_musicPlayView];
     _progress = [[UIProgressView alloc] initWithFrame:CGRectMake(16, 0, SCREEN_WIDTH-32, 0.5)];
     [_progress setProgress:1];
     [_musicPlayView addSubview:_progress];
-    _musicName = [[UILabel alloc] initWithFrame:CGRectMake(80, 12, SCREEN_WIDTH-150, 20)];
-    [_musicName setFont:[UIFont fontWithName:Font_Next_Bold size:15]];
+    _musicName = [[UILabel alloc] initWithFrame:CGRectMake(80, 15, SCREEN_WIDTH-150, 20)];
+    [_musicName setFont:[UIFont fontWithName:Font_Next_Bold size:16]];
     [_musicPlayView addSubview:_musicName];
-    _musicArtist = [[UILabel alloc] initWithFrame:CGRectMake(80, 31, SCREEN_WIDTH-150, 25)];
-    [_musicArtist setFont:[UIFont fontWithName:Font_Next_Bold size:12]];
+    _musicArtist = [[UILabel alloc] initWithFrame:CGRectMake(80, 36, SCREEN_WIDTH-150, 25)];
+    [_musicArtist setFont:[UIFont fontWithName:Font_Next_Bold size:13]];
     [_musicPlayView addSubview:_musicArtist];
-    _likeButton = [[UIButton alloc] initWithFrame:CGRectMake(16, 13, 36, 36)];
+    _likeButton = [[UIButton alloc] initWithFrame:CGRectMake(19, 17, 36, 36)];
     [_likeButton addTarget:self action:@selector(moveAction) forControlEvents:UIControlEventTouchUpInside];
     [_musicPlayView addSubview:_likeButton];
     
-    _playButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-50, 13, 36, 36)];
+    _playButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-53, 17, 36, 36)];
     
     [_playButton addTarget:self action:@selector(playMusicAction:) forControlEvents:UIControlEventTouchUpInside];
     [_musicPlayView addSubview:_playButton];
     
-    _poImage = [[UIImageView alloc] initWithFrame:CGRectMake((int)SCREEN_WIDTH/8, 60, (int)SCREEN_WIDTH*3/4, (int)SCREEN_WIDTH*3/4)];
+    _poImage = [[UIImageView alloc] initWithFrame:CGRectMake((int)SCREEN_WIDTH/8, 70, (int)SCREEN_WIDTH*3/4, (int)SCREEN_WIDTH*3/4)];
     _poImage.layer.cornerRadius = 3;
     _poImage.clipsToBounds = YES;
     [_poImage setImage:[UIImage imageNamed:Image_yellowretweetImage]];
@@ -86,7 +86,7 @@
     [_privateImage setHidden:YES];
     [self addSubview:_privateImage];
     
-    _moves = [[UIButton alloc] initWithFrame:CGRectMake((int)(SCREEN_WIDTH)/8.0, (int)SCREEN_WIDTH*3/4+60, (int)(SCREEN_WIDTH*3)/16.0, 40)];
+    _moves = [[UIButton alloc] initWithFrame:CGRectMake((int)((SCREEN_WIDTH)/8.0), (int)SCREEN_WIDTH*3/4+70, (int)((SCREEN_WIDTH*3)/16.0), 40)];
     [_moves setTitle:@"喜欢数" forState:UIControlStateNormal];
     [_moves setTitleColor:Color_Additional_5 forState:UIControlStateNormal];
     [_moves.titleLabel setFont:[UIFont systemFontOfSize:10]];
@@ -94,7 +94,7 @@
     _moves.titleLabel.textAlignment = NSTextAlignmentCenter;
     [_musicPlayView addSubview:_moves];
     
-    _reposts = [[UIButton alloc] initWithFrame:CGRectMake((int)(SCREEN_WIDTH*5)/16.0, (int)SCREEN_WIDTH*3/4+60, (int)(SCREEN_WIDTH*3)/16.0, 40)];
+    _reposts = [[UIButton alloc] initWithFrame:CGRectMake((int)((SCREEN_WIDTH*5)/16.0), (int)SCREEN_WIDTH*3/4+70, (int)((SCREEN_WIDTH*3)/16.0), 40)];
     [_reposts setTitle:@"转发数" forState:UIControlStateNormal];
     [_reposts setTitleColor:Color_Additional_5 forState:UIControlStateNormal];
     [_reposts.titleLabel setFont:[UIFont systemFontOfSize:10.0]];
@@ -104,7 +104,7 @@
     
 
     
-    _shares = [[UIButton alloc] initWithFrame:CGRectMake((int)SCREEN_WIDTH/2, (int)SCREEN_WIDTH*3/4+60, (int)(SCREEN_WIDTH*3)/16.0, 40)];
+    _shares = [[UIButton alloc] initWithFrame:CGRectMake((int)(SCREEN_WIDTH/2), (int)SCREEN_WIDTH*3/4+70, (int)((SCREEN_WIDTH*3)/16.0), 40)];
     [_shares setTitle:@"分享数" forState:UIControlStateNormal];
     [_shares setTitleColor:Color_Additional_5 forState:UIControlStateNormal];
     [_shares.titleLabel setFont:[UIFont systemFontOfSize:10.0]];
@@ -112,7 +112,7 @@
     _shares.titleLabel.textAlignment = NSTextAlignmentCenter;
     [_musicPlayView addSubview:_shares];
     
-    _comments = [[UIButton alloc] initWithFrame:CGRectMake((int)(SCREEN_WIDTH*11)/16.0, (int)SCREEN_WIDTH*3/4+60, (int)(SCREEN_WIDTH*3)/16.0, 40)];
+    _comments = [[UIButton alloc] initWithFrame:CGRectMake((int)((SCREEN_WIDTH*11)/16.0), (int)SCREEN_WIDTH*3/4+70, (int)((SCREEN_WIDTH*3)/16.0), 40)];
     [_comments setTitle:@"评论数" forState:UIControlStateNormal];
     [_comments setTitleColor:Color_Additional_5 forState:UIControlStateNormal];
     [_comments.titleLabel setFont:[UIFont systemFontOfSize:10.0]];
@@ -122,25 +122,25 @@
     
     
     
-    _downLine = [[UIImageView alloc] initWithFrame:CGRectMake((int)SCREEN_WIDTH/8,SCREEN_WIDTH*3/4+ 100, SCREEN_WIDTH*3/4, 1)];
+    _downLine = [[UIImageView alloc] initWithFrame:CGRectMake((int)SCREEN_WIDTH/8,(int)SCREEN_WIDTH*3/4+ 110, SCREEN_WIDTH*3/4, 1)];
     [_downLine setImage:[UIImage imageNamed:Image_lineImage]];
     [_musicPlayView addSubview:_downLine];
     
-    _repostButton = [[UIButton alloc] initWithFrame:CGRectMake((int)SCREEN_WIDTH/8,(int)SCREEN_WIDTH*3/4+100, (int)SCREEN_WIDTH/4.0, 45)];
+    _repostButton = [[UIButton alloc] initWithFrame:CGRectMake((int)SCREEN_WIDTH/8,_downLine.frame.origin.y, (int)SCREEN_WIDTH/4.0, 55)];
     [_repostButton setImage:[UIImage imageNamed:Image_retweetImage] forState:UIControlStateNormal];
     [_repostButton addTarget:self action:@selector(repostAction) forControlEvents:UIControlEventTouchUpInside];
     [_musicPlayView addSubview:_repostButton];
     //[_repostButton setBackgroundColor:Color_Additional_4];
-    _shareButton = [[UIButton alloc] initWithFrame:CGRectMake((int)SCREEN_WIDTH*3/8,(int)SCREEN_WIDTH*3/4+100,(int) SCREEN_WIDTH/4.0, 45)];
+    _shareButton = [[UIButton alloc] initWithFrame:CGRectMake((int)SCREEN_WIDTH*3/8,_downLine.frame.origin.y,(int) SCREEN_WIDTH/4.0, 55)];
     [_shareButton setImage:[UIImage imageNamed:Image_shareImage] forState:UIControlStateNormal];
     [_shareButton addTarget:self action:@selector(shareAction) forControlEvents:UIControlEventTouchUpInside];
     [_musicPlayView addSubview:_shareButton];
     
-    _commentButton = [[UIButton alloc] initWithFrame:CGRectMake((int)SCREEN_WIDTH*5/8,(int)SCREEN_WIDTH*3/4+100, (int)SCREEN_WIDTH/4.0, 45)];
+    _commentButton = [[UIButton alloc] initWithFrame:CGRectMake((int)SCREEN_WIDTH*5/8,_downLine.frame.origin.y, (int)SCREEN_WIDTH/4.0, 55)];
     [_commentButton setImage:[UIImage imageNamed:Image_replyImage] forState:UIControlStateNormal];
     [_commentButton addTarget:self action:@selector(commentAction) forControlEvents:UIControlEventTouchUpInside];
     [_musicPlayView addSubview:_commentButton];
-    [MuzzikItem addLineOnView:_musicPlayView heightPoint:SCREEN_WIDTH*3/4+144 toLeft:16 toRight:16 withColor:Color_line_1];
+    [MuzzikItem addLineOnView:_musicPlayView heightPoint:_downLine.frame.origin.y+54 toLeft:16 toRight:16 withColor:Color_line_1];
 }
 -(void)downloadMusicAction:(id)sender{
     NSLog(@"download");

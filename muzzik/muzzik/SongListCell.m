@@ -23,30 +23,30 @@
 -(void)setup{
     [self setBackgroundColor:[UIColor whiteColor]];
     [self setSelectionStyle:UITableViewCellSelectionStyleNone];
-    self.timeImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 33, 60)];
+    self.timeImage = [[UIImageView alloc] initWithFrame:CGRectMake(10, 0, 33, 60)];
     [self addSubview:self.timeImage];
-    self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(4, 25, 20, 10)];
+    self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(14, 25, 20, 10)];
     self.timeLabel.textColor = [UIColor whiteColor];
     [self.timeLabel setFont:[UIFont systemFontOfSize:7]];
     [self addSubview:self.timeLabel];
-    self.songName = [[UILabel alloc] initWithFrame:CGRectMake(60, 8, SCREEN_WIDTH-150, 20)];
+    self.songName = [[UILabel alloc] initWithFrame:CGRectMake(60, 10, SCREEN_WIDTH-150, 20)];
     [self.songName setFont:[UIFont fontWithName:Font_Next_Bold size:14]];
     [self.songName setTextColor:[UIColor colorWithHexString:@"777777"]];
     [self addSubview:self.songName];
-    self.Artist = [[UILabel alloc] initWithFrame:CGRectMake(60, 30, SCREEN_WIDTH-150, 20)];
+    self.Artist = [[UILabel alloc] initWithFrame:CGRectMake(60, 32, SCREEN_WIDTH-150, 20)];
     [self.Artist setFont:[UIFont fontWithName:Font_Next_DemiBold size:12]];
     [self.Artist setTextColor:[UIColor colorWithHexString:@"999999"]];
     [self addSubview:self.Artist];
-    self.playButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-53, 0, 40, 50)];
+    self.playButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-53, 0, 40, 60)];
     [self.playButton setImage:[UIImage imageNamed:Image_PlayerplayImage] forState:UIControlStateNormal];
     [self.playButton addTarget:self action:@selector(playAction) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.playButton];
     
-    self.CommentButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-93, 0, 40, 50)];
+    self.CommentButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-93, 0, 40, 60)];
     [self.CommentButton setImage:[UIImage imageNamed:Image_replyImage] forState:UIControlStateNormal];
     [self.CommentButton addTarget:self action:@selector(CommentAction) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.CommentButton];
-    [MuzzikItem addLineOnView:self heightPoint:59 toLeft:13 toRight:13 withColor:Color_underLine];
+    [MuzzikItem addLineOnView:self heightPoint:59 toLeft:60 toRight:13 withColor:Color_underLine];
     
 }
 

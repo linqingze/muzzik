@@ -13,7 +13,6 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "AudioPlayer.h"
 #import "ASIHTTPRequest.h"
-#import "FMDatabase.h"
 #import "Reachability.h"
 static NSMutableArray *playList;
 @interface musicPlayer()<RFRadioViewDelegate>{
@@ -36,14 +35,14 @@ static NSMutableArray *playList;
     _radioView = [[RFRadioView alloc] initWithFrame:CGRectMake(0,0,SCREEN_WIDTH,64)];
     _radioView.delegate = self;
     self.playModel = 0;
-    NSFileManager *fileMgr = [NSFileManager defaultManager];
-    NSString *dbPath = [DocumentsPath stringByAppendingPathComponent:@"myDataBase"];
-    NSLog(@"%@",dbPath);
+//    NSFileManager *fileMgr = [NSFileManager defaultManager];
+//    NSString *dbPath = [DocumentsPath stringByAppendingPathComponent:@"myDataBase"];
+//    NSLog(@"%@",dbPath);
     
-    if (![fileMgr fileExistsAtPath:dbPath]) {
-        NSString *srcPath = [[NSBundle mainBundle] pathForResource:@"myDataBase" ofType:@"db"];
-        [fileMgr copyItemAtPath:srcPath toPath:dbPath error:NULL];
-    }
+//    if (![fileMgr fileExistsAtPath:dbPath]) {
+//        NSString *srcPath = [[NSBundle mainBundle] pathForResource:@"myDataBase" ofType:@"db"];
+//        [fileMgr copyItemAtPath:srcPath toPath:dbPath error:NULL];
+//    }
     return self;
 }
 +(id)allocWithZone:(NSZone *)zone{

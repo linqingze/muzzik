@@ -267,60 +267,53 @@
 
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(75, 0, SCREEN_WIDTH-110, 500)];
+    
     muzzik *tempMuzzik = [TopicArray objectAtIndex:indexPath.row];
-    [label setText:tempMuzzik.message];
-    CGFloat textHeight = [MuzzikItem heightForLabel:label WithText:label.text];
-    if (textHeight>limitHeight) {
-        if ([tempMuzzik.image length]>0) {
-            if ([tempMuzzik.type isEqualToString:@"normal"] ||[tempMuzzik.type isEqualToString:@"repost"]) {
-                return (int)(240+limitHeight+SCREEN_WIDTH*3/4);
-            }else if([tempMuzzik.type isEqualToString:@"muzzikCard"]){
-                return SCREEN_WIDTH*9/8+textHeight+36;
-            }else if ([tempMuzzik.type isEqualToString:@"userCard"] ){
-                return limitHeight;
-            }else {
-                return limitHeight;
+    
+    
+    if ([tempMuzzik.type isEqualToString:@"normal"] ||[tempMuzzik.type isEqualToString:@"repost"]) {
+        
+        TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(75, 0, SCREEN_WIDTH-110, 500)];
+        [label setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
+        [label setText:tempMuzzik.message];
+        CGFloat textHeight = [MuzzikItem heightForLabel:label WithText:label.text];
+        if (textHeight>limitHeight) {
+            if ([tempMuzzik.image length]>0) {
+                return (int)(260+limitHeight+SCREEN_WIDTH*3/4)+10;
+            }else{
+                return 260+limitHeight;
             }
-        }
-        else{
-            if ([tempMuzzik.type isEqualToString:@"normal"] ||[tempMuzzik.type isEqualToString:@"repost"]) {
-                return 240+limitHeight;
-            }else if([tempMuzzik.type isEqualToString:@"muzzikCard"]){
-                return limitHeight;
-            }else if ([tempMuzzik.type isEqualToString:@"userCard"] ){
-                return limitHeight;
-            }else {
-                return limitHeight;
+            
+        }else{
+            if ([tempMuzzik.image length]>0) {
+                return (int)(260+textHeight+SCREEN_WIDTH*3/4);
+            }else{
+                return 260+(int)textHeight;
             }
         }
     }else{
-        if ([tempMuzzik.image length]>0) {
-            if ([tempMuzzik.type isEqualToString:@"normal"] ||[tempMuzzik.type isEqualToString:@"repost"]) {
-                return (int)(240+textHeight+SCREEN_WIDTH*3/4)+10;
-            }else if([tempMuzzik.type isEqualToString:@"muzzikCard"]){
-                return SCREEN_WIDTH*9/8+textHeight+36;
-            }else if ([tempMuzzik.type isEqualToString:@"userCard"] ){
-                return limitHeight;
-            }else {
-                return limitHeight;
+        TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(75, 0, SCREEN_WIDTH-96, 500)];
+        [label setText:tempMuzzik.message];
+        [label setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
+        CGFloat textHeight = [MuzzikItem heightForLabel:label WithText:label.text];
+        if (textHeight>limitHeight) {
+            if ([tempMuzzik.image length]>0) {
+                return SCREEN_WIDTH+limitHeight+80;
+            }else{
+                return limitHeight+190;
             }
         }
         else{
-            if ([tempMuzzik.type isEqualToString:@"normal"] ||[tempMuzzik.type isEqualToString:@"repost"]) {
-                return (int)(240+textHeight);
-            }else if([tempMuzzik.type isEqualToString:@"muzzikCard"]){
-                return limitHeight;
-            }else if ([tempMuzzik.type isEqualToString:@"userCard"] ){
-                return limitHeight;
-            }else {
-                return limitHeight;
+            if ([tempMuzzik.image length]>0) {
+                return (int)(SCREEN_WIDTH+textHeight+80);
+            }else{
+                return textHeight+190;
             }
+            
         }
     }
     
 }
-
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
     if ([TopicArray[indexPath.row] isKindOfClass:[muzzik class]]) {
@@ -328,6 +321,7 @@
         DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
         detail.localmuzzik = tempMuzzik;
         [self.navigationController pushViewController:detail animated:YES];
+        
     }
 }
 
@@ -338,7 +332,7 @@
     if ([tempMuzzik.image length] == 0) {
         if ([tempMuzzik.type isEqualToString:@"repost"] ){
             NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
-            cell.songModel = tempMuzzik;
+            cell.songModel = [TopicArray objectAtIndex:indexPath.row];
             if ([tempMuzzik.muzzik_id isEqualToString:[musicPlayer shareClass].localMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                 cell.isPlaying = YES;
             }else{
@@ -354,6 +348,7 @@
                 }];
                 
             }];
+            
             cell.userName.text = tempMuzzik.MuzzikUser.name;
             [cell.repostImage setHidden:NO];
             cell.repostUserName.text = tempMuzzik.reposter.name;
@@ -402,7 +397,8 @@
                 [cell.shares setTitle:@"分享数" forState:UIControlStateNormal];
             }
             return  cell;
-        }else if([tempMuzzik.type isEqualToString:@"normal"]){
+        }
+        else if([tempMuzzik.type isEqualToString:@"normal"]){
             NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
             cell.songModel = [TopicArray objectAtIndex:indexPath.row];
             if ([tempMuzzik.muzzik_id isEqualToString:[musicPlayer shareClass].localMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
@@ -422,13 +418,15 @@
             }];
             
             cell.userName.text = tempMuzzik.MuzzikUser.name;
-            [cell.userName sizeToFit];
-            [cell.privateImage setFrame:CGRectMake(cell.userName.frame.origin.x+cell.userName.frame.size.width+5, cell.userName.frame.origin.y, 20, 20)];
             if (tempMuzzik.isprivate ) {
                 [cell.privateImage setHidden:NO];
+                [cell.userName sizeToFit];
+                [cell.privateImage setFrame:CGRectMake(cell.userName.frame.origin.x+cell.userName.frame.size.width+5, cell.userName.frame.origin.y, 20, 20)];
             }else{
                 [cell.privateImage setHidden:YES];
+                [cell.userName setFrame:CGRectMake(80, 55, SCREEN_WIDTH-120, 20)];
             }
+            
             cell.repostUserName.text = @"";
             [cell.repostImage setHidden:YES];
             cell.repostUserName.text = tempMuzzik.reposter.name;
@@ -477,7 +475,8 @@
                 [cell.shares setTitle:@"分享数" forState:UIControlStateNormal];
             }
             return  cell;
-        }else{
+        }
+        else{
             return nil;
         }
     }else{
@@ -554,9 +553,10 @@
                 [cell.shares setTitle:@"分享数" forState:UIControlStateNormal];
             }
             return  cell;
-        }else if([tempMuzzik.type isEqualToString:@"normal"]){
+        }
+        else if([tempMuzzik.type isEqualToString:@"normal"]){
             NormalNoCardCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalNoCardCell" forIndexPath:indexPath];
-            cell.songModel = tempMuzzik;
+            cell.songModel = [TopicArray objectAtIndex:indexPath.row];
             if ([tempMuzzik.muzzik_id isEqualToString:[musicPlayer shareClass].localMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                 cell.isPlaying = YES;
             }else{
@@ -573,6 +573,7 @@
                 }];
                 
             }];
+            
             //[cell.poImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempMuzzik.image]]];
             [cell.poImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/600/h/600",BaseURL_image,tempMuzzik.image]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                 [UIView animateWithDuration:0.5 animations:^{
@@ -580,12 +581,13 @@
                 }];
             }];
             cell.userName.text = tempMuzzik.MuzzikUser.name;
-            [cell.userName sizeToFit];
-            [cell.privateImage setFrame:CGRectMake(cell.userName.frame.origin.x+cell.userName.frame.size.width+5, cell.userName.frame.origin.y, 20, 20)];
             if (tempMuzzik.isprivate ) {
                 [cell.privateImage setHidden:NO];
+                [cell.userName sizeToFit];
+                [cell.privateImage setFrame:CGRectMake(cell.userName.frame.origin.x+cell.userName.frame.size.width+5, cell.userName.frame.origin.y, 20, 20)];
             }else{
                 [cell.privateImage setHidden:YES];
+                [cell.userName setFrame:CGRectMake(80, 55, SCREEN_WIDTH-120, 20)];
             }
             cell.repostUserName.text = @"";
             [cell.repostImage setHidden:YES];
@@ -636,6 +638,7 @@
             }
             return  cell;
         }
+        
         else {
             return nil;
         }

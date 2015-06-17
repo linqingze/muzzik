@@ -61,7 +61,7 @@
 #define URL_Music_Lyric_get     @"api/music/lyric"
 #define URL_New_Notify          @"api/notify/havenew"
 #define URL_Moved_Muzziks       @"api/user/movedMuzzik"
-
+#define URL_New_notify_Now      @"api/notify/havenew"
 
 //#define URL_check_phone @"http://192.168.1.112:3000/api/user/check"
 //#define URL_register @"http://192.168.1.112:3000/api/user/register"
@@ -115,8 +115,9 @@
 #define String_SendNewMuzzikDataSource_update       @"SendNewMuzzikDataSource_update"
 #pragma -mark Font_Size
 
-#define Font_Size_Muzzik_Time 7.0
-#define Font_Size_Muzzik_Message 14.0
+#define Font_Size_Muzzik_Time       7.0
+#define Font_Size_Muzzik_Message    15.0
+#define Font_size_userName          16.0
 #define Constant_String_PlayMode_Once 0
 #define Constant_String_PlayMode_Cycle 1
 #define Constant_String_PlayMode_Single 2

@@ -89,7 +89,6 @@
     [text appendAttributedString:item2];
     cell.topicLabel.attributedText = text;
     cell.songVC = self;
-    
     return cell;
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{

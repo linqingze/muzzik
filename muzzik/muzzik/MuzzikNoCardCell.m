@@ -40,9 +40,9 @@
     _timeStamp = [[UILabel alloc] initWithFrame:CGRectMake(ScreenWidth-145, 43, 60, 10)];
     [_timeStamp setFont:[UIFont systemFontOfSize:8.0]];
     _timeStamp.textAlignment = NSTextAlignmentRight;
-    [_timeStamp setTextColor:Color_Text_3];
+    [_timeStamp setTextColor:Color_Additional_5];
     
-    _timeImage = [[UIImageView alloc] initWithFrame:CGRectMake(ScreenWidth-76, 43, 10, 10)];
+    _timeImage = [[UIImageView alloc] initWithFrame:CGRectMake(ScreenWidth-76, 43, 9, 9)];
     [_timeImage setImage:[UIImage imageNamed:Image_timeImage]];
     _muzzikMessage = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(32, CGRectGetMaxY(_userImage.frame)+10, ScreenWidth-96, 200)];
     [_muzzikMessage setTextColor:Color_Text_2];
@@ -52,18 +52,18 @@
     _progress = [[UIProgressView alloc] initWithFrame:CGRectMake(32, 0, ScreenWidth-96, 2)];
     [_progress setProgress:1];
     [_musicPlayView addSubview:_progress];
-    _musicName = [[UILabel alloc] initWithFrame:CGRectMake(80, 7, ScreenWidth-192, 25)];
+    _musicName = [[UILabel alloc] initWithFrame:CGRectMake(80, 10, ScreenWidth-192, 25)];
     [_musicName setFont:[UIFont fontWithName:Font_Next_Bold size:15]];
     [_musicPlayView addSubview:_musicName];
-    _musicArtist = [[UILabel alloc] initWithFrame:CGRectMake(80, 30, ScreenWidth-192, 25)];
+    _musicArtist = [[UILabel alloc] initWithFrame:CGRectMake(80, 35, ScreenWidth-192, 25)];
     [_musicArtist setFont:[UIFont fontWithName:Font_Next_Bold size:12]];
     [_musicPlayView addSubview:_musicArtist];
-    _likeButton = [[UIButton alloc] initWithFrame:CGRectMake(32,14 , 30, 30)];
+    _likeButton = [[UIButton alloc] initWithFrame:CGRectMake(32,17 , 36, 36)];
     [_likeButton addTarget:self action:@selector(moveAction) forControlEvents:UIControlEventTouchUpInside];
     
     [_musicPlayView addSubview:_likeButton];
     
-    _playButton = [[UIButton alloc] initWithFrame:CGRectMake(ScreenWidth-96, 14, 30, 30)];
+    _playButton = [[UIButton alloc] initWithFrame:CGRectMake(ScreenWidth-102, 17, 36, 36)];
     
     [_playButton addTarget:self action:@selector(playMusicAction:) forControlEvents:UIControlEventTouchUpInside];
     [_musicPlayView addSubview:_playButton];

@@ -34,7 +34,7 @@
     [self.poButton setImage:[UIImage imageNamed:Image_replyImage] forState:UIControlStateNormal];
     [self.poButton addTarget:self action:@selector(poAction) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.poButton];
-    [MuzzikItem addLineOnView:self heightPoint:60 toLeft:13 toRight:13 withColor:Color_line_1];
+    [MuzzikItem addLineOnView:self heightPoint:59 toLeft:13 toRight:13 withColor:Color_line_1];
 }
 -(void)poAction{
     NSLog(@"play");

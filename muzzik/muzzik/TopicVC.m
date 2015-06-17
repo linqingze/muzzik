@@ -294,6 +294,9 @@
             CGFloat localX = 15;
             CGFloat localY = 52;
             topicArray = [dic objectForKey:@"topics"];
+            if ([[[dic objectForKey:@"data"] allKeys] containsObject:@"title"] && [[[dic objectForKey:@"data"] objectForKey:@"title"] length]>0) {
+                attentionLabel.text = [[dic objectForKey:@"data"] objectForKey:@"title"];
+            }
             for (int i = 0; i<topicArray.count; i++) {
                 topicLabel *tempLabel = [[topicLabel alloc] init];
                 tempLabel.delegate = self;

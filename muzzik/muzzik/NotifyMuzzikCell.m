@@ -54,7 +54,7 @@
     [_artist setFont:[UIFont boldSystemFontOfSize:10]];
     [_messageView addSubview: _artist];
     
-    _lineView = [[UIView alloc] initWithFrame:CGRectMake(23, 152, SCREEN_WIDTH-31, 1)];
+    _lineView = [[UIView alloc] initWithFrame:CGRectMake(23, 151, SCREEN_WIDTH-31, 1)];
     [_lineView setBackgroundColor:Color_line_1];
     [self addSubview:_lineView];
 }

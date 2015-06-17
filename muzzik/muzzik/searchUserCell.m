@@ -21,8 +21,8 @@
 }
 
 -(void)setup{
-    self.headerImage = [[UIImageView alloc] initWithFrame:CGRectMake(13, 12.5, 35, 35)];
-    self.headerImage.layer.cornerRadius = 17.5;
+    self.headerImage = [[UIImageView alloc] initWithFrame:CGRectMake(13, 10, 40, 40)];
+    self.headerImage.layer.cornerRadius = 20;
     self.headerImage.clipsToBounds = YES;
     [self addSubview: self.headerImage];
     self.label = [[UILabel alloc] initWithFrame:CGRectMake(60, 20, SCREEN_WIDTH-80, 20)];

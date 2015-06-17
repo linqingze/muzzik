@@ -167,16 +167,17 @@
     TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH-140, 2000)];
     label.text = tempMuzzik.message;
     
-    [label setFont:[UIFont systemFontOfSize:15]];
-    CGSize msize = [label  sizeThatFits:CGSizeMake(SCREEN_WIDTH-140, 2000)];
+    [label setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
+    CGFloat textHeight = [MuzzikItem heightForLabel:label WithText:label.text];
     
     if (tempMuzzik.onlytext) {
-        return 70+msize.height-15;
+        return 71+textHeight;
     }else{
-        return 95+msize.height-15;
+        return 106+textHeight;
     }
     
 }
+
 
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -197,15 +198,15 @@
     cell.MuzzikModel = tempMuzzik;
     cell.userName.text = tempMuzzik.MuzzikUser.name;
     [cell.userName sizeToFit];
-    [cell.privateImage setFrame:CGRectMake(cell.userName.frame.origin.x+cell.userName.frame.size.width+5, cell.userName.frame.origin.y-2, 20, 20)];
+    [cell.privateImage setFrame:CGRectMake(cell.userName.frame.origin.x+cell.userName.frame.size.width+5, cell.userName.frame.origin.y, 20, 20)];
     if (tempMuzzik.isprivate ) {
         [cell.privateImage setHidden:NO];
     }else{
         [cell.privateImage setHidden:YES];
     }
     cell.message.text = tempMuzzik.message;
-    [cell.message addClickMessageForAt];
     [cell.message addClickMessagewithTopics:tempMuzzik.topics];
+    [cell.message addClickMessageForAt];
     cell.message.delegate = self;
     CGSize msize = [cell.message sizeThatFits:CGSizeMake(SCREEN_WIDTH-140, 2000)];
     [cell.message setFrame:CGRectMake(cell.message.frame.origin.x, cell.message.frame.origin.y, msize.width, msize.height)];
@@ -214,31 +215,33 @@
         [cell.songName setHidden:NO];
         UIColor *color;
         if ([tempMuzzik.color longLongValue] == 1) {
-            color = [UIColor colorWithHexString:@"fea42c"];
+            color = Color_Action_Button_1;
+            if (ispalying) {
+                [cell.playButton setImage:[UIImage imageNamed:Image_detailstopredImage] forState:UIControlStateNormal];
+            }else{
+                [cell.playButton setImage:[UIImage imageNamed:Image_detailredplay] forState:UIControlStateNormal];
+            }
+            
+        }
+        else if([tempMuzzik.color longLongValue] == 2){
+            //bluelikeImage
+            color = Color_Action_Button_2;
             if (ispalying) {
                 [cell.playButton setImage:[UIImage imageNamed:Image_detailstopyellowImage] forState:UIControlStateNormal];
             }else{
                 [cell.playButton setImage:[UIImage imageNamed:Image_detailyellowplay] forState:UIControlStateNormal];
             }
         }
-        else if([tempMuzzik.color longLongValue] == 2){
-            //bluelikeImage
-            color = [UIColor colorWithHexString:@"04a0bf"];
+        else{
+            color = Color_Action_Button_3;
             if (ispalying) {
                 [cell.playButton setImage:[UIImage imageNamed:Image_detailstopblueImage] forState:UIControlStateNormal];
             }else{
                 [cell.playButton setImage:[UIImage imageNamed:Image_detailblueplay] forState:UIControlStateNormal];
             }
         }
-        else{
-            color = [UIColor colorWithHexString:@"f26d7d"];
-            if (ispalying) {
-                [cell.playButton setImage:[UIImage imageNamed:Image_detailstopredImage] forState:UIControlStateNormal];
-            }else{
-                [cell.playButton setImage:[UIImage imageNamed:Image_detailredplay] forState:UIControlStateNormal];
-            }
-        }
-        [cell.songName setFrame:CGRectMake(66, cell.message.frame.size.height+cell.message.frame.origin.y+16, SCREEN_WIDTH-140, 20)];
+        [cell.songName setFrame:CGRectMake(cell.songName.frame.origin.x, cell.message.frame.size.height+cell.message.frame.origin.y+13, SCREEN_WIDTH-140, 20)];
+        [cell.playButton setFrame:CGRectMake(SCREEN_WIDTH-53, cell.message.frame.size.height+cell.message.frame.origin.y+6, 40, 40)];
         NSMutableAttributedString *attributesText = [[NSMutableAttributedString alloc] init];
         
         NSAttributedString *item = [MuzzikItem formatAttrItem:tempMuzzik.music.name color:color font:[UIFont boldSystemFontOfSize:15]];
@@ -247,15 +250,15 @@
         NSAttributedString *item1 = [MuzzikItem formatAttrItem:[NSString stringWithFormat:@"  %@",tempMuzzik.music.artist] color:color font:[UIFont boldSystemFontOfSize:13]];
         [attributesText appendAttributedString:item1];
         cell.songName.attributedText = attributesText;
-        [cell.lineview setFrame:CGRectMake(16, cell.message.frame.size.height+cell.message.frame.origin.y+42, SCREEN_WIDTH-32, 1)];
+        [cell.lineview setFrame:CGRectMake(16, cell.message.frame.size.height+cell.message.frame.origin.y+52, SCREEN_WIDTH-32, 1)];
     }else{
-        [cell.lineview setFrame:CGRectMake(16, cell.message.frame.size.height+cell.message.frame.origin.y+20, SCREEN_WIDTH-32, 1)];
+        [cell.lineview setFrame:CGRectMake(16, cell.message.frame.size.height+cell.message.frame.origin.y+15, SCREEN_WIDTH-32, 1)];
         if (ispalying) {
             [cell.playButton setImage:[UIImage imageNamed:Image_detailstoporangeImage] forState:UIControlStateNormal];
         }else{
             [cell.playButton setImage:[UIImage imageNamed:Image_detailgreyplay] forState:UIControlStateNormal];
         }
-        
+        [cell.playButton setFrame:CGRectMake(SCREEN_WIDTH-53, cell.message.frame.size.height+cell.message.frame.origin.y-30, 40, 40)];
         [cell.songName setHidden:YES];
     }
     return cell;

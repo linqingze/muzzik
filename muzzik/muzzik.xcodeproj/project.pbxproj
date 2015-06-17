@@ -59,8 +59,6 @@
 		E162BD7F1AB444370001A61C /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E162BD7E1AB444370001A61C /* libstdc++.dylib */; };
 		E16716251AAD77830068AE98 /* userInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = E16716241AAD77830068AE98 /* userInfo.m */; };
 		E16716281AAD790F0068AE98 /* musicPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = E16716271AAD790F0068AE98 /* musicPlayer.m */; };
-		E16716331AAECF720068AE98 /* InfoPilst.strings in Resources */ = {isa = PBXBuildFile; fileRef = E16716351AAECF720068AE98 /* InfoPilst.strings */; };
-		E167163A1AAED0990068AE98 /* localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E167163C1AAED0990068AE98 /* localizable.strings */; };
 		E1B230391AB5BF22004E50DA /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B2302F1AB5BF22004E50DA /* FMDatabase.m */; };
 		E1B2303A1AB5BF22004E50DA /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B230311AB5BF22004E50DA /* FMDatabaseAdditions.m */; };
 		E1B2303B1AB5BF22004E50DA /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B230331AB5BF22004E50DA /* FMDatabasePool.m */; };
@@ -227,6 +225,7 @@
 		F2FBE8FD1AFB56C50070831D /* CommentTableVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2FBE8FC1AFB56C50070831D /* CommentTableVC.m */; };
 		F2FBE9031AFBBE6B0070831D /* ClassifySelectionVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2FBE9021AFBBE6B0070831D /* ClassifySelectionVC.m */; };
 		F2FD3B061B30617F001B2332 /* popWords.plist in Resources */ = {isa = PBXBuildFile; fileRef = F2FD3B051B30617F001B2332 /* popWords.plist */; };
+		F2FD3B091B318DF1001B2332 /* myTopicCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2FD3B081B318DF1001B2332 /* myTopicCell.m */; };
 		F2FF11001B0A138A0022A57D /* NotifyMuzzikCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2FF10FF1B0A138A0022A57D /* NotifyMuzzikCell.m */; };
 /* End PBXBuildFile section */
 
@@ -355,11 +354,7 @@
 		E16716241AAD77830068AE98 /* userInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = userInfo.m; sourceTree = "<group>"; };
 		E16716261AAD790F0068AE98 /* musicPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = musicPlayer.h; sourceTree = "<group>"; };
 		E16716271AAD790F0068AE98 /* musicPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = musicPlayer.m; sourceTree = "<group>"; };
-		E16716341AAECF720068AE98 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPilst.strings; sourceTree = "<group>"; };
-		E167163B1AAED0990068AE98 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/localizable.strings; sourceTree = "<group>"; };
 		E167163D1AAED0AA0068AE98 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
-		E167163E1AAED0AA0068AE98 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/localizable.strings"; sourceTree = "<group>"; };
-		E167163F1AAED0FA0068AE98 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPilst.strings"; sourceTree = "<group>"; };
 		E1B2302E1AB5BF22004E50DA /* FMDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabase.h; sourceTree = "<group>"; };
 		E1B2302F1AB5BF22004E50DA /* FMDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabase.m; sourceTree = "<group>"; };
 		E1B230301AB5BF22004E50DA /* FMDatabaseAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseAdditions.h; sourceTree = "<group>"; };
@@ -687,6 +682,8 @@
 		F2FBE9011AFBBE6B0070831D /* ClassifySelectionVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClassifySelectionVC.h; sourceTree = "<group>"; };
 		F2FBE9021AFBBE6B0070831D /* ClassifySelectionVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClassifySelectionVC.m; sourceTree = "<group>"; };
 		F2FD3B051B30617F001B2332 /* popWords.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = popWords.plist; sourceTree = "<group>"; };
+		F2FD3B071B318DF1001B2332 /* myTopicCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = myTopicCell.h; sourceTree = "<group>"; };
+		F2FD3B081B318DF1001B2332 /* myTopicCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = myTopicCell.m; sourceTree = "<group>"; };
 		F2FF10FE1B0A138A0022A57D /* NotifyMuzzikCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotifyMuzzikCell.h; sourceTree = "<group>"; };
 		F2FF10FF1B0A138A0022A57D /* NotifyMuzzikCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotifyMuzzikCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -789,8 +786,6 @@
 				F208EF531B1F7D6100DB5A68 /* calico_cyrillic.ttf */,
 				F208EF501B1F7D5500DB5A68 /* kilsonburg.ttf */,
 				E11245F61AAAAE4B0014D461 /* Info.plist */,
-				E167163C1AAED0990068AE98 /* localizable.strings */,
-				E16716351AAECF720068AE98 /* InfoPilst.strings */,
 				E11245F71AAAAE4B0014D461 /* main.m */,
 				F2FD3B051B30617F001B2332 /* popWords.plist */,
 			);
@@ -1238,6 +1233,8 @@
 				F2FBE8FC1AFB56C50070831D /* CommentTableVC.m */,
 				F25C50481B034AFC00F03A61 /* UsetTopicVC.h */,
 				F25C50491B034AFC00F03A61 /* UsetTopicVC.m */,
+				F2FD3B071B318DF1001B2332 /* myTopicCell.h */,
+				F2FD3B081B318DF1001B2332 /* myTopicCell.m */,
 				F2E9A8F51AFFB21000F4F461 /* TopicDetail.h */,
 				F2E9A8F61AFFB21000F4F461 /* TopicDetail.m */,
 				F25C504B1B034B5E00F03A61 /* showUsersVC.h */,
@@ -1652,7 +1649,6 @@
 				F2E558A71B164D420080F9C9 /* MJRefresh.bundle in Resources */,
 				F208EF511B1F7D5500DB5A68 /* kilsonburg.ttf in Resources */,
 				F2FD3B061B30617F001B2332 /* popWords.plist in Resources */,
-				E167163A1AAED0990068AE98 /* localizable.strings in Resources */,
 				F2F0FC8D1ADD8B7100668103 /* TeachViewController.xib in Resources */,
 				E1E857B11ABD6EC2006B1BA6 /* WeiboSDK.bundle in Resources */,
 				F2B703671AC67EBF005F0903 /* TencentOpenApi_IOS_Bundle.bundle in Resources */,
@@ -1660,7 +1656,6 @@
 				F200B7AC1B2ABF6E002A6F61 /* Copperplate_00.ttf in Resources */,
 				E11246031AAAAE4B0014D461 /* Images.xcassets in Resources */,
 				F2F7EE271AEE213200265596 /* flotageBackgroud@2x.png in Resources */,
-				E16716331AAECF720068AE98 /* InfoPilst.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1787,6 +1782,7 @@
 				E11246731AAAB20B0014D461 /* SDWebImageManager.m in Sources */,
 				E11246711AAAB20B0014D461 /* SDWebImageDownloader.m in Sources */,
 				E14F4A511ACD496E00270903 /* UIColor+HexColor.m in Sources */,
+				F2FD3B091B318DF1001B2332 /* myTopicCell.m in Sources */,
 				F2A2E9051B08C44D00D65514 /* SuggestMuzzikVC.m in Sources */,
 				F26167351ADEE3A300E1B11E /* ZHPickView.m in Sources */,
 				F200B7B51B2D42D5002A6F61 /* FeedBackVC.m in Sources */,
@@ -1890,24 +1886,6 @@
 				E167163D1AAED0AA0068AE98 /* zh-Hans */,
 			);
 			name = LaunchScreen.xib;
-			sourceTree = "<group>";
-		};
-		E16716351AAECF720068AE98 /* InfoPilst.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				E16716341AAECF720068AE98 /* en */,
-				E167163F1AAED0FA0068AE98 /* zh-Hans */,
-			);
-			name = InfoPilst.strings;
-			sourceTree = "<group>";
-		};
-		E167163C1AAED0990068AE98 /* localizable.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				E167163B1AAED0990068AE98 /* en */,
-				E167163E1AAED0AA0068AE98 /* zh-Hans */,
-			);
-			name = localizable.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

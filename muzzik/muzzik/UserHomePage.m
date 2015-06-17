@@ -55,7 +55,7 @@
     _headimage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
     _headimage.contentMode = UIViewContentModeScaleAspectFill;
     [_headimage setAlpha:0];
-    profileButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-120, 16, 85, 23)];
+    profileButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-104, 16, 85, 23)];
     [profileButton setImage:[UIImage imageNamed:Image_editInformationImage] forState:UIControlStateNormal];
     [profileButton addTarget:self action:@selector(editProfile) forControlEvents:UIControlEventTouchUpInside];
     [mainTableView setTableHeaderView:mainView];
@@ -85,7 +85,7 @@
     
     schoolImage = [[UIImageView alloc] initWithFrame:CGRectMake(16, 5, 8, 8)];
     schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(35, 0, SCREEN_WIDTH/2-50, 20)];
-    descriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, SCREEN_WIDTH/2, SCREEN_WIDTH-32,0)];
+    descriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, SCREEN_WIDTH/2+10, SCREEN_WIDTH-32,0)];
     
     messageView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN_WIDTH, SCREEN_WIDTH, SCREEN_WIDTH/320.0*185.0)];
     [messageView setBackgroundColor: [ UIColor whiteColor]];
@@ -97,7 +97,7 @@
     [muzzikButton setImageEdgeInsets:UIEdgeInsetsMake(-15, 0, 0, 0)];
     [muzzikButton addTarget:self action:@selector(showMuzziks) forControlEvents:UIControlEventTouchUpInside];
     [messageView addSubview:muzzikButton];
-    MuzzikCount = [[UILabel alloc] initWithFrame:CGRectMake(0, height/2-scale*30, width/3, 20)];
+    MuzzikCount = [[UILabel alloc] initWithFrame:CGRectMake(0, (int)(height/2-scale*30), width/3, 20)];
     [MuzzikCount setTextColor:Color_Text_2];
     MuzzikCount.textAlignment = NSTextAlignmentCenter;
     [MuzzikCount setFont:[UIFont fontWithName:Font_Next_DemiBold size:12]];
@@ -108,7 +108,7 @@
     [movesButton addTarget:self action:@selector(showMoveds) forControlEvents:UIControlEventTouchUpInside];
     [messageView addSubview:movesButton];
     [movesButton setImageEdgeInsets:UIEdgeInsetsMake(-15, 0, 0, 0)];
-    movedCount = [[UILabel alloc] initWithFrame:CGRectMake(width/3, height/2-scale*30, width/3, 20)];
+    movedCount = [[UILabel alloc] initWithFrame:CGRectMake(width/3, (int)(height/2-scale*30), width/3, 20)];
     [movedCount setTextColor:Color_Text_2];
     movedCount.textAlignment = NSTextAlignmentCenter;
     [movedCount setFont:[UIFont fontWithName:Font_Next_DemiBold size:12]];
@@ -119,7 +119,7 @@
     [topicButton addTarget:self action:@selector(showTopic) forControlEvents:UIControlEventTouchUpInside];
     [messageView addSubview:topicButton];
     [topicButton setImageEdgeInsets:UIEdgeInsetsMake(-15, 0, 0, 0)];
-    topicCount = [[UILabel alloc] initWithFrame:CGRectMake(width*2/3, height/2-scale*30, width/3, 20)];
+    topicCount = [[UILabel alloc] initWithFrame:CGRectMake(width*2/3, (int)(height/2-scale*30), width/3, 20)];
     [topicCount setTextColor:Color_Text_2];
     topicCount.textAlignment = NSTextAlignmentCenter;
     [topicCount setFont:[UIFont fontWithName:Font_Next_DemiBold size:12]];
@@ -130,7 +130,7 @@
     [attentionButton addTarget:self action:@selector(showFollow) forControlEvents:UIControlEventTouchUpInside];
     [messageView addSubview:attentionButton];
     [attentionButton setImageEdgeInsets:UIEdgeInsetsMake(-15, 0, 0, 0)];
-    followCount = [[UILabel alloc] initWithFrame:CGRectMake(0, height-scale*30, width/3, 20)];
+    followCount = [[UILabel alloc] initWithFrame:CGRectMake(0, (int)(height-scale*30), width/3, 20)];
     [followCount setTextColor:Color_Text_2];
     followCount.textAlignment = NSTextAlignmentCenter;
     [followCount setFont:[UIFont fontWithName:Font_Next_DemiBold size:12]];
@@ -141,7 +141,7 @@
     [fansButton addTarget:self action:@selector(showFans) forControlEvents:UIControlEventTouchUpInside];
     [messageView addSubview:fansButton];
     [fansButton setImageEdgeInsets:UIEdgeInsetsMake(-15, 0, 0, 0)];
-    fansCount = [[UILabel alloc] initWithFrame:CGRectMake(width/3, height-scale*30, width/3, 20)];
+    fansCount = [[UILabel alloc] initWithFrame:CGRectMake(width/3, (int)(height-scale*30), width/3, 20)];
     [fansCount setTextColor:Color_Text_2];
     fansCount.textAlignment = NSTextAlignmentCenter;
     [fansCount setFont:[UIFont fontWithName:Font_Next_DemiBold size:12]];
@@ -151,7 +151,7 @@
     [songButton setImage:[UIImage imageNamed:Image_profilesonglistImage] forState:UIControlStateNormal];
     [songButton addTarget:self action:@selector(showSong) forControlEvents:UIControlEventTouchUpInside];
     [songButton setImageEdgeInsets:UIEdgeInsetsMake(-15, 0, 0, 0)];
-    songCount = [[UILabel alloc] initWithFrame:CGRectMake(width*2/3, height-scale*30, width/3, 20)];
+    songCount = [[UILabel alloc] initWithFrame:CGRectMake(width*2/3, (int)(height-scale*30), width/3, 20)];
     [songCount setTextColor:Color_Text_2];
     songCount.textAlignment = NSTextAlignmentCenter;
     [songCount setFont:[UIFont fontWithName:Font_Next_DemiBold size:12]];
@@ -299,7 +299,7 @@
             [temp setFont:[UIFont systemFontOfSize:12]];
             temp.text =  [_profileDic objectForKey:@"description"];
             [temp sizeToFit];
-            descriptionLabel.frame = CGRectMake(16, SCREEN_WIDTH/2, SCREEN_WIDTH-32, temp.frame.size.height);
+            descriptionLabel.frame = CGRectMake(16, SCREEN_WIDTH/2+10, SCREEN_WIDTH-32, temp.frame.size.height);
             descriptionLabel.numberOfLines = 0;
             
             [descriptionLabel setFont:[UIFont systemFontOfSize:12]];
@@ -341,12 +341,12 @@
                 local = local- tempLabel.frame.size.width-28;
             }
         }
-        MuzzikCount.text = [NSString stringWithFormat:@"%@信息",[_profileDic objectForKey:@"muzzikTotal"]];
-        movedCount.text = [NSString stringWithFormat:@"%@喜欢",[_profileDic objectForKey:@"movedTotal"]];
-        topicCount.text = [NSString stringWithFormat:@"%@话题",[_profileDic objectForKey:@"topicsTotal"]];
-        followCount.text = [NSString stringWithFormat:@"%@关注",[_profileDic objectForKey:@"followsCount"]];
-        fansCount.text = [NSString stringWithFormat:@"%@粉丝",[_profileDic objectForKey:@"fansCount"]];
-        songCount.text = [NSString stringWithFormat:@"%@歌单",[_profileDic objectForKey:@"musicsTotal"]];
+        MuzzikCount.text = [NSString stringWithFormat:@"%@ 信息",[_profileDic objectForKey:@"muzzikTotal"]];
+        movedCount.text = [NSString stringWithFormat:@"%@ 喜欢",[_profileDic objectForKey:@"movedTotal"]];
+        topicCount.text = [NSString stringWithFormat:@"%@ 话题",[_profileDic objectForKey:@"topicsTotal"]];
+        followCount.text = [NSString stringWithFormat:@"%@ 关注",[_profileDic objectForKey:@"followsCount"]];
+        fansCount.text = [NSString stringWithFormat:@"%@ 粉丝",[_profileDic objectForKey:@"fansCount"]];
+        songCount.text = [NSString stringWithFormat:@"%@ 歌单",[_profileDic objectForKey:@"musicsTotal"]];
     }
     
 }

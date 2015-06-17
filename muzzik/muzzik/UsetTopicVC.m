@@ -9,6 +9,7 @@
 #import "UsetTopicVC.h"
 #import "TopicModel.h"
 #import "TopicDetail.h"
+#import "myTopicCell.h"
 @interface UsetTopicVC ()<UITableViewDelegate,UITableViewDataSource>{
     UITableView *topicTableView;
     NSMutableArray *TopicArray;
@@ -22,12 +23,14 @@
 -(void)viewDidLoad{
     [super viewDidLoad];
     page = 1;
-    [self initNagationBar:@"选择话题" leftBtn:Constant_backImage rightBtn:0];
+    [self initNagationBar:@"我的话题" leftBtn:Constant_backImage rightBtn:0];
     topicTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     [self.view addSubview:topicTableView];
     [self followScrollView:topicTableView];
     topicTableView.delegate = self;
     topicTableView.dataSource = self;
+    [topicTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+    [topicTableView registerClass:[myTopicCell class] forCellReuseIdentifier:@"myTopicCell"];
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/topic/byInitiator/%@",BaseURL,[userInfo shareClass].uid]]];
     NSDictionary  *paraDic;
     paraDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%ld",(long)page],Parameter_page, Limit_Constant,Parameter_Limit,nil];
@@ -120,12 +123,8 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSString * cellName = @"UITableViewCell";
     
-    UITableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:cellName];
-    if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellName];
-    }
+    myTopicCell * cell = [tableView dequeueReusableCellWithIdentifier:@"myTopicCell"];
     UIFont *font = [UIFont boldSystemFontOfSize:14];
     TopicModel *topic =TopicArray[indexPath.row];
     [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
@@ -138,7 +137,7 @@
     NSString *itemStr1 = @"#";
     NSAttributedString *item2 = [MuzzikItem formatAttrItem:itemStr1 color:Color_Additional_4 font:font];
     [text appendAttributedString:item2];
-    cell.textLabel.attributedText = text;
+    cell.topicLabel.attributedText = text;
     
     //self.dataSource[indexPath.section][@"data"][indexPath.row];
     return cell;

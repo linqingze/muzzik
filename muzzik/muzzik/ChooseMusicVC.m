@@ -69,9 +69,13 @@
     cancelButton.layer.cornerRadius = 5;
     cancelButton.clipsToBounds = YES;
     [searchView addSubview:cancelButton];
-    
+    NSArray *arr = [self.navigationController.view subviews];
+    NSLog(@"%@",arr);
     [searchView setBackgroundColor:Color_NavigationBar];
     [searchView addSubview:searchBar];
+    [self.rightBtn setAlpha:1];
+    [self.leftBtn setAlpha:1];
+    [self.rightBtn setHidden:NO];
 }
 
 

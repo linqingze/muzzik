@@ -251,11 +251,11 @@
     _musicArtist.text = self.localmuzzik.music.artist;
     [_muzzikView addSubview:_musicArtist];
     
-    _likeButton = [[UIButton alloc] initWithFrame:CGRectMake(16, CGRectGetMaxY(_progress.frame)+13, 34, 34)];
+    _likeButton = [[UIButton alloc] initWithFrame:CGRectMake(21, CGRectGetMaxY(_progress.frame)+13, 34, 34)];
     [_likeButton addTarget:self action:@selector(moveAction) forControlEvents:UIControlEventTouchUpInside];
     [_muzzikView addSubview:_likeButton];
     
-    _playButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-50, CGRectGetMaxY(_progress.frame)+13, 34, 34)];
+    _playButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-55, CGRectGetMaxY(_progress.frame)+13, 34, 34)];
     
     [_playButton addTarget:self action:@selector(playMusicLocal) forControlEvents:UIControlEventTouchUpInside];
     [_muzzikView addSubview:_playButton];
@@ -802,16 +802,16 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     muzzik *tempMuzzik = commentArray[indexPath.row];
+    TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH-140, 2000)];
+    label.text = tempMuzzik.message;
     
-    TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(75, 0, SCREEN_WIDTH-140, 500)];
     [label setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
-    [label setText:tempMuzzik.message];
     CGFloat textHeight = [MuzzikItem heightForLabel:label WithText:label.text];
     
-    if ([tempMuzzik.music.key isEqualToString:self.localmuzzik.music.key]) {
-        return 60+textHeight;
+    if (tempMuzzik.onlytext) {
+        return 71+textHeight;
     }else{
-        return 85+textHeight;
+        return 106+textHeight;
     }
     
 }
@@ -827,16 +827,15 @@
     }];
     
     cell.delegate = self;
-    cell.message.delegate = self;
     Globle *glob = [Globle shareGloble];
     BOOL ispalying = false;
-    if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.localMuzzik.muzzik_id] &&!glob.isPause) {
+    if ([tempMuzzik.muzzik_id isEqualToString:[musicPlayer shareClass].localMuzzik.muzzik_id] &&!glob.isPause) {
         ispalying = YES;
     }
     cell.MuzzikModel = tempMuzzik;
     cell.userName.text = tempMuzzik.MuzzikUser.name;
     [cell.userName sizeToFit];
-    [cell.privateImage setFrame:CGRectMake(cell.userName.frame.origin.x+cell.userName.frame.size.width+5, cell.userName.frame.origin.y-2, 20, 20)];
+    [cell.privateImage setFrame:CGRectMake(cell.userName.frame.origin.x+cell.userName.frame.size.width+5, cell.userName.frame.origin.y, 20, 20)];
     if (tempMuzzik.isprivate ) {
         [cell.privateImage setHidden:NO];
     }else{
@@ -845,55 +844,65 @@
     cell.message.text = tempMuzzik.message;
     [cell.message addClickMessagewithTopics:tempMuzzik.topics];
     [cell.message addClickMessageForAt];
+    cell.message.delegate = self;
     CGSize msize = [cell.message sizeThatFits:CGSizeMake(SCREEN_WIDTH-140, 2000)];
     [cell.message setFrame:CGRectMake(cell.message.frame.origin.x, cell.message.frame.origin.y, msize.width, msize.height)];
     cell.timeLabel.text = [MuzzikItem transtromTime:tempMuzzik.date];
-    if (![tempMuzzik.music.key isEqualToString:self.localmuzzik.music.key]) {
+    if (!tempMuzzik.onlytext) {
+        
         [cell.songName setHidden:NO];
         UIColor *color;
         if ([tempMuzzik.color longLongValue] == 1) {
-            color = [UIColor colorWithHexString:@"fea42c"];
+            color = Color_Action_Button_1;
+            if (ispalying) {
+                [cell.playButton setImage:[UIImage imageNamed:Image_detailstopredImage] forState:UIControlStateNormal];
+            }else{
+                [cell.playButton setImage:[UIImage imageNamed:Image_detailredplay] forState:UIControlStateNormal];
+            }
+            
+        }
+        else if([tempMuzzik.color longLongValue] == 2){
+            //bluelikeImage
+            color = Color_Action_Button_2;
             if (ispalying) {
                 [cell.playButton setImage:[UIImage imageNamed:Image_detailstopyellowImage] forState:UIControlStateNormal];
             }else{
                 [cell.playButton setImage:[UIImage imageNamed:Image_detailyellowplay] forState:UIControlStateNormal];
             }
         }
-        else if([tempMuzzik.color longLongValue] == 2){
-            //bluelikeImage
-            color = [UIColor colorWithHexString:@"04a0bf"];
+        else{
+            color = Color_Action_Button_3;
             if (ispalying) {
                 [cell.playButton setImage:[UIImage imageNamed:Image_detailstopblueImage] forState:UIControlStateNormal];
             }else{
                 [cell.playButton setImage:[UIImage imageNamed:Image_detailblueplay] forState:UIControlStateNormal];
             }
         }
-        else{
-            color = [UIColor colorWithHexString:@"f26d7d"];
-            if (ispalying) {
-                [cell.playButton setImage:[UIImage imageNamed:Image_detailstopredImage] forState:UIControlStateNormal];
-            }else{
-                [cell.playButton setImage:[UIImage imageNamed:Image_detailredplay] forState:UIControlStateNormal];
-            }
-        }
-        [cell.songName setFrame:CGRectMake(66, cell.message.frame.size.height+cell.message.frame.origin.y+16, SCREEN_WIDTH-140, 20)];
+        [cell.songName setFrame:CGRectMake(cell.songName.frame.origin.x, cell.message.frame.size.height+cell.message.frame.origin.y+13, SCREEN_WIDTH-140, 20)];
+        [cell.playButton setFrame:CGRectMake(SCREEN_WIDTH-53, cell.message.frame.size.height+cell.message.frame.origin.y+6, 40, 40)];
         NSMutableAttributedString *attributesText = [[NSMutableAttributedString alloc] init];
-
+        
         NSAttributedString *item = [MuzzikItem formatAttrItem:tempMuzzik.music.name color:color font:[UIFont boldSystemFontOfSize:15]];
         [attributesText appendAttributedString:item];
         
         NSAttributedString *item1 = [MuzzikItem formatAttrItem:[NSString stringWithFormat:@"  %@",tempMuzzik.music.artist] color:color font:[UIFont boldSystemFontOfSize:13]];
         [attributesText appendAttributedString:item1];
         cell.songName.attributedText = attributesText;
-        [cell.lineview setFrame:CGRectMake(16, cell.message.frame.size.height+cell.message.frame.origin.y+42, SCREEN_WIDTH-32, 1)];
+        [cell.lineview setFrame:CGRectMake(16, cell.message.frame.size.height+cell.message.frame.origin.y+52, SCREEN_WIDTH-32, 1)];
     }else{
-        [cell.lineview setFrame:CGRectMake(16, cell.message.frame.size.height+cell.message.frame.origin.y+20, SCREEN_WIDTH-32, 1)];
+        if (indexPath.row%2 == 0) {
+            cell.backgroundColor = Color_Orange;
+        }else{
+            cell.backgroundColor = Color_Additional_4;
+        }
+        
+        [cell.lineview setFrame:CGRectMake(16, cell.message.frame.size.height+cell.message.frame.origin.y+15, SCREEN_WIDTH-32, 1)];
         if (ispalying) {
             [cell.playButton setImage:[UIImage imageNamed:Image_detailstoporangeImage] forState:UIControlStateNormal];
         }else{
             [cell.playButton setImage:[UIImage imageNamed:Image_detailgreyplay] forState:UIControlStateNormal];
         }
-        
+        [cell.playButton setFrame:CGRectMake(SCREEN_WIDTH-53, cell.message.frame.size.height+cell.message.frame.origin.y-30, 40, 40)];
         [cell.songName setHidden:YES];
     }
     return cell;

@@ -242,62 +242,54 @@
 }
 
 
-
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(75, 0, SCREEN_WIDTH-110, 500)];
+    
     muzzik *tempMuzzik = [TopicArray objectAtIndex:indexPath.row];
-    [label setText:tempMuzzik.message];
-    CGFloat textHeight = [MuzzikItem heightForLabel:label WithText:label.text];
-    if (textHeight>limitHeight) {
-        if ([tempMuzzik.image length]>0) {
-            if ([tempMuzzik.type isEqualToString:@"normal"] ||[tempMuzzik.type isEqualToString:@"repost"]) {
-                return (int)(240+limitHeight+SCREEN_WIDTH*3/4)+10;
-            }else if([tempMuzzik.type isEqualToString:@"muzzikCard"]){
-                return SCREEN_WIDTH*9/8+textHeight+36;
-            }else if ([tempMuzzik.type isEqualToString:@"userCard"] ){
-                return limitHeight;
-            }else {
-                return limitHeight;
+    
+    
+    if ([tempMuzzik.type isEqualToString:@"normal"] ||[tempMuzzik.type isEqualToString:@"repost"]) {
+        
+        TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(75, 0, SCREEN_WIDTH-110, 500)];
+        [label setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
+        [label setText:tempMuzzik.message];
+        CGFloat textHeight = [MuzzikItem heightForLabel:label WithText:label.text];
+        if (textHeight>limitHeight) {
+            if ([tempMuzzik.image length]>0) {
+                return (int)(260+limitHeight+SCREEN_WIDTH*3/4)+10;
+            }else{
+                return 260+limitHeight;
             }
-        }
-        else{
-            if ([tempMuzzik.type isEqualToString:@"normal"] ||[tempMuzzik.type isEqualToString:@"repost"]) {
-                return 240+limitHeight;
-            }else if([tempMuzzik.type isEqualToString:@"muzzikCard"]){
-                return limitHeight;
-            }else if ([tempMuzzik.type isEqualToString:@"userCard"] ){
-                return limitHeight;
-            }else {
-                return limitHeight;
+            
+        }else{
+            if ([tempMuzzik.image length]>0) {
+                return (int)(260+textHeight+SCREEN_WIDTH*3/4);
+            }else{
+                return 260+(int)textHeight;
             }
         }
     }else{
-        if ([tempMuzzik.image length]>0) {
-            if ([tempMuzzik.type isEqualToString:@"normal"] ||[tempMuzzik.type isEqualToString:@"repost"]) {
-                return (int)(240+textHeight+SCREEN_WIDTH*3/4);
-            }else if([tempMuzzik.type isEqualToString:@"muzzikCard"]){
-                return SCREEN_WIDTH*9/8+textHeight+36;
-            }else if ([tempMuzzik.type isEqualToString:@"userCard"] ){
-                return limitHeight;
-            }else {
-                return limitHeight;
+        TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(75, 0, SCREEN_WIDTH-96, 500)];
+        [label setText:tempMuzzik.message];
+        [label setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
+        CGFloat textHeight = [MuzzikItem heightForLabel:label WithText:label.text];
+        if (textHeight>limitHeight) {
+            if ([tempMuzzik.image length]>0) {
+                return SCREEN_WIDTH+limitHeight+80;
+            }else{
+                return limitHeight+190;
             }
         }
         else{
-            if ([tempMuzzik.type isEqualToString:@"normal"] ||[tempMuzzik.type isEqualToString:@"repost"]) {
-                return (int)(240+textHeight);
-            }else if([tempMuzzik.type isEqualToString:@"muzzikCard"]){
-                return limitHeight;
-            }else if ([tempMuzzik.type isEqualToString:@"userCard"] ){
-                return limitHeight;
-            }else {
-                return limitHeight;
+            if ([tempMuzzik.image length]>0) {
+                return (int)(SCREEN_WIDTH+textHeight+80);
+            }else{
+                return textHeight+190;
             }
+            
         }
     }
     
 }
-
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
     if ([TopicArray[indexPath.row] isKindOfClass:[muzzik class]]) {
@@ -305,6 +297,7 @@
         DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
         detail.localmuzzik = tempMuzzik;
         [self.navigationController pushViewController:detail animated:YES];
+        
     }
 }
 
@@ -315,7 +308,7 @@
     if ([tempMuzzik.image length] == 0) {
         if ([tempMuzzik.type isEqualToString:@"repost"] ){
             NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
-            cell.songModel = tempMuzzik;
+            cell.songModel = [TopicArray objectAtIndex:indexPath.row];
             if ([tempMuzzik.muzzik_id isEqualToString:[musicPlayer shareClass].localMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                 cell.isPlaying = YES;
             }else{
@@ -331,6 +324,7 @@
                 }];
                 
             }];
+            
             cell.userName.text = tempMuzzik.MuzzikUser.name;
             [cell.repostImage setHidden:NO];
             cell.repostUserName.text = tempMuzzik.reposter.name;
@@ -379,7 +373,8 @@
                 [cell.shares setTitle:@"分享数" forState:UIControlStateNormal];
             }
             return  cell;
-        }else if([tempMuzzik.type isEqualToString:@"normal"]){
+        }
+        else if([tempMuzzik.type isEqualToString:@"normal"]){
             NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
             cell.songModel = [TopicArray objectAtIndex:indexPath.row];
             if ([tempMuzzik.muzzik_id isEqualToString:[musicPlayer shareClass].localMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
@@ -399,6 +394,15 @@
             }];
             
             cell.userName.text = tempMuzzik.MuzzikUser.name;
+            if (tempMuzzik.isprivate ) {
+                [cell.privateImage setHidden:NO];
+                [cell.userName sizeToFit];
+                [cell.privateImage setFrame:CGRectMake(cell.userName.frame.origin.x+cell.userName.frame.size.width+5, cell.userName.frame.origin.y, 20, 20)];
+            }else{
+                [cell.privateImage setHidden:YES];
+                [cell.userName setFrame:CGRectMake(80, 55, SCREEN_WIDTH-120, 20)];
+            }
+            
             cell.repostUserName.text = @"";
             [cell.repostImage setHidden:YES];
             cell.repostUserName.text = tempMuzzik.reposter.name;
@@ -447,7 +451,8 @@
                 [cell.shares setTitle:@"分享数" forState:UIControlStateNormal];
             }
             return  cell;
-        }else{
+        }
+        else{
             return nil;
         }
     }else{
@@ -524,9 +529,10 @@
                 [cell.shares setTitle:@"分享数" forState:UIControlStateNormal];
             }
             return  cell;
-        }else if([tempMuzzik.type isEqualToString:@"normal"]){
+        }
+        else if([tempMuzzik.type isEqualToString:@"normal"]){
             NormalNoCardCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalNoCardCell" forIndexPath:indexPath];
-            cell.songModel = tempMuzzik;
+            cell.songModel = [TopicArray objectAtIndex:indexPath.row];
             if ([tempMuzzik.muzzik_id isEqualToString:[musicPlayer shareClass].localMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                 cell.isPlaying = YES;
             }else{
@@ -543,6 +549,7 @@
                 }];
                 
             }];
+            
             //[cell.poImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempMuzzik.image]]];
             [cell.poImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/600/h/600",BaseURL_image,tempMuzzik.image]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                 [UIView animateWithDuration:0.5 animations:^{
@@ -550,6 +557,14 @@
                 }];
             }];
             cell.userName.text = tempMuzzik.MuzzikUser.name;
+            if (tempMuzzik.isprivate ) {
+                [cell.privateImage setHidden:NO];
+                [cell.userName sizeToFit];
+                [cell.privateImage setFrame:CGRectMake(cell.userName.frame.origin.x+cell.userName.frame.size.width+5, cell.userName.frame.origin.y, 20, 20)];
+            }else{
+                [cell.privateImage setHidden:YES];
+                [cell.userName setFrame:CGRectMake(80, 55, SCREEN_WIDTH-120, 20)];
+            }
             cell.repostUserName.text = @"";
             [cell.repostImage setHidden:YES];
             cell.repostUserName.text = tempMuzzik.reposter.name;
@@ -599,159 +614,12 @@
             }
             return  cell;
         }
+       
         else {
             return nil;
         }
     }
     
-    
-}
-
-#pragma -mark Button_action
-
-
-- (void)attributedLabel:(TTTAttributedLabel *)label
-didSelectLinkWithTransitInformation:(NSDictionary *)components{
-    NSLog(@"%@",components);
-    if ([[components allKeys] containsObject:@"topic_id"]) {
-        TopicDetail *topicDetail = [[TopicDetail alloc] init];
-        topicDetail.topic_id = [components objectForKey:@"topic_id"];
-        [self.navigationController pushViewController:topicDetail animated:YES];
-    }else if([[components allKeys] containsObject:@"at_name"]){
-        
-        userInfo *user = [userInfo shareClass];
-        if ([[components objectForKey:@"at_name"] isEqualToString:user.name]) {
-            UserHomePage *home = [[UserHomePage alloc] init];
-            [self.navigationController pushViewController:home animated:YES];
-        }else{
-            userDetailInfo *uInfo = [[userDetailInfo alloc] init];
-            uInfo.uid = [[components objectForKey:@"at_name"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-            [self.navigationController pushViewController:uInfo animated:YES];
-        }
-    }
-}
--(void)moveMuzzik:(muzzik *)tempMuzzik{
-    userInfo *user = [userInfo shareClass];
-    if ([user.token length]>0) {
-        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/%@/moved",BaseURL,tempMuzzik.muzzik_id]]];
-        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:!tempMuzzik.ismoved] forKey:@"ismoved"] Method:PostMethod auth:YES];
-        __weak ASIHTTPRequest *weakrequest = requestForm;
-        [requestForm setCompletionBlock :^{
-            if ([weakrequest responseStatusCode] == 200) {
-                // NSData *data = [weakrequest responseData];
-                tempMuzzik.ismoved = !tempMuzzik.ismoved;
-                if (tempMuzzik.ismoved) {
-                    tempMuzzik.moveds = [NSString stringWithFormat:@"%d",[tempMuzzik.moveds intValue]+1 ];
-                }else{
-                    tempMuzzik.moveds = [NSString stringWithFormat:@"%d",[tempMuzzik.moveds intValue]-1 ];
-                }
-                [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:tempMuzzik];
-                
-            }
-            else{
-                //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-            }
-        }];
-        [requestForm setFailedBlock:^{
-            NSLog(@"%@",[weakrequest error]);
-        }];
-        [requestForm startAsynchronous];
-        
-        //NSLog(@"json:%@,dic:%@",tempJsonData,dic);
-        
-    }else{
-        LoginViewController *loginVC = [[LoginViewController alloc] init];
-        [self.navigationController pushViewController:loginVC animated:YES];
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-}
--(void)repostActionWithMuzzik:(muzzik *)tempMuzzik{
-    self.repostMuzzik = tempMuzzik;
-    if (!tempMuzzik.isReposted) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"确定转发这条Muzzik吗?" message:@"" delegate:self cancelButtonTitle:@"放弃" otherButtonTitles:nil];
-        // optional - add more buttons:
-        [alert addButtonWithTitle:@"确定"];
-        [alert show];
-        
-    }else{
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"确定取消转发这条Muzzik吗?" message:@"" delegate:self cancelButtonTitle:@"放弃" otherButtonTitles:nil];
-        // optional - add more buttons:
-        [alert addButtonWithTitle:@"确定"];
-        [alert show];
-    }
-    
-    
-}
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == 1) {
-        // do stuff
-        if (!self.repostMuzzik.isReposted) {
-            
-            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik",BaseURL]]];
-            NSDictionary *dictionary = [NSDictionary dictionaryWithObject:self.repostMuzzik.muzzik_id forKey:@"repost"];
-            [requestForm addBodyDataSourceWithJsonByDic:dictionary Method:PutMethod auth:YES];
-            __weak ASIHTTPRequest *weakrequest = requestForm;
-            [requestForm setCompletionBlock :^{
-                NSLog(@"%@",[weakrequest requestHeaders]);
-                NSLog(@"%@",[weakrequest responseString]);
-                NSLog(@"%d",[weakrequest responseStatusCode]);
-                if ([weakrequest responseStatusCode] == 200) {
-                    [MuzzikItem showNotifyOnView:self.view text:@"转发成功"];
-                    self.repostMuzzik.isReposted = YES;
-                    self.repostMuzzik.reposts = [NSString stringWithFormat:@"%ld",[self.repostMuzzik.reposts integerValue]+1];
-                    [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:self.repostMuzzik];
-                }
-                
-                else if([weakrequest responseStatusCode] == 401){
-                    [userInfo checkLoginWithVC:self];
-                    //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-                }else if ([weakrequest responseStatusCode] == 400){
-
-                }
-            }];
-            [requestForm setFailedBlock:^{
-                NSLog(@"%@",[weakrequest error]);
-            }];
-            [requestForm startAsynchronous];
-        }else{
-            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/%@/repost",BaseURL,self.repostMuzzik.muzzik_id]]];
-            [requestForm addBodyDataSourceWithJsonByDic:nil Method:DeleteMethod auth:YES];
-            __weak ASIHTTPRequest *weakrequest = requestForm;
-            [requestForm setCompletionBlock :^{
-                NSLog(@"%@",[weakrequest requestHeaders]);
-                NSLog(@"%@",[weakrequest responseString]);
-                NSLog(@"%d",[weakrequest responseStatusCode]);
-                if ([weakrequest responseStatusCode] == 200) {
-                    [MuzzikItem showNotifyOnView:self.view text:@"取消转发"];
-                    self.repostMuzzik.isReposted = NO;
-                    self.repostMuzzik.reposts = [NSString stringWithFormat:@"%ld",[self.repostMuzzik.reposts integerValue]-1];
-                    [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:self.repostMuzzik];
-                }
-                
-                else if([weakrequest responseStatusCode] == 401){
-                    [userInfo checkLoginWithVC:self];
-                    //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-                }else if ([weakrequest responseStatusCode] == 400){
-                    
-                }
-            }];
-            [requestForm setFailedBlock:^{
-                NSLog(@"%@",[weakrequest error]);
-            }];
-            [requestForm startAsynchronous];
-        }
-        
-        
-    }else{
-        
-    }
     
 }
 -(void)playSong{

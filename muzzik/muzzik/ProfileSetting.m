@@ -83,15 +83,24 @@
     decripText.animateHeightChange = NO;
     [decripText setMaxHeight:120];
     
-    if ([[_profileDic allKeys] containsObject:@"description"] && [[self.profileDic objectForKey:@"description"] length]>0) {
-        decripText.text = [self.profileDic objectForKey:@"description"];
-    }
+    
     
     [mainView addSubview:decripText];
     
     
     belowView = [[UIView alloc] initWithFrame:CGRectMake(13, 193, SCREEN_WIDTH-26, 260)];
+    
     [mainView addSubview:belowView];
+    if ([[_profileDic allKeys] containsObject:@"description"] && [[self.profileDic objectForKey:@"description"] length]>0) {
+        decripText.text = [self.profileDic objectForKey:@"description"];
+        CGFloat textHeight = [MuzzikItem heightForLabel:decripText WithText:decripText.text];
+        
+        [belowView setFrame:CGRectMake(13, 152+textHeight+25, SCREEN_WIDTH-26, belowView.frame.size.height)];
+        [mainView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 152+textHeight+belowView.frame.size.height+25)];
+        [mainTableView setTableHeaderView:mainView];
+        [mainTableView reloadData];
+    }
+    
     schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 30, 50)];
     schoolLabel.text = @"学校";
     schoolLabel.textColor = Color_Text_2;
@@ -123,6 +132,7 @@
     companyText.delegate = self;
     if ([[_profileDic allKeys] containsObject:@"company"] && [[self.profileDic objectForKey:@"company"] length]>0) {
         companyText.text = [self.profileDic objectForKey:@"company"];
+       
     }
     [companyText setReturnKeyType:UIReturnKeyDone];
     [companyText setValue:[UIFont boldSystemFontOfSize:15] forKeyPath:@"_placeholderLabel.font"];
