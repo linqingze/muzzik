@@ -26,7 +26,6 @@
 #import "MuzzikNoCardCell.h"
 #import "userDetailInfo.h"
 #import "TopicDetail.h"
-#import "AppDelegate.h"
 #import <TencentOpenAPI/TencentOAuth.h>
 @interface muzzikTrendController (){
     int numberOfProducts;

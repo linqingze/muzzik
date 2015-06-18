@@ -69,9 +69,9 @@
     
     if (indexPath.row == 0) {
         if (isopen) {
-            [MuzzikItem addStringToLocal:@"close" ForKey:@"User_shakeActionSwitch"];
+            [MuzzikItem addObjectToLocal:@"close" ForKey:@"User_shakeActionSwitch"];
         }else{
-            [MuzzikItem addStringToLocal:@"open" ForKey:@"User_shakeActionSwitch"];
+            [MuzzikItem addObjectToLocal:@"open" ForKey:@"User_shakeActionSwitch"];
         }
         [tableView reloadData];
     }else if (indexPath.row == 1) {

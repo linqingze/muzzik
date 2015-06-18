@@ -675,6 +675,8 @@
                 isContained = NO;
             }
             [MuzzikItem SetUserInfoWithMuzziks:squareMuzziks title:Constant_userInfo_square description:nil];
+            [MuzzikItem addObjectToLocal:data ForKey:Constant_Data_Square];
+            
         }
     }];
     [requestsquare setFailedBlock:^{
@@ -695,6 +697,7 @@
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         if (dic&&[[dic objectForKey:@"muzziks"]count]>0) {
             [MuzzikItem SetUserInfoWithMuzziks:[[muzzik new] makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]] title:Constant_userInfo_suggest description:[NSString stringWithFormat:@"推荐列表"]];
+            [MuzzikItem addObjectToLocal:data ForKey:Constant_Data_Suggest];
             
         }
     }];
@@ -713,6 +716,7 @@
                 muzzik *tempMuzzik = [muzzik new];
                 if ([[dic objectForKey:@"muzziks"] count]>0) {
                     [MuzzikItem SetUserInfoWithMuzziks:[tempMuzzik makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]] title:Constant_userInfo_own description:[NSString stringWithFormat:@"我的Muzzik"]];
+                    
                     }
                     
                 }
@@ -732,7 +736,7 @@
             if (dic && [[dic objectForKey:@"muzziks"] count]>0 ) {
                 muzzik *muzzikToy = [muzzik new];
                 [MuzzikItem SetUserInfoWithMuzziks:[muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]] title:Constant_userInfo_follow description:[NSString stringWithFormat:@"关注列表"]];
-                
+                [MuzzikItem addObjectToLocal:data ForKey:Constant_Data_Feed];
             }
         }];
         [requestfollow setFailedBlock:^{
@@ -803,7 +807,7 @@
                                                resultBlock:^(ALAssetsGroup *group)
                  {
                      [groups addObject:group];
-                     [MuzzikItem addStringToLocal:@"yes" ForKey:@"Muzzik_Create_Album"];
+                     [MuzzikItem addObjectToLocal:@"yes" ForKey:@"Muzzik_Create_Album"];
                      
                  }
                                               failureBlock:nil];
@@ -815,4 +819,5 @@
     //创建相簿
     [assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupAlbum usingBlock:listGroupBlock failureBlock:nil];
 }
+
 @end

@@ -27,7 +27,6 @@
 #import "MuzzikNoCardCell.h"
 #import "userDetailInfo.h"
 #import "TopicDetail.h"
-#import "AppDelegate.h"
 #import <TencentOpenAPI/TencentOAuth.h>
 @interface MuzzikTableVC (){
     UIImage *shareImage;
@@ -315,7 +314,11 @@
         muzzik *tempMuzzik = self.muzziks[indexPath.row];
         DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
         detail.localmuzzik = tempMuzzik;
-        [self.navigationController pushViewController:detail animated:YES];
+        if ([self.requstType length]>0) {
+            [self.navigationController pushViewController:detail animated:YES];
+        }else{
+            [self.keeper.navigationController pushViewController:detail animated:YES];
+        }
         
     }
 }

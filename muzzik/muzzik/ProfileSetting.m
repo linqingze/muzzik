@@ -572,7 +572,7 @@
                         ASIFormDataRequest *interRequest = [[ASIFormDataRequest alloc] initWithURL:[NSURL URLWithString:[imagedic objectForKey:@"url"]]];
                         [ASIFormDataRequest clearSession];
                         [interRequest setPostFormat:ASIMultipartFormDataPostFormat];
-                        [interRequest addRequestHeader:@"Host" value:@"upload.qiniu.com"];
+                        //[interRequest addRequestHeader:@"Host" value:@"upload.qiniu.com"];
                         [interRequest setPostValue:[[imagedic objectForKey:@"data"] objectForKey:@"token"] forKey:@"token"];
                         NSData *imageData = UIImageJPEGRepresentation(localImage, 0.75);
                         [interRequest addData:imageData forKey:@"file"];
@@ -582,23 +582,28 @@
                         [interRequest setCompletionBlock:^{
                             NSDictionary *keydic = [NSJSONSerialization JSONObjectWithData:[form responseData] options:NSJSONReadingMutableContainers error:nil];
                             ASIHTTPRequest *updateImageRequest = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL,URL_Update_Profile]]];
-                            [dic setObject:[keydic objectForKey:@"key"] forKey:@"avatar"];
-                            [updateImageRequest addBodyDataSourceWithJsonByDic:dic Method:PostMethod auth:YES];
-                            __weak ASIHTTPRequest *WeakImageRequest = updateImageRequest;
-                            [updateImageRequest setCompletionBlock:^{
-                                if ([WeakImageRequest responseStatusCode]==200) {
-                                    self.userhome.headimage.image = localImage;
-                                    user.userHeadThumb = localImage;
-                                    user.avatar = [keydic objectForKey:@"key"];
-                                    [self.navigationController popViewControllerAnimated:YES];
-                                    
-                                }
-                            }];
-                            [updateImageRequest setFailedBlock:^{
-                                NSLog(@"%@",[WeakImageRequest error]);
-                            }];
-                            [updateImageRequest startAsynchronous];
-                        }];
+                            if ([[keydic allKeys] containsObject:@"key"]) {
+                                [dic setObject:[keydic objectForKey:@"key"] forKey:@"avatar"];
+                                [updateImageRequest addBodyDataSourceWithJsonByDic:dic Method:PostMethod auth:YES];
+                                __weak ASIHTTPRequest *WeakImageRequest = updateImageRequest;
+                                [updateImageRequest setCompletionBlock:^{
+                                    if ([WeakImageRequest responseStatusCode]==200) {
+                                        self.userhome.headimage.image = localImage;
+                                        user.userHeadThumb = localImage;
+                                        user.avatar = [keydic objectForKey:@"key"];
+                                        [self.navigationController popViewControllerAnimated:YES];
+                                        
+                                    }
+                                }];
+                                [updateImageRequest setFailedBlock:^{
+                                    NSLog(@"%@",[WeakImageRequest error]);
+                                }];
+                                [updateImageRequest startAsynchronous];
+
+                            }else{
+                                [MuzzikItem showNotifyOnViewUpon:self.navigationController.view text:@"图片上传失败"];
+                            }
+                                                    }];
                         [interRequest setFailedBlock:^{
                             NSLog(@"%@",[form responseString]);
                         }];

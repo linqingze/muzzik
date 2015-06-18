@@ -22,7 +22,6 @@
 #import "songDetailVCViewController.h"
 #import "UIButton+WebCache.h"
 #import "LoginViewController.h"
-#import "AppDelegate.h"
 #import "TopicDetail.h"
 #import <TencentOpenAPI/TencentOAuth.h>
 #import "MessageStepViewController.h"

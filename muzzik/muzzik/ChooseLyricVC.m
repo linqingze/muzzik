@@ -10,7 +10,7 @@
 #import "TableViewCell.h"
 #import "RJTextView.h"
 #import "TWPhotoPickerController.h"
-#import "AppDelegate.h"
+
 #import "ASIFormDataRequest.h"
 #import "FontTableCell.h"
 @interface ChooseLyricVC()<UITableViewDataSource,UITableViewDelegate,RJTextViewDelegate,ASIProgressDelegate>{

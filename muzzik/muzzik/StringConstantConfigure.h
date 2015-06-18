@@ -201,16 +201,23 @@
 
 
 
-#define Parameter_Id              @"_id"
-#define Parameter_avatar          @"avatar"
-#define Parameter_Gender          @"gender"
-#define Parameter_name            @"name"
-#define Parameter_message         @"message"
-#define Parameter_image_key       @"image"
-#define Parameter_private         @"private"
-#define Parameter_reply_id        @"reply"
-#define Parameter_repost_id       @"repost"
+#define Parameter_Id                @"_id"
+#define Parameter_avatar            @"avatar"
+#define Parameter_Gender            @"gender"
+#define Parameter_name              @"name"
+#define Parameter_message           @"message"
+#define Parameter_image_key         @"image"
+#define Parameter_private           @"private"
+#define Parameter_reply_id          @"reply"
+#define Parameter_repost_id         @"repost"
 
+#define Constant_Data_Square            @"Persistence_suqare_data"
+#define Constant_Data_Feed              @"Persistence_feed_data"
+#define Constant_Data_Suggest           @"Persistence_Suggest_data"
+#define Constant_Data_User_home         @"Persistence_user_data"
+#define Constant_Data_topic             @"Persistence_user_topic"
+#define Constant_Data_User_Vip          @"Persistence_user_vip"
+#define Constant_Data_notify            @"Persistence_user_data"
 
 
 

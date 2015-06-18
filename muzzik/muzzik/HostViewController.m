@@ -10,7 +10,6 @@
 #import "Reachability.h"
 #import "appConfiguration.h"
 #import "muzzikTrendController.h"
-#import "AppDelegate.h"
 #import "TopicVC.h"
 #import "musicPlayer.h"
 //#import "AFNetworking.h"

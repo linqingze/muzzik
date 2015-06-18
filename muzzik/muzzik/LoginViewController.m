@@ -8,7 +8,6 @@
 
 #import "LoginViewController.h"
 #import "UIColor+HexColor.h"
-#import "AppDelegate.h"
 #import <TencentOpenAPI/TencentOAuth.h>
 #import "ASIHTTPRequest.h"
 #import "WeiboSDK.h"

@@ -52,6 +52,7 @@
         NSData *data = [weakrequest responseData];
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         if (dic) {
+            [MuzzikItem addObjectToLocal:data ForKey:Constant_Data_notify];
             page++;
             notifyArray = [[NotifyObject new] makeMuzziksByNotifyArray:[dic objectForKey:@"notifies"]];
             [notifyTabelView reloadData];
@@ -63,6 +64,15 @@
     }];
     [request setFailedBlock:^{
         NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
+        if (![[weakrequest responseString] length]>0) {
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[MuzzikItem getDataFromLocalKey:Constant_Data_notify] options:NSJSONReadingMutableContainers error:nil];
+            if (dic) {
+                page++;
+                notifyArray = [[NotifyObject new] makeMuzziksByNotifyArray:[dic objectForKey:@"notifies"]];
+                [notifyTabelView reloadData];
+                
+            }
+        }
     }];
     [request startAsynchronous];
 }
@@ -103,7 +113,6 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [notifyTabelView reloadData];
-    
     // MytableView add
     
 }

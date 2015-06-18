@@ -9,7 +9,6 @@
 #import "RootViewController.h"
 #import "muzzikTrendController.h"
 #import "TopicVC.h"
-#import "AppDelegate.h"
 #import "searchViewController.h"
 #import "UserHomePage.h"
 #import "settingSystemVC.h"

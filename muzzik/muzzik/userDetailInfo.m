@@ -14,7 +14,6 @@
 #import "UIImageView+WebCache.h"
 #import "UserSongVC.h"
 #import "showUsersVC.h"
-#import "AppDelegate.h"
 #import <TencentOpenAPI/TencentOAuth.h>
 #import "TopicDetail.h"
 
@@ -1052,7 +1051,6 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     [_headView addSubview:_headimage];
     _headimage.contentMode = UIViewContentModeScaleAspectFill;
     _coverImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
-    [_coverImage setAlpha:0];
     [_coverImage setImage:[UIImage imageNamed:Image_prifilebgcover]];
     _coverImage.contentMode = UIViewContentModeScaleAspectFill;
     [_headView addSubview:_coverImage];

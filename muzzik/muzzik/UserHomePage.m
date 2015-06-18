@@ -199,7 +199,9 @@
     [requestForm setCompletionBlock :^{
         NSLog(@"%@",[weakrequest responseString]);
         NSLog(@"%d",[weakrequest responseStatusCode]);
+        
         if ([weakrequest responseStatusCode] == 200) {
+            [MuzzikItem addObjectToLocal:[weakrequest responseData]  ForKey:Constant_Data_User_home];
             _profileDic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData]  options:NSJSONReadingMutableContainers error:nil];
             [self.view setNeedsLayout];
         }
@@ -209,8 +211,11 @@
     }];
     [requestForm setFailedBlock:^{
         NSLog(@"%@",[weakrequest error]);
-        NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-        [userInfo checkLoginWithVC:self];
+        if (![[weakrequest responseString] length]>0) {
+            _profileDic = [NSJSONSerialization JSONObjectWithData:[MuzzikItem getDataFromLocalKey: Constant_Data_User_home] options:NSJSONReadingMutableContainers error:nil];
+            [self.view setNeedsLayout];
+        
+        }
     }];
     [requestForm startAsynchronous];
 }
@@ -378,44 +383,57 @@
 #pragma -mark action
 
 -(void)editProfile{
-    
-    ProfileSetting *setting = [[ProfileSetting alloc] init];
-    setting.profileDic = self.profileDic;
-    setting.userhome = self;
-    [self.navigationController pushViewController:setting animated:YES];
+    if ([MuzzikItem isNetWorkAvailabel]) {
+        ProfileSetting *setting = [[ProfileSetting alloc] init];
+        setting.profileDic = self.profileDic;
+        setting.userhome = self;
+        [self.navigationController pushViewController:setting animated:YES];
+    }
 }
 
 -(void)showMuzziks{
-    UserMuzzikVC *uMuzzik = [[UserMuzzikVC alloc] init];
-    [self.navigationController pushViewController:uMuzzik animated:YES];
+    if ([MuzzikItem isNetWorkAvailabel]) {
+        UserMuzzikVC *uMuzzik = [[UserMuzzikVC alloc] init];
+        [self.navigationController pushViewController:uMuzzik animated:YES];
+    }
 }
 
 -(void)showMoveds{
-    MuzzikTableVC *muzzikMoved = [[MuzzikTableVC alloc] init];
-    muzzikMoved.requstType = @"moved";
-    [self.navigationController pushViewController:muzzikMoved animated:YES];
+    if ([MuzzikItem isNetWorkAvailabel]) {
+        MuzzikTableVC *muzzikMoved = [[MuzzikTableVC alloc] init];
+        muzzikMoved.requstType = @"moved";
+        [self.navigationController pushViewController:muzzikMoved animated:YES];
+    }
 }
 
 -(void)showTopic{
-    UsetTopicVC *usertopic = [[UsetTopicVC alloc] init];
-    [self.navigationController pushViewController:usertopic animated:YES];
+    if ([MuzzikItem isNetWorkAvailabel]) {
+        UsetTopicVC *usertopic = [[UsetTopicVC alloc] init];
+        [self.navigationController pushViewController:usertopic animated:YES];
+    }
 }
 
 -(void)showFollow{
-    showUsersVC *showuser = [[showUsersVC alloc] init];
-    showuser.showType = @"follows";
-    [self.navigationController pushViewController:showuser animated:YES];
+    if ([MuzzikItem isNetWorkAvailabel]) {
+        showUsersVC *showuser = [[showUsersVC alloc] init];
+        showuser.showType = @"follows";
+        [self.navigationController pushViewController:showuser animated:YES];
+    }
 }
 
 -(void)showFans{
-    showUsersVC *showuser = [[showUsersVC alloc] init];
-    showuser.showType = @"fans";
-    [self.navigationController pushViewController:showuser animated:YES];
+    if ([MuzzikItem isNetWorkAvailabel]) {
+        showUsersVC *showuser = [[showUsersVC alloc] init];
+        showuser.showType = @"fans";
+        [self.navigationController pushViewController:showuser animated:YES];
+    }
 }
 
 -(void)showSong{
-    UserSongVC* usersong = [[UserSongVC alloc] init];
-    [self.navigationController pushViewController:usersong animated:YES];
+    if ([MuzzikItem isNetWorkAvailabel]) {
+        UserSongVC* usersong = [[UserSongVC alloc] init];
+        [self.navigationController pushViewController:usersong animated:YES];
+    }
 }
 /*
 #pragma mark - Navigation

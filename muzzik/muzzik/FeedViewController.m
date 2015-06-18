@@ -27,7 +27,6 @@
 #import "MuzzikNoCardCell.h"
 #import "userDetailInfo.h"
 #import "TopicDetail.h"
-#import "AppDelegate.h"
 #import <TencentOpenAPI/TencentOAuth.h>
 @interface FeedViewController ()<UITableViewDataSource,UITableViewDelegate,UICollectionViewDelegateFlowLayout,TTTAttributedLabelDelegate,CellDelegate>{
     UIImage *shareImage;
@@ -313,6 +312,7 @@
         [self.navigationController pushViewController:detail animated:YES];
         
     }
+    
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -921,6 +921,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         NSData *data = [weakrequest responseData];
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         if (dic) {
+            [MuzzikItem addObjectToLocal:data ForKey:Constant_Data_Feed];
             muzzik *muzzikToy = [muzzik new];
             NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
             for (muzzik *tempmuzzik in array) {
@@ -945,7 +946,35 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         }
     }];
     [request setFailedBlock:^{
-        NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
+        NSLog(@"%@,%@,%@",[weakrequest error],[weakrequest responseString],[MuzzikItem getDataFromLocalKey: Constant_Data_Feed]);
+        if (![[weakrequest responseString] length]>0 && [MuzzikItem getDataFromLocalKey: Constant_Data_Feed] ) {
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[MuzzikItem getDataFromLocalKey: Constant_Data_Feed] options:NSJSONReadingMutableContainers error:nil];
+            
+            if (dic) {
+                muzzik *muzzikToy = [muzzik new];
+                NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+                for (muzzik *tempmuzzik in array) {
+                    BOOL isContained = NO;
+                    for (muzzik *arrayMuzzik in self.muzziks) {
+                        if ([arrayMuzzik.muzzik_id isEqualToString:tempmuzzik.muzzik_id]) {
+                            isContained = YES;
+                            break;
+                        }
+                        
+                    }
+                    if (!isContained) {
+                        [self.muzziks addObject:tempmuzzik];
+                    }
+                    isContained = NO;
+                }
+                [MuzzikItem SetUserInfoWithMuzziks:self.muzziks title:Constant_userInfo_follow description:[NSString stringWithFormat:@"关注列表"]];
+                lastId = [dic objectForKey:@"tail"];
+                headId = [dic objectForKey:Parameter_from];
+                [MytableView reloadData];
+                
+            }
+            
+        }
     }];
     [request startAsynchronous];
 }

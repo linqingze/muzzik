@@ -33,8 +33,12 @@
 
 #pragma -mark 本地持久化数据
 + (void)addMessageToLocal:(NSDictionary *)message;
-+ (void)addStringToLocal:(NSString *)string ForKey:(NSString *)key;
++ (void)addObjectToLocal:(id)string ForKey:(NSString *)key;
 + (void)removeMessageFromLocal:(NSString *)string;
+
++ (NSArray *)getArrayFromLocalForKey:(NSString *)key;
++ (NSDictionary *)getDictionaryFromLocalForKey:(NSString *)key;
++ (NSData *)getDataFromLocalKey:(NSString *)key;
 
 + (NSArray *)muzzikDraftsFromLocal;
 + (void)addMuzzikDraftsToLocal:(NSArray *)message;
@@ -72,4 +76,6 @@
 +(NSString*)customFontWithPath:(NSString*)path;
 
 +(NSString *)transtromAstroToChinese:(NSString *)astroEnglish;
+
++(BOOL)isNetWorkAvailabel;
 @end

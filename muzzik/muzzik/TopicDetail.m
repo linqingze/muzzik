@@ -22,7 +22,6 @@
 #import "TopicDetail.h"
 #import "UIButton+WebCache.h"
 #import "LoginViewController.h"
-#import "AppDelegate.h"
 #import <TencentOpenAPI/TencentOAuth.h>
 
 @interface TopicDetail ()<UITableViewDataSource,UITableViewDelegate,TTTAttributedLabelDelegate,CellDelegate>{

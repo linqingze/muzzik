@@ -20,7 +20,6 @@
 #import "TopicDetail.h"
 #import "TopicHotVC.h"
 #import "Globle.h"
-#import "AppDelegate.h"
 #import <TencentOpenAPI/TencentOAuth.h>
 #import "PhotoImageView.h"
 @interface DetaiMuzzikVC ()<UITableViewDataSource,UITableViewDelegate,TTTAttributedLabelDelegate,HPGrowingTextViewDelegate,CellDelegate,PhotoImageViewDelegate,UIActionSheetDelegate>{
@@ -316,7 +315,7 @@
     [_headimage setAlpha:0];
     [headView addSubview:_headimage];
     _coverImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH/2)];
-    [_coverImage setAlpha:0];
+    [_coverImage setAlpha:1];
     [_coverImage setImage:[UIImage imageNamed:Image_prifilebgcover]];
     [headView addSubview:_coverImage];
     _attentionButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2, 16, 85, 23)];
@@ -615,7 +614,6 @@
     [requestForm setFailedBlock:^{
         NSLog(@"%@",[weakrequest error]);
         NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-        [userInfo checkLoginWithVC:self];
     }];
     [requestForm startAsynchronous];
     

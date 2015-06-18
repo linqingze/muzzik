@@ -17,7 +17,6 @@
 #import "UIColor+HexColor.h"
 #import "UIImageView+WebCache.h"
 #import "TTTAttributedLabel.h"
-#import "AppDelegate.h"
 #import "MessageStepViewController.h"
 #import "DetaiMuzzikVC.h"
 #define closeInterValTime 0.5

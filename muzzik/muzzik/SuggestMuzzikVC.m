@@ -13,7 +13,6 @@
 #import "UIButton+WebCache.h"
 #import "DetaiMuzzikVC.h"
 #import "userDetailInfo.h"
-#import "AppDelegate.h"
 #import <TencentOpenAPI/TencentOAuth.h>
 #import "TopicDetail.h"
 @interface SuggestMuzzikVC ()<UICollectionViewDataSource,UICollectionViewDelegate,CellDelegate,TTTAttributedLabelDelegate>{

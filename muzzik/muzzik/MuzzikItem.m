@@ -380,12 +380,26 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     [userDefault setObject:message forKey:@"LoginAcess"];
     [userDefault synchronize];
 }
-+ (void)addStringToLocal:(NSString *)string ForKey:(NSString *)key
++ (void)addObjectToLocal:(id)string ForKey:(NSString *)key
 {
     NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
     [userDefault setObject:string forKey:key];
     [userDefault synchronize];
 }
++ (NSData *)getDataFromLocalKey:(NSString *)key{
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    return [userDefault dataForKey:key];
+}
+
++(NSArray *)getArrayFromLocalForKey:(NSString *)key{
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    return [userDefault arrayForKey:key];
+}
++(NSDictionary *)getDictionaryFromLocalForKey:(NSString *)key{
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    return [userDefault dictionaryForKey:key];
+}
+
 +(NSString *)getStringForKey:(NSString *)key{
     NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
     return [userDefault stringForKey:key];
@@ -880,7 +894,7 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     [UIView animateWithDuration:0.4 animations:^{
         [alterLabel setAlpha:1];
     } completion:^(BOOL finished) {
-        [UIView animateWithDuration:2 animations:^{
+        [UIView animateWithDuration:4 animations:^{
             [alterLabel setAlpha:0];
         } completion:^(BOOL finished) {
             [alterLabel removeFromSuperview];
@@ -1233,6 +1247,76 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     }else{
         return @"巨蟹座";
     }
+}
+
++(BOOL)isNetWorkAvailabel{
+    if ([Reachability reachabilityWithHostName:@"www.muzziker.com"].currentReachabilityStatus == NotReachable) {
+        UILabel *alterLabel = [[UILabel alloc] init];
+        [alterLabel setFont:[UIFont boldSystemFontOfSize:14]];
+        [alterLabel setTextColor:Color_Text_1];
+        [alterLabel setBackgroundColor:Color_line_2];
+        alterLabel.text = @"网络不可用";
+        [alterLabel sizeToFit];
+        [alterLabel setFrame:CGRectMake(SCREEN_WIDTH/2-alterLabel.frame.size.width/2-10, 100, alterLabel.frame.size.width+20, alterLabel.frame.size.height+20)];
+        alterLabel.layer.cornerRadius = 5;
+        alterLabel.clipsToBounds = YES;
+        alterLabel.layer.shadowColor = [UIColor blackColor].CGColor;//shadowColor阴影颜色
+        alterLabel.layer.shadowOffset = CGSizeMake(0,0);//shadowOffset阴影偏移，默认(0, -3),这个跟shadowRadius配合使用
+        alterLabel.layer.shadowOpacity = 1;//阴影透明度，默认0
+        alterLabel.layer.shadowRadius = 3;//阴影半径，默认3
+        alterLabel.textAlignment = NSTextAlignmentCenter;
+        //路径阴影
+        UIBezierPath *path = [UIBezierPath bezierPath];
+        
+        float width = alterLabel.bounds.size.width;
+        float height = alterLabel.bounds.size.height;
+        float x = alterLabel.bounds.origin.x;
+        float y = alterLabel.bounds.origin.y;
+        float addWH = 10;
+        
+        CGPoint topLeft      = alterLabel.bounds.origin;
+        CGPoint topMiddle = CGPointMake(x+(width/2),y-addWH);
+        CGPoint topRight     = CGPointMake(x+width,y);
+        
+        CGPoint rightMiddle = CGPointMake(x+width+addWH,y+(height/2));
+        
+        CGPoint bottomRight  = CGPointMake(x+width,y+height);
+        CGPoint bottomMiddle = CGPointMake(x+(width/2),y+height+addWH);
+        CGPoint bottomLeft   = CGPointMake(x,y+height);
+        
+        
+        CGPoint leftMiddle = CGPointMake(x-addWH,y+(height/2));
+        
+        [path moveToPoint:topLeft];
+        //添加四个二元曲线
+        [path addQuadCurveToPoint:topRight
+                     controlPoint:topMiddle];
+        [path addQuadCurveToPoint:bottomRight
+                     controlPoint:rightMiddle];
+        [path addQuadCurveToPoint:bottomLeft
+                     controlPoint:bottomMiddle];
+        [path addQuadCurveToPoint:topLeft
+                     controlPoint:leftMiddle];
+        //设置阴影路径
+        alterLabel.layer.shadowPath = path.CGPath;
+        [alterLabel setAlpha:0];
+        AppDelegate *appdelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+        
+        [appdelegate.window.rootViewController.view addSubview:alterLabel];
+        [UIView animateWithDuration:0.4 animations:^{
+            [alterLabel setAlpha:1];
+        } completion:^(BOOL finished) {
+            [UIView animateWithDuration:2 animations:^{
+                [alterLabel setAlpha:0];
+            } completion:^(BOOL finished) {
+                [alterLabel removeFromSuperview];
+            }];
+        }];
+        return NO;
+    }else{
+        return YES;
+    }
+    
 }
 @end
 

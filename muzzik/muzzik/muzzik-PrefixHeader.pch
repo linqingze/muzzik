@@ -21,6 +21,7 @@
 #import "UserHomePage.h"
 #import "StringConstantConfigure.h"
 #import "DeleGateMethodConfigure.h"
+#import "AppDelegate.h"
 
 #import "MuzzikObject.h"
 #import "WeiboSDK.h"
