@@ -25,6 +25,8 @@
  * @param scrollableView The UIView where the scrolling is performed.
  */
 - (void)followScrollView:(UIScrollView *)scrollableView;
+-(void)networkErrorShow;
+-(void)reloadDataSource;
 //- (void)tapAction:(UITapGestureRecognizer *)tap; //返回按钮点击响应方法
 //- (void)longPressAction:(UILongPressGestureRecognizer *)longPressGesture; //返回按钮长按手势响应方法
 //- (void)setBackBtnHide:(BOOL)isHide;  //隐藏导航栏返回按钮

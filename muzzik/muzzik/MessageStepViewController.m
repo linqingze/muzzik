@@ -33,11 +33,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self initNagationBar:@"编辑信息（1/3）" leftBtn:Constant_backImage rightBtn:2];
-    UIButton *topicButton = [[UIButton alloc] initWithFrame:CGRectMake(13, 16, SCREEN_WIDTH/2, 20)];
-    topicButton.layer.cornerRadius = 5;
+    UIButton *topicButton = [[UIButton alloc] initWithFrame:CGRectMake(13, 16, 80, 20)];
+    topicButton.layer.cornerRadius = 3;
     topicButton.clipsToBounds = YES;
     [topicButton setBackgroundImage:[MuzzikItem createImageWithColor:Color_Active_Button_1] forState:UIControlStateNormal];
-    [topicButton setTitle:@"#点我添加一个萌萌哒话题#" forState:UIControlStateNormal];
+    [topicButton setTitle:@"#添加话题#" forState:UIControlStateNormal];
     [topicButton addTarget:self action:@selector(getTopic) forControlEvents:UIControlEventTouchUpInside];
     [topicButton.titleLabel setFont:[UIFont boldSystemFontOfSize:12]];
     topicButton.titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -66,20 +66,22 @@
     [self.view addSubview:textview];
     [self.view addSubview:placeHolder];
     
-    
-    [MuzzikItem addLineOnView:self.view heightPoint:SCREEN_WIDTH toLeft:13 toRight:13 withColor:Color_line_1];
-    UIButton *changSongButton = [[UIButton alloc] initWithFrame:CGRectMake(13,CGRectGetMaxY(textview.frame)+20, 40, 40)];
+    UIButton *changSongButton = [[UIButton alloc] initWithFrame:CGRectMake(13,SCREEN_HEIGHT-144, 40, 40)];
     [changSongButton setImage:[UIImage imageNamed:Image_add_Song] forState:UIControlStateNormal];
     [changSongButton addTarget:self action:@selector(changsongAction) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:changSongButton];
-    songName = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(changSongButton.frame)+20, CGRectGetMidY(changSongButton.frame)-20, SCREEN_WIDTH-CGRectGetMaxX(changSongButton.frame)-33, 20)];
+    UIView *separateLine = [[UIView alloc] initWithFrame:CGRectMake(60, SCREEN_HEIGHT-144, 1, 40)];
+    [separateLine setBackgroundColor:Color_line_1];
+    [self.view addSubview:separateLine];
+    
+    songName = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(changSongButton.frame)+23, CGRectGetMidY(changSongButton.frame)-20, SCREEN_WIDTH-CGRectGetMaxX(changSongButton.frame)-33, 20)];
     songName.textColor = Color_Theme_5;
-    songName.font = [UIFont boldSystemFontOfSize:17];
+    songName.font = [UIFont fontWithName:Font_Next_Bold size:15];
     [self.view addSubview:songName];
     
-    artist = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(changSongButton.frame)+20, CGRectGetMidY(changSongButton.frame), SCREEN_WIDTH-CGRectGetMaxX(changSongButton.frame)-33, 20)];
+    artist = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(changSongButton.frame)+23, CGRectGetMidY(changSongButton.frame)+2, SCREEN_WIDTH-CGRectGetMaxX(changSongButton.frame)-33, 20)];
     artist.textColor = Color_Theme_5;
-    artist.font = [UIFont boldSystemFontOfSize:17];
+    artist.font = [UIFont fontWithName:Font_Next_Bold size:12];
     [self.view addSubview:artist];
     
     AtButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-100, 20, 44, 44)];
@@ -108,6 +110,7 @@
     if ([mobject.tempmessage length]>0) {
         [placeHolder setHidden:YES];
         textview.text = [textview.text stringByAppendingString:mobject.tempmessage];
+        charaterLabel.text = [NSString stringWithFormat:@"%lu",140 - textview.text.length];
         mobject.tempmessage = nil;
     }
 }

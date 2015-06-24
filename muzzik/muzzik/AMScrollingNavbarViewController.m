@@ -17,7 +17,7 @@
 @property (assign, nonatomic) BOOL isExpanded;
 @property (assign, nonatomic) BOOL isStatuBarHide;
 @property (retain, nonatomic) UIButton *backBtn;
-
+@property (nonatomic,retain) UIView *networkView;
 @end
 
 @implementation AMScrollingNavbarViewController
@@ -63,7 +63,31 @@
     [self.headerView setAlpha:1];
     
 }
-
+-(void)networkErrorShow{
+    if (!_networkView) {
+        _networkView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 40)];
+        [_networkView setBackgroundColor:Color_line_2];
+        [_networkView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(reloadDataSource)]];
+        UILabel *networkMessage = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 40)];
+        networkMessage.textAlignment = NSTextAlignmentCenter;
+        UIFont *font = [UIFont boldSystemFontOfSize:12];
+        NSMutableAttributedString *text = [[NSMutableAttributedString alloc] init];
+        NSString *itemStr = @"网络请求失败，";
+        NSAttributedString *item = [MuzzikItem formatAttrItem:itemStr color:[UIColor colorWithHexString:@"a8acbb"] font:font];
+        [text appendAttributedString:item];
+        NSString *itemStr1 = @"重新加载";
+        NSAttributedString *item1 = [MuzzikItem formatAttrItem:itemStr1 color:Color_Additional_4 font:font];
+        [text appendAttributedString:item1];
+        networkMessage.attributedText = text;
+        [_networkView addSubview:networkMessage];
+    }
+    [self.view addSubview:_networkView];
+    [_networkView setAlpha:0];
+    [UIView animateWithDuration:1 animations:^{
+        [_networkView setAlpha:1];
+    }];
+    
+}
 - (void)followScrollView:(UIScrollView *)scrollableView
 {
 	self.scrollableView = scrollableView;
@@ -160,7 +184,7 @@
 
 {
     NSString * shakeSwitch = [MuzzikItem getStringForKey:@"User_shakeActionSwitch"];
-    if ([shakeSwitch isEqualToString:@"open"]) {
+    if (![shakeSwitch isEqualToString:@"close"]) {
         musicPlayer *player = [musicPlayer shareClass];
         //摇动结束
         if (event.subtype == UIEventSubtypeMotionShake && [player.MusicArray count]>0) {
@@ -171,6 +195,13 @@
     
 }
 
-
+-(void)reloadDataSource{
+    [UIView animateWithDuration:1 animations:^{
+        [_networkView setAlpha:0];
+    } completion:^(BOOL finished) {
+        [_networkView removeFromSuperview];
+    }];
+    
+}
 
 @end

@@ -12,7 +12,6 @@
 #import "TopicHeaderView.h"
 #import "appConfiguration.h"
 #import "userInfo.h"
-#import "playListController.h"
 #import "TTTAttributedLabel.h"
 #import "ChooseMusicVC.h"
 #import "showUserVC.h"
@@ -253,14 +252,14 @@
         [label setText:tempMuzzik.message];
         CGFloat textHeight = [MuzzikItem heightForLabel:label WithText:label.text];
         if (textHeight>limitHeight) {
-            if ([tempMuzzik.image length]>0) {
+            if (![tempMuzzik.image isKindOfClass:[NSNull class]] && [tempMuzzik.image length]>0) {
                 return (int)(260+limitHeight+SCREEN_WIDTH*3/4)+10;
             }else{
                 return 260+limitHeight;
             }
             
         }else{
-            if ([tempMuzzik.image length]>0) {
+            if (![tempMuzzik.image isKindOfClass:[NSNull class]] && [tempMuzzik.image length]>0) {
                 return (int)(260+textHeight+SCREEN_WIDTH*3/4);
             }else{
                 return 260+(int)textHeight;
@@ -272,14 +271,14 @@
         [label setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
         CGFloat textHeight = [MuzzikItem heightForLabel:label WithText:label.text];
         if (textHeight>limitHeight) {
-            if ([tempMuzzik.image length]>0) {
+            if (![tempMuzzik.image isKindOfClass:[NSNull class]] && [tempMuzzik.image length]>0) {
                 return SCREEN_WIDTH+limitHeight+80;
             }else{
                 return limitHeight+190;
             }
         }
         else{
-            if ([tempMuzzik.image length]>0) {
+            if (![tempMuzzik.image isKindOfClass:[NSNull class]] && [tempMuzzik.image length]>0) {
                 return (int)(SCREEN_WIDTH+textHeight+80);
             }else{
                 return textHeight+190;
@@ -304,7 +303,7 @@
 {
     Globle *glob = [Globle shareGloble];
     muzzik *tempMuzzik = [TopicArray objectAtIndex:indexPath.row];
-    if ([tempMuzzik.image length] == 0) {
+    if (![tempMuzzik.image isKindOfClass:[NSNull class]] && [tempMuzzik.image length] == 0) {
         if ([tempMuzzik.type isEqualToString:@"repost"] ){
             NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
             cell.songModel = [TopicArray objectAtIndex:indexPath.row];
@@ -645,6 +644,91 @@
     [musicPlayer shareClass].MusicArray =TopicArray;
     [[musicPlayer shareClass] playSongWithSongModel:songModel Title:[NSString stringWithFormat:@"歌曲 %@ ",self.detailMuzzik.music.name]];
     
+    
+}
+-(void)repostActionWithMuzzik:(muzzik *)tempMuzzik{
+    self.repostMuzzik = tempMuzzik;
+    if (!tempMuzzik.isReposted) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"确定转发这条Muzzik吗?" message:@"" delegate:self cancelButtonTitle:@"放弃" otherButtonTitles:nil];
+        // optional - add more buttons:
+        [alert addButtonWithTitle:@"确定"];
+        [alert show];
+        
+    }else{
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"确定取消转发这条Muzzik吗?" message:@"" delegate:self cancelButtonTitle:@"放弃" otherButtonTitles:nil];
+        // optional - add more buttons:
+        [alert addButtonWithTitle:@"确定"];
+        [alert show];
+    }
+    
+    
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 1) {
+        // do stuff
+        if (!self.repostMuzzik.isReposted) {
+            
+            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik",BaseURL]]];
+            NSDictionary *dictionary = [NSDictionary dictionaryWithObject:self.repostMuzzik.muzzik_id forKey:@"repost"];
+            [requestForm addBodyDataSourceWithJsonByDic:dictionary Method:PutMethod auth:YES];
+            __weak ASIHTTPRequest *weakrequest = requestForm;
+            [requestForm setCompletionBlock :^{
+                NSLog(@"%@",[weakrequest requestHeaders]);
+                NSLog(@"%@",[weakrequest responseString]);
+                NSLog(@"%d",[weakrequest responseStatusCode]);
+                if ([weakrequest responseStatusCode] == 200) {
+                    [MuzzikItem showNotifyOnView:self.view text:@"转发成功"];
+                    self.repostMuzzik.isReposted = YES;
+                    self.repostMuzzik.reposts = [NSString stringWithFormat:@"%ld",[self.repostMuzzik.reposts integerValue]+1];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:self.repostMuzzik];
+                }
+                
+                else if([weakrequest responseStatusCode] == 401){
+                    [userInfo checkLoginWithVC:self];
+                    //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+                }else if ([weakrequest responseStatusCode] == 400){
+                    self.repostMuzzik.isReposted = YES;
+                    NSIndexPath *indexPath=[NSIndexPath indexPathForRow:[TopicArray indexOfObject:self.repostMuzzik] inSection:0];
+                    [MytableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];
+                }
+            }];
+            [requestForm setFailedBlock:^{
+                NSLog(@"%@",[weakrequest error]);
+            }];
+            [requestForm startAsynchronous];
+        }else{
+            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/%@/repost",BaseURL,self.repostMuzzik.muzzik_id]]];
+            [requestForm addBodyDataSourceWithJsonByDic:nil Method:DeleteMethod auth:YES];
+            __weak ASIHTTPRequest *weakrequest = requestForm;
+            [requestForm setCompletionBlock :^{
+                NSLog(@"%@",[weakrequest requestHeaders]);
+                NSLog(@"%@",[weakrequest responseString]);
+                NSLog(@"%d",[weakrequest responseStatusCode]);
+                if ([weakrequest responseStatusCode] == 200) {
+                    [MuzzikItem showNotifyOnView:self.view text:@"取消转发"];
+                    self.repostMuzzik.isReposted = NO;
+                    self.repostMuzzik.reposts = [NSString stringWithFormat:@"%ld",[self.repostMuzzik.reposts integerValue]-1];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:self.repostMuzzik];
+                }
+                
+                else if([weakrequest responseStatusCode] == 401){
+                    [userInfo checkLoginWithVC:self];
+                    //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+                }else if ([weakrequest responseStatusCode] == 400){
+                    
+                }
+            }];
+            [requestForm setFailedBlock:^{
+                NSLog(@"%@",[weakrequest error]);
+            }];
+            [requestForm startAsynchronous];
+        }
+        
+        
+    }else{
+        
+    }
     
 }
 

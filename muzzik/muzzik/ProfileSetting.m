@@ -54,7 +54,7 @@
     mainTableView.delegate = self;
     frameHeight = 152;
     [self initNagationBar:@"编辑个人资料" leftBtn:Constant_backImage rightBtn:3];
-    headimage = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-38, 16, 76, 76)];
+    headimage = [[UIButton alloc] initWithFrame:CGRectMake((int)(SCREEN_WIDTH/2)-38, 16, 76, 76)];
     [headimage setImage:[UIImage imageNamed:Image_settingavatarscover] forState:UIControlStateNormal];
     headimage.layer.cornerRadius = 38;
     headimage.clipsToBounds = YES;
@@ -93,7 +93,7 @@
     [mainView addSubview:belowView];
     if ([[_profileDic allKeys] containsObject:@"description"] && [[self.profileDic objectForKey:@"description"] length]>0) {
         decripText.text = [self.profileDic objectForKey:@"description"];
-        CGFloat textHeight = [MuzzikItem heightForLabel:decripText WithText:decripText.text];
+        int textHeight = [MuzzikItem heightForLabel:decripText WithText:decripText.text];
         
         [belowView setFrame:CGRectMake(13, 152+textHeight+25, SCREEN_WIDTH-26, belowView.frame.size.height)];
         [mainView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 152+textHeight+belowView.frame.size.height+25)];
@@ -236,46 +236,46 @@
             [tempLabel setFrame:CGRectMake(0, 0, tempLabel.frame.size.width+20, 20)];
             tempLabel.layer.cornerRadius = 10;
             tempLabel.clipsToBounds = YES;
-            [tempLabel setTextColor:Color_Active_Button_2];
+            [tempLabel setTextColor:Color_Text_1];
             tempLabel.textAlignment = NSTextAlignmentCenter;
-            [tempLabel setBackgroundColor:[UIColor colorWithRed:.8 green:.8 blue:.8 alpha:0.2]];
+            [tempLabel setBackgroundColor:Color_line_2];
             if (tempLabel.frame.size.width+10>classifyBiew.frame.size.width-20) {
                 [tempLabel setFrame:CGRectMake(0, 0, classifyBiew.frame.size.width-30, 20)];
             }
             [labelArray addObject:tempLabel];
         }
-        int maxXpoint = classifyBiew.frame.size.width-20;
-        int localheight = 5;
-        int localX = 5;
+        int maxXpoint = classifyBiew.frame.size.width;
+        int localheight = 16;
+        int localX = 0;
         while ([labelArray count]>0) {
             UILabel *templabel = [labelArray firstObject];
-            if (localX + templabel.frame.size.width+5 > maxXpoint) {
+            if (localX + templabel.frame.size.width+17 >= maxXpoint) {
                 for (int i =1; i<labelArray.count; i++) {
                     UILabel *subTempLabel = labelArray[i];
-                    if (localX+subTempLabel.frame.size.width+5 < maxXpoint) {
+                    if (localX+subTempLabel.frame.size.width+17 <= maxXpoint) {
                         [subTempLabel setFrame:CGRectMake(localX, localheight, subTempLabel.frame.size.width, subTempLabel.frame.size.height)];
                         [classifyBiew addSubview:subTempLabel];
                         [labelArray removeObject:subTempLabel];
-                        localX = localX +subTempLabel.frame.size.width+5;
+                        localX = localX +subTempLabel.frame.size.width+4;
                         break;
                     }
                 }
-                localX = 5;
-                localheight = localheight+25;
+                localX = 0;
+                localheight = localheight+28;
             }
             else{
                 [templabel setFrame:CGRectMake(localX, localheight, templabel.frame.size.width, templabel.frame.size.height)];
                 [classifyBiew addSubview:templabel];
                 [labelArray removeObject:templabel];
-                localX = localX+templabel.frame.size.width+5;
+                localX = localX+templabel.frame.size.width+4;
                 
             }
         }
-        if (belowView.frame.origin.y+classifyBiew.frame.origin.y+localheight+25<SCREEN_HEIGHT-64) {
+        if (belowView.frame.origin.y+classifyBiew.frame.origin.y+localheight+30<SCREEN_HEIGHT-64) {
             [classifyBiew setFrame:CGRectMake(classifyBiew.frame.origin.x, classifyBiew.frame.origin.y, classifyBiew.frame.size.width, SCREEN_HEIGHT-64-belowView.frame.origin.y-classifyBiew.frame.origin.y)];
             
         }else{
-            [classifyBiew setFrame:CGRectMake(classifyBiew.frame.origin.x, classifyBiew.frame.origin.y, classifyBiew.frame.size.width, localheight+25)];
+            [classifyBiew setFrame:CGRectMake(classifyBiew.frame.origin.x, classifyBiew.frame.origin.y, classifyBiew.frame.size.width, localheight+30)];
         }
         
         [belowView setFrame:CGRectMake(belowView.frame.origin.x, belowView.frame.origin.y, belowView.frame.size.width, classifyBiew.frame.origin.y + classifyBiew.frame.size.height)];
@@ -294,6 +294,7 @@
     }
 }
 - (void)growingTextView:(HPGrowingTextView *)growingTextView willChangeHeight:(float)height{
+    height = (int)height;
     [growingTextView setFrame:CGRectMake(30, 152, SCREEN_WIDTH-60, height)];
     frameHeight = 152+height;
     [belowView setFrame:CGRectMake(13, 152+height, SCREEN_WIDTH-26, belowView.frame.size.height)];
@@ -304,6 +305,7 @@
 }
 
 - (void)growingTextViewDidChange:(HPGrowingTextView *)growingTextView{
+    isChanged = YES;
     if ([growingTextView.text length]>60) {
         growingTextView.text = [growingTextView.text substringToIndex:60];
     }
@@ -448,7 +450,6 @@
                                 ASIFormDataRequest *interRequest = [[ASIFormDataRequest alloc] initWithURL:[NSURL URLWithString:[imagedic objectForKey:@"url"]]];
                                 [ASIFormDataRequest clearSession];
                                 [interRequest setPostFormat:ASIMultipartFormDataPostFormat];
-                                [interRequest addRequestHeader:@"Host" value:@"upload.qiniu.com"];
                                 [interRequest setPostValue:[[imagedic objectForKey:@"data"] objectForKey:@"token"] forKey:@"token"];
                                 NSData *imageData = UIImageJPEGRepresentation(localImage, 0.75);
                                 [interRequest addData:imageData forKey:@"file"];

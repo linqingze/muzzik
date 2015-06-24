@@ -130,8 +130,8 @@
 
 #define DocumentsPath [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"]
 
-
-#define APP_ID @"976583158"
+//976583158
+#define APP_ID @"909997353"
 #define UMAPPKEY @"5503f6b7fd98c520c4000362"
 
 #define ID_WeiChat_APP @"wx9d1e9620b322ce35"

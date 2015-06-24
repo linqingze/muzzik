@@ -76,14 +76,13 @@
     [attentionView addGestureRecognizer:tapForAttention];
     
     
-    attentionLabel = [[UILabel alloc] initWithFrame:CGRectMake(15,0 , 50, 40)];
+    attentionLabel = [[UILabel alloc] initWithFrame:CGRectMake(15,0 , 200, 40)];
     [attentionLabel setText:@"广场"];
     [attentionLabel setFont:[UIFont boldSystemFontOfSize:15]];
     [attentionLabel setTextColor:Color_Text_2];
-    attentionLabel.textAlignment = NSTextAlignmentCenter;
     [attentionView addSubview:attentionLabel];
     
-    nextImage = [[UIImageView alloc] initWithFrame:CGRectMake(attentionView.frame.size.width-30, 14, 7, 12)];
+    nextImage = [[UIImageView alloc] initWithFrame:CGRectMake(attentionView.frame.size.width-22, 14, 7, 12)];
     nextImage.image = [UIImage imageNamed:Image_recommendarrowImage];
     [attentionView addSubview:nextImage];
 
@@ -96,12 +95,12 @@
     topicView.layer.cornerRadius =3;
     topicView.clipsToBounds = YES;
     [mainScroll addSubview:topicView];
-    hotLabel = [[UILabel alloc] initWithFrame:CGRectMake(15,0 , 60, 40)];
+    hotLabel = [[UILabel alloc] initWithFrame:CGRectMake(15,0 , 200, 40)];
     hotLabel.font = [UIFont boldSystemFontOfSize:15];
     [hotLabel setTextColor:Color_Text_2];
     hotLabel.text = @"热门话题";
     [topicView addSubview:hotLabel];
-    topicNext = [[UIImageView alloc] initWithFrame:CGRectMake(attentionView.frame.size.width-30, 14, 7, 12)];
+    topicNext = [[UIImageView alloc] initWithFrame:CGRectMake(attentionView.frame.size.width-22, 14, 7, 12)];
     [topicNext setImage:[UIImage imageNamed:Image_recommendarrowImage]];
     [topicView addSubview:topicNext];
     
@@ -113,12 +112,12 @@
     userView.layer.cornerRadius =3;
     userView.clipsToBounds = YES;
     [mainScroll addSubview:userView];
-    userLabel = [[UILabel alloc] initWithFrame:CGRectMake(15,0 , 60, 40)];
+    userLabel = [[UILabel alloc] initWithFrame:CGRectMake(15,0 , 200, 40)];
     userLabel.font = [UIFont boldSystemFontOfSize:15];
     [userLabel setTextColor:Color_Text_2];
     userLabel.text = @"活跃用户";
     [userView addSubview:userLabel];
-    userNext = [[UIImageView alloc] initWithFrame:CGRectMake(attentionView.frame.size.width-30, 14, 7, 12)];
+    userNext = [[UIImageView alloc] initWithFrame:CGRectMake(attentionView.frame.size.width-22, 14, 7, 12)];
     [userNext setImage:[UIImage imageNamed:Image_recommendarrowImage]];
     [userView addSubview:userNext];
     [self loadUser];
@@ -133,12 +132,12 @@
     muzzikView.layer.cornerRadius =3;
     muzzikView.clipsToBounds = YES;
     [MainMuzzikView addSubview:muzzikView];
-    muzzikLabel = [[UILabel alloc] initWithFrame:CGRectMake(15,0 , 60, 40)];
+    muzzikLabel = [[UILabel alloc] initWithFrame:CGRectMake(15,0 , 200, 40)];
     muzzikLabel.font = [UIFont boldSystemFontOfSize:15];
     [muzzikLabel setTextColor:Color_Text_2];
     muzzikLabel.text = @"本期推荐";
     [muzzikView addSubview:muzzikLabel];
-    muzzikNext = [[UIImageView alloc] initWithFrame:CGRectMake(attentionView.frame.size.width-30, 14, 7, 12)];
+    muzzikNext = [[UIImageView alloc] initWithFrame:CGRectMake(attentionView.frame.size.width-22, 14, 7, 12)];
     [muzzikNext setImage:[UIImage imageNamed:Image_recommendarrowImage]];
     [muzzikView addSubview:muzzikNext];
     [self loadMuzzik];
@@ -152,7 +151,7 @@
     }
     UILabel *headLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 5, self.parentRoot.titleShowView.frame.size.width, self.parentRoot.titleShowView.frame.size.height-5)];
     [headLabel setTextColor:[UIColor whiteColor]];
-    [headLabel setText:@"推荐"];
+    [headLabel setText:@"热门"];
     headLabel.textAlignment = NSTextAlignmentCenter;
     [headLabel setFont:[UIFont boldSystemFontOfSize:15]];
     [self.parentRoot.titleShowView addSubview:headLabel];
@@ -172,6 +171,25 @@
         [mainScroll setContentSize:CGSizeMake(SCREEN_WIDTH, MainMuzzikView.frame.origin.y+MainMuzzikView.frame.size.height+20)];
         
     }
+    if ([localMuzzik.muzzik_id isEqualToString:trendMuzzik.muzzik_id]) {
+        [attentionView setBackgroundColor:Color_line_2];
+        [attentionLabel setTextColor:Color_Text_2];
+        [nextImage setImage:[UIImage imageNamed:Image_recommendarrowImage]];
+    }else{
+        if ([trendMuzzik.color longLongValue]==1) {
+            [attentionView setBackgroundColor:Color_Action_Button_1];
+            [attentionLabel setTextColor:[UIColor whiteColor]];
+            [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
+        }else if ([trendMuzzik.color longLongValue]==2){
+            [attentionView setBackgroundColor:Color_Action_Button_2];
+            [attentionLabel setTextColor:[UIColor whiteColor]];
+            [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
+        }else{
+            [attentionView setBackgroundColor:Color_Action_Button_3];
+            [attentionLabel setTextColor:[UIColor whiteColor]];
+            [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
+        }
+    }
     
 
 }
@@ -190,8 +208,8 @@
 
 -(void) loadFeeds{
     userInfo *user = [userInfo shareClass];
-    if (user.checkFollow) {
-        if ([[[user.playList objectForKey:Constant_userInfo_follow] objectForKey:@"muzziks"] count]>0) {
+    if (user.checkSquare) {
+        if ([[[user.playList objectForKey:Constant_userInfo_square] objectForKey:@"muzziks"] count]>0) {
             
             trendMuzzik = [[user.playList objectForKey:Constant_userInfo_square] objectForKey:UserInfo_muzziks][0];
             if ([localMuzzik.muzzik_id isEqualToString:trendMuzzik.muzzik_id]) {
@@ -339,9 +357,12 @@
         [MuzzikItem addObjectToLocal:data ForKey:Constant_Data_topic];
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         if (dic) {
+            if ([[dic allKeys] containsObject:@"data"] && [[[dic objectForKey:@"data"] allKeys] containsObject:@"title"] && [[[dic objectForKey:@"data"] objectForKey:@"title"] length] >0) {
+                hotLabel.text = [[dic objectForKey:@"data"] objectForKey:@"title"];
+            }
             CGFloat MaxX = SCREEN_WIDTH-23;
             CGFloat localX = 15;
-            CGFloat localY = 52;
+            CGFloat localY = 42;
             topicArray = [dic objectForKey:@"topics"];
             if ([[[dic objectForKey:@"data"] allKeys] containsObject:@"title"] && [[[dic objectForKey:@"data"] objectForKey:@"title"] length]>0) {
                 attentionLabel.text = [[dic objectForKey:@"data"] objectForKey:@"title"];
@@ -354,7 +375,7 @@
                 if (localX +tempLabel.frame.size.width+8>MaxX) {
                     localX = 15;
                     localY = localY+38;
-                    if (localY<234) {
+                    if (localY<224) {
                         [tempLabel setFrame:CGRectMake(localX, localY, tempLabel.frame.size.width, tempLabel.frame.size.height)];
                         [topicView addSubview:tempLabel];
                         localX = localX+tempLabel.frame.size.width+8;
@@ -376,7 +397,7 @@
             if (dic) {
             CGFloat MaxX = SCREEN_WIDTH-23;
             CGFloat localX = 15;
-            CGFloat localY = 52;
+            CGFloat localY = 42;
             topicArray = [dic objectForKey:@"topics"];
             if ([[[dic objectForKey:@"data"] allKeys] containsObject:@"title"] && [[[dic objectForKey:@"data"] objectForKey:@"title"] length]>0) {
                 attentionLabel.text = [[dic objectForKey:@"data"] objectForKey:@"title"];
@@ -389,7 +410,7 @@
                 if (localX +tempLabel.frame.size.width+8>MaxX) {
                     localX = 15;
                     localY = localY+38;
-                    if (localY<234) {
+                    if (localY<224) {
                         [tempLabel setFrame:CGRectMake(localX, localY, tempLabel.frame.size.width, tempLabel.frame.size.height)];
                         [topicView addSubview:tempLabel];
                         localX = localX+tempLabel.frame.size.width+8;
@@ -419,7 +440,9 @@
         [MuzzikItem addObjectToLocal:data ForKey:Constant_Data_User_Vip];
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         if (dic) {
-            
+            if ([[dic allKeys] containsObject:@"data"] && [[[dic objectForKey:@"data"] allKeys] containsObject:@"title"] && [[[dic objectForKey:@"data"] objectForKey:@"title"] length] >0) {
+                userLabel.text = [[dic objectForKey:@"data"] objectForKey:@"title"];
+            }
             MuzzikUser *muzzikToy = [MuzzikUser new];
             userArray = [muzzikToy makeMuzziksByUserArray:[dic objectForKey:@"users"]];
             NSMutableArray *tempArray = [NSMutableArray array];
@@ -435,7 +458,7 @@
             }
            
             CGFloat localX = 15;
-            CGFloat localY = 52;
+            CGFloat localY = 47;
             for (int i = 0; i<2; i++) {
                 for (int j=0; j<3; j++) {
                     MuzzikUser * tempUser = tempArray[i*3+j];
@@ -560,6 +583,9 @@
 -(void) loadMuzzik{
     userInfo *user = [userInfo shareClass];
     if (user.checkSuggest) {
+        if ([user.suggestTitle length]>0) {
+            muzzikLabel.text = user.suggestTitle;
+        }
         suggestMuzzik = [[user.playList objectForKey:Constant_userInfo_suggest] objectForKey:UserInfo_muzziks][0];
         [self suggestViewLayout];
     }else{
@@ -573,6 +599,9 @@
             [MuzzikItem addObjectToLocal:data ForKey:Constant_Data_Suggest];
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
             if (dic&&[[dic objectForKey:@"muzziks"]count]>0) {
+                if ([[dic allKeys] containsObject:@"data"] && [[[dic objectForKey:@"data"] allKeys] containsObject:@"title"] && [[[dic objectForKey:@"data"] objectForKey:@"title"] length] >0) {
+                    muzzikLabel.text = [[dic objectForKey:@"data"] objectForKey:@"title"];
+                }
                 suggestMuzzik =  [[[muzzik new] makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"] ] objectAtIndex:0];
                 [self suggestViewLayout];
             }
@@ -607,7 +636,7 @@
         }];
     }];
     [MainMuzzikView addSubview:muzzikImage];
-    UIButton *headButton = [[UIButton alloc] initWithFrame:CGRectMake(15, SCREEN_WIDTH+2, 56, 56)];
+    UIButton *headButton = [[UIButton alloc] initWithFrame:CGRectMake(16, SCREEN_WIDTH+2, 56, 56)];
     headButton.layer.cornerRadius = 28;
     headButton.layer.borderColor = [UIColor whiteColor].CGColor;
     headButton.layer.borderWidth =2;
@@ -620,51 +649,51 @@
     }];
     [MainMuzzikView addSubview:headButton];
     UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(69, SCREEN_WIDTH+38, SCREEN_WIDTH-140, 17)];
-    [nameLabel setFont:[UIFont boldSystemFontOfSize:15]];
+    [nameLabel setFont:[UIFont boldSystemFontOfSize:Font_size_userName]];
     [nameLabel setTextColor:Color_Text_1];
     nameLabel.text = suggestMuzzik.MuzzikUser.name;
     [muzzikView addSubview:nameLabel];
-    UILabel *timeStamp = [[UILabel alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-130, SCREEN_WIDTH+38, 96, 9)];
+    UILabel *timeStamp = [[UILabel alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-130, SCREEN_WIDTH+42, 92, 9)];
     [timeStamp setTextColor:Color_Additional_5];
     [timeStamp setFont:[UIFont fontWithName:Font_Next_medium size:9]];
     timeStamp.textAlignment = NSTextAlignmentRight;
     [muzzikView addSubview:timeStamp];
-    UIImageView *timeImage = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-30, SCREEN_WIDTH+38, 9, 9)];
+    UIImageView *timeImage = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-34, SCREEN_WIDTH+42, 9, 9)];
     [timeImage setImage:[UIImage imageNamed:Image_timeImage]];
     [muzzikView addSubview:timeImage];
     timeStamp.text = [MuzzikItem transtromTime:suggestMuzzik.date];
     
     
-    TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(15, SCREEN_WIDTH+60, SCREEN_WIDTH-46, 500)];
-    [label setFont:[UIFont systemFontOfSize:14]];
+    TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(15, SCREEN_WIDTH+70, SCREEN_WIDTH-46, 500)];
+    [label setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
     [label setTextColor:Color_Text_2];
     label.text = suggestMuzzik.message;
     CGSize msize = [label sizeThatFits:CGSizeMake(SCREEN_WIDTH-46, 2000)];
     if (msize.height>limitHeight) {
-        [label setFrame:CGRectMake(15,  SCREEN_WIDTH+60, SCREEN_WIDTH-46,limitHeight)];
+        [label setFrame:CGRectMake(15,  SCREEN_WIDTH+70, SCREEN_WIDTH-46,limitHeight)];
     }else{
-        [label setFrame:CGRectMake(15,  SCREEN_WIDTH+60, SCREEN_WIDTH-46,msize.height)];
+        [label setFrame:CGRectMake(15,  SCREEN_WIDTH+70, SCREEN_WIDTH-46,msize.height)];
     }
     
     [muzzikView addSubview:label];
-    UIView *musicPlayView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN_WIDTH+60+label.frame.size.height+10, SCREEN_WIDTH, 60)];
+    UIView *musicPlayView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN_WIDTH+83+label.frame.size.height, SCREEN_WIDTH, 60)];
     [MainMuzzikView addSubview:musicPlayView];
     UIProgressView *progress = [[UIProgressView alloc] initWithFrame:CGRectMake(16, 0, SCREEN_WIDTH-32, 1)];
     [progress setProgress:1];
     [musicPlayView addSubview:progress];
-    UILabel *musicName = [[UILabel alloc] initWithFrame:CGRectMake(68, 12, SCREEN_WIDTH-150, 20)];
+    UILabel *musicName = [[UILabel alloc] initWithFrame:CGRectMake(78, 11, SCREEN_WIDTH-150, 20)];
     [musicName setFont:[UIFont fontWithName:Font_Next_Bold size:16]];
     musicName.text = suggestMuzzik.music.name;
     [musicPlayView addSubview:musicName];
-    UILabel *musicArtist = [[UILabel alloc] initWithFrame:CGRectMake(68, 31, SCREEN_WIDTH-150, 25)];
+    UILabel *musicArtist = [[UILabel alloc] initWithFrame:CGRectMake(78, 32, SCREEN_WIDTH-150, 25)];
     [musicArtist setFont:[UIFont fontWithName:Font_Next_Bold size:13]];
     [musicPlayView addSubview:musicArtist];
     musicArtist.text = suggestMuzzik.music.artist;
-    likeButton = [[UIButton alloc] initWithFrame:CGRectMake(23, 13, 34, 34)];
+    likeButton = [[UIButton alloc] initWithFrame:CGRectMake(23, 13, 36, 36)];
     [likeButton addTarget:self action:@selector(moveAction) forControlEvents:UIControlEventTouchUpInside];
     [musicPlayView addSubview:likeButton];
     
-    playButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-59, 13, 34, 34)];
+    playButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-61, 13, 36, 36)];
     
     [playButton addTarget:self action:@selector(playMusicAction) forControlEvents:UIControlEventTouchUpInside];
     [musicPlayView addSubview:playButton];
@@ -777,6 +806,7 @@
 }
 -(void) tapForAttention{
     muzzikTrendController *muzziktablevc = [[muzzikTrendController alloc] init];
+    localMuzzik = trendMuzzik;
     [self.navigationController pushViewController:muzziktablevc animated:YES];
 }
 -(void) tapForMoreUser{

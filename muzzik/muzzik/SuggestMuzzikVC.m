@@ -160,7 +160,7 @@
     cell.message.delegate = self;
     CGFloat height = [MuzzikItem heightForLabel:cell.message WithText:cell.message.text];
     [cell.message setFrame:CGRectMake(cell.message.frame.origin.x, cell.message.frame.origin.y, cell.message.frame.size.width,height )];
-    [cell.ActionView setFrame:CGRectMake(25, cell.message.frame.origin.y+height+15, SCREEN_WIDTH-50, 40)];
+    //[cell.ActionView setFrame:CGRectMake(25, cell.message.frame.origin.y+height+15, SCREEN_WIDTH-50, 40)];
     [cell.scroll setContentSize:CGSizeMake(SCREEN_WIDTH, cell.message.frame.origin.y+height+65)];
     if ([[musicPlayer shareClass].localMuzzik.muzzik_id isEqualToString:tempMuzzik.muzzik_id] && ![Globle shareGloble].isPause) {
         [cell.playButton setHidden:YES];

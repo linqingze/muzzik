@@ -9,5 +9,6 @@
 #import "BaseNagationViewController.h"
 
 @interface settingSystemVC : BaseNagationViewController
+@property (nonatomic,assign) BOOL isClosed;
 -(void)reloadTable;
 @end

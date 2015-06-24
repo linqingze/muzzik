@@ -9,7 +9,7 @@
 #import "RJTextView.h"
 
 #define TEST_CENTER_ALIGNMENT   0
-#define PEN_ICON_SIZE           26.5
+#define PEN_ICON_SIZE           36
 #define EDIT_BOX_LINE           1.0
 #define MAX_FONT_SIZE           500
 #define MAX_TEXT_LETH           50
@@ -92,7 +92,6 @@
         [self addGestureRecognizer:moveGesture];
         UIImageView *sView = [[UIImageView alloc] initWithFrame:CGRectZero];
         [sView setImage:[UIImage imageNamed:@"scalingImage"]];
-        [sView setHighlightedImage:[UIImage imageNamed:@"pe_pen_scale_push"]];
         [sView setUserInteractionEnabled:YES];
         UIPanGestureRecognizer *panGes = [[UIPanGestureRecognizer alloc] initWithTarget:self
                                                                                  action:@selector(scaleTextView:)];
@@ -151,6 +150,7 @@
 
 - (void)createTextViewWithFrame:(CGRect)frame text:(NSString *)text font:(UIFont *)font
 {
+    [border removeFromSuperlayer];
     CTextView *textView = [[CTextView alloc] initWithFrame:frame];
     
     textView.scrollEnabled = NO; [textView setDelegate:self];
@@ -160,7 +160,8 @@
     //textView.selectable = NO;
     [textView setBackgroundColor:[UIColor clearColor]];
     [textView setTextColor:self.tColor];
-    [textView setText:text]; [textView setFont:font];
+    [textView setText:text];
+    [textView setFont:font];
     [textView setAutocorrectionType:UITextAutocorrectionTypeNo];
     [self addSubview:textView]; [self sendSubviewToBack:textView];
     
@@ -178,7 +179,8 @@
     border = [CAShapeLayer layer];
     border.strokeColor = [UIColor redColor].CGColor;
     border.fillColor = nil;
-    border.lineDashPattern = @[@4, @3];
+    border.lineWidth = 2.0f;
+    border.lineDashPattern = @[@3, @3];
     [_textView.layer addSublayer:border];
 }
 
@@ -198,7 +200,7 @@
     [self.closeButton setFrame:CGRectMake(0, 0,
                                          PEN_ICON_SIZE, PEN_ICON_SIZE)];
     [self.scaleView  setFrame:CGRectMake(self.frame.size.width-PEN_ICON_SIZE,
-                                         0, PEN_ICON_SIZE, PEN_ICON_SIZE)];
+                                         self.frame.size.height-PEN_ICON_SIZE, PEN_ICON_SIZE, PEN_ICON_SIZE)];
 }
 
 -(void)moveGesture:(UIPanGestureRecognizer *)recognizer
@@ -308,7 +310,8 @@
     if (panGes.state == UIGestureRecognizerStateChanged)
     {
         CGPoint translation = [panGes translationInView:self];
-        CGFloat x = translation.x; CGFloat y = -translation.y;
+        //-  CGFloat y = -translation.y
+        CGFloat x = translation.x; CGFloat y = translation.y;
 
         
         CGFloat wScale = x / self.frame.size.width +1;

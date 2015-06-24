@@ -20,6 +20,9 @@
         self.clipsToBounds = YES;
         self.contentMode = UIViewContentModeScaleAspectFill;
         self.userInteractionEnabled = YES;
+        self.textAlignment = NSTextAlignmentCenter;
+        self.adjustsFontSizeToFitWidth = YES;
+        self.layer.cornerRadius = 3;
     }
     return self;
 }
@@ -39,10 +42,7 @@
     [self sizeToFit];
     
     [self setFrame:CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width+6, self.frame.size.height+6)];
-    self.textAlignment = NSTextAlignmentCenter;
-    self.adjustsFontSizeToFitWidth = YES;
-    self.layer.cornerRadius = 3;
-    self.clipsToBounds = YES;
+
 }
 /*
 // Only override drawRect: if you perform custom drawing.
@@ -56,10 +56,10 @@
     if ([self.delegate respondsToSelector:@selector(tappedWithObject:)])
     {
         [UIView animateWithDuration:0.2 animations:^{
-            [self setFrame:CGRectMake(self.frame.origin.x+10, self.frame.origin.y+4, self.frame.size.width-20, self.frame.size.height-8)];
+            [self setFrame:CGRectMake(self.frame.origin.x+3, self.frame.origin.y+3, self.frame.size.width-6, self.frame.size.height-6)];
         } completion:^(BOOL finished) {
             [UIView animateWithDuration:0.3 animations:^{
-                [self setFrame:CGRectMake(self.frame.origin.x-10, self.frame.origin.y-4, self.frame.size.width+20, self.frame.size.height+8)];
+                [self setFrame:CGRectMake(self.frame.origin.x-3 , self.frame.origin.y-3, self.frame.size.width+6, self.frame.size.height+6)];
             } completion:^(BOOL finished) {
                 [self.delegate tappedWithObject:self];
             }];

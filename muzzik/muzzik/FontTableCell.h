@@ -10,7 +10,7 @@
 #import "ChooseLyricVC.h"
 @interface FontTableCell : UITableViewCell
 @property (nonatomic,retain) UIImageView *fontImage;
-@property (nonatomic,retain) UIProgressView *downloadProgress;
+@property (nonatomic,retain) UIView *lineSeparate;
 @property (nonatomic,retain) UIButton *downButton;
 @property (nonatomic,copy) NSString *urlString;
 @property (nonatomic,retain) ASIHTTPRequest *asiRequest;

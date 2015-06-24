@@ -197,6 +197,7 @@
                 NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
                 self.searchArray = [[MuzzikUser new] makeMuzziksByUserArray:[dic objectForKey:@"users"]];
                 [myTableView reloadData];
+                
             }
             else{
                 //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
@@ -205,7 +206,6 @@
         [requestForm setFailedBlock:^{
             NSLog(@"%@",[weakrequest error]);
             NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-            [userInfo checkLoginWithVC:self];
         }];
         [requestForm startAsynchronous];
     }

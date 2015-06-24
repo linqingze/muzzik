@@ -186,7 +186,7 @@
         }
         UILabel *headLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 5, self.parentRoot.titleShowView.frame.size.width, self.parentRoot.titleShowView.frame.size.height-5)];
         [headLabel setTextColor:[UIColor whiteColor]];
-        [headLabel setText:@"个人中心"];
+        [headLabel setText:@"我"];
         headLabel.textAlignment = NSTextAlignmentCenter;
         [headLabel setFont:[UIFont boldSystemFontOfSize:15]];
         [self.parentRoot.titleShowView addSubview:headLabel];
@@ -240,6 +240,8 @@
         }
         
         CGFloat recordHeight = SCREEN_WIDTH-32;
+        [constellationImage removeFromSuperview];
+        [constellationLabel removeFromSuperview];
         if ([dicKeys containsObject:@"astro"] && [[_profileDic objectForKey:@"astro"] length]>0) {
             constellationImage.frame = CGRectMake(16, recordHeight+5, 8, 8);
             [constellationImage setImage:[UIImage imageNamed:Image_profileconstellationImage]];
@@ -251,10 +253,9 @@
             [mainView addSubview:constellationLabel];
             recordHeight = recordHeight-28;
             
-        }else{
-        
         }
-        
+        [birthImage removeFromSuperview];
+        [birthLabel removeFromSuperview];
         if ([dicKeys containsObject:@"birthday"] && [_profileDic objectForKey:@"birthday"]>0) {
             double unixTimeStamp = [[NSString stringWithFormat:@"%@",[_profileDic objectForKey:@"birthday"]] doubleValue]/1000;
             NSTimeInterval _interval=unixTimeStamp;
@@ -276,6 +277,10 @@
             recordHeight = recordHeight-28;
             
         }
+        [schoolImage removeFromSuperview];
+        [companyImage removeFromSuperview];
+        [companyLabel removeFromSuperview];
+        [schoolLabel removeFromSuperview];
         if ([dicKeys containsObject:@"company"] && [[_profileDic objectForKey:@"company"] length]>0) {
             companyImage.frame = CGRectMake(16, recordHeight+5, 8, 8);
             [companyImage setImage:[UIImage imageNamed:Image_profilejobImage]];
@@ -289,7 +294,7 @@
             
         }else if([dicKeys containsObject:@"school"] && [[_profileDic objectForKey:@"school"] length]>0){
             schoolImage.frame = CGRectMake(16, recordHeight+5, 8, 8);
-            [schoolImage setImage:[UIImage imageNamed:Image_profilejobImage]];
+            [schoolImage setImage:[UIImage imageNamed:Image_profileschoolImage]];
             [mainView addSubview:schoolImage];
             schoolLabel.frame = CGRectMake(35, recordHeight, SCREEN_WIDTH/2-50, 20);
             [schoolLabel setText:[_profileDic objectForKey:@"school"]];
@@ -297,7 +302,10 @@
             [schoolLabel setFont:[UIFont systemFontOfSize:12]];
             [mainView addSubview:schoolLabel];
             recordHeight = recordHeight-28;
+        }else{
+            
         }
+        [descriptionLabel removeFromSuperview];
         if ([dicKeys containsObject:@"description"]) {
             UILabel *temp = [[UILabel alloc] initWithFrame:CGRectMake(16, SCREEN_WIDTH/2, SCREEN_WIDTH-32, 100)];
             temp.numberOfLines = 0;
@@ -311,11 +319,12 @@
             descriptionLabel.text = [_profileDic objectForKey:@"description"];
             [descriptionLabel setTextColor:[UIColor whiteColor]];
             [mainView addSubview:descriptionLabel];
+        }else{
+            
         }
         
-        
+        [genresView removeFromSuperview];
         if ([dicKeys containsObject:@"genres"] && [[_profileDic objectForKey:@"genres"] count]>0) {
-            [genresView removeFromSuperview];
             genresView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-10, SCREEN_WIDTH-88, SCREEN_WIDTH/2-6, 76)];
             [mainView addSubview: genresView];
             int local = SCREEN_WIDTH/2-6;
@@ -345,6 +354,8 @@
                 [genresView addSubview:tagLabel];
                 local = local- tempLabel.frame.size.width-28;
             }
+        }else{
+            
         }
         MuzzikCount.text = [NSString stringWithFormat:@"%@ 信息",[_profileDic objectForKey:@"muzzikTotal"]];
         movedCount.text = [NSString stringWithFormat:@"%@ 喜欢",[_profileDic objectForKey:@"movedTotal"]];

@@ -7,8 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "ZJSwitch.h"
+#import "settingSystemVC.h"
 @interface SettingCell : UITableViewCell
 @property (nonatomic,retain)UILabel *label;
-@property (nonatomic,retain)UIImageView *shakeButton;
+@property (nonatomic,retain)ZJSwitch *shakeSwitch;
+@property (nonatomic) settingSystemVC *cellKeeper;
 @end

@@ -22,7 +22,8 @@
         string = muzzikuser.name;
         if ([string length]>0) {
             NSString *pinyin = [self pinyin:string];
-            if ([table containsString:[[pinyin substringToIndex:1] uppercaseString]]) {
+            NSRange rang = [table rangeOfString:[[pinyin substringToIndex:1] uppercaseString]];
+            if (rang.location != NSNotFound) {
                 [stringArr addObject:[NSDictionary dictionaryWithObjectsAndKeys:pinyin,@"pinyin",muzzikuser,@"user",[[pinyin substringToIndex:1] uppercaseString],@"firstcapital", nil]];
             }else{
                 [stringArr addObject:[NSDictionary dictionaryWithObjectsAndKeys:pinyin,@"pinyin",muzzikuser,@"user",@"#",@"firstcapital", nil]];
@@ -31,6 +32,7 @@
         }
         
     }
+    
     stringArr = [NSMutableArray arrayWithArray:[stringArr sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) { //排序
         if ([[obj1 objectForKey:@"pinyin"] compare:[obj2 objectForKey:@"pinyin"] options:NSCaseInsensitiveSearch]==NSOrderedAscending) {
             return NSOrderedAscending;//递减

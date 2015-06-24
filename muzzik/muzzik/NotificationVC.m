@@ -29,7 +29,7 @@
     [super viewDidLoad];
     page =1;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteMuzzik:) name:String_Muzzik_Delete object:nil];
-    [self initNagationBar:@"通知消息" leftBtn:Constant_backImage rightBtn:0];
+    [self initNagationBar:@"通知" leftBtn:Constant_backImage rightBtn:0];
     notifyTabelView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     notifyTabelView.delegate = self;
     notifyTabelView.dataSource = self;

@@ -105,7 +105,6 @@
                 [ASIFormDataRequest clearSession];
                 [interRequest setPostFormat:ASIMultipartFormDataPostFormat];
                 //[interRequest addRequestHeader:@"boundary" value:@"<frontier>"];
-                [interRequest addRequestHeader:@"Host" value:@"upload.qiniu.com"];
                 //[interRequest addRequestHeader:@"Content-Type" value:@"multipart/form-data; charset=utf-8; boundary=0xKhTmLbOuNdArY"];
                 //[interRequest addRequestHeader:@"boundary" value:@"<frontier>"];
                // interRequest addRequestHeader:@: value:<#(NSString *)#>

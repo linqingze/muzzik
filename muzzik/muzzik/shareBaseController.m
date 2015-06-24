@@ -77,7 +77,7 @@
     UIButton *rightBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
     UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:rightBtn];
     rightBtn.frame = CGRectMake(0, 0, 44, 44);
-    //[rightBtn setImageEdgeInsets:UIEdgeInsetsMake(2,30,2,0)];
+    //[rightBtn setImageEdgeInsets:UIEdgeInsetsMake(2,20,2,0)];
     
     if ([[self btnImage:rightImge] isKindOfClass:[UIImage class]]) {
         UIImage *image = (UIImage *)[self btnImage:rightImge];

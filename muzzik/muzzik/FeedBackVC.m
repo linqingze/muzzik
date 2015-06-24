@@ -51,21 +51,21 @@
 }
 -(void)rightBtnAction:(UIButton *)sender{
     [decripText resignFirstResponder];
-    ASIHTTPRequest *updateImageRequest = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@api/admin/feedback",BaseURL]]];
-    [updateImageRequest addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:decripText.text forKey:@"message"] Method:PostMethod auth:YES];
-    __weak ASIHTTPRequest *WeakImageRequest = updateImageRequest;
-    [updateImageRequest setCompletionBlock:^{
+    ASIHTTPRequest *feedBackRequest = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@api/admin/feedback",BaseURL]]];
+    [feedBackRequest addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:decripText.text forKey:@"message"] Method:PostMethod auth:YES];
+    __weak ASIHTTPRequest *WeakImageRequest = feedBackRequest;
+    [feedBackRequest setCompletionBlock:^{
         if ([WeakImageRequest responseStatusCode]==200) {
             [MuzzikItem showNotifyOnView:self.navigationController.view text:@"反馈成功"];
             [self.navigationController popViewControllerAnimated:YES];
             
         }
     }];
-    [updateImageRequest setFailedBlock:^{
+    [feedBackRequest setFailedBlock:^{
         NSLog(@"%@",[WeakImageRequest error]);
         [userInfo checkLoginWithVC:self];
     }];
-    [updateImageRequest startAsynchronous];
+    [feedBackRequest startAsynchronous];
 }
 /*
 #pragma mark - Navigation

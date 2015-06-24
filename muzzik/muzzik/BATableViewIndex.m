@@ -95,7 +95,7 @@
     [tl setFrame:frame];
     [tl setAlignmentMode:kCAAlignmentCenter];
     [tl setContentsScale:[[UIScreen mainScreen] scale]];
-    [tl setForegroundColor:RGB(0, 0, 255, 1).CGColor];
+    [tl setForegroundColor:Color_Additional_4.CGColor];
     if ([string length]>1) {
         string = @"*";
     }

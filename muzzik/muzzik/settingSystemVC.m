@@ -12,7 +12,7 @@
 #import "FeedBackVC.h"
 @interface settingSystemVC ()<UITableViewDataSource,UITableViewDelegate>{
     UITableView *settingTable;
-    BOOL isopen;
+    
 }
 
 @end
@@ -40,27 +40,30 @@
     if (indexPath.row == 0) {
         SettingCell *Scell = [tableView dequeueReusableCellWithIdentifier:@"SettingCell" forIndexPath:indexPath];
         Scell.label.text = @"摇一摇切歌";
+        Scell.cellKeeper = self;
         NSString * shakeSwitch = [MuzzikItem getStringForKey:@"User_shakeActionSwitch"];
-        if ([shakeSwitch isEqualToString:@"open"]) {
-            isopen = YES;
-            [Scell.shakeButton setImage:[UIImage imageNamed:Image_settingonImage]];
+        if (![shakeSwitch isEqualToString:@"close"]) {
+            _isClosed = NO;
+            [Scell.shakeSwitch setOn:YES ];
         }else{
-            isopen = NO;
-            [Scell.shakeButton setImage:[UIImage imageNamed:Image_settingoffImage]];
+            _isClosed = YES;
+            [Scell.shakeSwitch setOn:NO];
         }
         return Scell;
     }else if (indexPath.row == 1) {
+        cell.textLabel.text = @"赏Muzzik 好评";
+        
+    }else if (indexPath.row == 2) {
+        cell.textLabel.text = @"意见反馈";
+    }else if (indexPath.row == 3) {
+        cell.textLabel.text = @"关于Muzzik";
+    }else if(indexPath.row == 4){
         userInfo *user = [userInfo shareClass];
         if ([user.token length]>0) {
             cell.textLabel.text = @"退出账号";
         }else{
             cell.textLabel.text = @"登录账号";
         }
-        
-    }else if (indexPath.row == 2) {
-        cell.textLabel.text = @"反馈";
-    }else if (indexPath.row == 3) {
-        cell.textLabel.text = @"关于MUzzik";
     }
     return cell;
 }
@@ -68,13 +71,21 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
     if (indexPath.row == 0) {
-        if (isopen) {
-            [MuzzikItem addObjectToLocal:@"close" ForKey:@"User_shakeActionSwitch"];
-        }else{
-            [MuzzikItem addObjectToLocal:@"open" ForKey:@"User_shakeActionSwitch"];
-        }
-        [tableView reloadData];
+
     }else if (indexPath.row == 1) {
+        NSString *str = [NSString stringWithFormat:@"itms-apps://itunes.apple.com/app/id%@?mt=8",APP_ID ];
+        
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:str]]; 
+
+        
+    }else if (indexPath.row == 2) {
+        FeedBackVC *feedback = [[FeedBackVC alloc] init];
+        [self.navigationController pushViewController:feedback animated:YES];
+    }else if (indexPath.row == 3) {
+        TeachViewController *teach = [[TeachViewController alloc] initWithNibName:@"TeachViewController" bundle:nil];
+        teach.showType = @"about";
+        [self.navigationController pushViewController:teach animated:YES];
+    }else if (indexPath.row == 4){
         userInfo *user = [userInfo shareClass];
         if ([user.token length]>0) {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"确认退出登录" message:@"" delegate:self cancelButtonTitle:@"放弃" otherButtonTitles:nil];
@@ -84,14 +95,6 @@
         }else{
             [userInfo checkLoginWithVC:self];
         }
-        
-    }else if (indexPath.row == 2) {
-        FeedBackVC *feedback = [[FeedBackVC alloc] init];
-        [self.navigationController pushViewController:feedback animated:YES];
-    }else if (indexPath.row == 3) {
-        TeachViewController *teach = [[TeachViewController alloc] initWithNibName:@"TeachViewController" bundle:nil];
-        teach.showType = @"about";
-        [self.navigationController pushViewController:teach animated:YES];
     }
 }
 
@@ -100,7 +103,7 @@
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return 4;
+    return 5;
 }
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return 1;

@@ -32,10 +32,13 @@
         [self addSubview:self.tableViewIndex];
         
         self.flotageLabel = [[UILabel alloc] initWithFrame:(CGRect){(self.bounds.size.width ) / 2-32,(self.bounds.size.height - 64) / 2,64,64}];
-        self.flotageLabel.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"flotageBackgroud"]];
+        self.flotageLabel.backgroundColor = Color_Additional_5;
+        self.flotageLabel.layer.cornerRadius = 3;
+        self.flotageLabel.clipsToBounds = YES;
         self.flotageLabel.hidden = YES;
         self.flotageLabel.textAlignment = NSTextAlignmentCenter;
         self.flotageLabel.textColor = [UIColor whiteColor];
+        [self.flotageLabel setAlpha:0.4];
         [self addSubview:self.flotageLabel];
     }
     return self;

@@ -14,6 +14,7 @@
 #import "AudioPlayer.h"
 #import "ASIHTTPRequest.h"
 #import "Reachability.h"
+#import <AVFoundation/AVFoundation.h>
 static NSMutableArray *playList;
 @interface musicPlayer()<RFRadioViewDelegate>{
 
@@ -105,6 +106,7 @@ static NSMutableArray *playList;
    
     
     self.index = [self.MusicArray indexOfObject:playMuzzik];
+    
 }
 
 
@@ -113,9 +115,36 @@ static NSMutableArray *playList;
     Globle *glob = [Globle shareGloble];
     if (glob.isApplicationEnterBackground) {
         if (NSClassFromString(@"MPNowPlayingInfoCenter")) {
+            NSMutableDictionary *retDic = [[NSMutableDictionary alloc] init];
+            
+            
+            
+            AVURLAsset *mp3Asset = [AVURLAsset URLAssetWithURL:self.radioView.musicUrl options:nil];
+            
+            //    NSLog(@"%@",mp3Asset);
+            
+            for (NSString *format in [mp3Asset availableMetadataFormats]) {
+                NSLog(@"format type = %@",format);
+                for (AVMetadataItem *metadataItem in [mp3Asset metadataForFormat:format]) {
+                    
+                    if(metadataItem.commonKey)
+                        [retDic setObject:metadataItem.value forKey:metadataItem.commonKey];
+                    
+                }
+            }
+            NSLog(@"%@",retDic);
+            
+           
+            
+            
+            
+            
+            
             NSMutableDictionary * dict = [[NSMutableDictionary alloc] init];
             [dict setObject:_localMuzzik.music.name forKey:MPMediaItemPropertyTitle];
             [dict setObject:_localMuzzik.music.artist  forKey:MPMediaItemPropertyArtist];
+
+           // [dict setObject:retDic forKey:MPMediaItemPropertyArtwork];
             NSLog(@"%f",[AudioPlayer shareClass].duration);
             [dict setObject:[NSNumber numberWithDouble:[AudioPlayer shareClass].duration] forKey:MPMediaItemPropertyPlaybackDuration];
             NSLog(@"%f",[AudioPlayer shareClass].progress);

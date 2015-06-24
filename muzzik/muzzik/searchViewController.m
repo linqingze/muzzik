@@ -72,7 +72,6 @@
     [_searchView setBackgroundColor:Color_NavigationBar];
     [_searchView addSubview:_searchBar];
     [self.navigationController.view addSubview:_searchView];
-    [_searchBar becomeFirstResponder];
 
 }
 -(void)viewWillAppear:(BOOL)animated{

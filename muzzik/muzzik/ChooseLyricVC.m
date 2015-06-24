@@ -10,7 +10,7 @@
 #import "TableViewCell.h"
 #import "RJTextView.h"
 #import "TWPhotoPickerController.h"
-
+#import "StyledPageControl.h"
 #import "ASIFormDataRequest.h"
 #import "FontTableCell.h"
 @interface ChooseLyricVC()<UITableViewDataSource,UITableViewDelegate,RJTextViewDelegate,ASIProgressDelegate>{
@@ -25,7 +25,7 @@
     UIButton *ColorButton;
     UIButton *ImageButton;
     UIButton *LibraryButton;
-    UIPageControl *PageControl;
+    StyledPageControl *PageControl;
     UIScrollView *Scroll;
     UIButton *nextButton;
     UIImageView *shareCycle;
@@ -73,11 +73,13 @@
     //    [self.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(touchOutside:)]];
     headImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
     headImage.contentMode = UIViewContentModeScaleAspectFit;
-    headImage.image = self.image;
+    [headImage setBackgroundColor:[UIColor whiteColor]];
     if (self.image) {
+        headImage.image = self.image;
         MuzzikLogoImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"muzzikwhite"]];
         shareColor = [UIColor whiteColor];
     }else{
+        [headImage setImage:[UIImage imageNamed:Image_Textcover]];
         MuzzikLogoImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"muzzikblack"]];
         shareColor = [UIColor blackColor];
     }
@@ -93,7 +95,7 @@
     Scroll.delegate = self;
     Scroll.pagingEnabled = YES;
     [Scroll setShowsHorizontalScrollIndicator:NO];
-    lyricTablenview = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
+    lyricTablenview = [[UITableView alloc] initWithFrame:CGRectMake(0, 25, SCREEN_WIDTH, SCREEN_WIDTH-50)];
     lyricTablenview.delegate = self;
     lyricTablenview.dataSource = self;
     [Scroll addSubview:lyricTablenview];
@@ -106,7 +108,7 @@
     famousView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
     [Scroll addSubview:famousView];
     [famousView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideControl)]];
-    famousTableview = [[UITableView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
+    famousTableview = [[UITableView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH, 25, SCREEN_WIDTH, SCREEN_WIDTH-50)];
     famousTableview.delegate = self;
     famousTableview.dataSource = self;
     [Scroll addSubview:famousTableview];
@@ -120,11 +122,11 @@
     editView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH*2, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
     [Scroll addSubview:editView];
     //[editView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideControl)]];
-    editTextView = [[RJTextView alloc] initWithFrame:CGRectMake(70, 100, SCREEN_WIDTH-140, 50)
+    editTextView = [[RJTextView alloc] initWithFrame:CGRectMake(70, 100, SCREEN_WIDTH-140, 70)
                                          defaultText:@""
                                                 font:[UIFont systemFontOfSize:15.f]
                                                color:shareColor
-                                             minSize:CGSizeMake(60, 50)];
+                                             minSize:CGSizeMake(100, 60)];
     editTextView.delegate = self;
     [editTextView.closeButton removeFromSuperview];
     [editView addSubview:editTextView];
@@ -134,11 +136,15 @@
     controlView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN_WIDTH, SCREEN_WIDTH, 30)];
     [self.view addSubview:controlView];
     
-    
-    PageControl = [[UIPageControl alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-20, 0, 40, 30)];
-    PageControl.numberOfPages = 3;
-    [PageControl setCurrentPageIndicatorTintColor:Color_Active_Button_1];
-    [PageControl setPageIndicatorTintColor:Color_line_1];
+    PageControl = [[StyledPageControl alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-20, 0, 40, 30)];
+    //page control
+    [PageControl setCoreSelectedColor:Color_Active_Button_1];
+    PageControl.strokeSelectedColor = [UIColor clearColor] ;
+    PageControl.strokeNormalColor = [UIColor clearColor] ;
+    [PageControl setCoreNormalColor:Color_line_1];
+    [PageControl setDiameter:8];
+    [PageControl setGapWidth:5];
+    [PageControl setNumberOfPages:3];
     [controlView addSubview:PageControl];
     
     ImageButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-73, 0, 30, 30)];
@@ -148,13 +154,20 @@
     
     ColorButton = [[UIButton alloc] initWithFrame:CGRectMake(13, 0, 30, 30)];
     
+    
+    LibraryButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-43, SCREEN_WIDTH, 30, 30)];
+    [self.view addSubview:LibraryButton];
+    
+    [LibraryButton addTarget:self action:@selector(changeImage) forControlEvents:UIControlEventTouchUpInside];
     if (self.image) {
         isShow = YES;
+        [LibraryButton setImage:[UIImage imageNamed:Image_addedpicImage] forState:UIControlStateNormal];
         [ImageButton setHidden:NO];
         isCharacterWhite = YES;
         [ColorButton setImage:[UIImage imageNamed:Image_textwhiteImage] forState:UIControlStateNormal];
     }else{
         isCharacterWhite = NO;
+        [LibraryButton setImage:[UIImage imageNamed:Image_addpicImage] forState:UIControlStateNormal];
         [ColorButton setImage:[UIImage imageNamed:Image_textblackImage] forState:UIControlStateNormal];
         [ImageButton setHidden:YES];
     }
@@ -174,12 +187,8 @@
     fontTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
     
-    LibraryButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-43, SCREEN_WIDTH, 30, 30)];
-    [LibraryButton setImage:[UIImage imageNamed:Image_addedpicImage] forState:UIControlStateNormal];
-    [self.view addSubview:LibraryButton];
     
-    [LibraryButton addTarget:self action:@selector(changeImage) forControlEvents:UIControlEventTouchUpInside];
-    [MuzzikItem addLineOnView:self.view heightPoint:SCREEN_WIDTH+30 toLeft:13 toRight:13 withColor:Color_line_1];
+    [MuzzikItem addLineOnView:self.view heightPoint:SCREEN_WIDTH+30 toLeft:0 toRight:0 withColor:Color_line_1];
     [self loadFont];
 //    nextButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-67, SCREEN_HEIGHT-113, 54, 52)];
 //    [nextButton setImage:[UIImage imageNamed:Image_Next] forState:UIControlStateNormal];
@@ -194,16 +203,36 @@
                                                          minSize:CGSizeMake(60, 60)];
         [self checkNext];
     }
+    NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
+    NSString *folderPath = [path stringByAppendingPathComponent:@"Font"];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    //判断temp文件夹是否存在
+    BOOL fileExists = [fileManager fileExistsAtPath:folderPath];
+    if (!fileExists) {//如果不存在说创建,因为下载时,不会自动创建文件夹
+        [fileManager createDirectoryAtPath:folderPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+
     
+    
+    for (NSDictionary *dic in fontArray) {
+        if ([[dic allKeys] containsObject:@"path"]) {
+            [MuzzikItem customFontWithPath:[NSString stringWithFormat:@"%@.ttf",[folderPath stringByAppendingPathComponent:[dic objectForKey:@"fontname"]]]];
+        }
+    }
 }
 
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    headImage.image = self.image;
-    if (self.image) {
+    
+    if (self.image ) {
+        headImage.image = self.image;
         isShow = YES;
         [ImageButton setHidden:NO];
+        [MuzzikLogoImage setImage:[UIImage imageNamed:@"muzzikwhite"]];
+        shareColor = [UIColor whiteColor];
+        [shareLabel.textView setTextColor:shareColor];
+        [lyricTablenview reloadData];
     }
 }
 
@@ -237,9 +266,7 @@
         NSDictionary *dic = fontArray[indexPath.row];
         
         FontTableCell *cell = [tableView dequeueReusableCellWithIdentifier:@"FontTableCell" forIndexPath:indexPath];
-        if ([[dic allKeys] containsObject:@"path"]) {
-            [MuzzikItem customFontWithPath:[dic objectForKey:@"path"]];
-        }
+        
         if ([self.downLoadList containsObject:dic]) {
             [cell.pieProgress setHidden:NO];
         }else{
@@ -258,6 +285,7 @@
     }else{
         TableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TableViewCell" forIndexPath:indexPath];
         if (tableView == lyricTablenview) {
+            [cell.label setFrame:CGRectMake(40, 10, SCREEN_WIDTH-80, 30)];
             cell.label.text = [[lyricArray[indexPath.row] allObjects][0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet ]];
         }else{
             cell.label.text = famousArray[indexPath.row];
@@ -267,8 +295,13 @@
         }else{
             cell.label.textColor = [UIColor blackColor];
         }
-        CGFloat textHeight = [MuzzikItem heightForLabel:cell.label WithText:cell.label.text];
-        [cell.label setFrame:CGRectMake(cell.label.frame.origin.x, cell.label.frame.origin.y, cell.label.frame.size.width, textHeight)];
+        UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 10, SCREEN_WIDTH-80, 80)];
+        tempLabel.font = [UIFont fontWithName:Font_Next_Bold size:17];
+        tempLabel.text = cell.label.text;
+        tempLabel.numberOfLines = 0;
+        [tempLabel sizeToFit];
+        [cell.label setFrame:CGRectMake((SCREEN_WIDTH-tempLabel.frame.size.width)/2, cell.label.frame.origin.y, tempLabel.frame.size.width, tempLabel.frame.size.height)];
+        cell.label.textAlignment = NSTextAlignmentCenter;
         return cell;
     }
     
@@ -278,24 +311,24 @@
         return 50;
     }else if(tableView == lyricTablenview){
         UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 0, SCREEN_WIDTH-80, 50)];
-        tempLabel.font = [UIFont boldSystemFontOfSize:17];
+        tempLabel.font = [UIFont fontWithName:Font_Next_Bold size:17];
 
         tempLabel.numberOfLines = 0;
         if ([lyricArray count]>0) {
             tempLabel.text = [[lyricArray[indexPath.row] allObjects][0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet ]];
         }
          CGFloat textHeight = [MuzzikItem heightForLabel:tempLabel WithText:tempLabel.text];
-        return textHeight+20;
+        return textHeight+25;
     }else{
         UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 0, SCREEN_WIDTH-80, 50)];
-        tempLabel.font = [UIFont boldSystemFontOfSize:17];
+        tempLabel.font = [UIFont fontWithName:Font_Next_Bold size:17];
         tempLabel.numberOfLines = 0;
         if ([famousArray count]>0) {
             tempLabel.text = [famousArray[indexPath.row] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet ]];
         }
         
         CGFloat textHeight = [MuzzikItem heightForLabel:tempLabel WithText:tempLabel.text];
-        return textHeight+20;
+        return textHeight+25;
     }
     
 }
@@ -316,11 +349,11 @@
             if ([lyricArray count]>1) {
                 TableViewCell *cell = (TableViewCell*)[tableView cellForRowAtIndexPath:indexPath];
                 CGPoint point = [cell.superview convertPoint:cell.frame.origin toView:Scroll];
-                RJTextView *textView = [[RJTextView alloc] initWithFrame:CGRectMake(cell.label.frame.origin.x-10, point.y, cell.label.frame.size.width+20, cell.label.frame.size.height+50)
+                RJTextView *textView = [[RJTextView alloc] initWithFrame:CGRectMake(cell.label.frame.origin.x-25, point.y-9, cell.label.frame.size.width+50, cell.label.frame.size.height+46)
                                                              defaultText:cell.label.text
-                                                                    font:[UIFont systemFontOfSize:17.f]
+                                                                    font:[UIFont fontWithName:Font_Next_Bold size:17]
                                                                    color:shareColor
-                                                                 minSize:CGSizeMake(60, 50)];
+                                                                 minSize:CGSizeMake(cell.label.frame.size.width+18, cell.label.frame.size.height+18)];
                 
                 [textView.textView setEditable:NO];
                 textView.delegate = self;
@@ -333,11 +366,11 @@
         }else{
             TableViewCell *cell = (TableViewCell*)[tableView cellForRowAtIndexPath:indexPath];
             CGPoint point = [cell.superview convertPoint:cell.frame.origin toView:Scroll];
-            RJTextView *textView = [[RJTextView alloc] initWithFrame:CGRectMake(cell.label.frame.origin.x-10, point.y, cell.label.frame.size.width+20, cell.label.frame.size.height+50)
+            RJTextView *textView = [[RJTextView alloc] initWithFrame:CGRectMake(cell.label.frame.origin.x-25, point.y-9, cell.label.frame.size.width+50, cell.label.frame.size.height+46)
                                                          defaultText:cell.label.text
-                                                                font:[UIFont systemFontOfSize:17.f]
+                                                                font:[UIFont fontWithName:Font_Next_Bold size:17]
                                                                color:shareColor
-                                                             minSize:CGSizeMake(60, 50)];
+                                                             minSize:CGSizeMake(cell.label.frame.size.width+37, cell.label.frame.size.height+37)];
             
             [textView.textView setEditable:NO];
             textView.delegate = self;
@@ -383,7 +416,7 @@
 {
     if (sView == Scroll) {
         [self.view endEditing:YES];
-        NSInteger index = fabs(sView.contentOffset.x) / sView.frame.size.width;
+        int index = fabs(sView.contentOffset.x) / sView.frame.size.width;
         //NSLog(@"%d",index);
         [PageControl setCurrentPage:index];
         if (index == 0) {
@@ -416,6 +449,21 @@
     }
 }
 -(void)rightBtnAction:(UIButton *)sender{
+    NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
+    NSString *folderPath = [path stringByAppendingPathComponent:@"Font"];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    //判断temp文件夹是否存在
+    BOOL fileExists = [fileManager fileExistsAtPath:folderPath];
+    if (!fileExists) {//如果不存在说创建,因为下载时,不会自动创建文件夹
+        [fileManager createDirectoryAtPath:folderPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    
+    
+    NSArray  *arr = [fileManager subpathsAtPath:folderPath];
+    NSLog(@"%@",arr);
+    
+    
+    
     if (shareLabel) {
         userInfo *user = [userInfo shareClass];
         MuzzikObject *mobject = [MuzzikObject shareClass];
@@ -432,10 +480,6 @@
                 step = 1;
                 [self initNagationBar:@"填选一句话（3/3）" leftBtn:Constant_backImage rightBtn:5];
                 [shareLabel hideTextViewBox];
-                if (!self.image) {
-                    [headImage setImage:[MuzzikItem createImageWithColor:[UIColor whiteColor]]];
-                    headImage.contentMode = UIViewContentModeScaleAspectFill;;
-                }
                 [headImage addSubview:shareLabel];
                 for (UIView *view in lyricView.subviews) {
                     [view removeFromSuperview];
@@ -563,7 +607,6 @@
                         ASIFormDataRequest *interRequest = [[ASIFormDataRequest alloc] initWithURL:[NSURL URLWithString:[dic objectForKey:@"url"]]];
                         [ASIFormDataRequest clearSession];
                         [interRequest setPostFormat:ASIMultipartFormDataPostFormat];
-                        [interRequest addRequestHeader:@"Host" value:@"upload.qiniu.com"];
                         [interRequest setPostValue:[[dic objectForKey:@"data"] objectForKey:@"token"] forKey:@"token"];
                         NSData *imageData = UIImageJPEGRepresentation(Muzzikimage, 1);
                         [interRequest addData:imageData forKey:@"file"];
@@ -738,7 +781,6 @@
                     ASIFormDataRequest *interRequest = [[ASIFormDataRequest alloc] initWithURL:[NSURL URLWithString:[dic objectForKey:@"url"]]];
                     [ASIFormDataRequest clearSession];
                     [interRequest setPostFormat:ASIMultipartFormDataPostFormat];
-                    [interRequest addRequestHeader:@"Host" value:@"upload.qiniu.com"];
                     [interRequest setPostValue:[[dic objectForKey:@"data"] objectForKey:@"token"] forKey:@"token"];
                     NSData *imageData = UIImageJPEGRepresentation(Muzzikimage, 1);
                     [interRequest addData:imageData forKey:@"file"];
@@ -849,15 +891,15 @@
     
     if (isShow) {
         isShow = NO;
-        headImage.image = nil;
-        MuzzikLogoImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"muzzikblack"]];
+        [headImage setImage:[UIImage imageNamed:Image_Textcover]];
+        [MuzzikLogoImage setImage:[UIImage imageNamed:@"muzzikblack"]];
         shareColor = [UIColor blackColor];
         [shareLabel.textView setTextColor:shareColor];
         [lyricTablenview reloadData];
     }else{
         isShow = YES;
         headImage.image = self.image;
-        MuzzikLogoImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"muzzikwhite"]];
+        [MuzzikLogoImage setImage:[UIImage imageNamed:@"muzzikwhite"]];
         shareColor = [UIColor whiteColor];
         [shareLabel.textView setTextColor:shareColor];
         [lyricTablenview reloadData];
@@ -869,6 +911,7 @@
     photoPicker.cropBlock = ^(UIImage *image) {
         self.image = image;
         [headImage setImage:image];
+        [LibraryButton setImage:[UIImage imageNamed:Image_addedpicImage] forState:UIControlStateNormal];
     };
     [self presentViewController:photoPicker animated:YES completion:NULL];
 }
@@ -993,6 +1036,12 @@
         if (!fileExists) {//如果不存在说创建,因为下载时,不会自动创建文件夹
             [fileManager createDirectoryAtPath:folderPath withIntermediateDirectories:YES attributes:nil error:nil];
         }
+    
+        
+        NSArray  *arr = [fileManager subpathsAtPath:folderPath];
+        NSLog(@"%@",arr);
+        
+        
         NSString *savePath = [folderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.ttf",[dic objectForKey:@"fontname"]]];
         NSString *tempPath = [folderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.temp",[dic objectForKey:@"fontname"]]];
         __weak ASIHTTPRequest *weakrequest = _asiRequest;

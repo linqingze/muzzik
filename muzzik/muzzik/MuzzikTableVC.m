@@ -15,7 +15,6 @@
 #import "appConfiguration.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import "userInfo.h"
-#import "playListController.h"
 #import "TTTAttributedLabel.h"
 #import "ChooseMusicVC.h"
 #import "LoginViewController.h"
@@ -272,14 +271,14 @@
         [label setText:tempMuzzik.message];
         CGFloat textHeight = [MuzzikItem heightForLabel:label WithText:label.text];
         if (textHeight>limitHeight) {
-            if ([tempMuzzik.image length]>0) {
+            if (![tempMuzzik.image isKindOfClass:[NSNull class]] && [tempMuzzik.image length]>0) {
                 return (int)(260+limitHeight+SCREEN_WIDTH*3/4)+10;
             }else{
                 return 260+limitHeight;
             }
             
         }else{
-            if ([tempMuzzik.image length]>0) {
+            if (![tempMuzzik.image isKindOfClass:[NSNull class]] && [tempMuzzik.image length] >0) {
                 return (int)(260+textHeight+SCREEN_WIDTH*3/4);
             }else{
                 return 260+(int)textHeight;
@@ -291,14 +290,14 @@
         [label setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
         CGFloat textHeight = [MuzzikItem heightForLabel:label WithText:label.text];
         if (textHeight>limitHeight) {
-            if ([tempMuzzik.image length]>0) {
+            if (![tempMuzzik.image isKindOfClass:[NSNull class]] && [tempMuzzik.image length]>0) {
                 return SCREEN_WIDTH+limitHeight+80;
             }else{
                 return limitHeight+190;
             }
         }
         else{
-            if ([tempMuzzik.image length]>0) {
+            if (![tempMuzzik.image isKindOfClass:[NSNull class]] && [tempMuzzik.image length]>0) {
                 return (int)(SCREEN_WIDTH+textHeight+80);
             }else{
                 return textHeight+190;
@@ -327,7 +326,7 @@
 {
     Globle *glob = [Globle shareGloble];
     muzzik *tempMuzzik = [self.muzziks objectAtIndex:indexPath.row];
-    if ([tempMuzzik.image length] == 0) {
+    if (![tempMuzzik.image isKindOfClass:[NSNull class]] && [tempMuzzik.image length] == 0) {
         if ([tempMuzzik.type isEqualToString:@"repost"] ){
             NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
             cell.songModel = [self.muzziks objectAtIndex:indexPath.row];

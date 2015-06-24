@@ -7,12 +7,13 @@
 //
 
 #import "ClassifySelectionVC.h"
-#import "topicCell.h"
-@interface ClassifySelectionVC ()<UICollectionViewDataSource,UICollectionViewDelegate>{
-    UICollectionView *GenreCollection;
+#import "SelectionLabel.h"
+@interface ClassifySelectionVC ()<SelectionLabelDelegate,UITableViewDelegate>{
+    UITableView *selectionTableView;
     NSMutableArray *classArray;
     NSMutableDictionary *Fdictionary;
     BOOL ischange;
+    UIView *headView;
 }
 
 @end
@@ -23,17 +24,13 @@
     [super viewDidLoad];
     
     [self initNagationBar:@"选择风格" leftBtn:Constant_backImage rightBtn:3];
-    UICollectionViewFlowLayout  *flowLayout=[[ UICollectionViewFlowLayout alloc ] init ];
+    selectionTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
+    [self.view addSubview:selectionTableView];
+    headView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
+    selectionTableView.delegate = self;
+    [selectionTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+    [selectionTableView setTableHeaderView:headView];
     Fdictionary = [NSMutableDictionary dictionary];
-    [flowLayout setScrollDirection : UICollectionViewScrollDirectionVertical];
-    
-    GenreCollection = [[ UICollectionView alloc ] initWithFrame : CGRectMake (0,0,SCREEN_WIDTH,SCREEN_HEIGHT-64) collectionViewLayout :flowLayout];
-    [GenreCollection registerClass:[topicCell class] forCellWithReuseIdentifier:@"topicCell"];
-    [GenreCollection setBackgroundColor:[UIColor whiteColor]];
-    //[hotTopicCollectionView setHeaderHidden:NO];
-    GenreCollection.delegate = self;
-    GenreCollection.dataSource = self;
-    [self.view addSubview:GenreCollection];
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Classify]]];
     [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:NO];
     __weak ASIHTTPRequest *weakrequest = requestForm;
@@ -43,15 +40,67 @@
         if ([weakrequest responseStatusCode] == 200) {
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData]  options:NSJSONReadingMutableContainers error:nil];
             classArray = [dic objectForKey:@"genres"];
-            for (NSDictionary *dic in [_profileDic objectForKey:@"genres"]) {
-                for (int i = 0; i<classArray.count; i++) {
-                    if ([[classArray[i] objectForKey:@"_id"] isEqualToString:[dic objectForKey:@"_id"]])    {
-                        [Fdictionary setObject:classArray[i] forKey:[NSString stringWithFormat:@"%d",i]];
-                        
+            
+            
+            NSMutableArray *labelArray = [NSMutableArray array];
+            for (NSDictionary * dic in classArray) {
+                SelectionLabel *tempLabel = [[SelectionLabel alloc ] initWithFrame:CGRectMake(0, 0, 100, 30)];
+                [tempLabel setFont:[UIFont systemFontOfSize:15]];
+                tempLabel.genre = dic;
+                tempLabel.delegate = self;
+                [tempLabel setText:[dic objectForKey:@"data"]];
+                [tempLabel sizeToFit];
+                [tempLabel setFrame:CGRectMake(0, 0, tempLabel.frame.size.width+30, 30)];
+                tempLabel.layer.cornerRadius = 15;
+                tempLabel.clipsToBounds = YES;
+                for (NSDictionary *tempdic in [_profileDic objectForKey:@"genres"]) {
+                    if ([[tempdic objectForKey:@"_id"] isEqualToString:[dic objectForKey:@"_id"]]) {
+                        tempLabel.isSelected = YES;
+                        break;
                     }
                 }
+                if (tempLabel.isSelected) {
+                    [tempLabel setTextColor:Color_Active_Button_1];
+                }else{
+                    [tempLabel setTextColor:Color_Text_1];
+                }
+                
+                tempLabel.textAlignment = NSTextAlignmentCenter;
+                [tempLabel setBackgroundColor:Color_line_2];
+                if (tempLabel.frame.size.width>SCREEN_WIDTH-26) {
+                    continue;
+                }
+                [labelArray addObject:tempLabel];
             }
-            [GenreCollection reloadData];
+            int maxXpoint = SCREEN_WIDTH-13;
+            int localheight = 25;
+            int localX = 13;
+            while ([labelArray count]>0) {
+                UILabel *templabel = [labelArray firstObject];
+                if (localX + templabel.frame.size.width > maxXpoint) {
+                    for (int i =1; i<labelArray.count; i++) {
+                        UILabel *subTempLabel = labelArray[i];
+                        if (localX+subTempLabel.frame.size.width+13 < maxXpoint) {
+                            [subTempLabel setFrame:CGRectMake(localX, localheight, subTempLabel.frame.size.width, subTempLabel.frame.size.height)];
+                            [headView addSubview:subTempLabel];
+                            [labelArray removeObject:subTempLabel];
+                            localX = localX +subTempLabel.frame.size.width+13;
+                            break;
+                        }
+                    }
+                    localX = 13;
+                    localheight = localheight+50;
+                }
+                else{
+                    [templabel setFrame:CGRectMake(localX, localheight, templabel.frame.size.width, templabel.frame.size.height)];
+                    [headView addSubview:templabel];
+                    [labelArray removeObject:templabel];
+                    localX = localX+templabel.frame.size.width+13;
+                    
+                }
+            }
+            [headView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, localheight+55)];
+            [selectionTableView setTableHeaderView:headView];
         }
         else{
             //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
@@ -66,101 +115,10 @@
     // Do any additional setup after loading the view.
 }
 
-#pragma mark <UICollectionViewDataSource>
-
-- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    
-    return 1;
-}
-
-
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    
-    return classArray.count;
-}
-
--( CGSize )collectionView:( UICollectionView *)collectionView layout:( UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:( NSIndexPath *)indexPath
-
-{
-
-    UILabel *tempLabel = [[UILabel alloc ] initWithFrame:CGRectMake(0, 0, 100, 30)];
-    [tempLabel setFont:[UIFont boldSystemFontOfSize:13]];
-    [tempLabel setText:[classArray[indexPath.row] objectForKey:@"data"]];
-    [tempLabel sizeToFit];
-    return CGSizeMake(tempLabel.frame.size.width+30, 30);
-
-    
-    
-}
-
--(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-    BOOL isSelected = NO;
-    for (NSString *string in [Fdictionary allKeys]) {
-        if ([string isEqualToString:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
-            isSelected = YES;
-            break;
-        }
-    }
-    if (isSelected) {
-        [Fdictionary removeObjectForKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
-    }else{
-        [Fdictionary setObject:indexPath forKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
-        
-    }
-    if (!ischange) {
-        ischange = !ischange;
-        [self initNagationBar:@"选择风格" leftBtn:Constant_backImage rightBtn:Constant_markImage];
-    }
-    [GenreCollection reloadData];
-}
-
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    topicCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"topicCell" forIndexPath:indexPath];
-    UILabel *tempLabel = [[UILabel alloc ] initWithFrame:CGRectMake(0, 0, 100, 30)];
-    [tempLabel setFont:[UIFont boldSystemFontOfSize:13]];
-    [tempLabel setText:[classArray[indexPath.row] objectForKey:@"data"]];
-    [tempLabel sizeToFit];
-    [cell.topicLabel setFrame:CGRectMake(0, 0, tempLabel.frame.size.width+30, 30)];
-    cell.topicLabel.text = [classArray[indexPath.row] objectForKey:@"data"];
-    cell.topicLabel.textAlignment = NSTextAlignmentCenter;
-    [cell.topicLabel setBackgroundColor:Color_line_2];
-    cell.topicLabel.layer.cornerRadius = 10;
-    cell.topicLabel.clipsToBounds = YES;
-    BOOL isSelected = NO;
-    for (NSString *string in [Fdictionary allKeys]) {
-        if ([string isEqualToString:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
-            isSelected = YES;
-            break;
-        }
-    }
-    if (isSelected) {
-        cell.topicLabel.textColor = Color_Active_Button_1;
-    }else{
-         [cell.topicLabel setTextColor:[UIColor blackColor]];
-    }
-   
-    return cell;
-}
-
-#pragma mark <UICollectionViewDelegate>
-
--( UIEdgeInsets )collectionView:( UICollectionView *)collectionView layout:( UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:( NSInteger )section
-
-{
-    
-    UIEdgeInsets top = UIEdgeInsetsMake(10, 10, 10, 10);
-    
-    return top;
-    
-}
 -(void)rightBtnAction:(UIButton *)sender{
     if (ischange) {
-        NSMutableArray *array = [NSMutableArray array];
-        for (NSString *key in [Fdictionary allKeys]) {
-            [array addObject:classArray[[key integerValue]]];
-        }
         ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@%@",BaseURL,URL_Update_Profile]]];
-        NSMutableDictionary *dic= [NSMutableDictionary dictionaryWithObjectsAndKeys:array,@"genres", nil];
+        NSMutableDictionary *dic= [NSMutableDictionary dictionaryWithObjectsAndKeys:[_profileDic objectForKey:@"genres"],@"genres", nil];
         [requestForm addBodyDataSourceWithJsonByDic:dic Method:PostMethod auth:YES];
         __weak ASIHTTPRequest *weakrequest = requestForm;
         [requestForm setCompletionBlock :^{
@@ -168,7 +126,6 @@
             NSLog(@"%@",[weakrequest responseString]);
             NSLog(@"%d",[weakrequest responseStatusCode]);
             if ([weakrequest responseStatusCode] == 200 && [[dic objectForKey:@"result"] boolValue]) {
-                [_profileDic setObject:array forKey:@"genres"];
                 [self.navigationController popViewControllerAnimated:YES];
                 //
             }
@@ -180,7 +137,26 @@
     }
     
 }
-
+-(void)tappedWithObject:(SelectionLabel *)sender{
+    ischange = YES;
+    if (sender.isSelected) {
+        sender.isSelected = NO;
+        [sender setTextColor:Color_Text_1];
+        NSMutableArray *array = [_profileDic objectForKey:@"genres"];
+        for (NSDictionary *dic in array) {
+            if ([[dic objectForKey:@"_id"] isEqualToString:[sender.genre objectForKey:@"_id"]]) {
+                [array removeObject:dic];
+                
+                break;
+            }
+        }
+    }else{
+        sender.isSelected = YES;
+        [sender setTextColor:Color_Active_Button_1];
+        NSMutableArray *array = [_profileDic objectForKey:@"genres"];
+        [array addObject:sender.genre];
+    }
+}
 
 
 - (void)didReceiveMemoryWarning {

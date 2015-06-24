@@ -251,7 +251,26 @@
     NSLog(@"deviceToken:%@", _deviceToken);
     userInfo *user = [userInfo shareClass];
     user.deviceToken =_deviceToken;
-    
+    if ([user.token length]>0) {
+        ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Set_Notify]]];
+        [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:user.deviceToken,@"deviceToken",@"APN",@"type", nil] Method:PostMethod auth:YES];
+        __weak ASIHTTPRequest *weakreq = request;
+        [request setCompletionBlock :^{
+            NSLog(@"%@",[weakreq responseString]);
+            NSLog(@"%d",[weakreq responseStatusCode]);
+            if ([weakreq responseStatusCode] == 200) {
+                
+                NSLog(@"register ok");
+            }
+            else{
+                //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+            }
+        }];
+        [request setFailedBlock:^{
+            NSLog(@"%@",[weakreq error]);
+        }];
+        [request startAsynchronous];
+    }
     // [3]:向个推服务器注册deviceToken
     if (_gexinPusher) {
         [_gexinPusher registerDeviceToken:_deviceToken];
@@ -682,7 +701,7 @@
     [requestsquare setFailedBlock:^{
         NSLog(@"%@,%@",[weakrequestsquare error],[weakrequestsquare responseString]);
     }];
-    [requestsquare startSynchronous];
+    [requestsquare startAsynchronous];
     
     
     
@@ -696,6 +715,9 @@
         NSData *data = [weakrequest responseData];
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         if (dic&&[[dic objectForKey:@"muzziks"]count]>0) {
+            if ([[dic allKeys] containsObject:@"data"] && [[[dic objectForKey:@"data"] allKeys] containsObject:@"title"] && [[[dic objectForKey:@"data"] objectForKey:@"title"] length] >0) {
+                user.suggestTitle = [[dic objectForKey:@"data"] objectForKey:@"title"];
+            }
             [MuzzikItem SetUserInfoWithMuzziks:[[muzzik new] makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]] title:Constant_userInfo_suggest description:[NSString stringWithFormat:@"推荐列表"]];
             [MuzzikItem addObjectToLocal:data ForKey:Constant_Data_Suggest];
             
@@ -704,7 +726,7 @@
     [request setFailedBlock:^{
         NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
     }];
-    [request startSynchronous];
+    [request startAsynchronous];
     
     if ([user.token length]>0) {
         ASIHTTPRequest *requestOwn = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@/muzziks",BaseURL,user.uid]]];
@@ -724,7 +746,7 @@
             [requestOwn setFailedBlock:^{
                 NSLog(@"%@",[weakrequestOwn error]);
             }];
-            [requestOwn startSynchronous];
+            [requestOwn startAsynchronous];
         
         ASIHTTPRequest *requestfollow = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/feeds",BaseURL]]];
         [requestfollow addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:30] forKey:Parameter_Limit] Method:GetMethod auth:YES];
@@ -760,7 +782,7 @@
         [requestmove setFailedBlock:^{
             NSLog(@"%@,%@",[weakrequestmove error],[weakrequestmove responseString]);
         }];
-        [requestmove startSynchronous];
+        [requestmove startAsynchronous];
     }
     NSLog(@"%@",[NSString stringWithFormat:@"%@%@",BaseURL_image,user.avatar]);
     // 2.构建网络URL对象, NSURL
