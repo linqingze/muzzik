@@ -34,6 +34,11 @@
     [self followScrollView:topicTableView];
     [topicTableView registerClass:[topicRankCell class] forCellReuseIdentifier:@"topicRankCell"];
     [self followScrollView:topicTableView];
+    [self loadDataMessage];
+
+    // Do any additional setup after loading the view.
+}
+-(void)loadDataMessage{
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/topic",BaseURL]]];
     [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:@"date",@"sort",@"1",Parameter_Limit, nil] Method:GetMethod auth:NO];
     __weak ASIHTTPRequest *weakrequest = request;
@@ -59,22 +64,70 @@
                     TopicModel *topicToy = [TopicModel new];
                     [topicArray addObjectsFromArray:[topicToy makeTopicssByMuzzikArray:[dic objectForKey:@"topics"]]];
                     [topicTableView reloadData];
-                    
+                    if ([[dic objectForKey:@"topics"] count] == [Limit_Constant integerValue]) {
+                        page++;
+                        [topicTableView addFooterWithTarget:self action:@selector(refreshFooter)];
+                    }
                 }
             }];
             [requestForm setFailedBlock:^{
-                NSLog(@"%@,%@",[weakreq error],[weakreq responseString]);
+                if (![[weakreq responseString] length]>0) {
+                    [self networkErrorShow];
+                }
             }];
             [requestForm startAsynchronous];
         }
     }];
     [request setFailedBlock:^{
-        NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
+        if (![[weakrequest responseString] length]>0) {
+            [self networkErrorShow];
+        }
     }];
     [request startAsynchronous];
-#warning 添加刷新
-    // Do any additional setup after loading the view.
+
 }
+-(void)reloadDataSource{
+    [super reloadDataSource];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self loadDataMessage];
+    });
+    
+    
+}
+
+- (void)refreshFooter
+{
+    
+    ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/topic",BaseURL]]];
+    [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:page],Parameter_page,Limit_Constant,Parameter_Limit, nil] Method:GetMethod auth:NO];
+    __weak ASIHTTPRequest *weakreq = requestForm;
+    [requestForm setCompletionBlock :^{
+        //    NSLog(@"%@",weakrequest.originalURL);
+        NSLog(@"%@",[weakreq responseString]);
+        NSData *data = [weakreq responseData];
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+        if (dic) {
+            
+            TopicModel *topicToy = [TopicModel new];
+            [topicArray addObjectsFromArray:[topicToy makeTopicssByMuzzikArray:[dic objectForKey:@"topics"]]];
+            page++;
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [topicTableView reloadData];
+                [topicTableView footerEndRefreshing];
+                if ([[dic objectForKey:@"topics"] count]<[Limit_Constant integerValue] ) {
+                    [topicTableView removeFooter];
+                }
+            });
+        }
+    }];
+    [requestForm setFailedBlock:^{
+        [topicTableView footerEndRefreshing];
+    }];
+    [requestForm startAsynchronous];
+    
+}
+
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {

@@ -49,7 +49,6 @@
     [requestForm setFailedBlock:^{
         NSLog(@"%@",[weakrequest error]);
         NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-        [userInfo checkLoginWithVC:self];
     }];
     [requestForm startAsynchronous];
     // Uncomment the following line to preserve selection between presentations.
@@ -253,7 +252,6 @@
     [requestForm setFailedBlock:^{
         NSLog(@"%@",[weakrequest error]);
         NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-        [userInfo checkLoginWithVC:self];
     }];
     [requestForm startAsynchronous];
     [UIView animateWithDuration:0.3 animations:^{
@@ -295,7 +293,6 @@
         [requestForm setFailedBlock:^{
             NSLog(@"%@",[weakrequest error]);
             NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-            [userInfo checkLoginWithVC:self];
         }];
         [requestForm startAsynchronous];
     }else{

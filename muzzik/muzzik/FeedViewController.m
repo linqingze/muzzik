@@ -908,48 +908,27 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 }
 
 -(void)reloadMuzzikSource{
-    NSDictionary *requestDic = [NSDictionary dictionaryWithObject:@"20" forKey:Parameter_Limit];
-    
-    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/feeds",BaseURL]]];
-
-    [request addBodyDataSourceWithJsonByDic:requestDic Method:GetMethod auth:YES];
-    __weak ASIHTTPRequest *weakrequest = request;
-    [request setCompletionBlock :^{
-        //    NSLog(@"%@",weakrequest.originalURL);
-        NSLog(@"%@",[weakrequest responseString]);
-        NSData *data = [weakrequest responseData];
-        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-        if (dic) {
-            [MuzzikItem addObjectToLocal:data ForKey:Constant_Data_Feed];
-            muzzik *muzzikToy = [muzzik new];
-            NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
-            for (muzzik *tempmuzzik in array) {
-                BOOL isContained = NO;
-                for (muzzik *arrayMuzzik in self.muzziks) {
-                    if ([arrayMuzzik.muzzik_id isEqualToString:tempmuzzik.muzzik_id]) {
-                        isContained = YES;
-                        break;
-                    }
-                    
-                }
-                if (!isContained) {
-                    [self.muzziks addObject:tempmuzzik];
-                }
-                isContained = NO;
-            }
-             [MuzzikItem SetUserInfoWithMuzziks:self.muzziks title:Constant_userInfo_follow description:[NSString stringWithFormat:@"关注列表"]];
-            lastId = [dic objectForKey:@"tail"];
-            headId = [dic objectForKey:Parameter_from];
-            [MytableView reloadData];
-            
-        }
-    }];
-    [request setFailedBlock:^{
-        NSLog(@"%@,%@,%@",[weakrequest error],[weakrequest responseString],[MuzzikItem getDataFromLocalKey: Constant_Data_Feed]);
-        if (![[weakrequest responseString] length]>0 && [MuzzikItem getDataFromLocalKey: Constant_Data_Feed] ) {
-            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[MuzzikItem getDataFromLocalKey: Constant_Data_Feed] options:NSJSONReadingMutableContainers error:nil];
-            
+    userInfo *user = [userInfo shareClass];
+    if (user.checkSquare) {
+        muzzik *tempMuzzik;
+        self.muzziks = [[user.playList objectForKey:Constant_userInfo_follow] objectForKey:UserInfo_muzziks];
+        tempMuzzik = self.muzziks.lastObject;
+        lastId = tempMuzzik.muzzik_id;
+        [MytableView reloadData];
+    }else {
+        NSDictionary *requestDic = [NSDictionary dictionaryWithObject:@"20" forKey:Parameter_Limit];
+        
+        ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/feeds",BaseURL]]];
+        
+        [request addBodyDataSourceWithJsonByDic:requestDic Method:GetMethod auth:YES];
+        __weak ASIHTTPRequest *weakrequest = request;
+        [request setCompletionBlock :^{
+            //    NSLog(@"%@",weakrequest.originalURL);
+            NSLog(@"%@",[weakrequest responseString]);
+            NSData *data = [weakrequest responseData];
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
             if (dic) {
+                [MuzzikItem addObjectToLocal:data ForKey:Constant_Data_Feed];
                 muzzik *muzzikToy = [muzzik new];
                 NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
                 for (muzzik *tempmuzzik in array) {
@@ -972,12 +951,55 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
                 [MytableView reloadData];
                 
             }
+        }];
+        [request setFailedBlock:^{
             
-        }
-    }];
-    [request startAsynchronous];
+            if (![[weakrequest responseString] length]>0) {
+                [self networkErrorShow];
+            }
+            if (![[weakrequest responseString] length]>0 && [MuzzikItem getDataFromLocalKey: Constant_Data_Feed] ) {
+                NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[MuzzikItem getDataFromLocalKey: Constant_Data_Feed] options:NSJSONReadingMutableContainers error:nil];
+                
+                if (dic) {
+                    muzzik *muzzikToy = [muzzik new];
+                    NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+                    for (muzzik *tempmuzzik in array) {
+                        BOOL isContained = NO;
+                        for (muzzik *arrayMuzzik in self.muzziks) {
+                            if ([arrayMuzzik.muzzik_id isEqualToString:tempmuzzik.muzzik_id]) {
+                                isContained = YES;
+                                break;
+                            }
+                            
+                        }
+                        if (!isContained) {
+                            [self.muzziks addObject:tempmuzzik];
+                        }
+                        isContained = NO;
+                    }
+                    [MuzzikItem SetUserInfoWithMuzziks:self.muzziks title:Constant_userInfo_follow description:[NSString stringWithFormat:@"关注列表"]];
+                    lastId = [dic objectForKey:@"tail"];
+                    headId = [dic objectForKey:Parameter_from];
+                    [MytableView reloadData];
+                    
+                }
+                
+            }
+        }];
+        [request startAsynchronous];
+
+    }
 }
 
+
+-(void)reloadDataSource{
+    [super reloadDataSource];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self reloadMuzzikSource];
+    });
+    
+    
+}
 -(void)playnextMuzzikUpdate{
     [MytableView reloadData];
 }

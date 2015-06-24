@@ -386,7 +386,6 @@
     }];
     [requestForm setFailedBlock:^{
         NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-        [userInfo checkLoginWithVC:self];
     }];
     [requestForm startAsynchronous];
 }

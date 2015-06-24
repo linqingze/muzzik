@@ -104,6 +104,9 @@
     [self SettingShareView];
     [MytableView addHeaderWithTarget:self action:@selector(refreshHeader)];
     [MytableView addFooterWithTarget:self action:@selector(refreshFooter)];
+    [self loadDataMessage];
+}
+-(void)loadDataMessage{
     NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,[self.detailMuzzik.music.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] ,@"name",[self.detailMuzzik.music.artist stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],@"artist", nil];
     
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik",BaseURL]]];
@@ -125,8 +128,18 @@
     }];
     [request setFailedBlock:^{
         NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
+        if (![[weakrequest responseString] length]>0) {
+            [self networkErrorShow];
+        }
     }];
     [request startAsynchronous];
+}
+-(void)reloadDataSource{
+    [super reloadDataSource];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self loadDataMessage];
+
+    });
 }
 -(void)newMuzzikBySong{
     MuzzikObject *mobject = [MuzzikObject shareClass];
@@ -731,7 +744,44 @@
     }
     
 }
-
+-(void)moveMuzzik:(muzzik *)tempMuzzik{
+    
+    userInfo *user = [userInfo shareClass];
+    if ([user.token length]>0) {
+        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/%@/moved",BaseURL,tempMuzzik.muzzik_id]]];
+        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:!tempMuzzik.ismoved] forKey:@"ismoved"] Method:PostMethod auth:YES];
+        __weak ASIHTTPRequest *weakrequest = requestForm;
+        [requestForm setCompletionBlock :^{
+            if ([weakrequest responseStatusCode] == 200) {
+                // NSData *data = [weakrequest responseData];
+                tempMuzzik.ismoved = !tempMuzzik.ismoved;
+                if (tempMuzzik.ismoved) {
+                    tempMuzzik.moveds = [NSString stringWithFormat:@"%d",[tempMuzzik.moveds intValue]+1 ];
+                }else{
+                    tempMuzzik.moveds = [NSString stringWithFormat:@"%d",[tempMuzzik.moveds intValue]-1 ];
+                }
+                [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:tempMuzzik];
+                
+            }
+            else{
+                //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+            }
+        }];
+        [requestForm setFailedBlock:^{
+            NSLog(@"%@",[weakrequest error]);
+        }];
+        [requestForm startAsynchronous];
+        
+        //NSLog(@"json:%@,dic:%@",tempJsonData,dic);
+        
+    }else{
+        LoginViewController *loginVC = [[LoginViewController alloc] init];
+        [self.navigationController pushViewController:loginVC animated:YES];
+        
+    }
+    
+    
+}
 -(void) commentAtMuzzik:(muzzik *)localMuzzik{
     muzzik *tempMuzzik = localMuzzik;
     DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];

@@ -67,8 +67,16 @@
     _suggestCollectionView.pagingEnabled = YES;
     [self.view addSubview:_suggestCollectionView];
     [self followScrollView:_suggestCollectionView];
-    userInfo *user = [userInfo shareClass];
     
+    
+    [self loadDataMessage];
+   
+    [self SettingShareView];
+    // Do any additional setup after loading the view.
+}
+
+-(void)loadDataMessage{
+    userInfo *user = [userInfo shareClass];
     if (user.checkSuggest) {
         suggestMuzzik = [[user.playList objectForKey:Constant_userInfo_suggest] objectForKey:UserInfo_muzziks];
         [_suggestCollectionView reloadData];
@@ -88,15 +96,29 @@
             }
         }];
         [request setFailedBlock:^{
-            NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
+            if (![[weakrequest responseString] length]>0) {
+                [self networkErrorShow];
+            }
+            if (![[weakrequest responseString] length]>0 && [MuzzikItem getDataFromLocalKey: Constant_Data_Suggest] ) {
+                NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[MuzzikItem getDataFromLocalKey: Constant_Data_Suggest] options:NSJSONReadingMutableContainers error:nil];
+                if (dic&&[[dic objectForKey:@"muzziks"]count]>0) {
+                    suggestMuzzik =  [[muzzik new] makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+                    [MuzzikItem SetUserInfoWithMuzziks:suggestMuzzik title:Constant_userInfo_suggest description:[NSString stringWithFormat:@"推荐列表"]];
+                    [_suggestCollectionView reloadData];
+                }
+            }
         }];
         [request startAsynchronous];
     }
-   
-    [self SettingShareView];
-    // Do any additional setup after loading the view.
 }
-
+-(void)reloadDataSource{
+    [super reloadDataSource];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self loadDataMessage];
+    });
+    
+    
+}
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     
     return 1;

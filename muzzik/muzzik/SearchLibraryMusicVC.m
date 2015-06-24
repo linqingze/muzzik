@@ -46,8 +46,7 @@
     }];
     [requestForm setFailedBlock:^{
         NSLog(@"%@",[weakrequest error]);
-        NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-        [userInfo checkLoginWithVC:self];
+         [MuzzikItem showNotifyOnViewUpon:self.view text:@"网络请求失败，请重试"];
     }];
     [requestForm startAsynchronous];
     // Uncomment the following line to preserve selection between presentations.
@@ -99,6 +98,7 @@
         [self.tableView footerEndRefreshing];
         NSLog(@"%@",[weakrequest error]);
         NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
+        
     }];
     [requestForm startAsynchronous];
 }
@@ -213,7 +213,6 @@
         [requestForm setFailedBlock:^{
             NSLog(@"%@",[weakrequest error]);
             NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-            [userInfo checkLoginWithVC:self];
         }];
         [requestForm startAsynchronous];
     }else{

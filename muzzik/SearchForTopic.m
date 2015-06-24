@@ -123,6 +123,7 @@
     [self.keeper.navigationController pushViewController:messagebv animated:YES];
 }
 -(void)searchTopic{
+    [self.keeper.searchBar resignFirstResponder];
     [searchView removeFromSuperview];
     if (!isNew) {
         _searchText = self.keeper.searchBar.text;
@@ -169,8 +170,9 @@
             }];
             [requestForm setFailedBlock:^{
                 NSLog(@"%@",[weakrequest error]);
-                NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-                [userInfo checkLoginWithVC:self];
+                if (![[weakrequest responseString] length]>0) {
+                    [MuzzikItem showNotifyOnView:self.view text:@"网络请求失败，请重试"];
+                }
             }];
             [requestForm startAsynchronous];
         }

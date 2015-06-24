@@ -926,12 +926,49 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         }];
         [request setFailedBlock:^{
             NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
+            if (![[weakrequest responseString] length]>0) {
+                [self networkErrorShow];
+            }
+            if (![[weakrequest responseString] length]>0 && [MuzzikItem getDataFromLocalKey: Constant_Data_Square] ) {
+                NSData *data = [MuzzikItem getDataFromLocalKey: Constant_Data_Square];
+                NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                if (dic) {
+                    
+                    muzzik *muzzikToy = [muzzik new];
+                    NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+                    for (muzzik *tempmuzzik in array) {
+                        BOOL isContained = NO;
+                        for (muzzik *arrayMuzzik in self.muzziks) {
+                            if ([arrayMuzzik.muzzik_id isEqualToString:tempmuzzik.muzzik_id]) {
+                                isContained = YES;
+                                break;
+                            }
+                            
+                        }
+                        if (!isContained) {
+                            [self.muzziks addObject:tempmuzzik];
+                        }
+                        isContained = NO;
+                    }
+                    [MuzzikItem SetUserInfoWithMuzziks:self.muzziks title:Constant_userInfo_square description:nil];
+                    lastId = [dic objectForKey:@"tail"];
+                    [MytableView reloadData];
+                    
+                }
+            }
         }];
         [request startAsynchronous];
     }
     
 }
-
+-(void)reloadDataSource{
+    [super reloadDataSource];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self reloadMuzzikSource];
+    });
+    
+    
+}
 -(void)playnextMuzzikUpdate{
     [MytableView reloadData];
 }

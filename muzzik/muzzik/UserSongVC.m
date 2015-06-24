@@ -34,6 +34,16 @@
     if ([self.uid length]==0) {
         self.uid = [userInfo shareClass].uid;
     }
+    [self loadDataMessage];
+    // Do any additional setup after loading the view.
+    
+    [songTableView addFooterWithTarget:self action:@selector(refreshFooter)];
+}
+
+
+-(void)loadDataMessage{
+    
+    
     ASIHTTPRequest *request= [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@/muzziks",BaseURL,self.uid]]];
     [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit, nil] Method:GetMethod auth:YES];
     
@@ -68,12 +78,25 @@
     }];
     [request setFailedBlock:^{
         NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
+        if (![[weakrequest responseString] length]>0) {
+            [self networkErrorShow];
+        }
     }];
     [request startAsynchronous];
-    // Do any additional setup after loading the view.
+
     
-    [songTableView addFooterWithTarget:self action:@selector(refreshFooter)];
+    
 }
+-(void)reloadDataSource{
+    [super reloadDataSource];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self loadDataMessage];
+    });
+    
+    
+}
+
+
 - (void)refreshFooter
 {
     

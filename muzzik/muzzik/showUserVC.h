@@ -8,7 +8,7 @@
 
 #import "BaseNagationViewController.h"
 
-@interface showUserVC : BaseNagationViewController
+@interface showUserVC : AMScrollingNavbarViewController
 @property (nonatomic,copy) NSString *showType;
 @property (nonatomic,copy) NSString *muzzik_id;
 @end

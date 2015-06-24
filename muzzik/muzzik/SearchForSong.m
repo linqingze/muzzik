@@ -95,7 +95,9 @@
         [requestForm setFailedBlock:^{
             NSLog(@"%@",[weakrequest error]);
             NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-            [userInfo checkLoginWithVC:self];
+            if (![[weakrequest responseString] length]>0) {
+                [MuzzikItem showNotifyOnView:self.view text:@"网络请求失败，请重试"];
+            }
         }];
         [requestForm startAsynchronous];
     }
@@ -174,13 +176,15 @@
         }];
         [requestForm setFailedBlock:^{
             NSLog(@"%@",[weakrequest error]);
-            NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-            [userInfo checkLoginWithVC:self];
+            if (![[weakrequest responseString] length]>0) {
+                [MuzzikItem showNotifyOnView:self.view text:@"网络请求失败，请重试"];
+            }
         }];
         [requestForm startAsynchronous];
     }
 }
 -(void)searchSong{
+    [self.keeper.searchBar resignFirstResponder];
     [searchView removeFromSuperview];
     _searchText = self.keeper.searchBar.text;
     [self.searchArray removeAllObjects];
@@ -208,8 +212,9 @@
         }];
         [requestForm setFailedBlock:^{
             NSLog(@"%@",[weakrequest error]);
-            NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-            [userInfo checkLoginWithVC:self];
+            if (![[weakrequest responseString] length]>0) {
+                [MuzzikItem showNotifyOnView:self.view text:@"网络请求失败，请重试"];
+            }
         }];
         [requestForm startAsynchronous];
     }

@@ -182,6 +182,7 @@
 }
 
 -(void) searchUser{
+    [self.keeper.searchBar resignFirstResponder];
     [searchView removeFromSuperview];
     _searchText = self.keeper.searchBar.text;
     [self.searchArray removeAllObjects];
@@ -206,6 +207,9 @@
         [requestForm setFailedBlock:^{
             NSLog(@"%@",[weakrequest error]);
             NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
+            if (![[weakrequest responseString] length]>0) {
+                [MuzzikItem showNotifyOnView:self.view text:@"网络请求失败，请重试"];
+            }
         }];
         [requestForm startAsynchronous];
     }

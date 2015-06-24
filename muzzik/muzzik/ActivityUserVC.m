@@ -37,8 +37,12 @@
     
     [userTableview registerClass:[searchUserCell class] forCellReuseIdentifier:@"searchUserCell"];
     [self followScrollView:userTableview];
+    [self loadDataMessage];
+    // Do any additional setup after loading the view.
+}
+-(void)loadDataMessage{
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/suggest",BaseURL]]];
-    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:@"6" forKey:Parameter_Limit] Method:GetMethod auth:YES];
+    [request addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = request;
     [request setCompletionBlock :^{
         //    NSLog(@"%@",weakrequest.originalURL);
@@ -51,12 +55,21 @@
             userArray = [muzzikToy makeMuzziksByUserArray:[dic objectForKey:@"users"]];
             [userTableview reloadData];
         }
-        }];
-        [request setFailedBlock:^{
-            NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
-        }];
-        [request startAsynchronous];
-    // Do any additional setup after loading the view.
+    }];
+    [request setFailedBlock:^{
+        if (![[weakrequest responseString] length]>0) {
+            [self networkErrorShow];
+        }
+    }];
+    [request startAsynchronous];
+}
+-(void)reloadDataSource{
+    [super reloadDataSource];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self loadDataMessage];
+    });
+    
+    
 }
 #pragma mark - Table view data source
 

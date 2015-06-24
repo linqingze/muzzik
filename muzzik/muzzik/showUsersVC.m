@@ -31,6 +31,13 @@
     userTableview.separatorStyle = UITableViewCellSeparatorStyleNone;
 
     [userTableview registerClass:[searchUserCell class] forCellReuseIdentifier:@"searchUserCell"];
+    [self loadDataMessage];
+    
+    [userTableview addFooterWithTarget:self action:@selector(refreshFooter)];
+}
+
+
+-(void)loadDataMessage{
     ASIHTTPRequest *requestForm;
     NSString *uid;
     if ([self.uid length]>0) {
@@ -65,12 +72,22 @@
     }];
     [requestForm setFailedBlock:^{
         NSLog(@"%@",[weakrequest error]);
-        NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-        [userInfo checkLoginWithVC:self];
+        if (![[weakrequest responseString] length]>0) {
+            [self networkErrorShow];
+        }
     }];
     [requestForm startAsynchronous];
+
     
-    [userTableview addFooterWithTarget:self action:@selector(refreshFooter)];
+    
+}
+-(void)reloadDataSource{
+    [super reloadDataSource];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self loadDataMessage];
+    });
+    
+    
 }
 
 

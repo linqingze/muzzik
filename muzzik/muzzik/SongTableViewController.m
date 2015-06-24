@@ -58,7 +58,7 @@
     [requestForm setFailedBlock:^{
         NSLog(@"%@",[weakrequest error]);
         NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-        [userInfo checkLoginWithVC:self];
+        [MuzzikItem showNotifyOnViewUpon:self.view text:@"网络请求失败，请重试"];
     }];
     [requestForm startAsynchronous];
     [self.tableView addFooterWithTarget:self action:@selector(refreshFooter)];
@@ -272,7 +272,6 @@
         [requestForm setFailedBlock:^{
             NSLog(@"%@",[weakrequest error]);
             NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-            [userInfo checkLoginWithVC:self];
         }];
         [requestForm startAsynchronous];
     }else{

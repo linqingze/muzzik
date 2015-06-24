@@ -44,9 +44,12 @@
     
     [self followScrollView:MytableView];
     RefreshDic = [NSMutableDictionary dictionary];
-    for (int i = 0; i<4; i++) {
-        [RefreshDic setObject:[NSNumber numberWithInt:i] forKey:[NSString stringWithFormat:@"%d",i]];
-    }
+    [self loadDataMessage];
+    [MytableView addHeaderWithTarget:self action:@selector(refreshHeader)];
+    [MytableView addFooterWithTarget:self action:@selector(refreshFooter)];
+}
+
+-(void)loadDataMessage{
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@/muzziks",BaseURL,self.uid]]];
     [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES],@"reply",Limit_Constant,Parameter_Limit, nil] Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = request;
@@ -58,17 +61,29 @@
             muzzik *muzzikToy = [muzzik new];
             commentArray = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
             lastId = [dic objectForKey:Parameter_tail];
-           [MytableView reloadData];
+            [MytableView reloadData];
             
         }
     }];
     [request setFailedBlock:^{
         NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
+        if (![[weakrequest responseString] length]>0) {
+            [self networkErrorShow];
+        }
     }];
     [request startAsynchronous];
-    [MytableView addHeaderWithTarget:self action:@selector(refreshHeader)];
-    [MytableView addFooterWithTarget:self action:@selector(refreshFooter)];
+    
+    
 }
+-(void)reloadDataSource{
+    [super reloadDataSource];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self loadDataMessage];
+    });
+    
+    
+}
+
 - (void)refreshHeader
 {
     // [self updateSomeThing];
@@ -91,6 +106,7 @@
         }
     }];
     [request setFailedBlock:^{
+        [MytableView headerEndRefreshing];
         NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
     }];
     [request startAsynchronous];
@@ -133,6 +149,7 @@
     }];
     [request setFailedBlock:^{
         NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
+        [MytableView footerEndRefreshing];
     }];
     [request startAsynchronous];
     
@@ -183,6 +200,12 @@
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     muzzik *tempMuzzik = commentArray[indexPath.row];
     CommentMuzzikCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CommentMuzzikCell" forIndexPath:indexPath];
+    
+    if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
+        [cell.userImage setAlpha:0];
+        [RefreshDic setObject:indexPath forKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
+    }
+    
     [cell.userImage sd_setBackgroundImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,tempMuzzik.MuzzikUser.avatar]] forState:UIControlStateNormal completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
         [UIView animateWithDuration:0.5 animations:^{
             [cell.userImage setAlpha:1];

@@ -85,6 +85,14 @@
     MyTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self followScrollView:MyTableView];
     [MyTableView setTableHeaderView:_headView];
+    [self loadDataMessage];
+    [MyTableView addFooterWithTarget:self action:@selector(refreshFooter)];
+    
+
+
+    // Do any additional setup after loading the view.
+}
+-(void)loadDataMessage{
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@",BaseURL,self.uid]]];
     [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = requestForm;
@@ -108,8 +116,10 @@
                 if ([dicKeys containsObject:@"avatar"]) {
                     [_headimage setAlpha:0];
                     [_headimage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/600/h/600",BaseURL_image,[_profileDic objectForKey:@"avatar"]]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                        [_headimage setAlpha:1];
-                        [_coverImage setAlpha:1];
+                        [UIView animateWithDuration:0.5 animations:^{
+                            [_headimage setAlpha:1];
+                            [_coverImage setAlpha:1];
+                        }];
                     }];
                 }
                 if ([dicKeys containsObject:@"name"]) {
@@ -123,7 +133,8 @@
                         [_genderImage setImage:[UIImage imageNamed:Image_profilefemaleImage]];
                     }
                 }
-                
+                [_constellationImage removeFromSuperview];
+                [_constellationLabel removeFromSuperview];
                 CGFloat recordHeight = SCREEN_WIDTH-32;
                 if ([dicKeys containsObject:@"astro"] && [[_profileDic objectForKey:@"astro"] length]>0) {
                     _constellationImage.frame = CGRectMake(16, recordHeight+5, 8, 8);
@@ -137,6 +148,8 @@
                     recordHeight = recordHeight-28;
                     
                 }
+                [_birthImage removeFromSuperview];
+                [_birthLabel removeFromSuperview];
                 if ([dicKeys containsObject:@"birthday"] && [_profileDic objectForKey:@"birthday"]>0) {
                     double unixTimeStamp = [[NSString stringWithFormat:@"%@",[_profileDic objectForKey:@"birthday"]] doubleValue]/1000;
                     NSTimeInterval _interval=unixTimeStamp;
@@ -158,6 +171,10 @@
                     recordHeight = recordHeight-28;
                     
                 }
+                [_companyImage removeFromSuperview];
+                [_companyLabel removeFromSuperview];
+                [_schoolImage removeFromSuperview];
+                [_schoolLabel removeFromSuperview];
                 if ([dicKeys containsObject:@"company"] && [[_profileDic objectForKey:@"company"] length]>0) {
                     _companyImage.frame = CGRectMake(16, recordHeight+5, 8, 8);
                     [_companyImage setImage:[UIImage imageNamed:Image_profilejobImage]];
@@ -171,7 +188,7 @@
                     
                 }else if([dicKeys containsObject:@"school"] && [[_profileDic objectForKey:@"school"] length]>0){
                     _schoolImage.frame = CGRectMake(16, recordHeight+5, 8, 8);
-                    [_schoolImage setImage:[UIImage imageNamed:Image_profilejobImage]];
+                    [_schoolImage setImage:[UIImage imageNamed:Image_profileschoolImage]];
                     [_headView addSubview:_schoolImage];
                     _schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(35, recordHeight, SCREEN_WIDTH/2-50, 20)];
                     [_schoolLabel setText:[_profileDic objectForKey:@"school"]];
@@ -272,8 +289,9 @@
             }];
             [request setFailedBlock:^{
                 NSLog(@"%@",[weakre error]);
-                NSLog(@"hhhh%@  kkk%@",[weakre responseString],[weakre responseHeaders]);
-                [userInfo checkLoginWithVC:self];
+                if (![[weakrequest responseString] length]>0) {
+                    [self networkErrorShow];
+                }
             }];
             [request startAsynchronous];
         }
@@ -283,16 +301,22 @@
     }];
     [requestForm setFailedBlock:^{
         NSLog(@"%@",[weakrequest error]);
-        NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-        [userInfo checkLoginWithVC:self];
+        if (![[weakrequest responseString] length]>0) {
+            [self networkErrorShow];
+        }
     }];
     [requestForm startAsynchronous];
-    [MyTableView addFooterWithTarget:self action:@selector(refreshFooter)];
-    
-
-
-    // Do any additional setup after loading the view.
 }
+
+-(void)reloadDataSource{
+    [super reloadDataSource];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self loadDataMessage];
+    });
+    
+    
+}
+
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     

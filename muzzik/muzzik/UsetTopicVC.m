@@ -31,6 +31,19 @@
     topicTableView.dataSource = self;
     [topicTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     [topicTableView registerClass:[myTopicCell class] forCellReuseIdentifier:@"myTopicCell"];
+    
+    // Uncomment the following line to preserve selection between presentations.
+    // self.clearsSelectionOnViewWillAppear = NO;
+    
+    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
+    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    [topicTableView addFooterWithTarget:self action:@selector(refreshFooter)];
+    [self loadDataMessage];
+   }
+
+
+
+-(void)loadDataMessage{
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/topic/byInitiator/%@",BaseURL,[userInfo shareClass].uid]]];
     NSDictionary  *paraDic;
     paraDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%ld",(long)page],Parameter_page, Limit_Constant,Parameter_Limit,nil];
@@ -53,17 +66,24 @@
     }];
     [requestForm setFailedBlock:^{
         NSLog(@"%@",[weakrequest error]);
-        NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-        [userInfo checkLoginWithVC:self];
+        if (![[weakrequest responseString] length]>0) {
+            [self networkErrorShow];
+        }
     }];
     [requestForm startAsynchronous];
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
     
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    [topicTableView addFooterWithTarget:self action:@selector(refreshFooter)];
-   }
+    
+}
+-(void)reloadDataSource{
+    [super reloadDataSource];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self loadDataMessage];
+    });
+    
+    
+}
+
+
 - (void)refreshFooter
 {
     // [self updateSomeThing];

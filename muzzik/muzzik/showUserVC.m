@@ -42,6 +42,11 @@
     _tableView.dataSource = self;
     [_tableView  setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     [_tableView registerClass:[searchUserCell class] forCellReuseIdentifier:@"searchUserCell"];
+    [self loadDataMessage];
+    [_tableView addFooterWithTarget:self action:@selector(refreshFooter)];
+    // Do any additional setup after loading the view.
+}
+-(void)loadDataMessage{
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :URLString]];
     [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:page] ,Parameter_page,@"20",Parameter_Limit, nil] Method:GetMethod auth:NO];
     __weak ASIHTTPRequest *weakrequest = requestForm;
@@ -64,11 +69,17 @@
     [requestForm setFailedBlock:^{
         NSLog(@"%@",[weakrequest error]);
         NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-        [userInfo checkLoginWithVC:self];
+        if (![[weakrequest responseString] length]>0) {
+            [self networkErrorShow];
+        }
     }];
     [requestForm startAsynchronous];
-    [_tableView addFooterWithTarget:self action:@selector(refreshFooter)];
-    // Do any additional setup after loading the view.
+}
+-(void)reloadDataSource{
+    [super reloadDataSource];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self loadDataMessage];
+    });
 }
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];

@@ -40,9 +40,14 @@
     [notifyTabelView registerClass:[NotifyFollowCell class] forCellReuseIdentifier:@"NotifyFollowCell"];
     [notifyTabelView registerClass:[NotifyMuzzikCell class] forCellReuseIdentifier:@"NotifyMuzzikCell"];
      [notifyTabelView addFooterWithTarget:self action:@selector(refreshFooter)];
-    NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,[NSNumber numberWithBool:YES],@"full", nil];
+    
     [notifyTabelView addHeaderWithTarget:self action:@selector(refreshHeader)];
     [notifyTabelView addFooterWithTarget:self action:@selector(refreshFooter)];
+    [self loadDataMessage];
+}
+-(void)loadDataMessage{
+    
+    NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,[NSNumber numberWithBool:YES],@"full", nil];
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Notify]]];
     [request addBodyDataSourceWithJsonByDic:requestDic Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = request;
@@ -63,6 +68,9 @@
         }
     }];
     [request setFailedBlock:^{
+        if (![[weakrequest responseString] length]>0) {
+            [self networkErrorShow];
+        }
         NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
         if (![[weakrequest responseString] length]>0) {
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[MuzzikItem getDataFromLocalKey:Constant_Data_notify] options:NSJSONReadingMutableContainers error:nil];
@@ -76,6 +84,15 @@
     }];
     [request startAsynchronous];
 }
+-(void)reloadDataSource{
+    [super reloadDataSource];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self loadDataMessage];
+    });
+    
+    
+}
+
 -(void)refreshHeader{
     NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,[NSNumber numberWithBool:YES],@"full", nil];
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Notify]]];

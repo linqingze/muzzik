@@ -85,6 +85,11 @@
     [self SettingShareView];
     [MytableView addHeaderWithTarget:self action:@selector(refreshHeader)];
     [MytableView addFooterWithTarget:self action:@selector(refreshFooter)];
+    [self loadDataMessage];
+}
+
+-(void)loadDataMessage{
+    
     NSDictionary *requestDic = [NSDictionary dictionaryWithObject:@"20" forKey:Parameter_Limit];
     
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/topic/%@",BaseURL,self.topic_id]]];
@@ -106,9 +111,24 @@
     }];
     [request setFailedBlock:^{
         NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
+        if (![[weakrequest responseString] length]>0) {
+            [self networkErrorShow];
+        }
     }];
     [request startAsynchronous];
+    
+    
 }
+-(void)reloadDataSource{
+    [super reloadDataSource];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self loadDataMessage];
+    });
+    
+    
+}
+
+
 - (void)refreshHeader
 {
     // [self updateSomeThing];
@@ -195,7 +215,7 @@
 -(void) loadTopicTittle{
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/topic/%@",BaseURL,self.topic_id]]];
     NSDictionary  *paraDic;
-    paraDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%d",page],Parameter_page, Limit_Constant,Parameter_Limit,nil];
+    paraDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%ld",(long)page],Parameter_page, Limit_Constant,Parameter_Limit,nil];
     [requestForm addBodyDataSourceWithJsonByDic:paraDic Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = requestForm;
     [requestForm setCompletionBlock :^{
@@ -235,7 +255,6 @@
             [request setFailedBlock:^{
                 NSLog(@"%@",[weakre error]);
                 NSLog(@"hhhh%@  kkk%@",[weakre responseString],[weakre responseHeaders]);
-                [userInfo checkLoginWithVC:self];
             }];
             [request startAsynchronous];
         }
@@ -701,13 +720,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         LoginViewController *loginVC = [[LoginViewController alloc] init];
         [self.navigationController pushViewController:loginVC animated:YES];
     }
-    
-    
-    
-    
-    
-    
-    
+  
     
 }
 -(void)repostActionWithMuzzik:(muzzik *)tempMuzzik{

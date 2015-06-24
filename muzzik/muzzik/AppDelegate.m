@@ -738,7 +738,7 @@
                 muzzik *tempMuzzik = [muzzik new];
                 if ([[dic objectForKey:@"muzziks"] count]>0) {
                     [MuzzikItem SetUserInfoWithMuzziks:[tempMuzzik makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]] title:Constant_userInfo_own description:[NSString stringWithFormat:@"我的Muzzik"]];
-                    
+                    [MuzzikItem addObjectToLocal:[weakrequestOwn responseData] ForKey:Constant_Data_ownMuzzik];
                     }
                     
                 }
@@ -777,6 +777,7 @@
                 muzzik *muzzikToy = [muzzik new];
                 
                 [MuzzikItem SetUserInfoWithMuzziks:[muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]] title:Constant_userInfo_move description:[NSString stringWithFormat:@"喜欢列表"]];
+                [MuzzikItem addObjectToLocal:data ForKey:Constant_Data_moved];
             }
         }];
         [requestmove setFailedBlock:^{

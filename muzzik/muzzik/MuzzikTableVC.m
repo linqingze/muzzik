@@ -865,9 +865,59 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         }
     }];
     [request setFailedBlock:^{
-        NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
+        if (![[weakrequest responseString] length]>0) {
+            [self networkErrorShow];
+        }
+        NSData *data;
+        if ([self.requstType isEqualToString:@"moved"]) {
+            data = [MuzzikItem getDataFromLocalKey: Constant_Data_moved];
+        }else{
+            data = [MuzzikItem getDataFromLocalKey: Constant_Data_ownMuzzik];
+        }
+        if (![[weakrequest responseString] length]>0 && data) {
+            
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+            if (dic) {
+                muzzik *muzzikToy = [muzzik new];
+                NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+                for (muzzik *tempmuzzik in array) {
+                    BOOL isContained = NO;
+                    for (muzzik *arrayMuzzik in self.muzziks) {
+                        if ([arrayMuzzik.muzzik_id isEqualToString:tempmuzzik.muzzik_id]) {
+                            isContained = YES;
+                            break;
+                        }
+                        
+                    }
+                    if (!isContained) {
+                        [self.muzziks addObject:tempmuzzik];
+                    }
+                    isContained = NO;
+                }
+                if ([self.requstType isEqualToString:@"moved"]) {
+                    [MuzzikItem SetUserInfoWithMuzziks:self.muzziks title:Constant_userInfo_move description:[NSString stringWithFormat:@"喜欢列表"]];
+                }else{
+                    [MuzzikItem SetUserInfoWithMuzziks:self.muzziks title:Constant_userInfo_own description:[NSString stringWithFormat:@"我的Muzzik"]];
+                }
+                lastId = [dic objectForKey:@"tail"];
+                headId = [dic objectForKey:Parameter_from];
+                [MytableView reloadData];
+                
+            }
+            
+        }
     }];
     [request startAsynchronous];
+}
+
+
+-(void)reloadDataSource{
+    [super reloadDataSource];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self reloadMuzzikSource];
+    });
+    
+    
 }
 
 -(void)playnextMuzzikUpdate{

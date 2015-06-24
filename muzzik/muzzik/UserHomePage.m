@@ -192,6 +192,10 @@
         [self.parentRoot.titleShowView addSubview:headLabel];
         [self.parentRoot.pagecontrol setCurrentPage:2];
     }
+    [self loadDataMessage];
+}
+-(void)loadDataMessage{
+    
     userInfo *user = [userInfo shareClass];
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@",BaseURL,user.uid]]];
     [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
@@ -211,14 +215,32 @@
     }];
     [requestForm setFailedBlock:^{
         NSLog(@"%@",[weakrequest error]);
+        
         if (![[weakrequest responseString] length]>0) {
+            [self networkErrorShow];
+        }
+        
+        if (![[weakrequest responseString] length]>0 && [MuzzikItem getDataFromLocalKey: Constant_Data_User_home]) {
             _profileDic = [NSJSONSerialization JSONObjectWithData:[MuzzikItem getDataFromLocalKey: Constant_Data_User_home] options:NSJSONReadingMutableContainers error:nil];
             [self.view setNeedsLayout];
-        
+            
         }
     }];
     [requestForm startAsynchronous];
+
+    
 }
+-(void)reloadDataSource{
+    [super reloadDataSource];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self loadDataMessage];
+    });
+    
+    
+}
+
+
+
 -(void)viewWillLayoutSubviews {
     if (_profileDic) {
         NSArray *dicKeys = [_profileDic allKeys];
@@ -403,48 +425,36 @@
 }
 
 -(void)showMuzziks{
-    if ([MuzzikItem isNetWorkAvailabel]) {
-        UserMuzzikVC *uMuzzik = [[UserMuzzikVC alloc] init];
-        [self.navigationController pushViewController:uMuzzik animated:YES];
-    }
+    UserMuzzikVC *uMuzzik = [[UserMuzzikVC alloc] init];
+    [self.navigationController pushViewController:uMuzzik animated:YES];
 }
 
 -(void)showMoveds{
-    if ([MuzzikItem isNetWorkAvailabel]) {
-        MuzzikTableVC *muzzikMoved = [[MuzzikTableVC alloc] init];
-        muzzikMoved.requstType = @"moved";
-        [self.navigationController pushViewController:muzzikMoved animated:YES];
-    }
+    MuzzikTableVC *muzzikMoved = [[MuzzikTableVC alloc] init];
+    muzzikMoved.requstType = @"moved";
+    [self.navigationController pushViewController:muzzikMoved animated:YES];
 }
 
 -(void)showTopic{
-    if ([MuzzikItem isNetWorkAvailabel]) {
-        UsetTopicVC *usertopic = [[UsetTopicVC alloc] init];
-        [self.navigationController pushViewController:usertopic animated:YES];
-    }
+    UsetTopicVC *usertopic = [[UsetTopicVC alloc] init];
+    [self.navigationController pushViewController:usertopic animated:YES];
 }
 
 -(void)showFollow{
-    if ([MuzzikItem isNetWorkAvailabel]) {
-        showUsersVC *showuser = [[showUsersVC alloc] init];
-        showuser.showType = @"follows";
-        [self.navigationController pushViewController:showuser animated:YES];
-    }
+    showUsersVC *showuser = [[showUsersVC alloc] init];
+    showuser.showType = @"follows";
+    [self.navigationController pushViewController:showuser animated:YES];
 }
 
 -(void)showFans{
-    if ([MuzzikItem isNetWorkAvailabel]) {
-        showUsersVC *showuser = [[showUsersVC alloc] init];
-        showuser.showType = @"fans";
-        [self.navigationController pushViewController:showuser animated:YES];
-    }
+    showUsersVC *showuser = [[showUsersVC alloc] init];
+    showuser.showType = @"fans";
+    [self.navigationController pushViewController:showuser animated:YES];
 }
 
 -(void)showSong{
-    if ([MuzzikItem isNetWorkAvailabel]) {
-        UserSongVC* usersong = [[UserSongVC alloc] init];
-        [self.navigationController pushViewController:usersong animated:YES];
-    }
+    UserSongVC* usersong = [[UserSongVC alloc] init];
+    [self.navigationController pushViewController:usersong animated:YES];
 }
 /*
 #pragma mark - Navigation
