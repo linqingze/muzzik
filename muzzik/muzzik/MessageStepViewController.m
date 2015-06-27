@@ -25,6 +25,7 @@
     BOOL isPrivate;
     UITextField *_textfield;
     UIButton *AtButton;
+    UILabel *addMusicTipsLabel;
 }
 @end
 
@@ -74,6 +75,12 @@
     [separateLine setBackgroundColor:Color_line_1];
     [self.view addSubview:separateLine];
     
+    addMusicTipsLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(changSongButton.frame)+23, SCREEN_HEIGHT-144, 150, 40)];
+    [addMusicTipsLabel setFont:[UIFont systemFontOfSize:14]];
+    [addMusicTipsLabel setTextColor:Color_Text_2];
+    addMusicTipsLabel.text = @"添加歌曲";
+    [self.view addSubview:addMusicTipsLabel];
+    
     songName = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(changSongButton.frame)+23, CGRectGetMidY(changSongButton.frame)-20, SCREEN_WIDTH-CGRectGetMaxX(changSongButton.frame)-33, 20)];
     songName.textColor = Color_Theme_5;
     songName.font = [UIFont fontWithName:Font_Next_Bold size:15];
@@ -106,6 +113,7 @@
     if (mobject.music) {
         songName.text = mobject.music.name;
         artist.text = mobject.music.artist;
+        [addMusicTipsLabel setHidden:YES];
     }
     if ([mobject.tempmessage length]>0) {
         [placeHolder setHidden:YES];
@@ -199,11 +207,13 @@
         
         [dateformatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
         
-NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:textview.text,@"message",[dateformatter stringFromDate:senddate],@"lastdate",mobject.music.music_id,@"music_id",mobject.music.name,@"music_name",mobject.music.artist,@"music_artist", nil];
+NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:textview.text,@"message",[dateformatter stringFromDate:senddate],@"lastdate",mobject.music.music_id,@"music_id",mobject.music.name,@"music_name",mobject.music.artist,@"music_artist",mobject.music.key,@"music_key", nil];
         if ([muzzikDrafts count] == 0) {
             muzzikDrafts = @[dic];
         }else{
-            muzzikDrafts = [muzzikDrafts arrayByAddingObject:dic];
+            NSMutableArray *mutableArr = [muzzikDrafts mutableCopy];
+            [mutableArr insertObject:dic atIndex:0];
+            muzzikDrafts = [mutableArr copy];
         }
         [MuzzikItem addMuzzikDraftsToLocal:muzzikDrafts];
        

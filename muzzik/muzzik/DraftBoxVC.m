@@ -39,18 +39,34 @@
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     DraftsCell *cell = [tableView dequeueReusableCellWithIdentifier:@"DraftsCell" forIndexPath:indexPath];
     NSDictionary *dic = draftArray[indexPath.row];
-    cell.message.text = [dic objectForKey:@"message"];
+    
     cell.timeLabel.text = [dic objectForKey:@"lastdate"];
     cell.songName.text = [dic objectForKey:@"music_name"];
     cell.Artist.text = [dic objectForKey:@"music_artist"];
-    UIColor *color;
-    if (indexPath.row%3 == 0) {
-        color = Color_Action_Button_1;
-    }else if(indexPath.row%3 == 1){
-        color = Color_Action_Button_2;
+    if ([[dic objectForKey:@"message"] length]>0) {
+        cell.message.text = [dic objectForKey:@"message"];
+        [cell.songview setFrame:CGRectMake(0, 60, SCREEN_WIDTH, 60)];
     }else{
-        color = Color_Action_Button_3;
+        cell.message.text = @"";
+        [cell.songview setFrame:CGRectMake(0, 20, SCREEN_WIDTH, 60)];
     }
+    UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH-50, 20)];
+    [tempLabel setFont:[UIFont fontWithName:Font_Next_Bold size:15]];
+    tempLabel.text = cell.songName.text;
+    [tempLabel sizeToFit];
+    if (tempLabel.frame.size.width >SCREEN_WIDTH-50) {
+        [cell.songImage setFrame:CGRectMake(SCREEN_WIDTH-30, 23, 15, 15)];
+    }else{
+        [cell.songImage setFrame:CGRectMake(tempLabel.frame.size.width+40, 23, 15, 15)];
+    }
+    UIColor *color = Color_Action_Button_2;
+//    if (indexPath.row%3 == 0) {
+//        color = Color_Action_Button_1;
+//    }else if(indexPath.row%3 == 1){
+//        color = Color_Action_Button_2;
+//    }else{
+//        color = Color_Action_Button_3;
+//    }
     [cell.songName setTextColor:color];
     [cell.Artist setTextColor:color];
     return cell;
@@ -63,6 +79,7 @@
     localMusic.music_id = [dic objectForKey:@"music_id"];
     localMusic.name = [dic objectForKey:@"music_name"];
     localMusic.artist = [dic objectForKey:@"music_artist"];
+    localMusic.key  =   [dic objectForKey:@"music_key"];
     mobject.music = localMusic;
     MessageStepViewController *msgvc = [[MessageStepViewController alloc] init];
     msgvc.message = [dic objectForKey:@"message"];
@@ -73,7 +90,13 @@
     [self.navigationController pushViewController:msgvc animated:YES];
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 70;
+    NSDictionary *dic = draftArray[indexPath.row];
+    if ([[dic objectForKey:@"message"] length]>0) {
+        return 120;
+    }else{
+        return 80;
+    }
+    
 }
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return draftArray.count;

@@ -140,7 +140,7 @@
                 [MytableView footerEndRefreshing];
                 [MytableView reloadData];
                 
-                if ([[dic objectForKey:@"muzziks"] count]<[Limit_Constant integerValue] ) {
+                if ([[dic objectForKey:@"muzziks"] count]<1 ) {
                     [MytableView removeFooter];
                 }
             });
@@ -221,7 +221,7 @@
     cell.MuzzikModel = tempMuzzik;
     cell.userName.text = tempMuzzik.MuzzikUser.name;
     [cell.userName sizeToFit];
-    [cell.privateImage setFrame:CGRectMake(cell.userName.frame.origin.x+cell.userName.frame.size.width+5, cell.userName.frame.origin.y, 20, 20)];
+    [cell.privateImage setFrame:CGRectMake(cell.userName.frame.origin.x+cell.userName.frame.size.width+2, cell.userName.frame.origin.y, 20, 20)];
     if (tempMuzzik.isprivate ) {
         [cell.privateImage setHidden:NO];
     }else{

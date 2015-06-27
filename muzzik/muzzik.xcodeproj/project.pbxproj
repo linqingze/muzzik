@@ -111,6 +111,9 @@
 		F20553A21B36B7B70093AE8A /* ZJSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = F20553A11B36B7B70093AE8A /* ZJSwitch.m */; };
 		F20553A51B375AD70093AE8A /* AtFriendSearchVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F20553A41B375AD70093AE8A /* AtFriendSearchVC.m */; };
 		F20553A81B396FCC0093AE8A /* NewSearchCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F20553A71B396FCC0093AE8A /* NewSearchCell.m */; };
+		F20553AB1B3D7FC70093AE8A /* MusicLyricCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F20553AA1B3D7FC70093AE8A /* MusicLyricCell.m */; };
+		F20553B11B3DED940093AE8A /* NotifyButton.m in Sources */ = {isa = PBXBuildFile; fileRef = F20553B01B3DED940093AE8A /* NotifyButton.m */; };
+		F20553B31B3E0CF80093AE8A /* chineseF.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F20553B21B3E0CF80093AE8A /* chineseF.ttf */; };
 		F208EF4B1B1E1D2E00DB5A68 /* RJTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = F208EF4A1B1E1D2E00DB5A68 /* RJTextView.m */; };
 		F208EF4D1B1F783A00DB5A68 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F208EF4C1B1F783A00DB5A68 /* CoreText.framework */; };
 		F208EF4F1B1F7A7700DB5A68 /* VNI_HLThuphap.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F208EF4E1B1F7A7700DB5A68 /* VNI_HLThuphap.ttf */; };
@@ -463,6 +466,11 @@
 		F20553A41B375AD70093AE8A /* AtFriendSearchVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AtFriendSearchVC.m; sourceTree = "<group>"; };
 		F20553A61B396FCC0093AE8A /* NewSearchCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewSearchCell.h; sourceTree = "<group>"; };
 		F20553A71B396FCC0093AE8A /* NewSearchCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewSearchCell.m; sourceTree = "<group>"; };
+		F20553A91B3D7FC70093AE8A /* MusicLyricCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicLyricCell.h; sourceTree = "<group>"; };
+		F20553AA1B3D7FC70093AE8A /* MusicLyricCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MusicLyricCell.m; sourceTree = "<group>"; };
+		F20553AF1B3DED940093AE8A /* NotifyButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotifyButton.h; sourceTree = "<group>"; };
+		F20553B01B3DED940093AE8A /* NotifyButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotifyButton.m; sourceTree = "<group>"; };
+		F20553B21B3E0CF80093AE8A /* chineseF.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = chineseF.ttf; sourceTree = "<group>"; };
 		F208EF491B1E1D2E00DB5A68 /* RJTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RJTextView.h; sourceTree = "<group>"; };
 		F208EF4A1B1E1D2E00DB5A68 /* RJTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RJTextView.m; sourceTree = "<group>"; };
 		F208EF4C1B1F783A00DB5A68 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
@@ -786,6 +794,7 @@
 		E11245F51AAAAE4B0014D461 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				F20553B21B3E0CF80093AE8A /* chineseF.ttf */,
 				F208EF4E1B1F7A7700DB5A68 /* VNI_HLThuphap.ttf */,
 				F200B7AB1B2ABF6E002A6F61 /* Copperplate_00.ttf */,
 				F208EF521B1F7D6100DB5A68 /* Bluehigh.ttf */,
@@ -1068,6 +1077,8 @@
 				F2B81FF01ADD6C6A00012ED6 /* MuzzikItem.m */,
 				E1FA12A71AB148B1005EDA1D /* RFRadioView.h */,
 				E1FA12A81AB148B1005EDA1D /* RFRadioView.m */,
+				F20553A91B3D7FC70093AE8A /* MusicLyricCell.h */,
+				F20553AA1B3D7FC70093AE8A /* MusicLyricCell.m */,
 				E16716261AAD790F0068AE98 /* musicPlayer.h */,
 				E16716271AAD790F0068AE98 /* musicPlayer.m */,
 			);
@@ -1512,6 +1523,8 @@
 				F22AB3A51B068A6000C61677 /* TapImageView.m */,
 				F2F68F621B25C9C1005F19E6 /* PhotoImageView.h */,
 				F2F68F631B25C9C1005F19E6 /* PhotoImageView.m */,
+				F20553AF1B3DED940093AE8A /* NotifyButton.h */,
+				F20553B01B3DED940093AE8A /* NotifyButton.m */,
 			);
 			name = "Addition Class";
 			sourceTree = "<group>";
@@ -1663,6 +1676,7 @@
 				F208EF551B1F7D6100DB5A68 /* calico_cyrillic.ttf in Resources */,
 				F208EF541B1F7D6100DB5A68 /* Bluehigh.ttf in Resources */,
 				F208EF4F1B1F7A7700DB5A68 /* VNI_HLThuphap.ttf in Resources */,
+				F20553B31B3E0CF80093AE8A /* chineseF.ttf in Resources */,
 				E11246061AAAAE4B0014D461 /* LaunchScreen.xib in Resources */,
 				F2E558A71B164D420080F9C9 /* MJRefresh.bundle in Resources */,
 				F208EF511B1F7D5500DB5A68 /* kilsonburg.ttf in Resources */,
@@ -1771,6 +1785,7 @@
 				F2F7EE431AEE241A00265596 /* FriendVC.m in Sources */,
 				F2F7EE141AED60A400265596 /* shareBaseController.m in Sources */,
 				F2E558A91B164D420080F9C9 /* MJRefreshConst.m in Sources */,
+				F20553AB1B3D7FC70093AE8A /* MusicLyricCell.m in Sources */,
 				E11246491AAAB1F20014D461 /* ASINetworkQueue.m in Sources */,
 				F2F68F5E1B23FB49005F19E6 /* DraftsCell.m in Sources */,
 				F2A7F9861AEF78BD000FCC57 /* TWPhotoCollectionViewCell.m in Sources */,
@@ -1788,6 +1803,7 @@
 				F20553A51B375AD70093AE8A /* AtFriendSearchVC.m in Sources */,
 				F2F7EE4C1AEE676F00265596 /* TopicHotVC.m in Sources */,
 				E112468F1AAAB2CD0014D461 /* NormalCell.m in Sources */,
+				F20553B11B3DED940093AE8A /* NotifyButton.m in Sources */,
 				F21814501AF234CE00AA06AA /* HPTextViewInternal.m in Sources */,
 				F2F7EE521AEEABC100265596 /* AtfreindCell.m in Sources */,
 				E112466D1AAAB20B0014D461 /* NSData+ImageContentType.m in Sources */,
@@ -2016,7 +2032,6 @@
 					"$(PROJECT_DIR)/muzzik/libWeiboSDK",
 					"$(PROJECT_DIR)/muzzik/weiChat",
 					"$(PROJECT_DIR)/muzzik/UMSocial_Sdk_4.2.1",
-					"$(PROJECT_DIR)/muzzik/Wechat",
 					"$(PROJECT_DIR)/muzzik/QiniuSDK",
 					"$(PROJECT_DIR)/muzzik",
 				);
@@ -2053,7 +2068,6 @@
 					"$(PROJECT_DIR)/muzzik/libWeiboSDK",
 					"$(PROJECT_DIR)/muzzik/weiChat",
 					"$(PROJECT_DIR)/muzzik/UMSocial_Sdk_4.2.1",
-					"$(PROJECT_DIR)/muzzik/Wechat",
 					"$(PROJECT_DIR)/muzzik/QiniuSDK",
 					"$(PROJECT_DIR)/muzzik",
 				);

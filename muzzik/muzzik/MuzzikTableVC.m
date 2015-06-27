@@ -191,7 +191,7 @@
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [MytableView reloadData];
                 [MytableView footerEndRefreshing];
-                if ([[dic objectForKey:@"muzziks"] count]<[Limit_Constant integerValue] ) {
+                if ([[dic objectForKey:@"muzziks"] count]<1 ) {
                     [MytableView removeFooter];
                 }
             });
@@ -258,7 +258,6 @@
 
 
 
-
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     muzzik *tempMuzzik = [self.muzziks objectAtIndex:indexPath.row];
@@ -278,13 +277,13 @@
             }
             
         }else{
-            if (![tempMuzzik.image isKindOfClass:[NSNull class]] && [tempMuzzik.image length] >0) {
+            if (![tempMuzzik.image isKindOfClass:[NSNull class]] && [tempMuzzik.image length]>0) {
                 return (int)(260+textHeight+SCREEN_WIDTH*3/4);
             }else{
                 return 260+(int)textHeight;
             }
         }
-    }else{
+    }else if([tempMuzzik.type isEqualToString:@"muzzikCard"]){
         TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(75, 0, SCREEN_WIDTH-96, 500)];
         [label setText:tempMuzzik.message];
         [label setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
@@ -304,6 +303,8 @@
             }
             
         }
+    }else{
+        return 0;
     }
     
 }
@@ -418,7 +419,7 @@
             if (tempMuzzik.isprivate ) {
                 [cell.privateImage setHidden:NO];
                 [cell.userName sizeToFit];
-                [cell.privateImage setFrame:CGRectMake(cell.userName.frame.origin.x+cell.userName.frame.size.width+5, cell.userName.frame.origin.y, 20, 20)];
+                [cell.privateImage setFrame:CGRectMake(cell.userName.frame.origin.x+cell.userName.frame.size.width+2, cell.userName.frame.origin.y, 20, 20)];
             }else{
                 [cell.privateImage setHidden:YES];
                 [cell.userName setFrame:CGRectMake(80, 55, SCREEN_WIDTH-120, 20)];
@@ -474,7 +475,8 @@
             return  cell;
         }
         else{
-            return nil;
+            UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
+            return cell;
         }
     }else{
         if ([tempMuzzik.type isEqualToString:@"repost"] ){
@@ -581,7 +583,7 @@
             if (tempMuzzik.isprivate ) {
                 [cell.privateImage setHidden:NO];
                 [cell.userName sizeToFit];
-                [cell.privateImage setFrame:CGRectMake(cell.userName.frame.origin.x+cell.userName.frame.size.width+5, cell.userName.frame.origin.y, 20, 20)];
+                [cell.privateImage setFrame:CGRectMake(cell.userName.frame.origin.x+cell.userName.frame.size.width+2, cell.userName.frame.origin.y, 20, 20)];
             }else{
                 [cell.privateImage setHidden:YES];
                 [cell.userName setFrame:CGRectMake(80, 55, SCREEN_WIDTH-120, 20)];
@@ -637,7 +639,8 @@
         }
         
         else {
-            return nil;
+            UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
+            return cell;
         }
     }
     
@@ -1198,6 +1201,21 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     
     //    request.shouldOpenWeiboAppInstallPageIfNotInstalled = NO;
     [WeiboSDK sendRequest:request];
+    NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:shareMuzzik.muzzik_id,@"_id",@"weibo",@"channel", nil];
+    
+    ASIHTTPRequest *requestShare = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Share_Muzzik]]];
+    
+    [requestShare addBodyDataSourceWithJsonByDic:requestDic Method:PostMethod auth:YES];
+    __weak ASIHTTPRequest *weakrequest = requestShare;
+    [requestShare setCompletionBlock :^{
+        
+        shareMuzzik.shares = [NSString stringWithFormat:@"%d",[shareMuzzik.shares intValue]+1];
+        [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:shareMuzzik];
+    }];
+    [requestShare setFailedBlock:^{
+        NSLog(@"%@",[weakrequest error]);
+    }];
+    [requestShare startAsynchronous];
 }
 -(void) shareQQ{
     TencentOAuth *tencentOAuth = [[TencentOAuth alloc] initWithAppId:ID_QQ_APP
@@ -1217,6 +1235,23 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     [self handleSendResult:sent];
     //将被容分享到qzone
     //QQApiSendResultCode sent = [QQApiInterface SendReqToQZone:req];
+    
+    NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:shareMuzzik.muzzik_id,@"_id",@"qq",@"channel", nil];
+    
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Share_Muzzik]]];
+    
+    [request addBodyDataSourceWithJsonByDic:requestDic Method:PostMethod auth:YES];
+    __weak ASIHTTPRequest *weakrequest = request;
+    [request setCompletionBlock :^{
+        
+        shareMuzzik.shares = [NSString stringWithFormat:@"%d",[shareMuzzik.shares intValue]+1];
+        [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:shareMuzzik];
+    }];
+    [request setFailedBlock:^{
+        NSLog(@"%@",[weakrequest error]);
+    }];
+    [request startAsynchronous];
+    
     
 }
 - (void)handleSendResult:(QQApiSendResultCode)sendResult
@@ -1283,15 +1318,62 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     //将被容分享到qzone
     QQApiSendResultCode sent = [QQApiInterface SendReqToQZone:req];
     [self handleSendResult:sent];
+    
+    NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:shareMuzzik.muzzik_id,@"_id",@"qzone",@"channel", nil];
+    
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Share_Muzzik]]];
+    
+    [request addBodyDataSourceWithJsonByDic:requestDic Method:PostMethod auth:YES];
+    __weak ASIHTTPRequest *weakrequest = request;
+    [request setCompletionBlock :^{
+        
+        shareMuzzik.shares = [NSString stringWithFormat:@"%d",[shareMuzzik.shares intValue]+1];
+        [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:shareMuzzik];
+    }];
+    [request setFailedBlock:^{
+        NSLog(@"%@",[weakrequest error]);
+    }];
+    [request startAsynchronous];
+    
 }
 -(void) shareTimeLine{
     AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
     [app sendMusicContentByMuzzik:shareMuzzik scen:1 image:shareImage];
+    NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:shareMuzzik.muzzik_id,@"_id",@"moment",@"channel", nil];
+    
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Share_Muzzik]]];
+    
+    [request addBodyDataSourceWithJsonByDic:requestDic Method:PostMethod auth:YES];
+    __weak ASIHTTPRequest *weakrequest = request;
+    [request setCompletionBlock :^{
+        
+        shareMuzzik.shares = [NSString stringWithFormat:@"%d",[shareMuzzik.shares intValue]+1];
+        [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:shareMuzzik];
+    }];
+    [request setFailedBlock:^{
+        NSLog(@"%@",[weakrequest error]);
+    }];
+    [request startAsynchronous];
 }
 
 -(void) shareWeChat{
     AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
     [app sendMusicContentByMuzzik:shareMuzzik scen:0 image:shareImage];
+    NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:shareMuzzik.muzzik_id,@"_id",@"wechat",@"channel", nil];
+    
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Share_Muzzik]]];
+    
+    [request addBodyDataSourceWithJsonByDic:requestDic Method:PostMethod auth:YES];
+    __weak ASIHTTPRequest *weakrequest = request;
+    [request setCompletionBlock :^{
+        
+        shareMuzzik.shares = [NSString stringWithFormat:@"%d",[shareMuzzik.shares intValue]+1];
+        [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:shareMuzzik];
+    }];
+    [request setFailedBlock:^{
+        NSLog(@"%@",[weakrequest error]);
+    }];
+    [request startAsynchronous];
 }
 -(void)dataSourceMuzzikUpdate:(NSNotification *)notify{
     muzzik *tempMuzzik = (muzzik *)notify.object;

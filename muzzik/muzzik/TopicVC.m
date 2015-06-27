@@ -62,6 +62,7 @@
     BOOL loadedTopic;
     BOOL loadedUser;
     BOOL loadedMuzzik;
+
 }
 @end
 
@@ -117,7 +118,7 @@
     
     [self loadTopics];
     //user
-    userView = [[UIView alloc] initWithFrame:CGRectMake(8, 330, SCREEN_WIDTH-16, 58+SCREEN_WIDTH*2/3)];
+    userView = [[UIView alloc] initWithFrame:CGRectMake(8, 330, SCREEN_WIDTH-16, (int)(58+SCREEN_WIDTH*2/3))];
     [userView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapForMoreUser)]];
     [userView setBackgroundColor:Color_line_2];
     userView.layer.cornerRadius =3;
@@ -126,14 +127,13 @@
     userLabel = [[UILabel alloc] initWithFrame:CGRectMake(15,0 , attentionView.frame.size.width-30, 40)];
     userLabel.font = [UIFont boldSystemFontOfSize:15];
     [userLabel setTextColor:Color_Text_2];
-    userLabel.text = @"活跃用户";
     [userView addSubview:userLabel];
     userNext = [[UIImageView alloc] initWithFrame:CGRectMake(attentionView.frame.size.width-22, 14, 7, 12)];
     [userNext setImage:[UIImage imageNamed:Image_recommendarrowImage]];
     [userView addSubview:userNext];
     [self loadUser];
     //Muzzik
-    MainMuzzikView = [[UIView alloc] initWithFrame:CGRectMake(0, 408+SCREEN_WIDTH*2/3, SCREEN_WIDTH, 145+SCREEN_WIDTH)];
+    MainMuzzikView = [[UIView alloc] initWithFrame:CGRectMake(0, (int)(408+SCREEN_WIDTH*2/3), SCREEN_WIDTH, 145+SCREEN_WIDTH)];
     [MainMuzzikView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(SeeMoreSuggestMuzzik)]];
     [mainScroll addSubview: MainMuzzikView];
     muzzikImage = [[UIImageView alloc] initWithFrame:CGRectMake(5, 40, SCREEN_WIDTH-10, SCREEN_WIDTH-10)];
@@ -146,7 +146,6 @@
     muzzikLabel = [[UILabel alloc] initWithFrame:CGRectMake(15,0 , attentionView.frame.size.width-30 , 40)];
     muzzikLabel.font = [UIFont boldSystemFontOfSize:15];
     [muzzikLabel setTextColor:Color_Text_2];
-    muzzikLabel.text = @"本期推荐";
     [muzzikView addSubview:muzzikLabel];
     muzzikNext = [[UIImageView alloc] initWithFrame:CGRectMake(attentionView.frame.size.width-22, 14, 7, 12)];
     [muzzikNext setImage:[UIImage imageNamed:Image_recommendarrowImage]];
@@ -184,25 +183,22 @@
     for (UIView *view in [self.parentRoot.titleShowView subviews]) {
         [view removeFromSuperview];
     }
-    UILabel *headLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 5, self.parentRoot.titleShowView.frame.size.width, self.parentRoot.titleShowView.frame.size.height-5)];
-    [headLabel setTextColor:[UIColor whiteColor]];
-    [headLabel setText:@"热门"];
-    headLabel.textAlignment = NSTextAlignmentCenter;
-    [headLabel setFont:[UIFont boldSystemFontOfSize:15]];
-    [self.parentRoot.titleShowView addSubview:headLabel];
+    UIImageView *headImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"hottitleImage"]];
+    [headImage setFrame:CGRectMake((self.parentRoot.titleShowView.frame.size.width-headImage.frame.size.width)/2, 5, headImage.frame.size.width, headImage.frame.size.height)];
+    [self.parentRoot.titleShowView addSubview:headImage];
     [self.parentRoot.pagecontrol setCurrentPage:1];
     if ([[userInfo shareClass].token length]>0) {
         [mainScroll addSubview:attentionView];
         topicView.frame = CGRectMake(8, 76, SCREEN_WIDTH-16, 234);
-        userView.frame = CGRectMake(8, 330, SCREEN_WIDTH-16, 58+SCREEN_WIDTH*2/3);
-        MainMuzzikView.frame = CGRectMake(0, 408+SCREEN_WIDTH*2/3, SCREEN_WIDTH-16, MainMuzzikView.frame.size.height);
+        userView.frame = CGRectMake(8, 330, SCREEN_WIDTH-16, (int)(58+SCREEN_WIDTH*2/3));
+        MainMuzzikView.frame = CGRectMake(0, (int)(408+SCREEN_WIDTH*2/3), SCREEN_WIDTH-16, MainMuzzikView.frame.size.height);
         [mainScroll setContentSize:CGSizeMake(SCREEN_WIDTH, MainMuzzikView.frame.origin.y+MainMuzzikView.frame.size.height+20)];
         [self loadFeeds];
     }else{
         [attentionView removeFromSuperview];
         topicView.frame = CGRectMake(8, 16, SCREEN_WIDTH-16, 234);
-        userView.frame = CGRectMake(8, 270, SCREEN_WIDTH-16, 58+SCREEN_WIDTH*2/3);
-        MainMuzzikView.frame = CGRectMake(0, 348+SCREEN_WIDTH*2/3, SCREEN_WIDTH-16, MainMuzzikView.frame.size.height);
+        userView.frame = CGRectMake(8, 270, SCREEN_WIDTH-16, (int)(58+SCREEN_WIDTH*2/3));
+        MainMuzzikView.frame = CGRectMake(0, (int)(348+SCREEN_WIDTH*2/3), SCREEN_WIDTH-16, MainMuzzikView.frame.size.height);
         [mainScroll setContentSize:CGSizeMake(SCREEN_WIDTH, MainMuzzikView.frame.origin.y+MainMuzzikView.frame.size.height+20)];
         
     }
@@ -479,6 +475,8 @@
             loadedUser = YES;
             if ([[dic allKeys] containsObject:@"data"] && [[[dic objectForKey:@"data"] allKeys] containsObject:@"title"] && [[[dic objectForKey:@"data"] objectForKey:@"title"] length] >0) {
                 userLabel.text = [[dic objectForKey:@"data"] objectForKey:@"title"];
+            }else{
+                userLabel.text = @"我上榜了";
             }
             MuzzikUser *muzzikToy = [MuzzikUser new];
             userArray = [muzzikToy makeMuzziksByUserArray:[dic objectForKey:@"users"]];
@@ -513,7 +511,7 @@
                     }];
 
                     
-                    UIButton_UserMuzzik *followImage = [[UIButton_UserMuzzik alloc] initWithFrame:CGRectMake(userbutton.frame.origin.x+userbutton.frame.size.width-29, userbutton.frame.size.height+userbutton.frame.origin.y-29, 29, 29)];
+                    UIButton_UserMuzzik *followImage = [[UIButton_UserMuzzik alloc] initWithFrame:CGRectMake((int)(userbutton.frame.origin.x+userbutton.frame.size.width-29), (int)(userbutton.frame.size.height+userbutton.frame.origin.y-29), 29, 29)];
                     followImage.user = tempUser;
                     
                     if (tempUser.isFans && tempUser.isFollow) {
@@ -528,7 +526,7 @@
                     }
                     [followImage addTarget:self action:@selector(follwUser:) forControlEvents:UIControlEventTouchUpInside];
                     [userImageArray addObject:followImage];
-                    UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(localX, userbutton.frame.size.height+userbutton.frame.origin.y+5, SCREEN_WIDTH/3-31, 15)];
+                    UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake((int)localX, (int)(userbutton.frame.size.height+userbutton.frame.origin.y+5), (int)(SCREEN_WIDTH/3-31), 15)];
                     [nameLabel setFont:[UIFont systemFontOfSize:12]];
                     [nameLabel setText:tempUser.name];
                     [nameLabel setTextColor:Color_Text_2];
@@ -583,7 +581,7 @@
                     }];
                     
                     
-                    UIButton_UserMuzzik *followImage = [[UIButton_UserMuzzik alloc] initWithFrame:CGRectMake(userbutton.frame.origin.x+userbutton.frame.size.width-29, userbutton.frame.size.height+userbutton.frame.origin.y-29, 29, 29)];
+                    UIButton_UserMuzzik *followImage = [[UIButton_UserMuzzik alloc] initWithFrame:CGRectMake((int)(userbutton.frame.origin.x+userbutton.frame.size.width-29), (int)(userbutton.frame.size.height+userbutton.frame.origin.y-29), 29, 29)];
                     followImage.user = tempUser;
                     
                     if (tempUser.isFans && tempUser.isFollow) {
@@ -598,7 +596,7 @@
                     }
                     [followImage addTarget:self action:@selector(follwUser:) forControlEvents:UIControlEventTouchUpInside];
                     [userImageArray addObject:followImage];
-                    UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(localX, userbutton.frame.size.height+userbutton.frame.origin.y+5, SCREEN_WIDTH/3-31, 15)];
+                    UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake((int)localX, (int)(userbutton.frame.size.height+userbutton.frame.origin.y+5), (int)(SCREEN_WIDTH/3-31), 15)];
                     [nameLabel setFont:[UIFont systemFontOfSize:12]];
                     [nameLabel setText:tempUser.name];
                     [nameLabel setTextColor:Color_Text_2];
@@ -640,6 +638,8 @@
                 loadedMuzzik = YES;
                 if ([[dic allKeys] containsObject:@"data"] && [[[dic objectForKey:@"data"] allKeys] containsObject:@"title"] && [[[dic objectForKey:@"data"] objectForKey:@"title"] length] >0) {
                     muzzikLabel.text = [[dic objectForKey:@"data"] objectForKey:@"title"];
+                }else{
+                    muzzikLabel.text = @"本期推荐";
                 }
                 suggestMuzzik =  [[[muzzik new] makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"] ] objectAtIndex:0];
                 [self suggestViewLayout];
@@ -719,7 +719,7 @@
     
     [muzzikView addSubview:label];
     [musicPlayView removeFromSuperview];
-    musicPlayView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN_WIDTH+83+label.frame.size.height, SCREEN_WIDTH, 60)];
+    musicPlayView = [[UIView alloc] initWithFrame:CGRectMake(0, (int)(SCREEN_WIDTH+83+label.frame.size.height), SCREEN_WIDTH, 60)];
     [MainMuzzikView addSubview:musicPlayView];
     progress = [[UIProgressView alloc] initWithFrame:CGRectMake(16, 0, SCREEN_WIDTH-32, 1)];
     [progress setProgress:1];
@@ -775,10 +775,10 @@
     [musicName setTextColor:color];
     muzzikView.frame = CGRectMake(8, 0, SCREEN_WIDTH-16, 145+SCREEN_WIDTH+label.frame.size.height);
     if ([[userInfo shareClass].token length]>0) {
-        MainMuzzikView.frame = CGRectMake(0, 408+SCREEN_WIDTH*2/3, SCREEN_WIDTH-16, 145+SCREEN_WIDTH+label.frame.size.height);
+        MainMuzzikView.frame = CGRectMake(0, (int)(408+SCREEN_WIDTH*2/3), SCREEN_WIDTH-16, (int)(145+SCREEN_WIDTH+label.frame.size.height));
         [mainScroll setContentSize:CGSizeMake(SCREEN_WIDTH, 573+SCREEN_WIDTH*5/3.0+label.frame.size.height)];
     }else{
-        MainMuzzikView.frame = CGRectMake(0, 348+SCREEN_WIDTH*2/3, SCREEN_WIDTH-16, 145+SCREEN_WIDTH+label.frame.size.height);
+        MainMuzzikView.frame = CGRectMake(0, (int)(348+SCREEN_WIDTH*2/3), SCREEN_WIDTH-16, (int)(145+SCREEN_WIDTH+label.frame.size.height));
         [mainScroll setContentSize:CGSizeMake(SCREEN_WIDTH, 513+SCREEN_WIDTH*5/3.0+label.frame.size.height)];
     }
 
@@ -792,6 +792,7 @@
 }
 -(void)SeeMoreSuggestMuzzik{
     SuggestMuzzikVC *suggsetvc = [[SuggestMuzzikVC alloc]init];
+    suggsetvc.viewTittle = muzzikLabel.text;
     [self.navigationController pushViewController:suggsetvc animated:YES];
 }
 -(void)goToUser{
@@ -854,6 +855,7 @@
 }
 -(void) tapForMoreUser{
     ActivityUserVC *activity = [[ActivityUserVC alloc] init];
+    activity.viewTittle = userLabel.text;
     [self.navigationController pushViewController:activity animated:YES];
     NSLog(@"user");
 }

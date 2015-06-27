@@ -197,6 +197,9 @@
 #define Image_stopredImage                  @"stopredImage"
 #define Image_stopyellowImage               @"stopyellowImage"
 
+#define Image_userTips                      @"userTips"
+#define Image_topicTips                     @"topicTips"
+#define Image_musicTips                     @"musicTips"
 
 
 

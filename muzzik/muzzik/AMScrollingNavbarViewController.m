@@ -26,6 +26,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [[UIApplication sharedApplication] setApplicationSupportsShakeToEdit:YES];
+    [self becomeFirstResponder];
 }
 
 

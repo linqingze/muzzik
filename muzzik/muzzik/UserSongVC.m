@@ -70,7 +70,7 @@
             
             lastId = [dic objectForKey:@"tail"];
             [songTableView reloadData];
-            if ([[dic objectForKey:@"muzziks"] count]<[Limit_Constant integerValue] ) {
+            if ([[dic objectForKey:@"muzziks"] count]<1 ) {
                 [songTableView removeFooter];
             }
             
@@ -128,7 +128,7 @@
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [songTableView reloadData];
                 [songTableView footerEndRefreshing];
-                if ([[dic objectForKey:@"muzziks"] count]<[Limit_Constant integerValue] ) {
+                if ([[dic objectForKey:@"muzziks"] count]<1 ) {
                     [songTableView removeFooter];
                 }
             });

@@ -78,7 +78,7 @@
     
     
     UIButton *searchButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 20, 44, 44)];
-    [searchButton setImage:[UIImage imageNamed:Image_searchImage_white] forState:UIControlStateNormal];
+    [searchButton setImage:[UIImage imageNamed:@"searchImage"] forState:UIControlStateNormal];
     [searchButton addTarget:self action:@selector(searchAction) forControlEvents:UIControlEventTouchUpInside];
     [nacView addSubview:searchButton];
     UIButton *moreButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-44, 20, 44, 44)];
@@ -139,6 +139,17 @@
     _musicView = [musicPlayer shareClass].radioView;
     [_musicView setBackgroundColor:[UIColor clearColor]];
     [self.navigationController.view addSubview:_musicView];
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_New_notify_Now]]];
+    [request addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
+    __weak ASIHTTPRequest *weakrequest = request;
+    [request setCompletionBlock :^{
+        NSData *data = [weakrequest responseData];
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+        if (dic && [[dic allKeys] containsObject:@"result"] && [[dic objectForKey:@"result"] integerValue]>0) {
+            [self getMessage];
+        }
+    }];
+    [request startAsynchronous];
 }
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
@@ -251,12 +262,12 @@
     NSArray *menuItems =
     @[
       
-      [KxMenuItem menuItem:@"设置"
+      [KxMenuItem menuItem:@"设置       "
                      image:nil
                     target:self
                     action:@selector(systemSetting)],
       
-      [KxMenuItem menuItem:@"草稿箱"
+      [KxMenuItem menuItem:@"草稿箱      "
                      image:nil
                     target:self
                     action:@selector(DraftAction)],

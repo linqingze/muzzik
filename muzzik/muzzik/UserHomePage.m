@@ -61,7 +61,7 @@
     [mainTableView setTableHeaderView:mainView];
     
     nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, SCREEN_WIDTH/2, 30, 30)];
-    [nameLabel setFont:[UIFont fontWithName:Font_Next_DemiBold size:24]];
+    [nameLabel setFont:[UIFont fontWithName:Font_Next_DemiBold size:20]];
     nameLabel.textColor = [UIColor whiteColor];
     
     genderImage = [[UIImageView alloc] init];
@@ -90,8 +90,8 @@
     messageView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN_WIDTH, SCREEN_WIDTH, SCREEN_WIDTH/320.0*185.0)];
     [messageView setBackgroundColor: [ UIColor whiteColor]];
     CGFloat scale = SCREEN_WIDTH/320.0;
-    CGFloat height = scale*184.0;
-    CGFloat width = SCREEN_WIDTH;
+    int height = scale*184.0;
+    int width = SCREEN_WIDTH;
     UIButton *muzzikButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, width/3, height/2)];
     [muzzikButton setImage:[UIImage imageNamed:Image_profiletweetImage] forState:UIControlStateNormal];
     [muzzikButton setImageEdgeInsets:UIEdgeInsetsMake(-15, 0, 0, 0)];
@@ -184,12 +184,9 @@
         for (UIView *view in [self.parentRoot.titleShowView subviews]) {
             [view removeFromSuperview];
         }
-        UILabel *headLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 5, self.parentRoot.titleShowView.frame.size.width, self.parentRoot.titleShowView.frame.size.height-5)];
-        [headLabel setTextColor:[UIColor whiteColor]];
-        [headLabel setText:@"我"];
-        headLabel.textAlignment = NSTextAlignmentCenter;
-        [headLabel setFont:[UIFont boldSystemFontOfSize:15]];
-        [self.parentRoot.titleShowView addSubview:headLabel];
+        UIImageView *headImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"metitleImage"]];
+        [headImage setFrame:CGRectMake((self.parentRoot.titleShowView.frame.size.width-headImage.frame.size.width)/2, 5, headImage.frame.size.width, headImage.frame.size.height)];
+        [self.parentRoot.titleShowView addSubview:headImage];
         [self.parentRoot.pagecontrol setCurrentPage:2];
     }
     [self loadDataMessage];
@@ -253,7 +250,7 @@
             nameLabel.text = [_profileDic objectForKey:@"name"];
             [nameLabel sizeToFit];
             [nameLabel setFrame:CGRectMake(16, SCREEN_WIDTH/2-nameLabel.frame.size.height, nameLabel.frame.size.width, nameLabel.frame.size.height)];
-            [genderImage setFrame:CGRectMake(CGRectGetMaxX(nameLabel.frame)+6, CGRectGetMidY(nameLabel.frame)-10, 16, 16)];
+            [genderImage setFrame:CGRectMake(CGRectGetMaxX(nameLabel.frame)+7, CGRectGetMidY(nameLabel.frame)-7, 14, 14)];
             if ([[_profileDic objectForKey:@"gender"] isEqualToString:@"m"]) {
                 [genderImage setImage:[UIImage imageNamed:Image_profilemaleImage]];
             }else{

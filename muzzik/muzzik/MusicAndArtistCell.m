@@ -23,20 +23,20 @@
 -(void)setup{
     [self setBackgroundColor:[UIColor whiteColor]];
     [self setSelectionStyle:UITableViewCellSelectionStyleNone];
-    self.songName = [[UILabel alloc] initWithFrame:CGRectMake(18, 8, SCREEN_WIDTH-100, 20)];
+    self.songName = [[UILabel alloc] initWithFrame:CGRectMake(18, 11, SCREEN_WIDTH-100, 20)];
     [self.songName setFont:[UIFont fontWithName:Font_Next_Bold size:14]];
-    [self.songName setTextColor:[UIColor colorWithHexString:@"777777"]];
+    [self.songName setTextColor:Color_Text_2];
     [self addSubview:self.songName];
-    self.Artist = [[UILabel alloc] initWithFrame:CGRectMake(18, 30, SCREEN_WIDTH-100, 20)];
+    self.Artist = [[UILabel alloc] initWithFrame:CGRectMake(18, 33, SCREEN_WIDTH-100, 20)];
     [self.Artist setFont:[UIFont fontWithName:Font_Next_DemiBold size:12]];
-    [self.Artist setTextColor:[UIColor colorWithHexString:@"999999"]];
+    [self.Artist setTextColor:Color_Text_3];
     [self addSubview:self.Artist];
-    self.playButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-53, 0, 40, 50)];
+    self.playButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-48, 0, 40, 60)];
     [self.playButton setImage:[UIImage imageNamed:Image_playgreyImage] forState:UIControlStateNormal];
     [self.playButton addTarget:self action:@selector(playAction) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.playButton];
     
-    self.CommentButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-93, 0, 40, 50)];
+    self.CommentButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-88, 0, 40, 60)];
     [self.CommentButton setImage:[UIImage imageNamed:Image_songlistpostweetImage] forState:UIControlStateNormal];
     [self.CommentButton addTarget:self action:@selector(CommentAction) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.CommentButton];

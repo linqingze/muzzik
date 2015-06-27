@@ -37,12 +37,12 @@
     [self.Artist setFont:[UIFont fontWithName:Font_Next_DemiBold size:12]];
     [self.Artist setTextColor:[UIColor colorWithHexString:@"999999"]];
     [self addSubview:self.Artist];
-    self.playButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-53, 0, 40, 60)];
+    self.playButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-48, 0, 40, 60)];
     [self.playButton setImage:[UIImage imageNamed:Image_PlayerplayImage] forState:UIControlStateNormal];
     [self.playButton addTarget:self action:@selector(playAction) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.playButton];
     
-    self.CommentButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-93, 0, 40, 60)];
+    self.CommentButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-88, 0, 40, 60)];
     [self.CommentButton setImage:[UIImage imageNamed:Image_replyImage] forState:UIControlStateNormal];
     [self.CommentButton addTarget:self action:@selector(CommentAction) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.CommentButton];

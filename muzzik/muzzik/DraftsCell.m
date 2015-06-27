@@ -25,28 +25,36 @@
     [_timeImage setImage:[UIImage imageNamed:Image_timeImage]];
     [self addSubview:_timeImage];
     
-    _timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 10, 100, 10)];
-    [_timeLabel setFont:[UIFont fontWithName:Font_Next_medium size:8]];
-    [_timeLabel setTextColor:Color_line_1];
+    _timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(35, 10, 100, 10)];
+    [_timeLabel setTextColor:Color_Additional_5];
+    [_timeLabel setFont:[UIFont fontWithName:Font_Next_medium size:9]];
     [self addSubview:_timeLabel];
     
-    _message = [[UILabel alloc] initWithFrame:CGRectMake(20, 35, SCREEN_WIDTH-140, 15)];
-    _message.font = [UIFont systemFontOfSize:13];
-    [_message setTextColor:Color_Text_1];
+    _message = [[UILabel alloc] initWithFrame:CGRectMake(20, 35, SCREEN_WIDTH-40, 20)];
+    [_message setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
+    [_message setTextColor:Color_Text_2];
     [self addSubview:_message];
-    self.songName = [[UILabel alloc] initWithFrame:CGRectMake(150, 10, SCREEN_WIDTH-170, 15)];
-    [self.songName setFont:[UIFont fontWithName:Font_Next_Bold size:14]];
-    [self.songName setTextColor:[UIColor colorWithHexString:@"777777"]];
-    [self addSubview:self.songName];
-    self.songName.textAlignment = NSTextAlignmentRight;
-    self.Artist = [[UILabel alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-130, 28, 110, 12)];
-    [self.Artist setFont:[UIFont fontWithName:Font_Next_DemiBold size:12]];
-    [self.Artist setTextColor:[UIColor colorWithHexString:@"999999"]];
-    self.Artist.textAlignment = NSTextAlignmentRight;
-    [self addSubview:self.Artist];
+    _songview = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 60)];
+    [self addSubview:_songview];
+    _songImage = [[UIImageView alloc] initWithFrame:CGRectMake(13,11, 15, 15)];
+    [_songImage setImage:[UIImage imageNamed:@"draftmusicImage"]];
+    [_songview addSubview:_songImage];
     
+//    UIView *separateLine = [[UIView alloc] initWithFrame:CGRectMake(60, 10, 1, 40)];
+//    [separateLine setBackgroundColor:Color_line_1];
+//    [_songview addSubview:separateLine];
     
-    [MuzzikItem addLineOnView:self heightPoint:69 toLeft:20 toRight:20 withColor:Color_line_1];
+    _songName = [[UILabel alloc] initWithFrame:CGRectMake(20, 11, SCREEN_WIDTH-26, 20)];
+    _songName.textColor = Color_Text_2;
+    _songName.font = [UIFont fontWithName:Font_Next_Bold size:15];
+    [_songview addSubview:_songName];
+    
+    _Artist = [[UILabel alloc] initWithFrame:CGRectMake(20, 33, SCREEN_WIDTH-26, 20)];
+    _Artist.textColor = Color_Text_3;
+    _Artist.font = [UIFont fontWithName:Font_Next_Bold size:12];
+    [_songview addSubview:_Artist];
+
+    [MuzzikItem addLineOnView:_songview heightPoint:59 toLeft:20 toRight:20 withColor:Color_line_1];
 
 }
 

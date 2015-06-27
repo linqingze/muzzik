@@ -8,12 +8,7 @@
 
 #import "BaseNagationViewController.h"
 
-@interface messageForResetVC : BaseNagationViewController<UITextFieldDelegate>{
-    UITextField *checkcode;
-    UITextField *passwordText;
-    BOOL isOk;
-    UIButton *visibleButton;
-}
+@interface messageForResetVC : AMScrollingNavbarViewController
 @property (nonatomic) NSString *phoneNumber;
 
 @end

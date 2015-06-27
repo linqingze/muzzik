@@ -12,7 +12,7 @@
 @implementation setHeadImageVC
 -(void)viewDidLoad{
     [super viewDidLoad];
-    [self initNagationBar:@"上传头像" leftBtn:Constant_backImage rightBtn:0];
+    [self initNagationBar:@"上传头像" leftBtn:Constant_backImage rightBtn:2];
     headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
     [headerView setBackgroundColor:[UIColor whiteColor]];
     UIImageView *defaultImage = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-25,SCREEN_WIDTH/2-50 , 50, 50)];
@@ -51,10 +51,10 @@
     [text appendAttributedString:item1];
     notifyLabel.attributedText = text;
     notifyLabel.textAlignment = NSTextAlignmentCenter;
-    UIButton *nextButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-67, SCREEN_HEIGHT-133, 54, 52)];
-    [nextButton setImage:[UIImage imageNamed:@"cycleNext"] forState:UIControlStateNormal];
-    [self.view addSubview: nextButton];
-    [nextButton addTarget:self action:@selector(summitAction) forControlEvents:UIControlEventTouchUpInside];
+//    UIButton *nextButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-67, SCREEN_HEIGHT-133, 54, 52)];
+//    [nextButton setImage:[UIImage imageNamed:@"cycleNext"] forState:UIControlStateNormal];
+//    [self.view addSubview: nextButton];
+//    [nextButton addTarget:self action:@selector(summitAction) forControlEvents:UIControlEventTouchUpInside];
 }
 -(void) getPicture{
     TWPhotoPickerController *photoPicker = [[TWPhotoPickerController alloc] init];
@@ -84,7 +84,7 @@
                                           attributes:attrDict];
     return attrStr;
 }
--(void) summitAction{
+-(void) rightBtnAction:(UIButton *)sender{
     if (userImage == nil) {
         setGenderVC *sethead = [[setGenderVC alloc] init];
         [self.navigationController pushViewController:sethead animated:YES];

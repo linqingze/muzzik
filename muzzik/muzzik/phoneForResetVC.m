@@ -12,7 +12,7 @@
 @implementation phoneForResetVC
 -(void)viewDidLoad{
     [super viewDidLoad];
-    [self initNagationBar:@"重置密码" leftBtn:Constant_backImage rightBtn:0];
+    [self initNagationBar:@"重置密码" leftBtn:Constant_backImage rightBtn:2];
     UIImageView *checkImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"phonenumImage"]];
     [checkImage setFrame:CGRectMake(20, 15, 9, 15)];
     [self.view addSubview:checkImage];
@@ -31,10 +31,10 @@
     [tipsLabel setTextColor:[UIColor colorWithHexString:@"f26a3d"]];
     [self.view addSubview:tipsLabel];
     [MuzzikItem addLineOnView:self.view heightPoint:45 toLeft:13 toRight:13 withColor:Color_underLine];
-    UIButton *nextButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-67, SCREEN_HEIGHT-133, 54, 52)];
-    [nextButton setImage:[UIImage imageNamed:@"cycleNext"] forState:UIControlStateNormal];
-    [self.view addSubview: nextButton];
-    [nextButton addTarget:self action:@selector(summitAction) forControlEvents:UIControlEventTouchUpInside];
+//    UIButton *nextButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-67, SCREEN_HEIGHT-133, 54, 52)];
+//    [nextButton setImage:[UIImage imageNamed:@"cycleNext"] forState:UIControlStateNormal];
+//    [self.view addSubview: nextButton];
+//    [nextButton addTarget:self action:@selector(summitAction) forControlEvents:UIControlEventTouchUpInside];
     UITapGestureRecognizer *tapOnview = [[UITapGestureRecognizer alloc] initWithTarget:self.view action:@selector(endEditing:)];
     [self.view addGestureRecognizer:tapOnview];
 }
@@ -61,7 +61,7 @@
         [requestForm startAsynchronous];
     }
 }
--(void)summitAction{
+-(void)rightBtnAction:(UIButton *)sender{
     if (isOk) {
         ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_GetVerifiCode]]];
         [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:phoneText.text forKey:@"phone"] Method:PostMethod auth:NO];

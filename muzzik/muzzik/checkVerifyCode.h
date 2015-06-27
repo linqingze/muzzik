@@ -8,7 +8,7 @@
 
 #import "BaseNagationViewController.h"
 
-@interface checkVerifyCode : BaseNagationViewController
+@interface checkVerifyCode : AMScrollingNavbarViewController
 @property (nonatomic) NSString *phoneNumber;
 @property (nonatomic) NSString *passWord;
 @end

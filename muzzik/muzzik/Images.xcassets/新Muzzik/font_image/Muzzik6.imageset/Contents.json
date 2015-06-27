@@ -2,16 +2,18 @@
   "images" : [
     {
       "idiom" : "universal",
-      "scale" : "1x"
+      "scale" : "1x",
+      "filename" : "Muzzik6.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "zi1@2x.png"
+      "filename" : "Muzzik6@2x.png"
     },
     {
       "idiom" : "universal",
-      "scale" : "3x"
+      "scale" : "3x",
+      "filename" : "Muzzik6@3x.png"
     }
   ],
   "info" : {

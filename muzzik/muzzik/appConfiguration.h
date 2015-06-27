@@ -62,7 +62,7 @@
 #define URL_New_Notify          @"api/notify/havenew"
 #define URL_Moved_Muzziks       @"api/user/movedMuzzik"
 #define URL_New_notify_Now      @"api/notify/havenew"
-
+#define URL_Share_Muzzik        @"api/muzzik/share"
 //#define URL_check_phone @"http://192.168.1.112:3000/api/user/check"
 //#define URL_register @"http://192.168.1.112:3000/api/user/register"
 //#define URL_GetVerifiCode @"http://192.168.1.112:3000/api/user/verifiCode"
@@ -127,11 +127,11 @@
 #define Font_Next_Bold           @"AvenirNext-Bold"
 #define Font_Next_DemiBold           @"AvenirNext-DemiBold"
 #define Font_Next_UltraLight     @"AvenirNext-UltraLight"
-
+#define Font_default_share      @"FZSSFW--GB1-0"
 #define DocumentsPath [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"]
 
-//976583158
-#define APP_ID @"909997353"
+// 909997353
+#define APP_ID @"976583158"
 #define UMAPPKEY @"5503f6b7fd98c520c4000362"
 
 #define ID_WeiChat_APP @"wx9d1e9620b322ce35"

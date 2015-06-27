@@ -52,8 +52,8 @@
         bezierPath = [UIBezierPath bezierPath];
         
         // Draw the indicator
-        [bezierPath moveToPoint:CGPointMake(rect.size.width/2-21, rect.size.height - 1.0)];
-        [bezierPath addLineToPoint:CGPointMake(rect.size.width/2+21, rect.size.height - 1.0)];
+        [bezierPath moveToPoint:CGPointMake(rect.size.width/2-30, rect.size.height - 1.0)];
+        [bezierPath addLineToPoint:CGPointMake(rect.size.width/2+30, rect.size.height - 1.0)];
         [bezierPath setLineWidth:4.0];
         [self.indicatorColor setStroke];
         [bezierPath stroke];

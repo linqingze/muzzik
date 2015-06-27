@@ -13,6 +13,7 @@
 #import "AudioPlayer.h"
 #import "muzzik.h"
 #import "StyledPageControl.h"
+#import "UIButton_UserMuzzik.h"
 @protocol RFRadioViewDelegate <NSObject>
 -(void)radioView:(RFRadioView *)view musicStop:(NSInteger)playModel;
 -(void)radioView:(RFRadioView *)view preSwitchMusic:(UIButton *)pre;
@@ -50,7 +51,7 @@
     UIButton *playButton;
     NSMutableArray *playList;
 //    UILabel *titleLabel;
-    UIImageView *headerImage;
+    UIButton_UserMuzzik *headerImage;
     UIButton *attentionButton;
     UILabel *nickLabel;
     StyledPageControl *pagecontrol;

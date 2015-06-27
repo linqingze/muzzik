@@ -64,6 +64,8 @@
     CGFloat maxScaleY;
     UIAlertView *TipsAlterView;
     UIImage *saveImage;           //保存图片
+    BOOL isPrivate;
+    UIImageView *MprivateImage;
 }
 @property (nonatomic,retain) NSMutableDictionary *profileDic;
 @property(nonatomic,retain)UIImageView *headimage;
@@ -159,7 +161,7 @@
     [commentView addSubview:musicButton];
     comnentTextView = [[HPGrowingTextView alloc] initWithFrame:CGRectMake(36, 10, SCREEN_WIDTH-72, 40)];
     comnentTextView.layer.borderWidth =1;
-    comnentTextView.layer.borderColor = Color_Text_4.CGColor;
+    comnentTextView.layer.borderColor = Color_line_1.CGColor;
     comnentTextView.layer.cornerRadius = 3;
     comnentTextView.clipsToBounds = YES;
     comnentTextView.delegate = self;
@@ -219,13 +221,17 @@
     [_timeImage setImage:[UIImage imageNamed:Image_timeImage]];
     [_muzzikView addSubview:_timeImage];
     
-    _userName = [[UILabel alloc] initWithFrame:CGRectMake(80, 55, 180, 20)];
+    _userName = [[UILabel alloc] initWithFrame:CGRectMake(80, 55, SCREEN_WIDTH-96, 20)];
     //  [_userName setTextColor:Color_LightGray];
-    [_userName setFont:[UIFont fontWithName:Font_Next_DemiBold size:15]];
+    [_userName setFont:[UIFont fontWithName:Font_Next_DemiBold size:Font_size_userName]];
     [_userName setTextColor:Color_Text_1];
+    MprivateImage = [[UIImageView alloc] init];
+    [MprivateImage setImage:[UIImage imageNamed:Image_detailinvisibleImage]];
+    [MprivateImage setHidden:YES];
+    [_muzzikView addSubview:MprivateImage];
     
     [_muzzikView addSubview:_userName];
-    _muzzikMessage = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake( 80, 83, SCREEN_WIDTH-110, 2000)];
+    _muzzikMessage = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake( 16, 100, SCREEN_WIDTH-32, 2000)];
     [_muzzikMessage setTextColor:Color_Text_2];
     [_muzzikMessage setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
     
@@ -234,7 +240,7 @@
     [_muzzikMessage addClickMessageForAt];
     _muzzikMessage.delegate = self;
     
-    [_muzzikMessage setFrame:CGRectMake( 80, 83, SCREEN_WIDTH-110, [MuzzikItem heightForLabel:_muzzikMessage WithText:_muzzikMessage.text]+10)];
+    [_muzzikMessage setFrame:CGRectMake( _muzzikMessage.frame.origin.x , _muzzikMessage.frame.origin.y, SCREEN_WIDTH-32, (int)[MuzzikItem heightForLabel:_muzzikMessage WithText:_muzzikMessage.text]+10)];
     [_muzzikView addSubview:_muzzikMessage];
     _muzzikView.backgroundColor = [UIColor whiteColor];
     _progress = [[UIProgressView alloc] initWithFrame:CGRectMake(16, CGRectGetMaxY(_muzzikMessage.frame)+10, SCREEN_WIDTH-32, 0.5)];
@@ -250,30 +256,30 @@
     _musicArtist.text = self.localmuzzik.music.artist;
     [_muzzikView addSubview:_musicArtist];
     
-    _likeButton = [[UIButton alloc] initWithFrame:CGRectMake(21, CGRectGetMaxY(_progress.frame)+13, 34, 34)];
+    _likeButton = [[UIButton alloc] initWithFrame:CGRectMake(21, CGRectGetMaxY(_progress.frame)+13, 36, 36)];
     [_likeButton addTarget:self action:@selector(moveAction) forControlEvents:UIControlEventTouchUpInside];
     [_muzzikView addSubview:_likeButton];
     
-    _playButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-55, CGRectGetMaxY(_progress.frame)+13, 34, 34)];
+    _playButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-57, CGRectGetMaxY(_progress.frame)+13, 36, 36)];
     
     [_playButton addTarget:self action:@selector(playMusicLocal) forControlEvents:UIControlEventTouchUpInside];
     [_muzzikView addSubview:_playButton];
     if ([self.localmuzzik.image length]>0) {
-        _poImage = [[PhotoImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/8, CGRectGetMaxY(_progress.frame)+60, SCREEN_WIDTH*3/4, SCREEN_WIDTH*3/4)];
+        _poImage = [[PhotoImageView alloc] initWithFrame:CGRectMake(16, CGRectGetMaxY(_progress.frame)+60, SCREEN_WIDTH-32, SCREEN_WIDTH-32)];
         _poImage.delegate = self;
         _poImage.layer.cornerRadius = 3;
         _poImage.clipsToBounds = YES;
         [_poImage  sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/600/h/600",BaseURL_image,self.localmuzzik.image]]];
         [_muzzikView addSubview:_poImage];
         
-        _reposts = [[UIButton alloc] initWithFrame:CGRectMake((SCREEN_WIDTH*1)/8.0, CGRectGetMaxY(_progress.frame)+SCREEN_WIDTH*3/4+60, (SCREEN_WIDTH*3)/16.0, 40)];
+        _reposts = [[UIButton alloc] initWithFrame:CGRectMake(16, CGRectGetMaxY(_progress.frame)+SCREEN_WIDTH+28, (int)((SCREEN_WIDTH-32)/4), 40)];
 
         
     }else{
-        _upperLine = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/8,CGRectGetMaxY(_progress.frame)+59, SCREEN_WIDTH*3/4, 1)];
+        _upperLine = [[UIImageView alloc] initWithFrame:CGRectMake(16,CGRectGetMaxY(_progress.frame)+59, SCREEN_WIDTH-32, 1)];
         [_upperLine setImage:[UIImage imageNamed:Image_lineImage]];
         [_muzzikView addSubview:_upperLine];
-        _reposts = [[UIButton alloc] initWithFrame:CGRectMake((SCREEN_WIDTH*1)/8.0, CGRectGetMaxY(_progress.frame)+60, (SCREEN_WIDTH*3)/16.0, 40)];
+        _reposts = [[UIButton alloc] initWithFrame:CGRectMake(16, CGRectGetMaxY(_progress.frame)+60, (int)((SCREEN_WIDTH-32)/4), 40)];
 
     }
     [_reposts setTitle:[self.localmuzzik.reposts integerValue]>0? [NSString stringWithFormat:@"转发数%@",self.localmuzzik.reposts] : @"转发数" forState:UIControlStateNormal];
@@ -283,7 +289,7 @@
     _reposts.titleLabel.textAlignment = NSTextAlignmentCenter;
     [_muzzikView addSubview:_reposts];
     
-    _moves = [[UIButton alloc] initWithFrame:CGRectMake((SCREEN_WIDTH*5)/16.0, _reposts.frame.origin.y, (SCREEN_WIDTH*3)/16.0, 40)];
+    _moves = [[UIButton alloc] initWithFrame:CGRectMake((int)((SCREEN_WIDTH-32)/4)+16, _reposts.frame.origin.y, (int)((SCREEN_WIDTH-32)/4), 40)];
     [_moves setTitle:@"喜欢数" forState:UIControlStateNormal];
     [_moves setTitleColor:Color_Additional_5 forState:UIControlStateNormal];
     [_moves.titleLabel setFont:[UIFont systemFontOfSize:10.0]];
@@ -292,7 +298,7 @@
     [_moves setTitle:[self.localmuzzik.moveds integerValue]>0? [NSString stringWithFormat:@"喜欢数%@",self.localmuzzik.moveds] : @"喜欢数" forState:UIControlStateNormal];
     [_muzzikView addSubview:_moves];
     
-    _shares = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2, _reposts.frame.origin.y, (SCREEN_WIDTH*3)/16.0, 40)];
+    _shares = [[UIButton alloc] initWithFrame:CGRectMake((int)((SCREEN_WIDTH-32)/2)+16, _reposts.frame.origin.y, (int)((SCREEN_WIDTH-32)/4), 40)];
     [_shares setTitle:@"分享数" forState:UIControlStateNormal];
     [_shares setTitleColor:Color_Additional_5 forState:UIControlStateNormal];
     [_shares.titleLabel setFont:[UIFont systemFontOfSize:10.0]];
@@ -301,7 +307,7 @@
     _shares.titleLabel.textAlignment = NSTextAlignmentCenter;
     [_muzzikView addSubview:_shares];
     
-    _comments = [[UIButton alloc] initWithFrame:CGRectMake((SCREEN_WIDTH*11)/16.0, _reposts.frame.origin.y, (SCREEN_WIDTH*3)/16.0, 40)];
+    _comments = [[UIButton alloc] initWithFrame:CGRectMake((int)((SCREEN_WIDTH-32)/4)*3+16, _reposts.frame.origin.y, (int)((SCREEN_WIDTH-32)/4), 40)];
     [_comments setTitle:@"评论数" forState:UIControlStateNormal];
     [_comments setTitleColor:Color_Additional_5 forState:UIControlStateNormal];
     [_comments.titleLabel setFont:[UIFont systemFontOfSize:10.0]];
@@ -323,7 +329,7 @@
     [headView addSubview:_attentionButton];
     
     _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, SCREEN_WIDTH/2, 30, 30)];
-    [_nameLabel setFont:[UIFont fontWithName:Font_Next_DemiBold size:24]];
+    [_nameLabel setFont:[UIFont fontWithName:Font_Next_DemiBold size:20]];
     _nameLabel.textColor = [UIColor whiteColor];
     [headView addSubview:_nameLabel];
     _genderImage = [[UIImageView alloc] init];
@@ -341,30 +347,29 @@
     _schoolImage = [[UIImageView alloc] initWithFrame:CGRectMake(16, 5, 8, 8)];
     _schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(35, 0, SCREEN_WIDTH/2-50, 20)];
     _descriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, SCREEN_WIDTH/2, SCREEN_WIDTH-32,0)];
-    
-    
     [self loadMuzzikView];
     
     
-    _downLine = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/8,_reposts.frame.origin.y+40, SCREEN_WIDTH*3/4, 1)];
+    _downLine = [[UIImageView alloc] initWithFrame:CGRectMake(16,_reposts.frame.origin.y+40, SCREEN_WIDTH-32, 1)];
     [_downLine setImage:[UIImage imageNamed:Image_lineImage]];
     [_muzzikView addSubview:_downLine];
-    
-    [self loadComment];
+
     songView = [[UIView alloc] initWithFrame:CGRectMake(0, 55, SCREEN_WIDTH, 55)];
+    [MuzzikItem addLineOnView:songView heightPoint:0 toLeft:10 toRight:10 withColor:Color_line_1];
     songLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 7.5, SCREEN_WIDTH-100, 20)];
-    [songLabel setFont:[UIFont fontWithName:Font_Next_DemiBold size:16]];
-    songLabel.textColor = Color_Text_1;
+    [songLabel setFont:[UIFont fontWithName:Font_Next_DemiBold size:15]];
+    songLabel.textColor = Color_Theme_5;
     [songView addSubview:songLabel];
     
     artistLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 27.5, SCREEN_WIDTH-100, 20)];
-    [artistLabel setFont:[UIFont fontWithName:Font_Next_DemiBold size:14]];
-    artistLabel.textColor = Color_Text_1;
+    [artistLabel setFont:[UIFont fontWithName:Font_Next_DemiBold size:12]];
+    artistLabel.textColor = Color_Theme_5;
     [songView addSubview:artistLabel];
     deleButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-40, 7.5, 40, 40)];
     [deleButton setImage:[UIImage imageNamed:Image_deletesongImage] forState:UIControlStateNormal];
     [deleButton addTarget:self action:@selector(deleSong) forControlEvents:UIControlEventTouchUpInside];
     [songView addSubview:deleButton];
+    
     
     
 }
@@ -436,7 +441,7 @@
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakre responseData]  options:NSJSONReadingMutableContainers error:nil];
             lastID = [dic objectForKey:@"tail"];
             commentArray = [[muzzik new] makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
-            if ([[dic objectForKey:@"muzziks"] count] == [Limit_Constant integerValue]) {
+            if ([[dic objectForKey:@"muzziks"] count] >1) {
                 [muzzikTableView addFooterWithTarget:self action:@selector(refreshFooter)];
             }
             if ([commentArray count]>0) {
@@ -500,7 +505,7 @@
     label.text = tempMuzzik.message;
     
     [label setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
-    CGFloat textHeight = [MuzzikItem heightForLabel:label WithText:label.text];
+    int textHeight = [MuzzikItem heightForLabel:label WithText:label.text];
     
     if (tempMuzzik.onlytext) {
         return 71+textHeight;
@@ -529,7 +534,7 @@
     cell.MuzzikModel = tempMuzzik;
     cell.userName.text = tempMuzzik.MuzzikUser.name;
     [cell.userName sizeToFit];
-    [cell.privateImage setFrame:CGRectMake(cell.userName.frame.origin.x+cell.userName.frame.size.width+5, cell.userName.frame.origin.y, 20, 20)];
+    [cell.privateImage setFrame:CGRectMake(cell.userName.frame.origin.x+cell.userName.frame.size.width+2, cell.userName.frame.origin.y, 20, 20)];
     if (tempMuzzik.isprivate ) {
         [cell.privateImage setHidden:NO];
     }else{
@@ -543,7 +548,7 @@
     [cell.message setFrame:CGRectMake(cell.message.frame.origin.x, cell.message.frame.origin.y, msize.width, msize.height)];
     cell.timeLabel.text = [MuzzikItem transtromTime:tempMuzzik.date];
     if (!tempMuzzik.onlytext) {
-        
+        [cell.playButton setHidden:NO];
         [cell.songName setHidden:NO];
         UIColor *color;
         if ([tempMuzzik.color longLongValue] == 1) {
@@ -589,7 +594,7 @@
 //        }else{
 //            cell.backgroundColor = Color_Additional_4;
 //        }
-        
+        [cell.playButton setHidden:YES];
         [cell.lineview setFrame:CGRectMake(16, cell.message.frame.size.height+cell.message.frame.origin.y+15, SCREEN_WIDTH-32, 1)];
         if (ispalying) {
             [cell.playButton setImage:[UIImage imageNamed:Image_detailstoporangeImage] forState:UIControlStateNormal];
@@ -626,16 +631,22 @@
     
 }
 -(BOOL)growingTextViewShouldReturn:(HPGrowingTextView *)growingTextView{
-    if ([comnentTextView.text length]>0) {
+    
         MuzzikObject *mobject = [MuzzikObject shareClass];
         ASIHTTPRequest *shareRequest = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_new]]];
         NSMutableDictionary *requestDic = [NSMutableDictionary dictionary];
+    if ([comnentTextView.text length]>0) {
         [requestDic setObject:[NSString stringWithFormat:@"@%@ %@",commentToMuzzik.MuzzikUser.name,comnentTextView.text] forKey:Parameter_message];
+    }
+    else{
+        [requestDic setObject:[NSString stringWithFormat:@"@%@ I Love This Muzzik!",commentToMuzzik.MuzzikUser.name] forKey:Parameter_message];
+    }
+    
         if (mobject.music) {
             NSDictionary *musicDic = [NSDictionary dictionaryWithObjectsAndKeys:mobject.music.key,@"key",mobject.music.name,@"name",mobject.music.artist,@"artist", nil];
             [requestDic setObject:musicDic forKey:@"music"];
         }
-        if (mobject.isPrivate) {
+        if (isPrivate) {
             [requestDic setObject:[NSNumber numberWithBool:YES] forKey:@"private"];
         }else{
             [requestDic setObject:[NSNumber numberWithBool:NO] forKey:@"private"];
@@ -652,7 +663,13 @@
                     [self deleSong];
                 }
 
-                [mobject clearObject];
+                mobject.music = nil;
+                mobject.message = nil;
+                mobject.tempmessage = nil;
+                mobject.imageKey = nil;
+                mobject.lyricArray = nil;
+                mobject.isMessageVCOpen = NO;
+                mobject.lyricArray = nil;
                 [comnentTextView performSelector:@selector(resignFirstResponder) withObject:nil afterDelay:0.3];
                 
                 ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/%@/comments",BaseURL,self.localmuzzik.muzzik_id]]];
@@ -667,6 +684,8 @@
                         commentArray = [[muzzik new] makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
                         if ([commentArray count]>0) {
                             [_muzzikView addSubview:commentTitle];
+                            self.localmuzzik.comments = [NSString stringWithFormat:@"%lu",(unsigned long)commentArray.count];
+                            [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:self.localmuzzik];
                             [muzzikTableView reloadData];
                             [muzzikTableView scrollToRowAtIndexPath:
                              [NSIndexPath indexPathForRow:0 inSection:0]
@@ -694,10 +713,7 @@
             NSLog(@"%@",[weakShare error]);
         }];
         [shareRequest startAsynchronous];
-    }else{
-         [growingTextView resignFirstResponder];
-    }
-    return YES;
+       return YES;
 }
 
 -(void)growingTextViewDidChange:(HPGrowingTextView *)growingTextView{
@@ -828,12 +844,11 @@
 }
 
 -(void)PrivateAction{
-    MuzzikObject *mobject = [MuzzikObject shareClass];
-    if (mobject.isPrivate) {
-        mobject.isPrivate = !mobject.isPrivate;
+    if (isPrivate) {
+        isPrivate = !isPrivate;
         [privateButton setImage:[UIImage imageNamed:Image_detailvisibleImage] forState:UIControlStateNormal];
     }else{
-        mobject.isPrivate = !mobject.isPrivate;
+        isPrivate = !isPrivate;
         [privateButton setImage:[UIImage imageNamed:Image_detailinvisibleImage] forState:UIControlStateNormal];
     }
 }
@@ -897,6 +912,8 @@
     }
     [_moves setTitle:[self.localmuzzik.moveds integerValue]>0? [NSString stringWithFormat:@"喜欢数%@",self.localmuzzik.moveds] : @"喜欢数" forState:UIControlStateNormal];
     [_reposts setTitle:[self.localmuzzik.reposts integerValue]>0? [NSString stringWithFormat:@"转发数%@",self.localmuzzik.reposts] : @"转发数" forState:UIControlStateNormal];
+    [_shares setTitle:[self.localmuzzik.shares integerValue]>0? [NSString stringWithFormat:@"分享数%@",self.localmuzzik.shares] : @"分享数" forState:UIControlStateNormal];
+    [_comments setTitle:[self.localmuzzik.comments integerValue]>0? [NSString stringWithFormat:@"评论数%@",self.localmuzzik.comments] : @"评论数" forState:UIControlStateNormal];
     [_progress setTintColor:color];
     [_musicArtist setTextColor:color];
     [_musicName setTextColor:color];
@@ -1119,7 +1136,7 @@
         MuzzikObject *mobject = [MuzzikObject shareClass];
         ASIHTTPRequest *shareRequest = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_new]]];
         NSMutableDictionary *requestDic = [NSMutableDictionary dictionary];
-        if (mobject.isPrivate) {
+        if (isPrivate) {
             [requestDic setObject:[NSNumber numberWithBool:YES] forKey:Parameter_private];
         }
         [requestDic setObject:[NSString stringWithFormat:@"@%@ %@",commentToMuzzik.MuzzikUser.name,comnentTextView.text] forKey:Parameter_message];
@@ -1127,7 +1144,7 @@
             NSDictionary *musicDic = [NSDictionary dictionaryWithObjectsAndKeys:mobject.music.key,@"key",mobject.music.name,@"name",mobject.music.artist,@"artist", nil];
             [requestDic setObject:musicDic forKey:@"music"];
         }
-        if (mobject.isPrivate) {
+        if (isPrivate) {
             [requestDic setValue:[NSNumber numberWithBool:YES] forKey:@"private"];
         }else{
             [requestDic setValue:[NSNumber numberWithBool:NO] forKey:@"private"];
@@ -1251,7 +1268,7 @@
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                     [muzzikTableView reloadData];
                     [muzzikTableView footerEndRefreshing];
-                    if ([[dic objectForKey:@"muzziks"] count]<[Limit_Constant integerValue] ) {
+                    if ([[dic objectForKey:@"muzziks"] count]<1 ) {
                         [muzzikTableView removeFooter];
                     }
                 });
@@ -1560,6 +1577,8 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         } ];
     }];
 }
+
+
 - (WBMessageObject *)messageToShare
 {
     WBMessageObject *message = [WBMessageObject message];
@@ -1582,6 +1601,21 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     
     //    request.shouldOpenWeiboAppInstallPageIfNotInstalled = NO;
     [WeiboSDK sendRequest:request];
+    NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:self.localmuzzik.muzzik_id,@"_id",@"weibo",@"channel", nil];
+    
+    ASIHTTPRequest *requestShare = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Share_Muzzik]]];
+    
+    [requestShare addBodyDataSourceWithJsonByDic:requestDic Method:PostMethod auth:YES];
+    __weak ASIHTTPRequest *weakrequest = requestShare;
+    [requestShare setCompletionBlock :^{
+        
+        self.localmuzzik.shares = [NSString stringWithFormat:@"%d",[self.localmuzzik.shares intValue]+1];
+        [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:self.localmuzzik];
+    }];
+    [requestShare setFailedBlock:^{
+        NSLog(@"%@",[weakrequest error]);
+    }];
+    [requestShare startAsynchronous];
 }
 -(void) shareQQ{
     TencentOAuth *tencentOAuth = [[TencentOAuth alloc] initWithAppId:ID_QQ_APP
@@ -1601,6 +1635,23 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     [self handleSendResult:sent];
     //将被容分享到qzone
     //QQApiSendResultCode sent = [QQApiInterface SendReqToQZone:req];
+    
+    NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:self.localmuzzik.muzzik_id,@"_id",@"qq",@"channel", nil];
+    
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Share_Muzzik]]];
+    
+    [request addBodyDataSourceWithJsonByDic:requestDic Method:PostMethod auth:YES];
+    __weak ASIHTTPRequest *weakrequest = request;
+    [request setCompletionBlock :^{
+        
+        self.localmuzzik.shares = [NSString stringWithFormat:@"%d",[self.localmuzzik.shares intValue]+1];
+        [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:self.localmuzzik];
+    }];
+    [request setFailedBlock:^{
+        NSLog(@"%@",[weakrequest error]);
+    }];
+    [request startAsynchronous];
+    
     
 }
 - (void)handleSendResult:(QQApiSendResultCode)sendResult
@@ -1667,16 +1718,64 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     //将被容分享到qzone
     QQApiSendResultCode sent = [QQApiInterface SendReqToQZone:req];
     [self handleSendResult:sent];
+    
+    NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:self.localmuzzik.muzzik_id,@"_id",@"qzone",@"channel", nil];
+    
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Share_Muzzik]]];
+    
+    [request addBodyDataSourceWithJsonByDic:requestDic Method:PostMethod auth:YES];
+    __weak ASIHTTPRequest *weakrequest = request;
+    [request setCompletionBlock :^{
+        
+        self.localmuzzik.shares = [NSString stringWithFormat:@"%d",[self.localmuzzik.shares intValue]+1];
+        [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:self.localmuzzik];
+    }];
+    [request setFailedBlock:^{
+        NSLog(@"%@",[weakrequest error]);
+    }];
+    [request startAsynchronous];
+    
 }
 -(void) shareTimeLine{
     AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    [app sendMusicContentByMuzzik:self.localmuzzik scen:1 image:[self.userImage imageForState:UIControlStateNormal]];
+    [app sendMusicContentByMuzzik:self.localmuzzik scen:0 image:[self.userImage imageForState:UIControlStateNormal]];
+    NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:self.localmuzzik.muzzik_id,@"_id",@"moment",@"channel", nil];
+    
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Share_Muzzik]]];
+    
+    [request addBodyDataSourceWithJsonByDic:requestDic Method:PostMethod auth:YES];
+    __weak ASIHTTPRequest *weakrequest = request;
+    [request setCompletionBlock :^{
+        
+        self.localmuzzik.shares = [NSString stringWithFormat:@"%d",[self.localmuzzik.shares intValue]+1];
+        [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:self.localmuzzik];
+    }];
+    [request setFailedBlock:^{
+        NSLog(@"%@",[weakrequest error]);
+    }];
+    [request startAsynchronous];
 }
 
 -(void) shareWeChat{
     AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
     [app sendMusicContentByMuzzik:self.localmuzzik scen:0 image:[self.userImage imageForState:UIControlStateNormal]];
+    NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:self.localmuzzik.muzzik_id,@"_id",@"wechat",@"channel", nil];
+    
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Share_Muzzik]]];
+    
+    [request addBodyDataSourceWithJsonByDic:requestDic Method:PostMethod auth:YES];
+    __weak ASIHTTPRequest *weakrequest = request;
+    [request setCompletionBlock :^{
+        
+        self.localmuzzik.shares = [NSString stringWithFormat:@"%d",[self.localmuzzik.shares intValue]+1];
+        [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:self.localmuzzik];
+    }];
+    [request setFailedBlock:^{
+        NSLog(@"%@",[weakrequest error]);
+    }];
+    [request startAsynchronous];
 }
+
 
 -(void)dataSourceUserUpdate:(NSNotification *)notify{
     MuzzikUser *user = notify.object;
@@ -1828,6 +1927,13 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         [_userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,[proDic objectForKey:@"avatar"]]] forState:UIControlStateNormal];
         _userName.text = [proDic objectForKey:@"name"];
         
+        if (self.localmuzzik.isprivate) {
+            [_userName sizeToFit];
+            [MprivateImage setHidden:NO];
+            [MprivateImage setFrame:CGRectMake(_userName.frame.origin.x+_userName.frame.size.width+2, _userName.frame.origin.y, 20, 20)];
+        }
+        
+        
         NSArray *dicKeys = [proDic allKeys];
         if ([dicKeys containsObject:@"avatar"]) {
             [_headimage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,[proDic objectForKey:@"avatar"]]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
@@ -1842,7 +1948,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
             _nameLabel.text = [proDic objectForKey:@"name"];
             [_nameLabel sizeToFit];
             [_nameLabel setFrame:CGRectMake(16, 16, _nameLabel.frame.size.width, _nameLabel.frame.size.height)];
-            [_genderImage setFrame:CGRectMake(CGRectGetMaxX(_nameLabel.frame)+6, CGRectGetMidY(_nameLabel.frame)-10, 16, 16)];
+            [_genderImage setFrame:CGRectMake(CGRectGetMaxX(_nameLabel.frame)+4, CGRectGetMidY(_nameLabel.frame)-8, 14, 14)];
             if ([[proDic objectForKey:@"gender"] isEqualToString:@"m"]) {
                 [_genderImage setImage:[UIImage imageNamed:Image_profilemaleImage]];
             }else{
@@ -1944,52 +2050,55 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         
         if ([user.uid isEqualToString:[proDic objectForKey:@"_id"]]) {
             
-            _deleMuzzikButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/8,_reposts.frame.origin.y+40, SCREEN_WIDTH*3/16.0, 45)];
+            _deleMuzzikButton = [[UIButton alloc] initWithFrame:CGRectMake(16,_reposts.frame.origin.y+40, (int)((SCREEN_WIDTH-32)/4), 55)];
             [_deleMuzzikButton setImage:[UIImage imageNamed:Image_detaildeleteImage] forState:UIControlStateNormal];
             [_deleMuzzikButton addTarget:self action:@selector(deleMuzzikAction) forControlEvents:UIControlEventTouchUpInside];
             [_muzzikView addSubview:_deleMuzzikButton];
             
-            _repostButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH*5/16,_reposts.frame.origin.y+40, SCREEN_WIDTH*3/16.0, 45)];
+            _repostButton = [[UIButton alloc] initWithFrame:CGRectMake((int)((SCREEN_WIDTH-32)/4)+16,_reposts.frame.origin.y+40, (int)((SCREEN_WIDTH-32)/4), 55)];
             [_repostButton setImage:[UIImage imageNamed:Image_detailretweetImage] forState:UIControlStateNormal];
             [_repostButton addTarget:self action:@selector(repostAction) forControlEvents:UIControlEventTouchUpInside];
             [_muzzikView addSubview:_repostButton];
             //[_repostButton setBackgroundColor:Color_Additional_4];
-            _shareButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2,_reposts.frame.origin.y+40, SCREEN_WIDTH*3/16.0, 45)];
+            _shareButton = [[UIButton alloc] initWithFrame:CGRectMake((int)((SCREEN_WIDTH-32)/2)+16,_reposts.frame.origin.y+40, (int)((SCREEN_WIDTH-32)/4), 55)];
             [_shareButton setImage:[UIImage imageNamed:Image_detailshareImage] forState:UIControlStateNormal];
             [_shareButton addTarget:self action:@selector(shareAction) forControlEvents:UIControlEventTouchUpInside];
             [_muzzikView addSubview:_shareButton];
             
-            _commentButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH*11/16,_reposts.frame.origin.y+40, SCREEN_WIDTH*3/16.0, 45)];
+            _commentButton = [[UIButton alloc] initWithFrame:CGRectMake((int)((SCREEN_WIDTH-32)/4)*3+16,_reposts.frame.origin.y+40,(int)((SCREEN_WIDTH-32)/4), 55)];
             [_commentButton setImage:[UIImage imageNamed:Image_detailreplyImage] forState:UIControlStateNormal];
             [_commentButton addTarget:self action:@selector(commentAction) forControlEvents:UIControlEventTouchUpInside];
             [_muzzikView addSubview:_commentButton];
-            commentTitle = [[UIView alloc] initWithFrame:CGRectMake(0, _reposts.frame.origin.y+85, SCREEN_WIDTH, 20)];
-            UILabel *commentLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, 0, 30, 20)];
+            commentTitle = [[UIView alloc] initWithFrame:CGRectMake(0, _reposts.frame.origin.y+95, SCREEN_WIDTH, 45)];
+            UILabel *commentLabel = [[UILabel alloc] initWithFrame:CGRectMake(26, 0, 30, 45)];
             commentLabel.font = [UIFont boldSystemFontOfSize:15];
             commentLabel.textColor = Color_Text_1;
             commentLabel.text = @"评论";
             [commentTitle addSubview:commentLabel];
-            [MuzzikItem addLineOnView:commentTitle heightPoint:19 toLeft:16 toRight:16 withColor:Color_line_1];
-            [MuzzikItem addLineOnView:commentTitle heightPoint:20 toLeft:16 toRight:16 withColor:Color_line_1];
+            [MuzzikItem addLineOnView:commentTitle heightPoint:44 toLeft:16 toRight:16 withColor:Color_line_1];
+            [MuzzikItem addLineOnView:commentTitle heightPoint:45 toLeft:16 toRight:16 withColor:Color_line_1];
             
-            [_muzzikView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, _reposts.frame.origin.y+105)];
+            [_muzzikView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, _reposts.frame.origin.y+140)];
+            [MuzzikItem addLineOnView:_muzzikView heightPoint:_reposts.frame.origin.y+94 toLeft:16 toRight:16 withColor:Color_line_1];
             [muzzikTableView setTableHeaderView:_muzzikView];
-        }else{
-            _repostButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/8,_reposts.frame.origin.y+40, SCREEN_WIDTH/4.0, 45)];
+            
+        }
+        else{
+            _repostButton = [[UIButton alloc] initWithFrame:CGRectMake(16,_reposts.frame.origin.y+40, (int)((SCREEN_WIDTH-32)/3), 55)];
             [_repostButton setImage:[UIImage imageNamed:Image_detailretweetImage] forState:UIControlStateNormal];
             [_repostButton addTarget:self action:@selector(repostAction) forControlEvents:UIControlEventTouchUpInside];
             [_muzzikView addSubview:_repostButton];
             //[_repostButton setBackgroundColor:Color_Additional_4];
-            _shareButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH*3/8,_reposts.frame.origin.y+40, SCREEN_WIDTH/4.0, 45)];
+            _shareButton = [[UIButton alloc] initWithFrame:CGRectMake((int)((SCREEN_WIDTH-32)/3)+16,_reposts.frame.origin.y+40, (int)((SCREEN_WIDTH-32)/3), 55)];
             [_shareButton setImage:[UIImage imageNamed:Image_detailshareImage] forState:UIControlStateNormal];
             [_shareButton addTarget:self action:@selector(shareAction) forControlEvents:UIControlEventTouchUpInside];
             [_muzzikView addSubview:_shareButton];
             
-            _commentButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH*5/8,_reposts.frame.origin.y+40, SCREEN_WIDTH/4.0, 45)];
+            _commentButton = [[UIButton alloc] initWithFrame:CGRectMake((int)((SCREEN_WIDTH-32)/3)*2+16,_reposts.frame.origin.y+40, (int)((SCREEN_WIDTH-32)/3), 55)];
             [_commentButton setImage:[UIImage imageNamed:Image_detailreplyImage] forState:UIControlStateNormal];
             [_commentButton addTarget:self action:@selector(commentAction) forControlEvents:UIControlEventTouchUpInside];
             [_muzzikView addSubview:_commentButton];
-            cardView = [[UIView alloc] initWithFrame:CGRectMake(16, _reposts.frame.origin.y+85, SCREEN_WIDTH-32, 135)];
+            cardView = [[UIView alloc] initWithFrame:CGRectMake(16, _reposts.frame.origin.y+95, SCREEN_WIDTH-32, 135)];
             cardView.backgroundColor = Color_line_2;
             cardView.layer.cornerRadius = 5;
             cardView.clipsToBounds = YES;
@@ -2006,11 +2115,14 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
             [cardView addSubview:cardHeader];
             
             UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(97, 18, 150, 20)];
-            [nameLabel setFont:[UIFont fontWithName:Font_Next_DemiBold size:20]];
+            [nameLabel setFont:[UIFont fontWithName:Font_Next_DemiBold size:18]];
             nameLabel.text = [proDic objectForKey:@"name"];
             [nameLabel sizeToFit];
             [cardView addSubview:nameLabel];
             _addFriendButton = [[UIButton alloc] initWithFrame:CGRectMake(15, 93, SCREEN_WIDTH-62, 27)];
+            [_addFriendButton setBackgroundImage:[MuzzikItem buttonImageFromColor:Color_Active_Button_1] forState:UIControlStateNormal];
+            _addFriendButton.layer.cornerRadius = 3;
+            _addFriendButton.clipsToBounds = YES;
             [_addFriendButton addTarget:self action:@selector(attentionOrVisit) forControlEvents:UIControlEventTouchUpInside];
             [cardView addSubview:_addFriendButton];
             if ([[proDic objectForKey:@"isFollow"] boolValue] &&[[proDic objectForKey:@"isFans"] boolValue]) {
@@ -2028,22 +2140,23 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
                 [_attentionButton setImage:[UIImage imageNamed:Image_profilefollow] forState:UIControlStateNormal];
                 [_attentionButton setFrame:CGRectMake(SCREEN_WIDTH-65, 16, 45, 23)];
             }
-            
+            [genresV removeFromSuperview];
             if ([[proDic allKeys] containsObject:@"genres"] && [[proDic objectForKey:@"genres"] count]>0) {
-                genresV = [[UIView alloc] initWithFrame:CGRectMake(97, 55, SCREEN_WIDTH-140, 40)];
+                
+                genresV = [[UIView alloc] initWithFrame:CGRectMake(97, 49, SCREEN_WIDTH-140, 40)];
                 [cardView addSubview: genresV];
                 int local = 0;
                 int localheight = 0;
                 for (NSDictionary * dic in [proDic objectForKey:@"genres"]) {
-                    UILabel *tempLabel = [[UILabel alloc ] initWithFrame:CGRectMake(local, localheight, 100, 20)];
-                    [tempLabel setFont:[UIFont systemFontOfSize:12]];
+                    UILabel *tempLabel = [[UILabel alloc ] initWithFrame:CGRectMake(local, localheight, 100, 15)];
+                    [tempLabel setFont:[UIFont systemFontOfSize:11]];
                     [tempLabel setText:[dic objectForKey:@"data"]];
                     [tempLabel setTextColor:Color_Text_3];
                     [tempLabel sizeToFit];
                     if (local+ tempLabel.frame.size.width>SCREEN_WIDTH-140) {
-                        localheight = localheight+20;
+                        localheight = localheight+15;
                         local = 0;
-                        if (localheight>30) {
+                        if (localheight>20) {
                             break;
                         }
                     }else{
@@ -2052,24 +2165,42 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
                     }
                     
                 }
+            }else if ([dicKeys containsObject:@"description"] && [[proDic objectForKey:@"description"] length]>0) {
+                [genresV removeFromSuperview];
+                 genresV = [[UIView alloc] initWithFrame:CGRectMake(97, 47, SCREEN_WIDTH-140, 40)];
+                UILabel *descrip = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, genresV.frame.size.width-5, 40)];
+                
+                NSDictionary *attributes;
+                NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
+                paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+                paragraphStyle.lineSpacing = 3;
+                attributes = @{NSFontAttributeName:[UIFont systemFontOfSize:11], NSParagraphStyleAttributeName:paragraphStyle,NSForegroundColorAttributeName:Color_Text_3};
+                NSAttributedString * attr= [[NSAttributedString alloc] initWithString:[proDic objectForKey:@"description"] attributes:attributes];
+                descrip.attributedText = attr;
+                descrip.numberOfLines = 0;
+                [genresV addSubview:descrip];
+                 [cardView addSubview: genresV];
             }
-            UIImageView *genderSign = [[UIImageView alloc] initWithFrame:CGRectMake(97+nameLabel.frame.size.width+15, 18, 20, 20)];
+            if (cardView.frame.size.width - nameLabel.frame.size.width< 137){
+                [nameLabel setFrame:CGRectMake(97, 18, cardView.frame.size.width - 137, 20)];
+            }
+            UIImageView *genderSign = [[UIImageView alloc] initWithFrame:CGRectMake(97+(int)nameLabel.frame.size.width+5, 23, 14, 14)];
             if ([[proDic objectForKey:@"gender"] isEqualToString:@"m"]) {
                 [genderSign setImage:[UIImage imageNamed:Image_profilemaleImage]];
             }else{
                 [genderSign setImage:[UIImage imageNamed:Image_profilefemaleImage]];
             }
             [cardView addSubview:genderSign];
-            commentTitle = [[UIView alloc] initWithFrame:CGRectMake(0, _reposts.frame.origin.y+220, SCREEN_WIDTH, 20)];
-            UILabel *commentLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, 0, 30, 20)];
+            commentTitle = [[UIView alloc] initWithFrame:CGRectMake(0, _reposts.frame.origin.y+230, SCREEN_WIDTH, 45)];
+            UILabel *commentLabel = [[UILabel alloc] initWithFrame:CGRectMake(26, 0, 30, 45)];
             commentLabel.font = [UIFont boldSystemFontOfSize:15];
             commentLabel.textColor = Color_Text_1;
             commentLabel.text = @"评论";
             [commentTitle addSubview:commentLabel];
-            [MuzzikItem addLineOnView:commentTitle heightPoint:19 toLeft:16 toRight:16 withColor:Color_line_1];
-            [MuzzikItem addLineOnView:commentTitle heightPoint:20 toLeft:16 toRight:16 withColor:Color_line_1];
+            [MuzzikItem addLineOnView:commentTitle heightPoint:44 toLeft:16 toRight:16 withColor:Color_line_1];
+            [MuzzikItem addLineOnView:commentTitle heightPoint:45 toLeft:16 toRight:16 withColor:Color_line_1];
             
-            [_muzzikView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, _reposts.frame.origin.y+240)];
+            [_muzzikView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, _reposts.frame.origin.y+275)];
             [muzzikTableView setTableHeaderView:_muzzikView];
             
         }
@@ -2080,8 +2211,9 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 -(void)reloadDataSource{
     [super reloadDataSource];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+ 
+        
         [self loadMuzzikView];
-        [self loadComment];
     });
     
 
@@ -2096,6 +2228,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         if ([weakrequest responseStatusCode] == 200) {
             _profileDic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData]  options:NSJSONReadingMutableContainers error:nil];
             [self setUserInfo:_profileDic];
+            [self loadComment];
         }
     }];
     [requestForm setFailedBlock:^{

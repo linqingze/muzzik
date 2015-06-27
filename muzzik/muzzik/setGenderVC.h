@@ -8,7 +8,7 @@
 
 #import "BaseNagationViewController.h"
 #import "ZHPickView.h"
-@interface setGenderVC : BaseNagationViewController<UITextFieldDelegate,ZHPickViewDelegate>{
+@interface setGenderVC : AMScrollingNavbarViewController<UITextFieldDelegate,ZHPickViewDelegate>{
     UITextField *birthText;
     NSString *gender;
     ZHPickView *pickview;

@@ -29,5 +29,5 @@
 
 
 
-@interface LoginViewController : UIViewController
+@interface LoginViewController : AMScrollingNavbarViewController
 @end

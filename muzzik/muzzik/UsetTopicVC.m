@@ -56,7 +56,7 @@
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
             TopicArray = [[TopicModel new] makeTopicssByMuzzikArray:[dic objectForKey:@"topics"]];
             [topicTableView reloadData];
-            if ([TopicArray count]<[Limit_Constant integerValue]) {
+            if ([TopicArray count]<1) {
                 [topicTableView removeFooter];
             }
         }
@@ -105,7 +105,7 @@
                 [topicTableView footerEndRefreshing];
                 [topicTableView reloadData];
                 
-                if ([[dic objectForKey:@"topics"] count]<[Limit_Constant integerValue]) {
+                if ([[dic objectForKey:@"topics"] count]<1) {
                     [topicTableView removeFooter];
                 }
             });

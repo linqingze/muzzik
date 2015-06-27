@@ -30,6 +30,10 @@
     [settingTable registerClass:[SettingCell class] forCellReuseIdentifier:@"SettingCell"];
     // Do any additional setup after loading the view from its nib.
 }
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [settingTable reloadData];
+}
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
     cell.textLabel.textColor = Color_Text_1;
@@ -117,27 +121,49 @@
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (buttonIndex == 1) {
         // do stuff
-        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Logout]]];
-        [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
-        __weak ASIHTTPRequest *weakrequest = requestForm;
-        [requestForm setCompletionBlock :^{
-            NSLog(@"%@",[weakrequest responseString]);
-            NSLog(@"%d",[weakrequest responseStatusCode]);
-            if ([weakrequest responseStatusCode] == 200) {
-                userInfo *user = [userInfo shareClass];
-                user.token = nil;
-                [MuzzikItem removeMessageFromLocal:@"LoginAcess"];
-                [settingTable reloadData];
-            }
-            else{
-                //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-            }
+        userInfo *user = [userInfo shareClass];
+        ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/notify/tokens/%@?type=APN",BaseURL,user.deviceToken]]];
+        [request addBodyDataSourceWithJsonByDic:nil Method:DeleteMethod auth:YES];
+        __weak ASIHTTPRequest *weakreq = request;
+        [request setCompletionBlock :^{
+            NSLog(@"%@",[weakreq responseString]);
+            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Logout]]];
+            [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
+            __weak ASIHTTPRequest *weakrequest = requestForm;
+            [requestForm setCompletionBlock :^{
+                NSLog(@"%@",[weakrequest responseString]);
+                NSLog(@"%d",[weakrequest responseStatusCode]);
+                if ([weakrequest responseStatusCode] == 200) {
+                    userInfo *user = [userInfo shareClass];
+                    user.token = nil;
+                    [MuzzikItem removeMessageFromLocal:@"LoginAcess"];
+                    [MuzzikItem addObjectToLocal:nil ForKey:Constant_Data_moved];
+                    [MuzzikItem addObjectToLocal:nil ForKey:Constant_Data_ownMuzzik];
+                    [MuzzikItem addObjectToLocal:nil ForKey:Constant_Data_User_home];
+                    [MuzzikItem addObjectToLocal:nil ForKey:Constant_Data_notify];
+                    
+                    [settingTable reloadData];
+                    [userInfo checkLoginWithVC:self];
+                }
+                else{
+                    
+                    
+                    //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+                }
+            }];
+            [requestForm setFailedBlock:^{
+                NSLog(@"%@",[weakrequest error]);
+                NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
+            }];
+            [requestForm startAsynchronous];
+            
         }];
-        [requestForm setFailedBlock:^{
-            NSLog(@"%@",[weakrequest error]);
-            NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
+        [request setFailedBlock:^{
+            NSLog(@"%@",[weakreq error]);
         }];
-        [requestForm startAsynchronous];
+        [request startAsynchronous];
+        
+       
         
     }else{
         

@@ -8,7 +8,7 @@
 
 #import "BaseNagationViewController.h"
 
-@interface setHeadImageVC : BaseNagationViewController{
+@interface setHeadImageVC : AMScrollingNavbarViewController{
     UIView *headerView;
     UIImageView *headImage;
     UILabel * notifyLabel;

@@ -64,7 +64,7 @@
                     TopicModel *topicToy = [TopicModel new];
                     [topicArray addObjectsFromArray:[topicToy makeTopicssByMuzzikArray:[dic objectForKey:@"topics"]]];
                     [topicTableView reloadData];
-                    if ([[dic objectForKey:@"topics"] count] == [Limit_Constant integerValue]) {
+                    if ([[dic objectForKey:@"topics"] count] >0) {
                         page++;
                         [topicTableView addFooterWithTarget:self action:@selector(refreshFooter)];
                     }
@@ -114,7 +114,7 @@
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [topicTableView reloadData];
                 [topicTableView footerEndRefreshing];
-                if ([[dic objectForKey:@"topics"] count]<[Limit_Constant integerValue] ) {
+                if ([[dic objectForKey:@"topics"] count]<1 ) {
                     [topicTableView removeFooter];
                 }
             });

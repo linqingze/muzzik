@@ -10,10 +10,24 @@
 #import "AFViewShaker.h"
 #import "NSString+MD5.h"
 #import "LoginViewController.h"
+#import "TTTAttributedLabel.h"
+
+@interface messageForResetVC ()<UITextFieldDelegate,TTTAttributedLabelDelegate>{
+    UITextField *checkcode;
+    UITextField *passwordText;
+    BOOL isOk;
+    UIButton *visibleButton;
+    TTTAttributedLabel *tipsLabel;
+    NSTimer *timer;
+    int timeCount;
+}
+@end
+
 @implementation messageForResetVC
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self initNagationBar:@"重置密码" leftBtn:Constant_backImage rightBtn:0];
+    timeCount = 60;
+    [self initNagationBar:@"重置密码" leftBtn:Constant_backImage rightBtn:3];
     UIImageView *checkImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"messageImage"]];
     [checkImage setFrame:CGRectMake(20, 15, 15, 15)];
     [self.view addSubview:checkImage];
@@ -50,10 +64,57 @@
     [nextButton setImage:[UIImage imageNamed:@"cycledone"] forState:UIControlStateNormal];
     [self.view addSubview: nextButton];
     [nextButton addTarget:self action:@selector(summitAction) forControlEvents:UIControlEventTouchUpInside];
-    UITapGestureRecognizer *tapOnview = [[UITapGestureRecognizer alloc] initWithTarget:self.view action:@selector(endEditing:)];
-    [self.view addGestureRecognizer:tapOnview];
+    timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
+    [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
+    tipsLabel = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(20, 100, 200, 25)];
+    [self.view addSubview:tipsLabel];
+    tipsLabel.delegate = self;
+    
+}
+- (void)attributedLabel:(TTTAttributedLabel *)label
+didSelectLinkWithTransitInformation:(NSDictionary *)components{
+    NSLog(@"%@",components);
+    ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_GetVerifiCode]]];
+    [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:self.phoneNumber forKey:@"phone"] Method:PostMethod auth:NO];
+    __weak ASIHTTPRequest *weakrequest = requestForm;
+    [requestForm setCompletionBlock :^{
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
+        NSLog(@"%@",[weakrequest responseString]);
+        NSLog(@"%d",[weakrequest responseStatusCode]);
+        if ([weakrequest responseStatusCode] == 200 && [[dic objectForKey:@"result"] boolValue]) {
+            timeCount = 60;
+            timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
+        }
+    }];
+    [requestForm setFailedBlock:^{
+        // [SVProgressHUD showErrorWithStatus:@"network error"];
+    }];
+    [requestForm startAsynchronous];
+
 }
 
+-(void)updateTime{
+    if (timeCount>0) {
+        UIFont *font = [UIFont boldSystemFontOfSize:12];
+        NSMutableAttributedString *text = [[NSMutableAttributedString alloc] init];
+        NSString *itemStr = @"没有收到？重新获取验证码 ";
+        NSAttributedString *item = [MuzzikItem formatAttrItem:itemStr color:[UIColor colorWithHexString:@"a8acbb"] font:font];
+        [text appendAttributedString:item];
+        NSString *itemStr1 = [NSString stringWithFormat:@"%d",timeCount];
+        NSAttributedString *item1 = [MuzzikItem formatAttrItem:itemStr1 color:Color_Active_Button_1 font:font];
+        [text appendAttributedString:item1];
+        tipsLabel.attributedText = text;
+        timeCount-- ;
+    }else{
+        [timer invalidate];
+        timer = nil;
+        [tipsLabel setFont:[UIFont boldSystemFontOfSize:12]];
+        [tipsLabel setTextColor:[UIColor colorWithHexString:@"a8acbb"]];
+        tipsLabel.attributedText = nil;
+        tipsLabel.text = @"没有收到？重新获取验证码 ";
+        [tipsLabel addLinkToTransitInformation:[NSDictionary dictionaryWithObject:@"value" forKey:@"key"] withRange:[tipsLabel.text rangeOfString:@"重新获取验证码"]];
+    }
+}
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField{
     [textField resignFirstResponder];
@@ -71,7 +132,7 @@
     }
     
 }
--(void) summitAction{
+-(void) rightBtnAction:(UIButton *)sender{
     if ([checkcode.text length] == 0){
         [MuzzikItem showTipsAtView:self.view xPoint:20 yPoint:100 text:@"请输入正确的验证码"];
         [[[AFViewShaker alloc] initWithView:checkcode] shake];
@@ -96,7 +157,7 @@
             }else if([weakrequest responseStatusCode] == 200 && [[dic allKeys] containsObject:@"token"]) {
                 userInfo *user = [userInfo shareClass];
                 user.token = [dic objectForKey:@"token"];
-                [self dismissViewControllerAnimated:YES completion:nil];
+                [self.navigationController popToRootViewControllerAnimated:YES];
             }
         }];
         [requestForm setFailedBlock:^{

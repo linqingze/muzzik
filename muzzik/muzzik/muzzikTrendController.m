@@ -279,7 +279,7 @@
                 return 260+(int)textHeight;
             }
         }
-    }else{
+    }else if([tempMuzzik.type isEqualToString:@"muzzikCard"]){
         TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(75, 0, SCREEN_WIDTH-96, 500)];
         [label setText:tempMuzzik.message];
         [label setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
@@ -299,6 +299,8 @@
             }
             
         }
+    }else{
+        return 0;
     }
     
 }
@@ -409,7 +411,7 @@
             if (tempMuzzik.isprivate ) {
                 [cell.privateImage setHidden:NO];
                 [cell.userName sizeToFit];
-                [cell.privateImage setFrame:CGRectMake(cell.userName.frame.origin.x+cell.userName.frame.size.width+5, cell.userName.frame.origin.y, 20, 20)];
+                [cell.privateImage setFrame:CGRectMake(cell.userName.frame.origin.x+cell.userName.frame.size.width+2, cell.userName.frame.origin.y, 20, 20)];
             }else{
                 [cell.privateImage setHidden:YES];
                 [cell.userName setFrame:CGRectMake(80, 55, SCREEN_WIDTH-120, 20)];
@@ -506,7 +508,8 @@
             return cell;
             
         }else{
-            return nil;
+            UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
+            return cell;
         }
     }else{
         if ([tempMuzzik.type isEqualToString:@"repost"] ){
@@ -613,7 +616,7 @@
             if (tempMuzzik.isprivate ) {
                 [cell.privateImage setHidden:NO];
                 [cell.userName sizeToFit];
-                [cell.privateImage setFrame:CGRectMake(cell.userName.frame.origin.x+cell.userName.frame.size.width+5, cell.userName.frame.origin.y, 20, 20)];
+                [cell.privateImage setFrame:CGRectMake(cell.userName.frame.origin.x+cell.userName.frame.size.width+2, cell.userName.frame.origin.y, 20, 20)];
             }else{
                 [cell.privateImage setHidden:YES];
                 [cell.userName setFrame:CGRectMake(80, 55, SCREEN_WIDTH-120, 20)];
@@ -719,7 +722,8 @@
             return cell;
         }
         else {
-            return nil;
+            UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
+            return cell;
         }
     }
     
@@ -1181,13 +1185,28 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     authRequest.scope = @"all";
     
     WBSendMessageToWeiboRequest *request = [WBSendMessageToWeiboRequest requestWithMessage:[self messageToShare] authInfo:authRequest access_token:myDelegate.wbtoken];
-
+    
     //    request.shouldOpenWeiboAppInstallPageIfNotInstalled = NO;
     [WeiboSDK sendRequest:request];
+    NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:shareMuzzik.muzzik_id,@"_id",@"weibo",@"channel", nil];
+    
+    ASIHTTPRequest *requestShare = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Share_Muzzik]]];
+    
+    [requestShare addBodyDataSourceWithJsonByDic:requestDic Method:PostMethod auth:YES];
+    __weak ASIHTTPRequest *weakrequest = requestShare;
+    [requestShare setCompletionBlock :^{
+        
+        shareMuzzik.shares = [NSString stringWithFormat:@"%d",[shareMuzzik.shares intValue]+1];
+        [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:shareMuzzik];
+    }];
+    [requestShare setFailedBlock:^{
+        NSLog(@"%@",[weakrequest error]);
+    }];
+    [requestShare startAsynchronous];
 }
 -(void) shareQQ{
     TencentOAuth *tencentOAuth = [[TencentOAuth alloc] initWithAppId:ID_QQ_APP
-                                            andDelegate:nil];
+                                                         andDelegate:nil];
     NSString *url = [NSString stringWithFormat:@"%@%@",URL_Muzzik_SharePage,shareMuzzik.muzzik_id];
     //分享图预览图URL地址
     NSString *previewImageUrl = @"http://muzzik-image.qiniudn.com/FieqckeQDGWACSpDA3P0aDzmGcB6";
@@ -1203,9 +1222,25 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     [self handleSendResult:sent];
     //将被容分享到qzone
     //QQApiSendResultCode sent = [QQApiInterface SendReqToQZone:req];
-
+    
+    NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:shareMuzzik.muzzik_id,@"_id",@"qq",@"channel", nil];
+    
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Share_Muzzik]]];
+    
+    [request addBodyDataSourceWithJsonByDic:requestDic Method:PostMethod auth:YES];
+    __weak ASIHTTPRequest *weakrequest = request;
+    [request setCompletionBlock :^{
+        
+        shareMuzzik.shares = [NSString stringWithFormat:@"%d",[shareMuzzik.shares intValue]+1];
+        [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:shareMuzzik];
+    }];
+    [request setFailedBlock:^{
+        NSLog(@"%@",[weakrequest error]);
+    }];
+    [request startAsynchronous];
+    
+    
 }
-
 - (void)handleSendResult:(QQApiSendResultCode)sendResult
 {
     switch (sendResult)
@@ -1214,7 +1249,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         {
             UIAlertView *msgbox = [[UIAlertView alloc] initWithTitle:@"Error" message:@"App未注册" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil];
             [msgbox show];
-
+            
             
             break;
         }
@@ -1224,7 +1259,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         {
             UIAlertView *msgbox = [[UIAlertView alloc] initWithTitle:@"Error" message:@"发送参数错误" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil];
             [msgbox show];
-
+            
             
             break;
         }
@@ -1232,7 +1267,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         {
             UIAlertView *msgbox = [[UIAlertView alloc] initWithTitle:@"Error" message:@"未安装手Q" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil];
             [msgbox show];
-
+            
             
             break;
         }
@@ -1240,7 +1275,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         {
             UIAlertView *msgbox = [[UIAlertView alloc] initWithTitle:@"Error" message:@"API接口不支持" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil];
             [msgbox show];
-
+            
             
             break;
         }
@@ -1257,10 +1292,6 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         }
     }
 }
-+ (BOOL)handleOpenURL:(NSURL *)url delegate:(id<QQApiInterfaceDelegate>)delegate{
-    
-    return YES;
-}
 -(void) shareQQZone{
     TencentOAuth *tencentOAuth = [[TencentOAuth alloc] initWithAppId:ID_QQ_APP
                                                          andDelegate:nil];
@@ -1270,19 +1301,66 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     QQApiNewsObject* img = [QQApiNewsObject objectWithURL:[NSURL URLWithString:url] title:@"在Muzzik上分享了首歌" description:[NSString stringWithFormat:@"%@  %@",shareMuzzik.music.name,shareMuzzik.music.artist] previewImageURL:previewURL];
     SendMessageToQQReq* req = [SendMessageToQQReq reqWithContent:img];
     
-   
+    
     //将被容分享到qzone
     QQApiSendResultCode sent = [QQApiInterface SendReqToQZone:req];
-     [self handleSendResult:sent];
+    [self handleSendResult:sent];
+    
+    NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:shareMuzzik.muzzik_id,@"_id",@"qzone",@"channel", nil];
+    
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Share_Muzzik]]];
+    
+    [request addBodyDataSourceWithJsonByDic:requestDic Method:PostMethod auth:YES];
+    __weak ASIHTTPRequest *weakrequest = request;
+    [request setCompletionBlock :^{
+        
+        shareMuzzik.shares = [NSString stringWithFormat:@"%d",[shareMuzzik.shares intValue]+1];
+        [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:shareMuzzik];
+    }];
+    [request setFailedBlock:^{
+        NSLog(@"%@",[weakrequest error]);
+    }];
+    [request startAsynchronous];
+    
 }
 -(void) shareTimeLine{
     AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
     [app sendMusicContentByMuzzik:shareMuzzik scen:1 image:shareImage];
+    NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:shareMuzzik.muzzik_id,@"_id",@"moment",@"channel", nil];
+    
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Share_Muzzik]]];
+    
+    [request addBodyDataSourceWithJsonByDic:requestDic Method:PostMethod auth:YES];
+    __weak ASIHTTPRequest *weakrequest = request;
+    [request setCompletionBlock :^{
+        
+        shareMuzzik.shares = [NSString stringWithFormat:@"%d",[shareMuzzik.shares intValue]+1];
+        [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:shareMuzzik];
+    }];
+    [request setFailedBlock:^{
+        NSLog(@"%@",[weakrequest error]);
+    }];
+    [request startAsynchronous];
 }
 
 -(void) shareWeChat{
     AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
     [app sendMusicContentByMuzzik:shareMuzzik scen:0 image:shareImage];
+    NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:shareMuzzik.muzzik_id,@"_id",@"wechat",@"channel", nil];
+    
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Share_Muzzik]]];
+    
+    [request addBodyDataSourceWithJsonByDic:requestDic Method:PostMethod auth:YES];
+    __weak ASIHTTPRequest *weakrequest = request;
+    [request setCompletionBlock :^{
+        
+        shareMuzzik.shares = [NSString stringWithFormat:@"%d",[shareMuzzik.shares intValue]+1];
+        [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:shareMuzzik];
+    }];
+    [request setFailedBlock:^{
+        NSLog(@"%@",[weakrequest error]);
+    }];
+    [request startAsynchronous];
 }
 -(void)dataSourceMuzzikUpdate:(NSNotification *)notify{
     muzzik *tempMuzzik = (muzzik *)notify.object;

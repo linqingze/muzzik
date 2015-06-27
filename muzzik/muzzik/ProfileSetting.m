@@ -418,8 +418,6 @@
                 NSLog(@"%@",[weakrequest responseString]);
                 NSLog(@"%d",[weakrequest responseStatusCode]);
                 if ([weakrequest responseStatusCode] == 200) {
-                    
-                    ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@%@",BaseURL,URL_Update_Profile]]];
                     NSMutableDictionary *dic= [NSMutableDictionary dictionary];
                     [dic setObject:NameText.text forKey:@"name"];
                     [dic setObject:schoolText.text forKey:@"school"];
@@ -466,9 +464,14 @@
                                         if ([WeakImageRequest responseStatusCode]==200) {
                                             self.userhome.headimage.image = localImage;
                                             user.userHeadThumb = localImage;
+                                            if ([_genderString length]>0) {
+                                                user.gender = _genderString;
+                                            }
+                                            user.name = NameText.text;
                                             user.avatar = [keydic objectForKey:@"key"];
-                                            [self.navigationController popViewControllerAnimated:YES];
                                             
+                                            [self.navigationController popViewControllerAnimated:YES];
+                                            [self saveUserLocal];
                                         }
                                     }];
                                     [updateImageRequest setFailedBlock:^{
@@ -499,6 +502,11 @@
                         __weak ASIHTTPRequest *WeakImageRequest = updateImageRequest;
                         [updateImageRequest setCompletionBlock:^{
                             if ([WeakImageRequest responseStatusCode]==200) {
+                                user.name = NameText.text;
+                                if ([_genderString length]>0) {
+                                    user.gender = _genderString;
+                                }
+                                [self saveUserLocal];
                                 [self.navigationController popViewControllerAnimated:YES];
                             }
                         }];
@@ -507,21 +515,6 @@
                         }];
                         [updateImageRequest startAsynchronous];
                     }
-                    [requestForm addBodyDataSourceWithJsonByDic:dic Method:PostMethod auth:YES];
-                    __weak ASIHTTPRequest *weakrequest = requestForm;
-                    [requestForm setCompletionBlock :^{
-                        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
-                        NSLog(@"%@",[weakrequest responseString]);
-                        NSLog(@"%d",[weakrequest responseStatusCode]);
-                        if ([weakrequest responseStatusCode] == 200 && [[dic objectForKey:@"result"] boolValue]) {
-                            [self.navigationController popViewControllerAnimated:YES];
-                            //
-                        }
-                    }];
-                    [requestForm setFailedBlock:^{
-                        // [SVProgressHUD showErrorWithStatus:@"network error"];
-                    }];
-                    [requestForm startAsynchronous];
                 }
                 else if([weakrequest responseStatusCode] == 400){
                     [MuzzikItem showOnView:self.view Text:@"用户名超过15个字" pointY:NameText.frame.origin.y];
@@ -545,7 +538,6 @@
             [requestForm startAsynchronous];
         }
         else{
-            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@%@",BaseURL,URL_Update_Profile]]];
             NSMutableDictionary *dic= [NSMutableDictionary dictionary];
             [dic setObject:schoolText.text forKey:@"school"];
             [dic setObject:companyText.text forKey:@"company"];
@@ -592,6 +584,10 @@
                                         self.userhome.headimage.image = localImage;
                                         user.userHeadThumb = localImage;
                                         user.avatar = [keydic objectForKey:@"key"];
+                                        if ([_genderString length]>0) {
+                                            user.gender = _genderString;
+                                        }
+                                        [self saveUserLocal];
                                         [self.navigationController popViewControllerAnimated:YES];
                                         
                                     }
@@ -629,6 +625,10 @@
                 [updateImageRequest setCompletionBlock:^{
                     if ([WeakImageRequest responseStatusCode]==200) {
                         [self.navigationController popViewControllerAnimated:YES];
+                        if ([_genderString length]>0) {
+                            user.gender = _genderString;
+                        }
+                        [self saveUserLocal];
                     }
                 }];
                 [updateImageRequest setFailedBlock:^{
@@ -636,21 +636,6 @@
                 }];
                 [updateImageRequest startAsynchronous];
             }
-            [requestForm addBodyDataSourceWithJsonByDic:dic Method:PostMethod auth:YES];
-            __weak ASIHTTPRequest *weakrequest = requestForm;
-            [requestForm setCompletionBlock :^{
-                NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
-                NSLog(@"%@",[weakrequest responseString]);
-                NSLog(@"%d",[weakrequest responseStatusCode]);
-                if ([weakrequest responseStatusCode] == 200 && [[dic objectForKey:@"result"] boolValue]) {
-                    [self.navigationController popViewControllerAnimated:YES];
-                    //
-                }
-            }];
-            [requestForm setFailedBlock:^{
-                // [SVProgressHUD showErrorWithStatus:@"network error"];
-            }];
-            [requestForm startAsynchronous];
         }
         
     }else{
@@ -679,7 +664,11 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
+-(void) saveUserLocal{
+    userInfo *user = [userInfo shareClass];
+    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:user.uid,@"_id",user.token,@"token",user.avatar,@"avatar",user.name,@"name",user.gender,@"gender", nil];
+    [MuzzikItem addMessageToLocal:dic];
+}
 /*
 #pragma mark - Navigation
 

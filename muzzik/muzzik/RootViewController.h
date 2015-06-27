@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "BaseNagationViewController.h"
-@interface RootViewController : BaseNagationViewController
+@interface RootViewController : AMScrollingNavbarViewController
 
 @property (strong, nonatomic) UIPageViewController *pageViewController;
 @property (nonatomic,retain) RFRadioView *musicView;

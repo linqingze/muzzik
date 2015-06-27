@@ -89,6 +89,7 @@
     if (![[MuzzikItem getStringForKey:@"Muzzik_Create_Album"] isEqualToString:@"yes"]) {
         [self createAlbum];
     }
+    
     return YES;
 }
 
@@ -102,6 +103,7 @@
             if ([vc isKindOfClass:[RootViewController class]]){
                 RootViewController *root = (RootViewController *)vc;
                 [root getMessage];
+                
             }
     }
         payloadMsg = [[NSString alloc] initWithBytes:data.bytes
@@ -131,6 +133,20 @@
     return YES;
 }
 
+- (void) motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event
+
+{
+    NSString * shakeSwitch = [MuzzikItem getStringForKey:@"User_shakeActionSwitch"];
+    if (![shakeSwitch isEqualToString:@"close"]) {
+        musicPlayer *player = [musicPlayer shareClass];
+        //摇动结束
+        if (event.subtype == UIEventSubtypeMotionShake && [player.MusicArray count]>0) {
+            [player playNext];
+        }
+    }
+    
+    
+}
 //响应远程音乐播放控制消息
 - (void)remoteControlReceivedWithEvent:(UIEvent *)receivedEvent {
     
@@ -208,10 +224,25 @@
     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     
     // [4-EXT]:处理APN
-    NSString *payloadMsg = [userInfo objectForKey:@"payload"];
     
-    NSDictionary *aps = [userInfo objectForKey:@"aps"];
-    NSNumber *contentAvailable = aps == nil ? nil : [aps objectForKeyedSubscript:@"content-available"];
+    if ([[userInfo allKeys] containsObject:@"aps"] && [[[userInfo objectForKey:@"aps"] allKeys] containsObject:@"alert"] && [[userInfo objectForKey:@"aps"] objectForKey:@"alert"] && [[[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] allKeys] containsObject:@"body"]) {
+        
+        NSDictionary *aps = [userInfo objectForKey:@"aps"];
+        
+        NSString *record = [NSString stringWithFormat:@"[APN]%@, %@", [NSDate date], aps];
+        NSLog(@"%@       didReceiveRemoteNotification",record);
+        NSString *Message = [[aps objectForKey:@"alert" ] objectForKey:@"body"];
+        NSArray *array = [Message componentsSeparatedByString:@" "];
+        if ([array count]>1 ) {
+            NSString *alter = [array objectAtIndex:1];
+            if ([alter isEqualToString:@"评论了你"]) {
+                [MuzzikItem showNewNotifyByText:Message];
+            }else if([alter isEqualToString:@"提到了你"]){
+                [MuzzikItem showNewNotifyByText:Message];
+            }
+        }
+    }
+    
     UINavigationController *nac = (UINavigationController *)self.window.rootViewController;
     for (UIViewController *vc in nac.viewControllers) {
         if ([vc isKindOfClass:[RootViewController class]]){
@@ -238,8 +269,8 @@
             
         }
     }
-    NSString *record = [NSString stringWithFormat:@"[APN]%@, %@, [content-available: %@]", [NSDate date], [payloadMsg stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], contentAvailable];
-    NSLog(@"%@       didReceiveRemoteNotification",record);
+
+ 
     
     completionHandler(UIBackgroundFetchResultNewData);
 
@@ -299,11 +330,34 @@
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
+    
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    [[UIApplication sharedApplication] cancelAllLocalNotifications];
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_New_notify_Now]]];
+    [request addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
+    __weak ASIHTTPRequest *weakrequest = request;
+    [request setCompletionBlock :^{
+        NSData *data = [weakrequest responseData];
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+        if (dic && [[dic allKeys] containsObject:@"result"] && [[dic objectForKey:@"result"] integerValue]>0) {
+            UINavigationController *nac = (UINavigationController *)self.window.rootViewController;
+            for (UIViewController *vc in nac.viewControllers) {
+                if ([vc isKindOfClass:[RootViewController class]]) {
+                    RootViewController *rootvc = (RootViewController*)vc;
+                    [rootvc getMessage];
+                    [MuzzikItem showNewNotifyByText:[NSString stringWithFormat:@"您有%d条新消息",[[dic objectForKey:@"result"] intValue]]];
+                    break;
+                }
+            }
+        }
+    }];
+    [request startAsynchronous];
+    
     [self startSdkWith:kAppId appKey:kAppKey appSecret:kAppSecret];
     [Globle shareGloble].isApplicationEnterBackground = NO;
 }
@@ -675,7 +729,7 @@
         //    NSLog(@"%@",weakrequest.originalURL);
         NSData *data = [weakrequestsquare responseData];
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-        if (dic) {
+        if (dic  && [[dic objectForKey:@"muzziks"] count]>0 ) {
             NSMutableArray *squareMuzziks = [NSMutableArray array];
             muzzik *muzzikToy = [muzzik new];
             NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
@@ -735,13 +789,28 @@
         [requestOwn setCompletionBlock :^{
             if ([weakrequestOwn responseStatusCode] == 200) {
                 NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequestOwn responseData] options:NSJSONReadingMutableContainers error:nil];
-                muzzik *tempMuzzik = [muzzik new];
-                if ([[dic objectForKey:@"muzziks"] count]>0) {
-                    [MuzzikItem SetUserInfoWithMuzziks:[tempMuzzik makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]] title:Constant_userInfo_own description:[NSString stringWithFormat:@"我的Muzzik"]];
-                    [MuzzikItem addObjectToLocal:[weakrequestOwn responseData] ForKey:Constant_Data_ownMuzzik];
+                if (dic  && [[dic objectForKey:@"muzziks"] count]>0 ) {
+                    NSMutableArray *ownerMuzziks = [NSMutableArray array];
+                    muzzik *muzzikToy = [muzzik new];
+                    NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+                    for (muzzik *tempmuzzik in array) {
+                        BOOL isContained = NO;
+                        for (muzzik *arrayMuzzik in ownerMuzziks) {
+                            if ([arrayMuzzik.muzzik_id isEqualToString:tempmuzzik.muzzik_id]) {
+                                isContained = YES;
+                                break;
+                            }
+                            
+                        }
+                        if (!isContained) {
+                            [ownerMuzziks addObject:tempmuzzik];
+                        }
+                        isContained = NO;
                     }
-                    
+                    [MuzzikItem SetUserInfoWithMuzziks:ownerMuzziks title:Constant_userInfo_own description:[NSString stringWithFormat:@"我的Muzzik"]];
+                     [MuzzikItem addObjectToLocal:[weakrequestOwn responseData] ForKey:Constant_Data_ownMuzzik];
                 }
+            }
             }];
             [requestOwn setFailedBlock:^{
                 NSLog(@"%@",[weakrequestOwn error]);
@@ -755,9 +824,26 @@
             // NSLog(@"%@",[weakrequest responseString]);
             NSData *data = [weakrequestfollow responseData];
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-            if (dic && [[dic objectForKey:@"muzziks"] count]>0 ) {
+            
+            if (dic  && [[dic objectForKey:@"muzziks"] count]>0 ) {
+                NSMutableArray *feedMuzziks = [NSMutableArray array];
                 muzzik *muzzikToy = [muzzik new];
-                [MuzzikItem SetUserInfoWithMuzziks:[muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]] title:Constant_userInfo_follow description:[NSString stringWithFormat:@"关注列表"]];
+                NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+                for (muzzik *tempmuzzik in array) {
+                    BOOL isContained = NO;
+                    for (muzzik *arrayMuzzik in feedMuzziks) {
+                        if ([arrayMuzzik.muzzik_id isEqualToString:tempmuzzik.muzzik_id]) {
+                            isContained = YES;
+                            break;
+                        }
+                        
+                    }
+                    if (!isContained) {
+                        [feedMuzziks addObject:tempmuzzik];
+                    }
+                    isContained = NO;
+                }
+                 [MuzzikItem SetUserInfoWithMuzziks:feedMuzziks title:Constant_userInfo_follow description:[NSString stringWithFormat:@"关注列表"]];
                 [MuzzikItem addObjectToLocal:data ForKey:Constant_Data_Feed];
             }
         }];
@@ -773,10 +859,28 @@
             // NSLog(@"%@",[weakrequest responseString]);
             NSData *data = [weakrequestmove responseData];
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-            if (dic && [[dic objectForKey:@"muzziks"] count]>0 ) {
+            
+            
+            
+            if (dic  && [[dic objectForKey:@"muzziks"] count]>0 ) {
+                NSMutableArray *movedMuzziks = [NSMutableArray array];
                 muzzik *muzzikToy = [muzzik new];
-                
-                [MuzzikItem SetUserInfoWithMuzziks:[muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]] title:Constant_userInfo_move description:[NSString stringWithFormat:@"喜欢列表"]];
+                NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+                for (muzzik *tempmuzzik in array) {
+                    BOOL isContained = NO;
+                    for (muzzik *arrayMuzzik in movedMuzziks) {
+                        if ([arrayMuzzik.muzzik_id isEqualToString:tempmuzzik.muzzik_id]) {
+                            isContained = YES;
+                            break;
+                        }
+                        
+                    }
+                    if (!isContained) {
+                        [movedMuzziks addObject:tempmuzzik];
+                    }
+                    isContained = NO;
+                }
+                [MuzzikItem SetUserInfoWithMuzziks:movedMuzziks title:Constant_userInfo_move description:[NSString stringWithFormat:@"喜欢列表"]];
                 [MuzzikItem addObjectToLocal:data ForKey:Constant_Data_moved];
             }
         }];

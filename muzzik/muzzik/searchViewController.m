@@ -12,6 +12,7 @@
 #import "SearchForTopic.h"
 @interface searchViewController () {
     UIButton *cancelButton;
+    UIView *lineview;
 }
 
 @end
@@ -29,7 +30,9 @@
     }
     
     [super viewDidLoad];
-    [MuzzikItem addLineOnView:self.navigationController.view heightPoint:64 toLeft:0 toRight:0 withColor:Color_NavigationBar];
+    lineview = [[UIView alloc] initWithFrame:CGRectMake(0, 64, SCREEN_WIDTH, 1)];
+    [lineview setBackgroundColor:Color_NavigationBar];
+    
     [self.view setBackgroundColor:Color_NavigationBar];
     [self initNagationBar:nil leftBtn:0 rightBtn:0];
     _searchBar = [[UISearchBar alloc] initWithFrame: CGRectMake(6, 6, SCREEN_WIDTH-60, 28)];
@@ -82,13 +85,14 @@
             [self.navigationController.view insertSubview:self.searchView belowSubview:musicView];
         }
     }
-    
+    [self.navigationController.view addSubview:lineview];
     [self.searchView setHidden:NO];
 }
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     [self.searchView removeFromSuperview];
     [self.searchView setHidden:YES];
+    [lineview removeFromSuperview];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

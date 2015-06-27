@@ -28,6 +28,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     page =1;
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteMuzzik:) name:String_Muzzik_Delete object:nil];
     [self initNagationBar:@"通知" leftBtn:Constant_backImage rightBtn:0];
     notifyTabelView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
@@ -62,7 +63,7 @@
             notifyArray = [[NotifyObject new] makeMuzziksByNotifyArray:[dic objectForKey:@"notifies"]];
             [notifyTabelView reloadData];
             
-            if (notifyArray.count < [Limit_Constant longLongValue]) {
+            if (notifyArray.count < 1) {
                 [notifyTabelView removeFooter];
             }
         }
@@ -109,10 +110,6 @@
                 [notifyTabelView headerEndRefreshing];
                 notifyArray = [[NotifyObject new] makeMuzziksByNotifyArray:[dic objectForKey:@"notifies"]];
                  [notifyTabelView reloadData];
-                 
-                 if (notifyArray.count < [Limit_Constant longLongValue]) {
-                     [notifyTabelView removeFooter];
-                 }
             });
             
             
@@ -155,7 +152,7 @@
                 [notifyTabelView footerEndRefreshing];
                 [notifyTabelView reloadData];
                 
-                if ([[dic objectForKey:@"notifies"] count]<[Limit_Constant integerValue] ) {
+                if ([[dic objectForKey:@"notifies"] count]<1 ) {
                     [notifyTabelView removeFooter];
                 }
             });

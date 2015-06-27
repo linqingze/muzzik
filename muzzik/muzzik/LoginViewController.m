@@ -31,6 +31,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self initNagationBar:@"" leftBtn:0 rightBtn:0];
      [ASIHTTPRequest clearSession];
     spaceArray = [NSMutableArray arrayWithArray:@[@100.0,@22.0,@73.0,@10.0,@28.0,@13.0,@60.0,@15.0]];
     scaleHeight = SCREEN_HEIGHT;

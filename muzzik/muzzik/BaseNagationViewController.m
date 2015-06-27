@@ -163,7 +163,7 @@
             btnImage = [UIImage imageNamed:@"backImage"];
             break;
         case 2:
-            btnImage = [UIImage imageNamed:@"筛选"];
+            btnImage = [UIImage imageNamed:Image_Next];
             break;
         case 3:
             btnImage = [UIImage imageNamed:@"done"];

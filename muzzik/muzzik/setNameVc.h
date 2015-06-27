@@ -8,7 +8,7 @@
 
 #import "BaseNagationViewController.h"
 
-@interface setNameVc : BaseNagationViewController<UITextFieldDelegate>{
+@interface setNameVc : AMScrollingNavbarViewController<UITextFieldDelegate>{
     UITextField *nameText;
     UILabel * tipsLabel;
     BOOL isOk;

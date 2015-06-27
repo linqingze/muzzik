@@ -10,4 +10,5 @@
 
 @interface SuggestMuzzikVC : AMScrollingNavbarViewController
 @property (nonatomic,retain) UICollectionView *suggestCollectionView;
+@property (nonatomic,copy) NSString *viewTittle;
 @end

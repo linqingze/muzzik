@@ -37,7 +37,7 @@
         [self initNagationBar:@"关于Muzzik" leftBtn:Constant_backImage rightBtn:0];
     }else{
         url = [NSURL URLWithString:URL_protocol];
-        [self initNagationBar:@"muzzik用户协议" leftBtn:Constant_backImage rightBtn:0];
+        [self initNagationBar:@"Muzzik用户协议" leftBtn:Constant_backImage rightBtn:0];
     }
     
     NSURLRequest *request = [NSURLRequest requestWithURL:url];

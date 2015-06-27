@@ -9,5 +9,5 @@
 #import "AMScrollingNavbarViewController.h"
 
 @interface ActivityUserVC : AMScrollingNavbarViewController
-
+@property (nonatomic,copy) NSString *viewTittle;
 @end

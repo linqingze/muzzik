@@ -11,7 +11,7 @@
 @implementation setNameVc
 -(void)viewDidLoad{
     [super viewDidLoad];
-    [self initNagationBar:@"创建Muzzik昵称" leftBtn:Constant_backImage rightBtn:0];
+    [self initNagationBar:@"创建Muzzik昵称" leftBtn:Constant_backImage rightBtn:2];
     UIImageView *checkImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"nameImage"]];
     [checkImage setFrame:CGRectMake(20, 15, 15, 15)];
     [self.view addSubview:checkImage];
@@ -30,10 +30,10 @@
     [tipsLabel setTextColor:[UIColor colorWithHexString:@"f26a3d"]];
     [self.view addSubview:tipsLabel];
 
-    UIButton *nextButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-67, SCREEN_HEIGHT-133, 54, 52)];
-    [nextButton setImage:[UIImage imageNamed:@"cycleNext"] forState:UIControlStateNormal];
-    [self.view addSubview: nextButton];
-    [nextButton addTarget:self action:@selector(summitAction) forControlEvents:UIControlEventTouchUpInside];
+//    UIButton *nextButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-67, SCREEN_HEIGHT-133, 54, 52)];
+//    [nextButton setImage:[UIImage imageNamed:@"cycleNext"] forState:UIControlStateNormal];
+//    [self.view addSubview: nextButton];
+//    [nextButton addTarget:self action:@selector(summitAction) forControlEvents:UIControlEventTouchUpInside];
     UITapGestureRecognizer *tapOnview = [[UITapGestureRecognizer alloc] initWithTarget:self.view action:@selector(endEditing:)];
     [self.view addGestureRecognizer:tapOnview];
 }
@@ -67,7 +67,7 @@
     [textField resignFirstResponder];
     return  YES;
 }
--(void) summitAction{
+-(void) rightBtnAction:(UIButton *)sender{
     if ([nameText.text length] == 0) {
         setHeadImageVC *sethead = [[setHeadImageVC alloc] init];
         [self.navigationController pushViewController:sethead animated:YES];

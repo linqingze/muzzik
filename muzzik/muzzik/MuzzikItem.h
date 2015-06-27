@@ -21,11 +21,12 @@
 +(void) showTipsAtView:(UIView *)view xPoint:(CGFloat)x yPoint:(CGFloat) y text:(NSString *)text;
 +(void) alterInAndOutWithView:(UIView*)view;
 +(void) showWarnOnView:(UIView *)view text:(NSString *)text;
+
++(void) showNewNotifyByText:(NSString *)text;
+
 +(float) heightForLabel: (UIView *)view WithText: (NSString *) strText;
 +(float) heightForTextView: (UITextView *)textView WithText: (NSString *) strText;
 +(float) heightForAttributeString: (UILabel *)Label WithText: (NSMutableAttributedString *) strText;
-
-+(NSMutableAttributedString *) AttributedStringByMoney:(NSString *) orginString;
 
 + (NSString *)base64StringFromText:(NSString *)text withKey:(NSString*)key;   //对文本进行加密
 + (NSString *)textFromBase64String:(NSString *)base64 withKey:(NSString*)key; //对文本进行解密

@@ -68,7 +68,7 @@
         }
     }
     NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"popWords" ofType:@"plist"];
-
+    
     famousArray = [NSArray arrayWithContentsOfFile:plistPath];
     //    [self.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(touchOutside:)]];
     headImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
@@ -91,7 +91,7 @@
     [self.view addSubview:Scroll];
     lyricView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
     [Scroll addSubview:lyricView];
-     [lyricView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideControl)]];
+    [lyricView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideControl)]];
     Scroll.delegate = self;
     Scroll.pagingEnabled = YES;
     [Scroll setShowsHorizontalScrollIndicator:NO];
@@ -116,17 +116,18 @@
     famousTableview.backgroundView  = nil;
     [famousTableview registerClass:[TableViewCell class] forCellReuseIdentifier:@"TableViewCell"];
     famousTableview.separatorStyle = UITableViewCellSeparatorStyleNone;
-    
+     [self loadFont];
     
     
     editView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH*2, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
     [Scroll addSubview:editView];
     //[editView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideControl)]];
-    editTextView = [[RJTextView alloc] initWithFrame:CGRectMake(70, 100, SCREEN_WIDTH-140, 70)
+    editTextView = [[RJTextView alloc] initWithFrame:CGRectMake(70, 70, SCREEN_WIDTH-140, 70)
                                          defaultText:@""
-                                                font:[UIFont systemFontOfSize:15.f]
+                                                font:[UIFont fontWithName:Font_default_share size:15.f]
                                                color:shareColor
                                              minSize:CGSizeMake(100, 60)];
+    editTextView.fontname = Font_default_share;
     editTextView.delegate = self;
     [editTextView.closeButton removeFromSuperview];
     [editView addSubview:editTextView];
@@ -189,18 +190,18 @@
     
     
     [MuzzikItem addLineOnView:self.view heightPoint:SCREEN_WIDTH+30 toLeft:0 toRight:0 withColor:Color_line_1];
-    [self loadFont];
-//    nextButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-67, SCREEN_HEIGHT-113, 54, 52)];
-//    [nextButton setImage:[UIImage imageNamed:Image_Next] forState:UIControlStateNormal];
-//    [self.view addSubview: nextButton];
-//    [nextButton addTarget:self action:@selector(summitAction) forControlEvents:UIControlEventTouchUpInside];
+   
+    //    nextButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-67, SCREEN_HEIGHT-113, 54, 52)];
+    //    [nextButton setImage:[UIImage imageNamed:Image_Next] forState:UIControlStateNormal];
+    //    [self.view addSubview: nextButton];
+    //    [nextButton addTarget:self action:@selector(summitAction) forControlEvents:UIControlEventTouchUpInside];
     
     if ([lyricArray count] == 1) {
         lyricTextView = [[RJTextView alloc] initWithFrame:CGRectMake(0, 0, 1,1)
-                                                     defaultText:@""
-                                                            font:[UIFont systemFontOfSize:15.f]
-                                                           color:shareColor
-                                                         minSize:CGSizeMake(60, 60)];
+                                              defaultText:@""
+                                                     font:[UIFont systemFontOfSize:15.f]
+                                                    color:shareColor
+                                                  minSize:CGSizeMake(60, 60)];
         [self checkNext];
     }
     NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
@@ -211,7 +212,7 @@
     if (!fileExists) {//如果不存在说创建,因为下载时,不会自动创建文件夹
         [fileManager createDirectoryAtPath:folderPath withIntermediateDirectories:YES attributes:nil error:nil];
     }
-
+    
     
     
     for (NSDictionary *dic in fontArray) {
@@ -262,7 +263,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (tableView == fontTableView) {
-    
+        
         NSDictionary *dic = fontArray[indexPath.row];
         
         FontTableCell *cell = [tableView dequeueReusableCellWithIdentifier:@"FontTableCell" forIndexPath:indexPath];
@@ -296,7 +297,7 @@
             cell.label.textColor = [UIColor blackColor];
         }
         UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 10, SCREEN_WIDTH-80, 80)];
-        tempLabel.font = [UIFont fontWithName:Font_Next_Bold size:17];
+        tempLabel.font = [UIFont fontWithName:Font_default_share size:17];
         tempLabel.text = cell.label.text;
         tempLabel.numberOfLines = 0;
         [tempLabel sizeToFit];
@@ -311,17 +312,17 @@
         return 50;
     }else if(tableView == lyricTablenview){
         UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 0, SCREEN_WIDTH-80, 50)];
-        tempLabel.font = [UIFont fontWithName:Font_Next_Bold size:17];
-
+        tempLabel.font = [UIFont fontWithName:Font_default_share size:17];
+        
         tempLabel.numberOfLines = 0;
         if ([lyricArray count]>0) {
             tempLabel.text = [[lyricArray[indexPath.row] allObjects][0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet ]];
         }
-         CGFloat textHeight = [MuzzikItem heightForLabel:tempLabel WithText:tempLabel.text];
+        CGFloat textHeight = [MuzzikItem heightForLabel:tempLabel WithText:tempLabel.text];
         return textHeight+25;
     }else{
         UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 0, SCREEN_WIDTH-80, 50)];
-        tempLabel.font = [UIFont fontWithName:Font_Next_Bold size:17];
+        tempLabel.font = [UIFont fontWithName:Font_default_share size:17];
         tempLabel.numberOfLines = 0;
         if ([famousArray count]>0) {
             tempLabel.text = [famousArray[indexPath.row] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet ]];
@@ -349,12 +350,12 @@
             if ([lyricArray count]>1) {
                 TableViewCell *cell = (TableViewCell*)[tableView cellForRowAtIndexPath:indexPath];
                 CGPoint point = [cell.superview convertPoint:cell.frame.origin toView:Scroll];
-                RJTextView *textView = [[RJTextView alloc] initWithFrame:CGRectMake(cell.label.frame.origin.x-25, point.y-9, cell.label.frame.size.width+50, cell.label.frame.size.height+46)
+                RJTextView *textView = [[RJTextView alloc] initWithFrame:CGRectMake(cell.label.frame.origin.x-25, point.y-9, cell.label.frame.size.width+50, cell.label.frame.size.height*3.5+0.5)
                                                              defaultText:cell.label.text
-                                                                    font:[UIFont fontWithName:Font_Next_Bold size:17]
+                                                                    font:[UIFont fontWithName:Font_default_share size:17]
                                                                    color:shareColor
-                                                                 minSize:CGSizeMake(cell.label.frame.size.width+18, cell.label.frame.size.height+18)];
-                
+                                                                 minSize:CGSizeMake(cell.label.frame.size.width+37, cell.label.frame.size.height+37)];
+                textView.fontname = Font_default_share;
                 [textView.textView setEditable:NO];
                 textView.delegate = self;
                 [lyricView addSubview:textView];
@@ -366,12 +367,12 @@
         }else{
             TableViewCell *cell = (TableViewCell*)[tableView cellForRowAtIndexPath:indexPath];
             CGPoint point = [cell.superview convertPoint:cell.frame.origin toView:Scroll];
-            RJTextView *textView = [[RJTextView alloc] initWithFrame:CGRectMake(cell.label.frame.origin.x-25, point.y-9, cell.label.frame.size.width+50, cell.label.frame.size.height+46)
+            RJTextView *textView = [[RJTextView alloc] initWithFrame:CGRectMake(cell.label.frame.origin.x-25, point.y-9, cell.label.frame.size.width+50, cell.label.frame.size.height*3.5+0.5)
                                                          defaultText:cell.label.text
-                                                                font:[UIFont fontWithName:Font_Next_Bold size:17]
+                                                                font:[UIFont fontWithName:Font_default_share size:17]
                                                                color:shareColor
                                                              minSize:CGSizeMake(cell.label.frame.size.width+37, cell.label.frame.size.height+37)];
-            
+            textView.fontname = Font_default_share;
             [textView.textView setEditable:NO];
             textView.delegate = self;
             [famousView addSubview:textView];
@@ -508,7 +509,7 @@
                 [cover addSubview:storyView];
                 UILabel *dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 3, 60, 10)];
                 dateLabel.textColor = Color_Text_2;
-                dateLabel.font = [UIFont systemFontOfSize:6];
+                dateLabel.font = [UIFont fontWithName:Font_default_share size:6];
                 NSDate *  senddate=[NSDate date];
                 
                 NSDateFormatter  *dateformatter=[[NSDateFormatter alloc] init];
@@ -522,12 +523,12 @@
                 [playerLine setBackgroundColor:Color_Active_Button_1];
                 [storyView addSubview:playerLine];
                 UILabel *musicName = [[UILabel alloc] initWithFrame:CGRectMake(0, cover.frame.size.height-30, 50, 10)];
-                [musicName setFont:[UIFont fontWithName:Font_Next_Bold size:8]];
+                [musicName setFont:[UIFont fontWithName:Font_default_share size:8]];
                 musicName.text = mobject.music.name;
                 [musicName setTextColor:Color_Active_Button_1];
                 [storyView addSubview:musicName];
                 UILabel *musicArtist = [[UILabel alloc] initWithFrame:CGRectMake(0, cover.frame.size.height-16, 50, 10)];
-                [musicArtist setFont:[UIFont fontWithName:Font_Next_Bold size:6]];
+                [musicArtist setFont:[UIFont fontWithName:Font_default_share size:6]];
                 [musicArtist setTextColor:Color_Active_Button_1];
                 musicArtist.text = mobject.music.artist;
                 [storyView addSubview:musicArtist];
@@ -535,21 +536,32 @@
                 [playImage setFrame:CGRectMake(54, cover.frame.size.height-22, 6, 7)];
                 [storyView addSubview:playImage];
                 UILabel *storyLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 37, 60, cover.frame.size.height-80)];
-                storyLabel.font = [UIFont systemFontOfSize:8];
-                storyLabel.textColor = Color_Text_2;
+                NSDictionary *attributes;
+                NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
+                paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
+                paragraphStyle.lineSpacing = 2;
+                attributes = @{NSFontAttributeName:[UIFont fontWithName:Font_default_share size:8], NSParagraphStyleAttributeName:paragraphStyle,NSForegroundColorAttributeName:Color_Text_2};
+                NSAttributedString * attr= [[NSAttributedString alloc] initWithString:mobject.message attributes:attributes];
+                storyLabel.attributedText = attr;
                 storyLabel.numberOfLines = 0;
-                storyLabel.text = mobject.message;
                 [storyLabel sizeToFit];
-                if (storyLabel.frame.size.height>cover.frame.size.height-80) {
-                    [storyLabel setFrame:CGRectMake(0, 37, 60, cover.frame.size.height-80)];
+                UILabel *tempNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 60, 100)];
+                tempNameLabel.font = [UIFont fontWithName:Font_default_share size:11];
+                tempNameLabel.text = [userInfo shareClass].name;
+                tempNameLabel.numberOfLines = 0;
+                [tempNameLabel sizeToFit];
+                
+                if (storyLabel.frame.size.height>cover.frame.size.height-100) {
+                    [storyLabel setFrame:CGRectMake(0, 59, 60, cover.frame.size.height-100)];
                 }else{
-                    [storyLabel setFrame:CGRectMake(0, cover.frame.size.height-storyLabel.frame.size.height-45, 60, storyLabel.frame.size.height)];
+                    [storyLabel setFrame:CGRectMake(0, cover.frame.size.height-storyLabel.frame.size.height-46, 60, storyLabel.frame.size.height+5)];
                 }
                 [storyView addSubview:storyLabel];
-                UILabel *userName = [[UILabel alloc] initWithFrame:CGRectMake(0, storyLabel.frame.origin.y-19, 60, 15)];
+                UILabel *userName = [[UILabel alloc] initWithFrame:CGRectMake(0, storyLabel.frame.origin.y-tempNameLabel.frame.size.height-7, 60, tempNameLabel.frame.size.height+3)];
                 userName.text = [userInfo shareClass].name;
                 userName.textColor = Color_Text_1;
-                userName.font = [UIFont boldSystemFontOfSize:12];
+                userName.font = [UIFont fontWithName:Font_default_share size:11];
+                userName.numberOfLines = 0;
                 [storyView addSubview:userName];
                 [lyricView addSubview:temp];
                 temp.layer.cornerRadius = 2;
@@ -649,14 +661,24 @@
                                         [weChatShareView addSubview:usershareHeadThumb];
                                         
                                         [CDcover setImage:[UIImage imageNamed:Image_cover_CD]];
+                                         [MuzzikLogoImage setFrame:CGRectMake(10, SCREEN_WIDTH-MuzzikLogoImage.frame.size.height-10,MuzzikLogoImage.frame.size.width , MuzzikLogoImage.frame.size.height)];
+                                        UIImageView *MuzzikLogo = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"sharewhiteMuzzik"]];
                                         UIImageView *picImage = [[UIImageView alloc] initWithFrame:CGRectMake(10, 12, 724, 724)];
-                                        if (self.image) {
-                                            [picImage setImage:self.image];
+                                        //                                        if (self.image) {
+                                        //                                            [picImage setImage:self.image];
+                                        //                                        }else{
+                                        //                                            [picImage setImage:[MuzzikItem createImageWithColor:[UIColor whiteColor]]];
+                                        //                                            picImage.contentMode = UIViewContentModeScaleAspectFill;
+                                        //                                        }
+                                        [MuzzikLogo setFrame:CGRectMake(20, 704-MuzzikLogo.frame.size.height,MuzzikLogo.frame.size.width , MuzzikLogo.frame.size.height)];
+                                        if (isShow && self.image) {
+                                            [picImage setImage:headImage.image];
+                                            [MuzzikLogo setImage:[UIImage imageNamed:@"sharewhiteMuzzik"]];
                                         }else{
-                                            [picImage setImage:[MuzzikItem createImageWithColor:[UIColor whiteColor]]];
-                                            picImage.contentMode = UIViewContentModeScaleAspectFill;
+                                            [picImage setImage:[UIImage imageNamed:@"TextureShare"]];
+                                            [MuzzikLogo setImage:[UIImage imageNamed:@"shareblackMuzzik"]];
                                         }
-                                        [picImage setImage:self.image];
+                                        [picImage addSubview:MuzzikLogo];
                                         picImage.contentMode = UIViewContentModeScaleAspectFill;
                                         picImage.layer.cornerRadius = 5;
                                         picImage.clipsToBounds = YES;
@@ -665,7 +687,7 @@
                                         [weChatShareView addSubview:storyView];
                                         UILabel *dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 12, 240, 40)];
                                         dateLabel.textColor = Color_Text_1;
-                                        dateLabel.font = [UIFont systemFontOfSize:24];
+                                        dateLabel.font = [UIFont fontWithName:Font_default_share size:24];
                                         NSDate *  senddate=[NSDate date];
                                         
                                         NSDateFormatter  *dateformatter=[[NSDateFormatter alloc] init];
@@ -679,12 +701,12 @@
                                         [playerLine setBackgroundColor:Color_Active_Button_1];
                                         [storyView addSubview:playerLine];
                                         UILabel *musicName = [[UILabel alloc] initWithFrame:CGRectMake(0, CDcover.frame.size.height-120, 200, 40)];
-                                        [musicName setFont:[UIFont fontWithName:Font_Next_Bold size:32]];
+                                        [musicName setFont:[UIFont fontWithName:Font_default_share size:32]];
                                         musicName.text = mobject.music.name;
                                         [musicName setTextColor:Color_Active_Button_1];
                                         [storyView addSubview:musicName];
-                                        UILabel *musicArtist = [[UILabel alloc] initWithFrame:CGRectMake(0, CDcover.frame.size.height-64, 200, 40)];
-                                        [musicArtist setFont:[UIFont fontWithName:Font_Next_Bold size:24]];
+                                        UILabel *musicArtist = [[UILabel alloc] initWithFrame:CGRectMake(0, CDcover.frame.size.height-72, 200, 40)];
+                                        [musicArtist setFont:[UIFont fontWithName:Font_default_share size:24]];
                                         [musicArtist setTextColor:Color_Active_Button_1];
                                         musicArtist.text = mobject.music.artist;
                                         [storyView addSubview:musicArtist];
@@ -692,29 +714,43 @@
                                         [playImage setFrame:CGRectMake(216, CDcover.frame.size.height-88, 24, 28)];
                                         [storyView addSubview:playImage];
                                         UILabel *storyLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 148, 240, CDcover.frame.size.height-320)];
-                                        storyLabel.font = [UIFont systemFontOfSize:32];
-                                        storyLabel.textColor = Color_Text_2;
+                                        NSDictionary *attributes;
+                                        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
+                                        paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
+                                        paragraphStyle.lineSpacing = 7;
+                                        attributes = @{NSFontAttributeName:[UIFont fontWithName:Font_default_share size:31], NSParagraphStyleAttributeName:paragraphStyle,NSForegroundColorAttributeName:Color_Text_2};
+                                        NSAttributedString * attr= [[NSAttributedString alloc] initWithString:mobject.message attributes:attributes];
+                                        storyLabel.attributedText = attr;
                                         storyLabel.numberOfLines = 0;
-                                        storyLabel.text = mobject.message;
                                         [storyLabel sizeToFit];
-                                        if (storyLabel.frame.size.height>CDcover.frame.size.height-320) {
-                                            [storyLabel setFrame:CGRectMake(0, 148, 240, CDcover.frame.size.height-320)];
+                                        
+                                        UILabel *tempNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 240, 300)];
+                                        tempNameLabel.font = [UIFont fontWithName:Font_default_share size:44];
+                                        tempNameLabel.text = [userInfo shareClass].name;
+                                        tempNameLabel.numberOfLines = 0;
+                                        [tempNameLabel sizeToFit];
+                                        
+                                        
+                                        if (storyLabel.frame.size.height>CDcover.frame.size.height-400) {
+                                            [storyLabel setFrame:CGRectMake(0, 236, 240, CDcover.frame.size.height-400)];
                                         }else{
-                                            [storyLabel setFrame:CGRectMake(0, CDcover.frame.size.height-storyLabel.frame.size.height-160, 240, storyLabel.frame.size.height)];
+                                            [storyLabel setFrame:CGRectMake(0, CDcover.frame.size.height-storyLabel.frame.size.height-184, 240, storyLabel.frame.size.height+20)];
                                         }
                                         [storyView addSubview:storyLabel];
-                                        UILabel *userName = [[UILabel alloc] initWithFrame:CGRectMake(0, storyLabel.frame.origin.y-76, 240, 60)];
+                                        UILabel *userName = [[UILabel alloc] initWithFrame:CGRectMake(0, storyLabel.frame.origin.y-tempNameLabel.frame.size.height-28, 240, tempNameLabel.frame.size.height+12)];
+
                                         userName.text = [userInfo shareClass].name;
                                         userName.textColor = Color_Text_1;
-                                        userName.font = [UIFont boldSystemFontOfSize:48];
+                                        userName.numberOfLines = 0;
+                                        userName.font = [UIFont fontWithName:Font_default_share size:44];
                                         [storyView addSubview:userName];
-
                                         CGFloat scale = 724.0/SCREEN_WIDTH;
                                         [shareLabel setFrame:CGRectMake(shareLabel.frame.origin.x * scale, shareLabel.frame.origin.y * scale, shareLabel.frame.size.width * scale, shareLabel.frame.size.height *scale)];
                                         [shareLabel.textView setFrame:CGRectMake(shareLabel.textView.frame.origin.x * scale, shareLabel.textView.frame.origin.y * scale, shareLabel.textView.frame.size.width * scale, shareLabel.textView.frame.size.height *scale)];
                                         //                                    NSLog(@"%f",shareLabel.fontSize);
                                         shareLabel.textView.font = [UIFont fontWithName:shareLabel.fontname size:shareLabel.fontsize * scale];
                                         [picImage addSubview:shareLabel];
+                                        [picImage setBackgroundColor:[UIColor whiteColor]];
                                         AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
                                         
                                         UIGraphicsBeginImageContextWithOptions(weChatShareView.bounds.size, NO, 1.0f);
@@ -843,7 +879,7 @@
             [requestForm startAsynchronous];
         }
         
-
+        
     }else{
         
     }
@@ -872,6 +908,7 @@
         shareLabel.textView.textColor = [UIColor blackColor];
     }
     [lyricTablenview reloadData];
+    [famousTableview reloadData];
 }
 -(void)closeLabel:(RJTextView *)rjView{
     if (rjView == lyricTextView) {
@@ -887,7 +924,7 @@
 }
 
 -(void) swithImage{
-
+    
     
     if (isShow) {
         isShow = NO;
@@ -910,7 +947,12 @@
     TWPhotoPickerController *photoPicker = [[TWPhotoPickerController alloc] init];
     photoPicker.cropBlock = ^(UIImage *image) {
         self.image = image;
+        isShow = YES;
+        [MuzzikLogoImage setImage:[UIImage imageNamed:@"muzzikwhite"]];
         [headImage setImage:image];
+        shareColor = [UIColor whiteColor];
+        [shareLabel.textView setTextColor:shareColor];
+        [lyricTablenview reloadData];
         [LibraryButton setImage:[UIImage imageNamed:Image_addedpicImage] forState:UIControlStateNormal];
     };
     [self presentViewController:photoPicker animated:YES completion:NULL];
@@ -1007,13 +1049,15 @@
     NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
     NSArray *fontDic = [userDefault arrayForKey:@"Font_Array_local_Address"];
     if ([fontDic count] == 0) {
-        fontDic = @[[NSDictionary dictionaryWithObjectsAndKeys:@"http://7d9m5z.com1.z0.glb.clouddn.com/HanYiYanKaiTi.ttf",@"urladdress",[NSNumber numberWithBool:NO],@"islocal",@"HYx4gf",@"fontname", nil],[NSDictionary dictionaryWithObjectsAndKeys:@"http://7d9m5z.com1.z0.glb.clouddn.com/HuaKangWaWaTi.ttf",@"urladdress",[NSNumber numberWithBool:NO],@"islocal",@"DFPWaWaW5",@"fontname", nil], [NSDictionary dictionaryWithObjectsAndKeys:@"http://7d9m5z.com1.z0.glb.clouddn.com/FangZhengLiBianFanTi.ttf",@"urladdress",[NSNumber numberWithBool:NO],@"islocal",@"FZLBFW--GB1-0",@"fontname", nil],[NSDictionary dictionaryWithObjectsAndKeys:@"http://7d9m5z.com1.z0.glb.clouddn.com/SongTiHeiTi.ttf",@"urladdress",[NSNumber numberWithBool:NO],@"islocal",@"STSongti-SC-Black",@"fontname", nil]];
+        fontDic = @[[NSDictionary dictionaryWithObjectsAndKeys:@"http://7d9m5z.com1.z0.glb.clouddn.com/SongTiHeiTi.ttf",@"urladdress",[NSNumber numberWithBool:NO],@"islocal",@"STSongti-SC-Black",@"fontname", nil],[NSDictionary dictionaryWithObjectsAndKeys:@"http://7d9m5z.com1.z0.glb.clouddn.com/HanYiYanKaiTi.ttf",@"urladdress",[NSNumber numberWithBool:NO],@"islocal",@"HYx4gf",@"fontname", nil],[NSDictionary dictionaryWithObjectsAndKeys:@"http://7d9m5z.com1.z0.glb.clouddn.com/HuaKangWaWaTi.ttf",@"urladdress",[NSNumber numberWithBool:NO],@"islocal",@"DFPWaWaW5",@"fontname", nil], [NSDictionary dictionaryWithObjectsAndKeys:@"http://7d9m5z.com1.z0.glb.clouddn.com/FangZhengLiBianFanTi.ttf",@"urladdress",[NSNumber numberWithBool:NO],@"islocal",@"FZLBFW--GB1-0",@"fontname", nil]];
         [userDefault setObject:fontDic forKey:@"Font_Array_local_Address"];
         [userDefault synchronize];
     }
     //STHeitiSC-Medium
     [fontArray addObjectsFromArray:fontDic];
-    
+    NSString *fontPathch = [[NSBundle mainBundle] pathForResource:@"chineseF" ofType:@"ttf"];
+    NSDictionary *dicCh = [NSDictionary dictionaryWithObjectsAndKeys:[MuzzikItem customFontWithPath:fontPathch],@"fontname",[NSNumber numberWithBool:YES],@"islocal", nil];
+    [fontArray addObject:dicCh];
     
 }
 
@@ -1036,7 +1080,7 @@
         if (!fileExists) {//如果不存在说创建,因为下载时,不会自动创建文件夹
             [fileManager createDirectoryAtPath:folderPath withIntermediateDirectories:YES attributes:nil error:nil];
         }
-    
+        
         
         NSArray  *arr = [fileManager subpathsAtPath:folderPath];
         NSLog(@"%@",arr);
@@ -1071,10 +1115,10 @@
         [_asiRequest setFailedBlock:^{
             NSLog(@"%@",[weakrequest error]);
         }];
-//        [_asiRequest setDownloadSizeIncrementedBlock:^(long long size) {
-//            NSLog(@"%lld",size);
-//            NSLog(@"%@          %@",[weakrequest responseHeaders],[weakrequest responseData]);
-//        }];
+        //        [_asiRequest setDownloadSizeIncrementedBlock:^(long long size) {
+        //            NSLog(@"%lld",size);
+        //            NSLog(@"%@          %@",[weakrequest responseHeaders],[weakrequest responseData]);
+        //        }];
         [_asiRequest startAsynchronous];
     }
     

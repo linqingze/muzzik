@@ -31,7 +31,7 @@
     [self.Artist setFont:[UIFont fontWithName:Font_Next_DemiBold size:12]];
     [self.Artist setTextColor:[UIColor colorWithHexString:@"999999"]];
     [self addSubview:self.Artist];
-    self.playButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-53, 0, 40, 60)];
+    self.playButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-48, 0, 40, 60)];
     [self.playButton setImage:[UIImage imageNamed:@"playImage_new"] forState:UIControlStateNormal];
     [self.playButton addTarget:self action:@selector(playAction) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.playButton];

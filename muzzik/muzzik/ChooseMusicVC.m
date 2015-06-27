@@ -13,6 +13,7 @@
     UIView *searchView;
     UISearchBar *searchBar;
     UIButton *cancelButton;
+    UIView *lineview;
 }
 
 @end
@@ -30,7 +31,9 @@
     }
     
     [super viewDidLoad];
-    
+    lineview = [[UIView alloc] initWithFrame:CGRectMake(0, 64, SCREEN_WIDTH, 1)];
+    [lineview setBackgroundColor:Color_NavigationBar];
+    [self.navigationController.view addSubview:lineview];
     //[MuzzikItem addLineOnView:self.navigationController.view heightPoint:64 toLeft:0 toRight:0 withColor:Color_NavigationBar];
     [self.view setBackgroundColor:Color_NavigationBar];
     [self initNagationBar:@"选歌" leftBtn:Constant_backImage rightBtn:Constant_searchImage];
@@ -89,6 +92,7 @@
     [searchBar resignFirstResponder];
     [searchBar setFrame:CGRectMake(SCREEN_WIDTH-52, 6, 40, 28)];
     [searchView removeFromSuperview];
+    [lineview removeFromSuperview];
 }
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];

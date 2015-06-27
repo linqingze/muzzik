@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import "BaseNagationViewController.h"
-@interface registerVC : BaseNagationViewController<UITextFieldDelegate>
+@interface registerVC : AMScrollingNavbarViewController<UITextFieldDelegate>
 
 @end

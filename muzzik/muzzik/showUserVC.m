@@ -16,6 +16,7 @@
     NSString *URLString;
     int page;
     int updated;
+    
 }
 
 @end
@@ -44,6 +45,8 @@
     [_tableView registerClass:[searchUserCell class] forCellReuseIdentifier:@"searchUserCell"];
     [self loadDataMessage];
     [_tableView addFooterWithTarget:self action:@selector(refreshFooter)];
+
+    
     // Do any additional setup after loading the view.
 }
 -(void)loadDataMessage{
@@ -57,7 +60,7 @@
             page++;
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
             userArray = [[MuzzikUser new] makeMuzziksByUserArray:[dic objectForKey:@"users"]];
-            if ([[dic objectForKey:@"users"] count]<[Limit_Constant integerValue]) {
+            if ([[dic objectForKey:@"users"] count]<1) {
                 [_tableView removeFooter];
             }
             [_tableView reloadData];
@@ -98,7 +101,7 @@
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
             [userArray addObjectsFromArray:[[MuzzikUser new] makeMuzziksByUserArray:[dic objectForKey:@"users"]]];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                if ([[dic objectForKey:@"users"] count]<[Limit_Constant integerValue]) {
+                if ([[dic objectForKey:@"users"] count]<1) {
                     [_tableView removeFooter];
                 }
                 [_tableView footerEndRefreshing];

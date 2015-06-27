@@ -24,7 +24,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self initNagationBar:@"填写登录信息" leftBtn:Constant_backImage rightBtn:0];
+    [self initNagationBar:@"填写登录信息" leftBtn:Constant_backImage rightBtn:2];
     UIImageView *phoneImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"phonenumImage"]];
     [phoneImage setFrame:CGRectMake(20, 15, 9, 15)];
     [self.view addSubview:phoneImage];
@@ -62,7 +62,7 @@
     [visibleButton setHidden:YES];
     UIFont *font = [UIFont boldSystemFontOfSize:12];
     [MuzzikItem addLineOnView:self.view heightPoint:90 toLeft:13 toRight:13 withColor:Color_underLine];
-    UILabel * protocolLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH-30, 20)];
+    UILabel * protocolLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH-30, 25)];
     NSMutableAttributedString *text = [[NSMutableAttributedString alloc] init];
     NSString *itemStr = @"下一步即表示同意";
     NSAttributedString *item = [self formatAttrItem:itemStr color:[UIColor colorWithHexString:@"a8acbb"] font:font];
@@ -76,10 +76,10 @@
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickProtol)];
     [tapview addGestureRecognizer:tap];
     [self.view addSubview:tapview];
-    UIButton *nextButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-67, SCREEN_HEIGHT-133, 54, 52)];
-    [nextButton setImage:[UIImage imageNamed:@"cycleNext"] forState:UIControlStateNormal];
-    [self.view addSubview: nextButton];
-    [nextButton addTarget:self action:@selector(checkAction) forControlEvents:UIControlEventTouchUpInside];
+//    UIButton *nextButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-67, SCREEN_HEIGHT-133, 54, 52)];
+//    [nextButton setImage:[UIImage imageNamed:@"cycleNext"] forState:UIControlStateNormal];
+//    [self.view addSubview: nextButton];
+//    [nextButton addTarget:self action:@selector(checkAction) forControlEvents:UIControlEventTouchUpInside];
     UITapGestureRecognizer *tapOnview = [[UITapGestureRecognizer alloc] initWithTarget:self.view action:@selector(endEditing:)];
     [self.view addGestureRecognizer:tapOnview];
     // Do any additional setup after loading the view.
@@ -118,7 +118,7 @@
     TeachViewController *teach = [[TeachViewController alloc] initWithNibName:@"TeachViewController" bundle:nil];
     [self.navigationController pushViewController:teach animated:YES];
 }
--(void)checkAction{
+-(void)rightBtnAction:(UIButton *)sender{
 //    checkVerifyCode *checkVc = [[checkVerifyCode alloc] init];
 //    checkVc.phoneNumber = phoneText.text;
 //    checkVc.passWord = passwordText.text;

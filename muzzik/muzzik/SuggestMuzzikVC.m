@@ -53,7 +53,7 @@
     [pagecontrol setCurrentPage:0];
     
     [self.view addSubview:pagecontrol];
-    [self initNagationBar:@"选择风格" leftBtn:Constant_backImage rightBtn:0];
+    [self initNagationBar:_viewTittle leftBtn:Constant_backImage rightBtn:0];
     UICollectionViewFlowLayout  *flowLayout=[[ UICollectionViewFlowLayout alloc ] init];
     [flowLayout setScrollDirection : UICollectionViewScrollDirectionHorizontal];
     flowLayout.minimumInteritemSpacing = 0;

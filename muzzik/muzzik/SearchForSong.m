@@ -21,6 +21,7 @@
     UIView *searchView;
     UILabel *searchLabel;
     int page;
+    UIImageView *blankTipsImage;
 }
 @property(nonatomic,retain)NSMutableArray *searchArray;
 @end
@@ -38,26 +39,41 @@
     
     myTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     searchView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 50)];
-    searchLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 13, SCREEN_WIDTH-60, 20)];
+    searchLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 15, SCREEN_WIDTH-60, 20)];
     [searchLabel setFont:[UIFont systemFontOfSize:14]];
     [searchLabel setTextColor:Color_Active_Button_1];
-    UIImageView *searchImage = [[UIImageView alloc] initWithFrame:CGRectMake(20, 15, 15, 15)];
+    UIImageView *searchImage = [[UIImageView alloc] initWithFrame:CGRectMake(20, 19, 12, 12)];
     [searchImage setImage:[UIImage imageNamed:Image_search_Oranger]];
     [searchView addSubview:searchImage];
     [searchView addSubview:searchLabel];
     [searchView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(searchSong)]];
     [MuzzikItem addLineOnView:searchView heightPoint:50 toLeft:13 toRight:13 withColor:Color_line_1];
     [myTableView registerClass:[MusicAndArtistCell class] forCellReuseIdentifier:@"MusicAndArtistCell"];
-    
+    blankTipsImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:Image_musicTips]];
+    [blankTipsImage setFrame:CGRectMake((SCREEN_WIDTH - blankTipsImage.frame.size.width)/2, 30, blankTipsImage.frame.size.width, blankTipsImage.frame.size.height)];
+    [self.view addSubview:blankTipsImage];
     
 }
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     self.keeper.activityVC = self;
     [self.keeper followScrollView:myTableView];
+    if (![self.keeper.searchBar.text isEqualToString:_searchText]) {
+        [self.searchArray removeAllObjects];
+        [myTableView reloadData];
+    }
     if ([self.keeper.searchBar.text length]>0 &&![_searchText isEqualToString:self.keeper.searchBar.text] && [self.searchArray count] == 0) {
         searchLabel.text = [NSString stringWithFormat:@"搜索相关音乐:%@",self.keeper.searchBar.text];
         [self.view addSubview:searchView];
+    }else{
+        [searchView removeFromSuperview];
+    }
+    if ([self.keeper.searchBar.text length]>0) {
+        [blankTipsImage setHidden:YES];
+    }else {
+        [self.searchArray removeAllObjects];
+        [myTableView reloadData];
+        [blankTipsImage setHidden:NO];
     }
 
 }
@@ -81,7 +97,7 @@
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                     [myTableView reloadData];
                     [myTableView footerEndRefreshing];
-                    if ([[dic objectForKey:@"music"] count]<[Limit_Constant integerValue] ) {
+                    if ([[dic objectForKey:@"music"] count]<1 ) {
                         [myTableView removeFooter];
                     }else{
                         page ++;
@@ -118,8 +134,42 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     MusicAndArtistCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MusicAndArtistCell" forIndexPath:indexPath];
     muzzik *localMuzzik = self.searchArray[indexPath.row];
-    cell.songName.text = localMuzzik.music.name;
-    cell.Artist.text = localMuzzik.music.artist;
+    NSRange rangsongName = [[localMuzzik.music.name uppercaseString] rangeOfString:[_searchText uppercaseString]];
+    if (rangsongName.location != NSNotFound) {
+        NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:localMuzzik.music.name];
+        [text addAttribute:NSForegroundColorAttributeName value:Color_Active_Button_1 range:rangsongName];
+        if (rangsongName.location>0) {
+            [text addAttribute:NSForegroundColorAttributeName value:Color_Text_2 range:NSMakeRange(0, rangsongName.location)];
+        }
+        if ((rangsongName.location+rangsongName.length)<[localMuzzik.music.name length]) {
+            [text addAttribute:NSForegroundColorAttributeName value:Color_Text_2 range:NSMakeRange(rangsongName.location+rangsongName.length ,[localMuzzik.music.name length]- rangsongName.location - rangsongName.length)];
+        }
+        [text addAttribute:NSFontAttributeName value:[UIFont fontWithName:Font_Next_Bold size:14] range:NSMakeRange(0, [localMuzzik.music.name length])];
+    
+        cell.songName.attributedText = text;
+
+    }else{
+        cell.songName.text = localMuzzik.music.name;
+    }
+    
+    NSRange rangArtist = [[localMuzzik.music.artist uppercaseString] rangeOfString:[_searchText uppercaseString]];
+    if (rangArtist.location != NSNotFound) {
+        NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:localMuzzik.music.artist];
+        [text addAttribute:NSForegroundColorAttributeName value:Color_Active_Button_1 range:rangArtist];
+        if (rangArtist.location>0) {
+            [text addAttribute:NSForegroundColorAttributeName value:Color_Text_3 range:NSMakeRange(0, rangArtist.location)];
+        }
+        if ((rangArtist.location+rangArtist.length)<[localMuzzik.music.artist length]) {
+            [text addAttribute:NSForegroundColorAttributeName value:Color_Text_3 range:NSMakeRange(rangArtist.location+rangArtist.length ,[localMuzzik.music.artist length]- rangArtist.location - rangArtist.length)];
+        }
+        [text addAttribute:NSFontAttributeName value:[UIFont fontWithName:Font_Next_DemiBold size:12] range:NSMakeRange(0, [localMuzzik.music.artist length])];
+        
+        cell.Artist.attributedText = text;
+        
+    }else{
+        cell.Artist.text = localMuzzik.music.artist;
+    }
+
     cell.index = indexPath.row;
     cell.songVC = self;
     Globle *glob = [Globle shareGloble];
@@ -139,12 +189,15 @@
     [self.keeper.navigationController pushViewController:songDetail animated:YES];
 }
 -(void)updateDataSource:(NSString *)searchText{
+    
     [self.searchArray removeAllObjects];
     [myTableView reloadData];
     if ([searchText length]>0) {
+        [blankTipsImage setHidden:YES];
         searchLabel.text = [NSString stringWithFormat:@"搜索相关音乐:%@",self.keeper.searchBar.text];
         [self.view addSubview:searchView];
     }else {
+        [blankTipsImage setHidden:NO];
         [searchView removeFromSuperview];
     }
 }
@@ -161,10 +214,10 @@
             NSLog(@"%@",[weakrequest responseString]);
             NSLog(@"%d",[weakrequest responseStatusCode]);
             
-            if ([weakrequest responseStatusCode] == 200) {
+            if ([weakrequest responseStatusCode] == 200 && [_searchText isEqualToString:self.keeper.searchBar.text] && [_searchText length]>0) {
                 NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
                 self.searchArray = [[muzzik new] makeMuzziksByMusicArray:[dic objectForKey:@"music"]];
-                if ([[dic objectForKey:@"music"] count] == [Limit_Constant integerValue]) {
+                if ([[dic objectForKey:@"music"] count] >0) {
                     [myTableView addFooterWithTarget:self action:@selector(refreshFooter)];
                     page = 2;
                 }
@@ -196,11 +249,11 @@
             NSLog(@"%@",[weakrequest responseString]);
             NSLog(@"%d",[weakrequest responseStatusCode]);
             
-            if ([weakrequest responseStatusCode] == 200) {
+            if ([weakrequest responseStatusCode] == 200 && [_searchText isEqualToString:self.keeper.searchBar.text] && [_searchText length]>0) {
             
                 NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
                 self.searchArray = [[muzzik new] makeMuzziksByMusicArray:[dic objectForKey:@"music"]];
-                if ([[dic objectForKey:@"music"] count] == [Limit_Constant integerValue]) {
+                if ([[dic objectForKey:@"music"] count] >0) {
                     page = 2;
                     [myTableView addFooterWithTarget:self action:@selector(refreshFooter)];
                 }

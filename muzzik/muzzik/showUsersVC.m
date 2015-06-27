@@ -62,7 +62,7 @@
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
             userArray = [[MuzzikUser new] makeMuzziksByUserArray:[dic objectForKey:@"users"]];
             [userTableview reloadData];
-            if ([userArray count]<[Limit_Constant integerValue]) {
+            if ([userArray count]<1) {
                 [userTableview removeFooter];
             }
         }
@@ -119,7 +119,7 @@
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [userTableview reloadData];
                 [userTableview footerEndRefreshing];
-                if ([[dic objectForKey:@"users"] count]<[Limit_Constant integerValue] ) {
+                if ([[dic objectForKey:@"users"] count]<1 ) {
                     [userTableview removeFooter];
                 }
             });

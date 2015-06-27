@@ -9,6 +9,7 @@
 #import "MuzzikItem.h"
 #import "MuzzikObject.h"
 #import <CoreText/CTFontManager.h>
+#import "NotifyButton.h"
 @implementation MuzzikItem
 static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 +(MuzzikItem *) shareClass{
@@ -104,20 +105,6 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     }];
 }
 
-+(NSMutableAttributedString *) AttributedStringByMoney:(NSString *) orginString{
-    NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] initWithString:orginString];
-    NSRange indexRange = [orginString rangeOfString:@"￥"];
-    if (indexRange.location != NSNotFound) {
-        UIFont *baseFont = [UIFont fontWithName:@"STYuanti-SC-Regular" size:12];
-        UIFont *moneyFont = [UIFont fontWithName:@"STYuanti-SC-Regular" size:20];
-        [attrString addAttribute:NSFontAttributeName value:moneyFont range:NSMakeRange(indexRange.location, attrString.length-indexRange.location)];
-        [attrString addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:171.0/255.0 green:33.0/255.0 blue:31.0/255.0 alpha:1] range:NSMakeRange(indexRange.location, attrString.length-indexRange.location)];
-        if (indexRange.location>0) {
-            [attrString addAttribute:NSFontAttributeName value:baseFont range:NSMakeRange(0, indexRange.location)];
-        }
-    }
-    return attrString;
-}
 //+ (NSString *)base64StringFromText:(NSString *)text
 //{
 //    if (text && ![text isEqualToString:LocalStr_None]) {
@@ -961,6 +948,70 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
             [alterLabel removeFromSuperview];
         }];
     }];
+}
+
++(void) showNewNotifyByText:(NSString *)text{
+    NotifyButton *alterLabel = [[NotifyButton alloc] initWithFrame:CGRectZero];
+    [alterLabel setTitle:text forState:UIControlStateNormal];
+    [alterLabel setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [alterLabel setBackgroundColor:Color_NavigationBar];
+    [alterLabel.titleLabel setFont:[UIFont boldSystemFontOfSize:14]];
+    [alterLabel sizeToFit];
+    [alterLabel setFrame:CGRectMake(20 , SCREEN_HEIGHT-64, alterLabel.frame.size.width+34, 34)];
+    alterLabel.layer.cornerRadius = 17;
+    alterLabel.clipsToBounds = YES;
+    alterLabel.layer.shadowColor = [UIColor blackColor].CGColor;//shadowColor阴影颜色
+    alterLabel.layer.shadowOffset = CGSizeMake(0,0);//shadowOffset阴影偏移，默认(0, -3),这个跟shadowRadius配合使用
+    alterLabel.layer.shadowOpacity = 1;//阴影透明度，默认0
+    alterLabel.layer.shadowRadius = 3;//阴影半径，默认3
+    //路径阴影
+    UIBezierPath *path = [UIBezierPath bezierPath];
+    
+    float width = alterLabel.bounds.size.width;
+    float height = alterLabel.bounds.size.height;
+    float x = alterLabel.bounds.origin.x;
+    float y = alterLabel.bounds.origin.y;
+    float addWH = 10;
+    
+    CGPoint topLeft      = alterLabel.bounds.origin;
+    CGPoint topMiddle = CGPointMake(x+(width/2),y-addWH);
+    CGPoint topRight     = CGPointMake(x+width,y);
+    
+    CGPoint rightMiddle = CGPointMake(x+width+addWH,y+(height/2));
+    
+    CGPoint bottomRight  = CGPointMake(x+width,y+height);
+    CGPoint bottomMiddle = CGPointMake(x+(width/2),y+height+addWH);
+    CGPoint bottomLeft   = CGPointMake(x,y+height);
+    
+    
+    CGPoint leftMiddle = CGPointMake(x-addWH,y+(height/2));
+    
+    [path moveToPoint:topLeft];
+    //添加四个二元曲线
+    [path addQuadCurveToPoint:topRight
+                 controlPoint:topMiddle];
+    [path addQuadCurveToPoint:bottomRight
+                 controlPoint:rightMiddle];
+    [path addQuadCurveToPoint:bottomLeft
+                 controlPoint:bottomMiddle];
+    [path addQuadCurveToPoint:topLeft
+                 controlPoint:leftMiddle];
+    //设置阴影路径
+    AppDelegate *myDelegate =(AppDelegate*)[[UIApplication sharedApplication] delegate];
+    
+    
+    alterLabel.layer.shadowPath = path.CGPath;
+    [alterLabel setAlpha:0];
+    [myDelegate.window.rootViewController.view addSubview:alterLabel];
+    [UIView animateWithDuration:0.4 animations:^{
+        [alterLabel setAlpha:0.8];
+    } completion:^(BOOL finished) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [alterLabel removeFromSuperview];
+            
+        });
+    }];
+
 }
 
 +(void) showWarnOnView:(UIView *)view text:(NSString *)text{

@@ -8,7 +8,7 @@
 
 #import "BaseNagationViewController.h"
 
-@interface phoneForResetVC : BaseNagationViewController<UITextFieldDelegate>{
+@interface phoneForResetVC : AMScrollingNavbarViewController<UITextFieldDelegate>{
     UITextField *phoneText;
     BOOL isOk;
     UILabel *tipsLabel;
