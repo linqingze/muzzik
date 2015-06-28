@@ -27,14 +27,13 @@
     decripText.layer.borderColor = Color_line_1.CGColor;
     decripText.layer.borderWidth = 1;
     decripText.backgroundColor = Color_line_2;
-    [decripText setMaxHeight:200];
-    [decripText setMaxNumberOfLines:10];
     [self.view addSubview:decripText];
-    decripText.placeholder = @"编辑反馈信息(140个字符以内)";
+    decripText.placeholder = @"为了Muzzik变得更好,请反馈您宝贵的意见... QQ群:257196166";
 //    [decripText setFont:[UIFont fontWithName:Font_Next_DemiBold size:15]];
     [decripText setFrame:CGRectMake(10, 20, SCREEN_WIDTH-20, 200)];
     decripText.textColor = Color_Text_1;
     [decripText setPlaceholderColor:Color_Text_4];
+    [decripText setFont:[UIFont systemFontOfSize:14]];
     [decripText setReturnKeyType:UIReturnKeyDone];
     // Do any additional setup after loading the view.
 }

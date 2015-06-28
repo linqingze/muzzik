@@ -444,8 +444,8 @@
 {
 	internalTextView.font= afont;
 	
-	[self setMaxNumberOfLines:maxNumberOfLines];
-	[self setMinNumberOfLines:minNumberOfLines];
+//	[self setMaxNumberOfLines:maxNumberOfLines];
+//	[self setMinNumberOfLines:minNumberOfLines];
 }
 
 -(UIFont *)font

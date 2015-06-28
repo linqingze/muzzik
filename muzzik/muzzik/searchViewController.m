@@ -156,6 +156,7 @@
 }
 -(void)searchBarSearchButtonClicked:(UISearchBar *)loclsearchBar{
     NSLog(@"search%@",loclsearchBar.text);
+    
     [_searchBar resignFirstResponder];
     if ([self.activityVC respondsToSelector:@selector(searchDataSource:)]) {
         [self.activityVC searchDataSource:loclsearchBar.text];

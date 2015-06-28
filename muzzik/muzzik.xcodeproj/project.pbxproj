@@ -114,6 +114,8 @@
 		F20553AB1B3D7FC70093AE8A /* MusicLyricCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F20553AA1B3D7FC70093AE8A /* MusicLyricCell.m */; };
 		F20553B11B3DED940093AE8A /* NotifyButton.m in Sources */ = {isa = PBXBuildFile; fileRef = F20553B01B3DED940093AE8A /* NotifyButton.m */; };
 		F20553B31B3E0CF80093AE8A /* chineseF.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F20553B21B3E0CF80093AE8A /* chineseF.ttf */; };
+		F20553B61B400C840093AE8A /* HotSearchTopic.m in Sources */ = {isa = PBXBuildFile; fileRef = F20553B51B400C840093AE8A /* HotSearchTopic.m */; };
+		F20553B91B400D9D0093AE8A /* HotSearchTopicCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F20553B81B400D9D0093AE8A /* HotSearchTopicCell.m */; };
 		F208EF4B1B1E1D2E00DB5A68 /* RJTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = F208EF4A1B1E1D2E00DB5A68 /* RJTextView.m */; };
 		F208EF4D1B1F783A00DB5A68 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F208EF4C1B1F783A00DB5A68 /* CoreText.framework */; };
 		F208EF4F1B1F7A7700DB5A68 /* VNI_HLThuphap.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F208EF4E1B1F7A7700DB5A68 /* VNI_HLThuphap.ttf */; };
@@ -471,6 +473,10 @@
 		F20553AF1B3DED940093AE8A /* NotifyButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotifyButton.h; sourceTree = "<group>"; };
 		F20553B01B3DED940093AE8A /* NotifyButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotifyButton.m; sourceTree = "<group>"; };
 		F20553B21B3E0CF80093AE8A /* chineseF.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = chineseF.ttf; sourceTree = "<group>"; };
+		F20553B41B400C840093AE8A /* HotSearchTopic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotSearchTopic.h; sourceTree = "<group>"; };
+		F20553B51B400C840093AE8A /* HotSearchTopic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotSearchTopic.m; sourceTree = "<group>"; };
+		F20553B71B400D9D0093AE8A /* HotSearchTopicCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotSearchTopicCell.h; sourceTree = "<group>"; };
+		F20553B81B400D9D0093AE8A /* HotSearchTopicCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotSearchTopicCell.m; sourceTree = "<group>"; };
 		F208EF491B1E1D2E00DB5A68 /* RJTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RJTextView.h; sourceTree = "<group>"; };
 		F208EF4A1B1E1D2E00DB5A68 /* RJTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RJTextView.m; sourceTree = "<group>"; };
 		F208EF4C1B1F783A00DB5A68 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
@@ -1331,6 +1337,10 @@
 				F2A2E8FE1B08A81300D65514 /* ActivityUserVC.m */,
 				F288A4CB1B0DC81900B89860 /* TopRankVC.h */,
 				F288A4CC1B0DC81900B89860 /* TopRankVC.m */,
+				F20553B41B400C840093AE8A /* HotSearchTopic.h */,
+				F20553B51B400C840093AE8A /* HotSearchTopic.m */,
+				F20553B71B400D9D0093AE8A /* HotSearchTopicCell.h */,
+				F20553B81B400D9D0093AE8A /* HotSearchTopicCell.m */,
 				F288A4C81B0DC7EF00B89860 /* topicRankCell.h */,
 				F288A4C91B0DC7EF00B89860 /* topicRankCell.m */,
 			);
@@ -1714,6 +1724,7 @@
 				E1FA12C71AB1499F005EDA1D /* DataSourceWrapper.m in Sources */,
 				E11246781AAAB20B0014D461 /* UIImage+WebP.m in Sources */,
 				F2F7EE3C1AEE23E400265596 /* HanyuPinyinOutputFormat.m in Sources */,
+				F20553B61B400C840093AE8A /* HotSearchTopic.m in Sources */,
 				F2641F231AD9A652003BECDD /* NSString+MD5.m in Sources */,
 				E1B2303B1AB5BF22004E50DA /* FMDatabasePool.m in Sources */,
 				E11246431AAAB1F20014D461 /* ASIDataCompressor.m in Sources */,
@@ -1803,6 +1814,7 @@
 				F20553A51B375AD70093AE8A /* AtFriendSearchVC.m in Sources */,
 				F2F7EE4C1AEE676F00265596 /* TopicHotVC.m in Sources */,
 				E112468F1AAAB2CD0014D461 /* NormalCell.m in Sources */,
+				F20553B91B400D9D0093AE8A /* HotSearchTopicCell.m in Sources */,
 				F20553B11B3DED940093AE8A /* NotifyButton.m in Sources */,
 				F21814501AF234CE00AA06AA /* HPTextViewInternal.m in Sources */,
 				F2F7EE521AEEABC100265596 /* AtfreindCell.m in Sources */,

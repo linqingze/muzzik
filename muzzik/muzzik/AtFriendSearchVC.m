@@ -87,8 +87,6 @@
 
 
 
-
-
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
     [self.searchLocalUsers removeAllObjects];
     isNetwork = NO;

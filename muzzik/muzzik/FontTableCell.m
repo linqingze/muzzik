@@ -27,10 +27,12 @@
     self.lineSeparate = [[UIView alloc] initWithFrame:CGRectMake(13, 49, SCREEN_WIDTH-26, 1)];
     [_lineSeparate setBackgroundColor:Color_line_1];
     [self addSubview:_lineSeparate];
-    _downButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-60, 5, 40, 40)];
+    _downButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-47, 7, 36, 36)];
     [_downButton setImage:[UIImage imageNamed:@"downloadImage"] forState:UIControlStateNormal];
     [_downButton addTarget:self action:@selector(startDownload) forControlEvents:UIControlEventTouchUpInside];
-    _pieProgress = [[SDTransparentPieProgressView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-60, 5, 40, 40)];
+    _pieProgress = [[SDTransparentPieProgressView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-39, 15, 20, 20)];
+    _pieProgress.layer.cornerRadius = 10;
+    _pieProgress.clipsToBounds = YES;
     [self addSubview:_pieProgress];
     
     [self addSubview:_downButton];

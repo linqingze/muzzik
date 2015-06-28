@@ -41,9 +41,9 @@
                 [musicview setAlpha:1];
             }else{
                 [view setAlpha:0];
-                [self.leftBtn setAlpha:0];
-                [self.rightBtn setAlpha:0];
-                [self.headerView setAlpha:0];
+                [self.leftBtn setAlpha:1];
+                [self.rightBtn setAlpha:1];
+                [self.headerView setAlpha:1];
             }
             
             break;

@@ -28,7 +28,7 @@
     CGContextAddEllipseInRect(ctx, CGRectMake(x, y, w, h));
     CGContextFillPath(ctx);
     
-    [[UIColor grayColor] set];
+    [Color_Active_Button_1 set];
     CGFloat startAngle = M_PI * 0.5 - self.progress * M_PI;
     CGFloat endAngle = M_PI * 0.5 + self.progress * M_PI;
     CGContextAddArc(ctx, xCenter, yCenter, radius, startAngle, endAngle, 0);

@@ -72,7 +72,6 @@
     [MytableView  setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     MytableView.dataSource = self;
     MytableView.delegate = self;
-    [MytableView setBackgroundColor:Color_line_2];
     [self.view addSubview:MytableView];
     [MytableView registerClass:[NormalCell class] forCellReuseIdentifier:@"NormalCell"];
     [MytableView registerClass:[NormalNoCardCell class] forCellReuseIdentifier:@"NormalNoCardCell"];

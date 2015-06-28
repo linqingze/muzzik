@@ -27,6 +27,7 @@
     BOOL isLogiined;
     UIButton *notifyButton;
     UIImageView *notifyImage;
+    UIImageView *coverImageView;
 }
 
 @end
@@ -135,22 +136,49 @@
 
     // Add the page view controller's gesture recognizers to the book view controller's view so that the gestures are started more easily.
     self.view.gestureRecognizers = self.pageViewController.gestureRecognizers;
-    
     _musicView = [musicPlayer shareClass].radioView;
     [_musicView setBackgroundColor:[UIColor clearColor]];
     [self.navigationController.view addSubview:_musicView];
-    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_New_notify_Now]]];
-    [request addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
-    __weak ASIHTTPRequest *weakrequest = request;
-    [request setCompletionBlock :^{
-        NSData *data = [weakrequest responseData];
-        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-        if (dic && [[dic allKeys] containsObject:@"result"] && [[dic objectForKey:@"result"] integerValue]>0) {
-            [self getMessage];
-        }
-    }];
-    [request startAsynchronous];
+    [self addCoverVCToWindow];
 }
+
+- (void)addCoverVCToWindow {
+    AppDelegate *app = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    
+    coverImageView = [[UIImageView alloc] initWithFrame:self.navigationController.view.bounds];
+    [coverImageView setImage:[UIImage imageNamed:@"startImage"]];
+    coverImageView.contentMode = UIViewContentModeScaleAspectFill;
+    UIImageView *startLogo = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Startslogan"]];
+    
+    UIImageView *startSlogan = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"muzzikSlogan"]];
+    
+    [startSlogan setFrame:CGRectMake(SCREEN_WIDTH-18-startSlogan.frame.size.width, SCREEN_HEIGHT-startSlogan.frame.size.height-18, startSlogan.frame.size.width, startSlogan.frame.size.height)];
+    [startLogo setAlpha:0];
+    [UIView animateWithDuration:2 animations:^{
+        [startLogo setAlpha:1];
+    }];
+    [startLogo setFrame:CGRectMake(18, 64, startLogo.frame.size.width, startLogo.frame.size.height)];
+    [coverImageView addSubview:startLogo];
+    [coverImageView addSubview:startSlogan];
+    [app.window addSubview:coverImageView];
+    [UIView animateWithDuration:0.3 delay:5 options:UIViewAnimationOptionTransitionNone animations:^{
+        [coverImageView setAlpha:0];
+    } completion:^(BOOL finished) {
+        [coverImageView removeFromSuperview];
+        ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_New_notify_Now]]];
+        [request addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
+        __weak ASIHTTPRequest *weakrequest = request;
+        [request setCompletionBlock :^{
+            NSData *data = [weakrequest responseData];
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+            if (dic && [[dic allKeys] containsObject:@"result"] && [[dic objectForKey:@"result"] integerValue]>0) {
+                [self getMessage];
+            }
+        }];
+        [request startAsynchronous];
+    }];
+}
+
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     BOOL hasToken = NO;

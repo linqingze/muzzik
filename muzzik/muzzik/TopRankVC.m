@@ -12,10 +12,12 @@
 #import "UIButton+WebCache.h"
 #import "TopicDetail.h"
 #import "userDetailInfo.h"
+#import "HotSearchTopic.h"
 @interface TopRankVC ()<UITableViewDataSource,UITableViewDelegate,CellDelegate>{
     UITableView *topicTableView;
     NSMutableArray *topicArray;
     int page;
+    UIButton *newButton;
 }
 
 @end
@@ -35,8 +37,20 @@
     [topicTableView registerClass:[topicRankCell class] forCellReuseIdentifier:@"topicRankCell"];
     [self followScrollView:topicTableView];
     [self loadDataMessage];
-
+    newButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-75, SCREEN_HEIGHT-139, 60, 60)];
+    newButton.layer.cornerRadius = 28;
+    newButton.clipsToBounds = YES;
+    [newButton setImage:[UIImage imageNamed:@"topicsearchImage"] forState:UIControlStateNormal];
+    [newButton addTarget:self action:@selector(searchTopic) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:newButton];
+    [topicTableView addHeaderWithTarget:self action:@selector(refreshHeader)];
     // Do any additional setup after loading the view.
+}
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+}
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
 }
 -(void)loadDataMessage{
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/topic",BaseURL]]];
@@ -95,6 +109,58 @@
     
 }
 
+- (void)refreshHeader
+{
+    // [self updateSomeThing];
+    
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/topic",BaseURL]]];
+    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:@"date",@"sort",@"1",Parameter_Limit, nil] Method:GetMethod auth:NO];
+    __weak ASIHTTPRequest *weakrequest = request;
+    [request setCompletionBlock :^{
+        //    NSLog(@"%@",weakrequest.originalURL);
+        NSLog(@"%@",[weakrequest responseString]);
+        NSData *data = [weakrequest responseData];
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+        if (dic) {
+            
+            TopicModel *topicToy = [TopicModel new];
+            topicArray = [topicToy makeTopicssByMuzzikArray:[dic objectForKey:@"topics"]];
+            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/topic",BaseURL]]];
+            [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:page],Parameter_page,Limit_Constant,Parameter_Limit, nil] Method:GetMethod auth:NO];
+            __weak ASIHTTPRequest *weakreq = requestForm;
+            [requestForm setCompletionBlock :^{
+                //    NSLog(@"%@",weakrequest.originalURL);
+                NSLog(@"%@",[weakreq responseString]);
+                NSData *data = [weakreq responseData];
+                NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                if (dic) {
+                    
+                    TopicModel *topicToy = [TopicModel new];
+                    [topicArray addObjectsFromArray:[topicToy makeTopicssByMuzzikArray:[dic objectForKey:@"topics"]]];
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        [topicTableView reloadData];
+                        [topicTableView headerEndRefreshing];
+                    });
+                    if ([[dic objectForKey:@"topics"] count] >0) {
+                        page++;
+                        [topicTableView addFooterWithTarget:self action:@selector(refreshFooter)];
+                    }
+                }
+            }];
+            [requestForm setFailedBlock:^{
+                [topicTableView headerEndRefreshing];
+            }];
+            [requestForm startAsynchronous];
+        }
+    }];
+    [request setFailedBlock:^{
+        [topicTableView headerEndRefreshing];
+    }];
+    [request startAsynchronous];
+    
+    
+}
+
 - (void)refreshFooter
 {
     
@@ -143,7 +209,7 @@
     topicRankCell *cell = [tableView dequeueReusableCellWithIdentifier:@"topicRankCell" forIndexPath:indexPath];
     TopicModel *tempTopic = topicArray[indexPath.row];
     [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-    [cell.userHead sd_setBackgroundImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempTopic.lastPoster.avatar]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_placeholdImage] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+    [cell.userHead sd_setBackgroundImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempTopic.lastPoster.avatar]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
         [UIView animateWithDuration:0.5 animations:^{
             [cell.userHead setAlpha:1];
         }];
@@ -166,15 +232,16 @@
         [cell.rankImage setFrame:CGRectMake(24, 0, 23, 60)];
         if ([tempTopic.color longLongValue] == 1) {
             [cell setBackgroundColor:Color_Action_Button_1];
-            [cell.rankImage setImage:[UIImage imageNamed:Image_newyellowtopicImage]];
+            [cell.rankImage setImage:[UIImage imageNamed:Image_newredtopicImage]];
 
         }else if([tempTopic.color longLongValue] == 1){
             [cell setBackgroundColor:Color_Action_Button_2];
-            [cell.rankImage setImage:[UIImage imageNamed:Image_newbluetopicImage]];
+            
+            [cell.rankImage setImage:[UIImage imageNamed:Image_newyellowtopicImage]];
 
         }else{
             [cell setBackgroundColor:Color_Action_Button_3];
-            [cell.rankImage setImage:[UIImage imageNamed:Image_newredtopicImage]];
+            [cell.rankImage setImage:[UIImage imageNamed:Image_newbluetopicImage]];
 
         }
     }else{
@@ -195,7 +262,7 @@
         int deltaRank = [tempTopic.lastRank intValue] - [tempTopic.rank intValue];
         if (deltaRank>0) {
             [cell.rankImage setImage:[UIImage imageNamed:Image_topicriseImage]];
-            [cell.rankNumber setTextColor:Color_Action_Button_3];
+            [cell.rankNumber setTextColor:Color_Action_Button_1];
             cell.rankNumber.text = [NSString stringWithFormat:@"%d",deltaRank];
         }else if (deltaRank == 0){
             [cell.rankImage setImage:[UIImage imageNamed:Image_topicholdImage]];
@@ -236,14 +303,9 @@
         [self.navigationController pushViewController:detailuser animated:YES];
     }
 }
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+-(void)searchTopic{
+    HotSearchTopic *hotsearchvc = [[HotSearchTopic alloc] init];
+    [self.navigationController pushViewController:hotsearchvc animated:YES];
 }
-*/
 
 @end

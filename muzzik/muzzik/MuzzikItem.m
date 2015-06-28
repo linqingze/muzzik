@@ -830,8 +830,8 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 +(void) showNotifyOnViewUpon:(UIView *)view text:(NSString *)text{
     UILabel *alterLabel = [[UILabel alloc] init];
     [alterLabel setFont:[UIFont boldSystemFontOfSize:14]];
-    [alterLabel setTextColor:Color_Text_1];
-    [alterLabel setBackgroundColor:Color_line_2];
+    [alterLabel setTextColor:[UIColor whiteColor]];
+    [alterLabel setBackgroundColor:Color_NavigationBar];
     alterLabel.text = text;
     [alterLabel sizeToFit];
     [alterLabel setFrame:CGRectMake(SCREEN_WIDTH/2-alterLabel.frame.size.width/2-10, 100, alterLabel.frame.size.width+20, alterLabel.frame.size.height+20)];
@@ -879,20 +879,19 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     [alterLabel setAlpha:0];
     [view addSubview:alterLabel];
     [UIView animateWithDuration:0.4 animations:^{
-        [alterLabel setAlpha:1];
+        [alterLabel setAlpha:0.8];
     } completion:^(BOOL finished) {
-        [UIView animateWithDuration:4 animations:^{
-            [alterLabel setAlpha:0];
-        } completion:^(BOOL finished) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [alterLabel removeFromSuperview];
-        }];
+            
+        });
     }];
 }
 +(void) showNotifyOnView:(UIView *)view text:(NSString *)text{
     UILabel *alterLabel = [[UILabel alloc] init];
     [alterLabel setFont:[UIFont boldSystemFontOfSize:14]];
-    [alterLabel setTextColor:Color_Text_1];
-    [alterLabel setBackgroundColor:Color_line_2];
+    [alterLabel setTextColor:[UIColor whiteColor]];
+    [alterLabel setBackgroundColor:Color_NavigationBar];
     alterLabel.text = text;
     [alterLabel sizeToFit];
     [alterLabel setFrame:CGRectMake(SCREEN_WIDTH/2-alterLabel.frame.size.width/2-10, SCREEN_HEIGHT-150, alterLabel.frame.size.width+20, alterLabel.frame.size.height+20)];
@@ -940,13 +939,12 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     [alterLabel setAlpha:0];
     [view addSubview:alterLabel];
     [UIView animateWithDuration:0.4 animations:^{
-        [alterLabel setAlpha:1];
+        [alterLabel setAlpha:0.8];
     } completion:^(BOOL finished) {
-        [UIView animateWithDuration:4 animations:^{
-            [alterLabel setAlpha:0];
-        } completion:^(BOOL finished) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [alterLabel removeFromSuperview];
-        }];
+            
+        });
     }];
 }
 

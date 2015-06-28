@@ -37,7 +37,7 @@
     //[MuzzikItem addLineOnView:self.navigationController.view heightPoint:64 toLeft:0 toRight:0 withColor:Color_NavigationBar];
     [self.view setBackgroundColor:Color_NavigationBar];
     [self initNagationBar:@"选歌" leftBtn:Constant_backImage rightBtn:Constant_searchImage];
-    searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(50, 6, 0, 20)];
+    searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(6, 6, SCREEN_WIDTH-64, 28)];
     //[searchBar.subviews[0] removeFromSuperview];
     [searchBar setBackgroundImage:[MuzzikItem createImageWithColor:Color_NavigationBar]];
     searchBar.placeholder = @"搜索";
@@ -159,11 +159,11 @@
 }
 -(void)rightBtnAction:(UIButton *)sender{
     searchBar.placeholder = @"搜索";
+    [searchBar becomeFirstResponder];
     [self.navigationController.view addSubview:searchView];
     [UIView animateWithDuration:0.3 animations:^{
-//        [searchView setFrame:CGRectMake(0, 20, SCREEN_WIDTH, 40)];
-        [searchBar becomeFirstResponder];
-        [searchBar setFrame:CGRectMake(6, 6, SCREEN_WIDTH-64, 28)];
+        [searchView setAlpha:1];
+        
     } completion:^(BOOL finished) {
         
     }];
@@ -173,13 +173,15 @@
 -(void) searchBarBack{
     searchBar.text = @"";
     searchBar.placeholder = @"";
+    
     if ([self.activityVC respondsToSelector:@selector(updateDataSource:)]) {
         [self.activityVC updateDataSource:@""];
     }
     [UIView animateWithDuration:0.3 animations:^{
-        [searchBar resignFirstResponder];
-        [searchBar setFrame:CGRectMake(SCREEN_WIDTH-52, 6, 40, 28)];
+        
+        [searchView setAlpha:0];
     } completion:^(BOOL finished) {
+        [searchBar resignFirstResponder];
         [searchView removeFromSuperview];
     }];
 }

@@ -336,7 +336,7 @@
 {
     self.backgroundColor = [UIColor clearColor];
     
-    _onTintColor = [UIColor colorWithRed:130 / 255.0 green:200 / 255.0 blue:90 / 255.0 alpha:1.0];
+    _onTintColor = Color_Active_Button_1;
     _tintColor = [UIColor colorWithWhite:0.75 alpha:1.0];
     _thumbTintColor = [UIColor colorWithWhite:1.0 alpha:1.0];
     

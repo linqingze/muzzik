@@ -50,6 +50,10 @@
     
     UITableView *fontTableView;
     BOOL fontTableShowed;
+    UIImageView *animationView;
+    UIView *shareWhiteView;
+    UIImageView *MuzzikLogo;
+    UILabel *tipsLabel;
 }
 @end
 @implementation ChooseLyricVC
@@ -74,13 +78,16 @@
     headImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
     headImage.contentMode = UIViewContentModeScaleAspectFit;
     [headImage setBackgroundColor:[UIColor whiteColor]];
+    
     if (self.image) {
         headImage.image = self.image;
         MuzzikLogoImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"muzzikwhite"]];
         shareColor = [UIColor whiteColor];
+        MuzzikLogo = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"sharewhiteMuzzik"]];
     }else{
         [headImage setImage:[UIImage imageNamed:Image_Textcover]];
         MuzzikLogoImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"muzzikblack"]];
+        MuzzikLogo = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"shareblackMuzzik"]];
         shareColor = [UIColor blackColor];
     }
     [MuzzikLogoImage setFrame:CGRectMake(10, SCREEN_WIDTH-MuzzikLogoImage.frame.size.height-10,MuzzikLogoImage.frame.size.width , MuzzikLogoImage.frame.size.height)];
@@ -89,6 +96,8 @@
     Scroll = [[UIScrollView alloc] initWithFrame:headImage.frame];
     [Scroll setContentSize:CGSizeMake(SCREEN_WIDTH*3, SCREEN_WIDTH)];
     [self.view addSubview:Scroll];
+    shareWhiteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
+    [shareWhiteView setBackgroundColor:[UIColor whiteColor]];
     lyricView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
     [Scroll addSubview:lyricView];
     [lyricView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideControl)]];
@@ -156,8 +165,8 @@
     ColorButton = [[UIButton alloc] initWithFrame:CGRectMake(13, 0, 30, 30)];
     
     
-    LibraryButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-43, SCREEN_WIDTH, 30, 30)];
-    [self.view addSubview:LibraryButton];
+    LibraryButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-43, 0, 30, 30)];
+    [controlView addSubview:LibraryButton];
     
     [LibraryButton addTarget:self action:@selector(changeImage) forControlEvents:UIControlEventTouchUpInside];
     if (self.image) {
@@ -220,6 +229,32 @@
             [MuzzikItem customFontWithPath:[NSString stringWithFormat:@"%@.ttf",[folderPath stringByAppendingPathComponent:[dic objectForKey:@"fontname"]]]];
         }
     }
+    sharaView = [[UIView alloc] initWithFrame:CGRectMake(-SCREEN_WIDTH, SCREEN_WIDTH, SCREEN_WIDTH, 30)];
+    [sharaView setBackgroundColor:[UIColor whiteColor]];
+    
+    [sharaView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(changShare)]];
+    UIImageView *timeLineImage = [[UIImageView alloc] initWithFrame:CGRectMake(10, 4, 22, 22)];
+    [timeLineImage setImage:[UIImage imageNamed:@"FriendsCircle"]];
+    [sharaView addSubview:timeLineImage];
+    UILabel *notify = [[UILabel alloc] initWithFrame:CGRectMake(40, 0, SCREEN_WIDTH-150, 30)];
+    [notify setFont:[UIFont systemFontOfSize:14]];
+    [notify setTextColor:Color_Text_2];
+    [notify setText:@"发送并同步到朋友圈"];
+    [sharaView addSubview:notify];
+    shareCycle = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-40, 0, 30, 30)];
+    [shareCycle setImage:[UIImage imageNamed:@"SmallshareselectedImage"]];
+    [sharaView addSubview:shareCycle];
+    tipsLabel = [[UILabel alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-80, (SCREEN_WIDTH+SCREEN_HEIGHT)/2-47, 165, 50)];
+    [self.view addSubview:tipsLabel];
+    NSDictionary *attributes;
+    tipsLabel.numberOfLines=0;
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
+    paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
+    paragraphStyle.alignment = NSTextAlignmentCenter;
+    paragraphStyle.lineSpacing = 3;
+    attributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:15], NSParagraphStyleAttributeName:paragraphStyle,NSForegroundColorAttributeName:Color_Additional_5};
+    NSAttributedString * attr= [[NSAttributedString alloc] initWithString:@"拖动歌词选取你喜欢的话\n并移动到合适的位置" attributes:attributes];
+    tipsLabel.attributedText = attr;
 }
 
 
@@ -230,7 +265,6 @@
         headImage.image = self.image;
         isShow = YES;
         [ImageButton setHidden:NO];
-        [MuzzikLogoImage setImage:[UIImage imageNamed:@"muzzikwhite"]];
         shareColor = [UIColor whiteColor];
         [shareLabel.textView setTextColor:shareColor];
         [lyricTablenview reloadData];
@@ -301,7 +335,7 @@
         tempLabel.text = cell.label.text;
         tempLabel.numberOfLines = 0;
         [tempLabel sizeToFit];
-        [cell.label setFrame:CGRectMake((SCREEN_WIDTH-tempLabel.frame.size.width)/2, cell.label.frame.origin.y, tempLabel.frame.size.width, tempLabel.frame.size.height)];
+        [cell.label setFrame:CGRectMake((SCREEN_WIDTH-tempLabel.frame.size.width)/2, cell.label.frame.origin.y, tempLabel.frame.size.width, tempLabel.frame.size.height+3)];
         cell.label.textAlignment = NSTextAlignmentCenter;
         return cell;
     }
@@ -342,6 +376,9 @@
             shareLabel.textView.font = [UIFont fontWithName:[dic objectForKey:@"fontname"]  size:shareLabel.fontsize];
             shareLabel.curFont = [UIFont fontWithName:[dic objectForKey:@"fontname"]  size:shareLabel.fontsize];
             shareLabel.fontname = [dic objectForKey:@"fontname"];
+        }else{
+        
+            [MuzzikItem showNotifyOnView:self.view text:@"还没下载字体哦～"];
         }
     }else{
         
@@ -421,10 +458,39 @@
         //NSLog(@"%d",index);
         [PageControl setCurrentPage:index];
         if (index == 0) {
+            NSDictionary *attributes;
+            NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
+            paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
+            paragraphStyle.alignment = NSTextAlignmentCenter;
+            paragraphStyle.lineSpacing = 3;
+            attributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:15], NSParagraphStyleAttributeName:paragraphStyle,NSForegroundColorAttributeName:Color_Additional_5};
+            NSAttributedString * attr= [[NSAttributedString alloc] initWithString:@"拖动歌词选取你喜欢的话\n并移动到合适的位置" attributes:attributes];
+            tipsLabel.attributedText = attr;
+            
+            
+            
             shareLabel = lyricTextView;
         }else if(index == 1){
+            NSDictionary *attributes;
+            NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
+            paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
+            paragraphStyle.alignment = NSTextAlignmentCenter;
+            paragraphStyle.lineSpacing = 3;
+            attributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:15], NSParagraphStyleAttributeName:paragraphStyle,NSForegroundColorAttributeName:Color_Additional_5};
+            NSAttributedString * attr= [[NSAttributedString alloc] initWithString:@"拖动短句选取你喜欢的话\n并移动到合适的位置" attributes:attributes];
+            tipsLabel.attributedText = attr;
+            
             shareLabel = famousTextView;
         }else if(index == 2){
+            NSDictionary *attributes;
+            NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
+            paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
+            paragraphStyle.alignment = NSTextAlignmentCenter;
+            paragraphStyle.lineSpacing = 3;
+            attributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:15], NSParagraphStyleAttributeName:paragraphStyle,NSForegroundColorAttributeName:Color_Additional_5};
+            NSAttributedString * attr= [[NSAttributedString alloc] initWithString:@"添加一句话\n并且移动到合适位置" attributes:attributes];
+            tipsLabel.attributedText = attr;
+            
             [editTextView.textView becomeFirstResponder];
             if (editTextView.textView.text.length >0) {
                 shareLabel = editTextView;
@@ -479,26 +545,22 @@
         if (user.WeChatInstalled) {
             if (step == 0) {
                 step = 1;
-                [self initNagationBar:@"填选一句话（3/3）" leftBtn:Constant_backImage rightBtn:5];
+                [self initNagationBar:@"发布并分享" leftBtn:Constant_backImage rightBtn:5];
                 [shareLabel hideTextViewBox];
+                
                 [headImage addSubview:shareLabel];
-                for (UIView *view in lyricView.subviews) {
-                    [view removeFromSuperview];
-                }
                 
                 Muzzikimage = [MuzzikItem convertViewToImage:headImage];
                 [headImage addSubview:MuzzikLogoImage];
                 UIImage *tempImage = [MuzzikItem convertViewToImage:headImage];
-                UIImageView *temp = [[UIImageView alloc] initWithImage:tempImage];
-                NSLog(@"%@",temp);
-                [self.view addSubview:lyricView];
-                [lyricView setBackgroundColor:[UIColor whiteColor]];
+                animationView = [[UIImageView alloc] initWithImage:tempImage];
+                [self.view addSubview:shareWhiteView];
                 
                 [self.view addSubview:sharaView];
                 UIImageView *cover = [[UIImageView alloc] initWithImage:[UIImage imageNamed:Image_Cover]];
                 resultView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-cover.frame.size.width/2, 100, cover.frame.size.width , 177)];
                 [resultView setBackgroundColor:[UIColor whiteColor]];
-                [lyricView addSubview:resultView];
+                [shareWhiteView addSubview:resultView];
                 [resultView addSubview:cover];
                 UIImageView *usershareHeadThumb = [[UIImageView alloc] initWithFrame:CGRectMake(130, 60, 60, 60)];
                 usershareHeadThumb.layer.cornerRadius = 30 ;
@@ -563,36 +625,21 @@
                 userName.font = [UIFont fontWithName:Font_default_share size:11];
                 userName.numberOfLines = 0;
                 [storyView addSubview:userName];
-                [lyricView addSubview:temp];
-                temp.layer.cornerRadius = 2;
-                temp.clipsToBounds = YES;
+                [shareWhiteView addSubview:animationView];
+                animationView.layer.cornerRadius = 2;
+                animationView.clipsToBounds = YES;
                 // UIImageView *coverPage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:Image_Textcover]];
                 //[coverPage setFrame:CGRectMake(SCREEN_WIDTH/2 - 141, 100, 189, 189)];
                 [UIView animateWithDuration:0.5 animations:^{
-                    [temp setFrame:CGRectMake(SCREEN_WIDTH/2 - cover.frame.size.width/2+4, 104, 170, 170)];
-                    [sharaView setFrame:CGRectMake(0, SCREEN_WIDTH, SCREEN_WIDTH, 30)];
+                    [animationView setFrame:CGRectMake(SCREEN_WIDTH/2 - cover.frame.size.width/2+4, 104, 170, 170)];
+                    //[sharaView setFrame:CGRectMake(0, SCREEN_WIDTH, SCREEN_WIDTH, 30)];
                 } completion:^(BOOL finished) {
-                    [temp setFrame:CGRectMake(4, 4, 170, 170)];
-                    [resultView addSubview:temp];
+                    [animationView setFrame:CGRectMake(4, 4, 170, 170)];
+                    [resultView addSubview:animationView];
                     //[lyricView addSubview:coverPage];
                 }];
                 
-                sharaView = [[UIView alloc] initWithFrame:CGRectMake(-SCREEN_WIDTH, SCREEN_WIDTH, SCREEN_WIDTH, 30)];
-                [sharaView setBackgroundColor:[UIColor whiteColor]];
                 [self.view addSubview:sharaView];
-                [sharaView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(changShare)]];
-                UIImageView *timeLineImage = [[UIImageView alloc] initWithFrame:CGRectMake(10, 4, 22, 22)];
-                [timeLineImage setImage:[UIImage imageNamed:@"FriendsCircle"]];
-                [sharaView addSubview:timeLineImage];
-                UILabel *notify = [[UILabel alloc] initWithFrame:CGRectMake(40, 0, SCREEN_WIDTH-150, 30)];
-                [notify setFont:[UIFont systemFontOfSize:12]];
-                [notify setText:@"发送并同步到朋友圈"];
-                [sharaView addSubview:notify];
-                shareCycle = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-40, 0, 30, 30)];
-                [shareCycle setImage:[UIImage imageNamed:@"shareselectedImage"]];
-                [sharaView addSubview:shareCycle];
-                
-                [nextButton setImage:[UIImage imageNamed:Image_done] forState:UIControlStateNormal];
                 [UIView animateWithDuration:0.5 delay:0.5 options:UIViewAnimationOptionCurveEaseOut animations:^{
                     [sharaView setFrame:CGRectMake(0, SCREEN_WIDTH, SCREEN_WIDTH, 30)];
                     [controlView setFrame:CGRectMake(SCREEN_WIDTH, SCREEN_WIDTH, SCREEN_WIDTH, 30)];
@@ -662,7 +709,7 @@
                                         
                                         [CDcover setImage:[UIImage imageNamed:Image_cover_CD]];
                                          [MuzzikLogoImage setFrame:CGRectMake(10, SCREEN_WIDTH-MuzzikLogoImage.frame.size.height-10,MuzzikLogoImage.frame.size.width , MuzzikLogoImage.frame.size.height)];
-                                        UIImageView *MuzzikLogo = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"sharewhiteMuzzik"]];
+                                        
                                         UIImageView *picImage = [[UIImageView alloc] initWithFrame:CGRectMake(10, 12, 724, 724)];
                                         //                                        if (self.image) {
                                         //                                            [picImage setImage:self.image];
@@ -673,10 +720,10 @@
                                         [MuzzikLogo setFrame:CGRectMake(20, 704-MuzzikLogo.frame.size.height,MuzzikLogo.frame.size.width , MuzzikLogo.frame.size.height)];
                                         if (isShow && self.image) {
                                             [picImage setImage:headImage.image];
-                                            [MuzzikLogo setImage:[UIImage imageNamed:@"sharewhiteMuzzik"]];
+                                            
                                         }else{
                                             [picImage setImage:[UIImage imageNamed:@"TextureShare"]];
-                                            [MuzzikLogo setImage:[UIImage imageNamed:@"shareblackMuzzik"]];
+                                           
                                         }
                                         [picImage addSubview:MuzzikLogo];
                                         picImage.contentMode = UIViewContentModeScaleAspectFill;
@@ -888,10 +935,10 @@
 -(void)changShare{
     if (isShareToWeiChat) {
         isShareToWeiChat = NO;
-        [shareCycle setImage:[UIImage imageNamed:@"shareselectImage"]];
+        [shareCycle setImage:[UIImage imageNamed:@"SmallshareselectImage"]];
     }else{
         isShareToWeiChat = YES;
-        [shareCycle setImage:[UIImage imageNamed:@"shareselectedImage"]];
+        [shareCycle setImage:[UIImage imageNamed:@"SmallshareselectedImage"]];
     }
 }
 -(void) changColor{
@@ -901,11 +948,15 @@
         shareColor = [UIColor whiteColor];
         [ColorButton setImage:[UIImage imageNamed:Image_textwhiteImage] forState:UIControlStateNormal];
         shareLabel.textView.textColor = [UIColor whiteColor];
+        [MuzzikLogoImage setImage:[UIImage imageNamed:@"muzzikwhite"]];
+        [MuzzikLogo setImage:[UIImage imageNamed:@"sharewhiteMuzzik"]];
     }else{
         isCharacterWhite = NO;
         shareColor = [UIColor blackColor];
         [ColorButton setImage:[UIImage imageNamed:Image_textblackImage] forState:UIControlStateNormal];
         shareLabel.textView.textColor = [UIColor blackColor];
+        [MuzzikLogoImage setImage:[UIImage imageNamed:@"muzzikblack"]];
+         [MuzzikLogo setImage:[UIImage imageNamed:@"shareblackMuzzik"]];
     }
     [lyricTablenview reloadData];
     [famousTableview reloadData];
@@ -929,20 +980,52 @@
     if (isShow) {
         isShow = NO;
         [headImage setImage:[UIImage imageNamed:Image_Textcover]];
-        [MuzzikLogoImage setImage:[UIImage imageNamed:@"muzzikblack"]];
-        shareColor = [UIColor blackColor];
-        [shareLabel.textView setTextColor:shareColor];
-        [lyricTablenview reloadData];
     }else{
         isShow = YES;
         headImage.image = self.image;
-        [MuzzikLogoImage setImage:[UIImage imageNamed:@"muzzikwhite"]];
-        shareColor = [UIColor whiteColor];
-        [shareLabel.textView setTextColor:shareColor];
-        [lyricTablenview reloadData];
+        
     }
 }
-
+-(void)tapAction:(UITapGestureRecognizer *)tap{
+    if (step == 0) {
+        [super tapAction:tap];
+    }else{
+        step = 0 ;
+        [self initNagationBar:@"填选一句话（3/3）" leftBtn:Constant_backImage rightBtn:2];
+        [animationView setFrame:CGRectMake(SCREEN_WIDTH/2 - 156, 104, 170, 170)];
+        [self.view addSubview:animationView];
+        [UIView animateWithDuration:0.5 animations:^{
+            [sharaView setFrame:CGRectMake(-SCREEN_WIDTH, SCREEN_WIDTH, SCREEN_WIDTH, 30)];
+            [controlView setFrame:CGRectMake(0, SCREEN_WIDTH, SCREEN_WIDTH, 30)];
+            
+            
+            //[sharaView setFrame:CGRectMake(0, SCREEN_WIDTH, SCREEN_WIDTH, 30)];
+        } completion:^(BOOL finished) {
+            [sharaView removeFromSuperview];
+            //[lyricView addSubview:coverPage];
+        }];
+        
+        [UIView animateWithDuration:0.5 delay:0.5 options:UIViewAnimationOptionCurveEaseOut animations:^{
+            [animationView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
+            
+        } completion:^(BOOL finished) {
+            [animationView removeFromSuperview];
+            [shareWhiteView removeFromSuperview];
+            [MuzzikLogoImage removeFromSuperview];
+            for (UIView *view in [shareWhiteView subviews]) {
+                [view removeFromSuperview];
+            }
+            if (PageControl.currentPage == 0) {
+                [lyricView addSubview:shareLabel];
+            }else if (PageControl.currentPage == 1){
+                [famousView addSubview:shareLabel];
+            }else{
+                [editView addSubview:shareLabel];
+            }
+            [shareLabel showTextViewBox];
+        }];
+    }
+}
 -(void) changeImage{
     TWPhotoPickerController *photoPicker = [[TWPhotoPickerController alloc] init];
     photoPicker.cropBlock = ^(UIImage *image) {

@@ -27,7 +27,7 @@
     CGFloat yCenter = rect.size.height * 0.5;
     
     
-    CGFloat radius = MIN(rect.size.width * 0.5, rect.size.height * 0.5) - SDProgressViewItemMargin;
+    CGFloat radius = MIN(rect.size.width * 0.5, rect.size.height * 0.5);
     
     // 背景遮罩
     

@@ -29,7 +29,7 @@
     
     _shakeSwitch = [[ZJSwitch alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-90, 12, 70, 25)];
     _shakeSwitch.backgroundColor = [UIColor clearColor];
-    _shakeSwitch.tintColor = [UIColor orangeColor];
+    _shakeSwitch.tintColor = Color_line_1;
     _shakeSwitch.onText = @"打开";
     _shakeSwitch.offText = @"关闭";
     [self addSubview:_shakeSwitch];
