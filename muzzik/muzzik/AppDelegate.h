@@ -49,6 +49,5 @@ typedef enum {
 - (void) sendImageContent:(UIImage *)image;
 -(void) sendMusicContentByMuzzik:(muzzik*)localMuzzik scen:(int)scene image:(UIImage *)image;
 - (void)sendAuthRequestByVC:(UIViewController *)vc;
--(BOOL)isNetWorkAvailabel;
 @end
 

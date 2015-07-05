@@ -37,72 +37,73 @@
     UITapGestureRecognizer *tapOnview = [[UITapGestureRecognizer alloc] initWithTarget:self.view action:@selector(endEditing:)];
     [self.view addGestureRecognizer:tapOnview];
 }
--(void)textFieldDidEndEditing:(UITextField *)textField{
-    ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@%@",BaseURL,URL_check_phone]]];
-    [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:nameText.text forKey:@"name"] Method:PostMethod auth:NO];
-    __weak ASIHTTPRequest *weakrequest = requestForm;
-    [requestForm setCompletionBlock :^{
-         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
-        NSLog(@"%@",[weakrequest responseString]);
-        NSLog(@"%d",[weakrequest responseStatusCode]);
-        if ([weakrequest responseStatusCode] == 200 && [[dic objectForKey:@"result"] boolValue]) {
-            [tipsLabel setText:@"用户名可用"];
-            isOk = YES;
-        }
-        else if([weakrequest responseStatusCode] == 400){
-            isOk = NO;
-         [tipsLabel setText:@"用户名非法"];}
-        else if([weakrequest responseStatusCode] == 409){
-            isOk = NO;
-             [tipsLabel setText:@"用户昵称已存在"];
-        }
-    }];
-    [requestForm setFailedBlock:^{
-        // [SVProgressHUD showErrorWithStatus:@"network error"];
-    }];
-    [requestForm startAsynchronous];
-
-}
 -(BOOL)textFieldShouldReturn:(UITextField *)textField{
     [textField resignFirstResponder];
     return  YES;
 }
 -(void) rightBtnAction:(UIButton *)sender{
+    [nameText resignFirstResponder];
     if ([nameText.text length] == 0) {
         setHeadImageVC *sethead = [[setHeadImageVC alloc] init];
         [self.navigationController pushViewController:sethead animated:YES];
     }
     else{
-        if (isOk) {
-            
-            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@%@",BaseURL,URL_Update_Profile]]];
-            [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:nameText.text forKey:@"name"] Method:PostMethod auth:YES];
-            __weak ASIHTTPRequest *weakrequest = requestForm;
-            [requestForm setCompletionBlock :^{
-                NSLog(@"%@",[weakrequest responseString]);
-                NSLog(@"%d",[weakrequest responseStatusCode]);
-                if ([weakrequest responseStatusCode] == 200) {
-                    setHeadImageVC *sethead = [[setHeadImageVC alloc] init];
-                    [self.navigationController pushViewController:sethead animated:YES];
-                    //
-                }
-                else if([weakrequest responseStatusCode] == 400){
-                    isOk = NO;
-                    [tipsLabel setText:@"用户名非法"];}
-                else if([weakrequest responseStatusCode] == 409){
-                    isOk = NO;
-                    [tipsLabel setText:@"用户名过长"];
-                }
-            }];
-            [requestForm setFailedBlock:^{
-                // [SVProgressHUD showErrorWithStatus:@"network error"];
-            }];
-            [requestForm startAsynchronous];
-        }
-        else{
-            [[[AFViewShaker alloc] initWithView:tipsLabel] shake];
+        ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@%@",BaseURL,URL_check_phone]]];
+        [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:nameText.text forKey:@"name"] Method:PostMethod auth:NO];
+        __weak ASIHTTPRequest *weakrequest = request;
+        [request setCompletionBlock :^{
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
+            NSLog(@"%@",[weakrequest responseString]);
+            NSLog(@"%d",[weakrequest responseStatusCode]);
+            if ([weakrequest responseStatusCode] == 200 && [[dic objectForKey:@"result"] boolValue]) {
+                ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@%@",BaseURL,URL_Update_Profile]]];
+                [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:nameText.text forKey:@"name"] Method:PostMethod auth:YES];
+                __weak ASIHTTPRequest *weakreq = requestForm;
+                [requestForm setCompletionBlock :^{
+                    NSLog(@"%@",[weakreq responseString]);
+                    NSLog(@"%d",[weakreq responseStatusCode]);
+                    if ([weakreq responseStatusCode] == 200) {
+                        userInfo *user = [userInfo shareClass];
+                        user.name = nameText.text;
+                        NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:user.token,@"token",user.uid,@"_id",user.name,@"name", nil];
+                        [MuzzikItem addMessageToLocal:dic];
+                        
+                        setHeadImageVC *sethead = [[setHeadImageVC alloc] init];
+                        [self.navigationController pushViewController:sethead animated:YES];
+                        //
+                    }
+                    else if([weakreq responseStatusCode] == 400){
+                        isOk = NO;
+                        [tipsLabel setText:@"用户名不可用"];
+                        [[[AFViewShaker alloc] initWithView:tipsLabel] shake];
+                    }
+                    
+                    else if([weakreq responseStatusCode] == 409){
+                        isOk = NO;
+                        [tipsLabel setText:@"用户名过长"];
+                        [[[AFViewShaker alloc] initWithView:tipsLabel] shake];
+                    }
+                }];
+                [requestForm setFailedBlock:^{
+                    // [SVProgressHUD showErrorWithStatus:@"network error"];
+                }];
+                [requestForm startAsynchronous];
+            }
+            else if([weakrequest responseStatusCode] == 400){
+                [tipsLabel setText:@"用户名不可用"];
+                [[[AFViewShaker alloc] initWithView:tipsLabel] shake];
+            }
+            else if([weakrequest responseStatusCode] == 409){
+                [tipsLabel setText:@"用户昵称已存在"];
+                [[[AFViewShaker alloc] initWithView:tipsLabel] shake];
+            }
+        }];
+        [request setFailedBlock:^{
+            // [SVProgressHUD showErrorWithStatus:@"network error"];
+        }];
+        [request startAsynchronous];
+        
         }
 
     }
-}
 @end

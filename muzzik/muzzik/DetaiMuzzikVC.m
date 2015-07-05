@@ -1736,7 +1736,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
                     if ([weakrequest responseStatusCode] == 200) {
                         [MuzzikItem showNotifyOnView:self.view text:@"转发成功"];
                         self.localmuzzik.isReposted = YES;
-                        self.localmuzzik.reposts = [NSString stringWithFormat:@"%ld",[self.localmuzzik.reposts integerValue]+1];
+                        self.localmuzzik.reposts = [NSString stringWithFormat:@"%d",[self.localmuzzik.reposts intValue]+1];
                         [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:self.localmuzzik];
                     }
                     
@@ -1767,7 +1767,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
                     if ([weakrequest responseStatusCode] == 200) {
                         [MuzzikItem showNotifyOnView:self.view text:@"取消转发"];
                         self.localmuzzik.isReposted = NO;
-                        self.localmuzzik.reposts = [NSString stringWithFormat:@"%ld",[self.localmuzzik.reposts integerValue]-1];
+                        self.localmuzzik.reposts = [NSString stringWithFormat:@"%d",[self.localmuzzik.reposts intValue]-1];
                         [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:self.localmuzzik];
                     }
                     
@@ -2129,7 +2129,6 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         
         self.localmuzzik.topics = [dic objectForKey:@"topics"];
         self.localmuzzik.users = [dic objectForKey:@"users"];
-        self.localmuzzik.type = [dic objectForKey:@"type"];
         self.localmuzzik.onlytext = [[dic objectForKey:@"onlyText"] boolValue];
         self.localmuzzik.isReposted = [[dic objectForKey:@"isReposted"] boolValue];
         self.localmuzzik.reposts = [dic objectForKey:@"reposts"];
@@ -2152,8 +2151,8 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         self.localmuzzik.MuzzikUser.user_id = [[dic objectForKey:@"user"] objectForKey:@"_id"];
         self.localmuzzik.MuzzikUser.gender = [[dic objectForKey:@"user"] objectForKey:@"gender"];
         self.localmuzzik.MuzzikUser.name = [[dic objectForKey:@"user"] objectForKey:@"name"];
-        self.localmuzzik.MuzzikUser.isFollow =[[dic objectForKey:@"user"] objectForKey:@"isFollow"];
-        self.localmuzzik.MuzzikUser.isFans =[[dic objectForKey:@"user"] objectForKey:@"isFans"];
+        self.localmuzzik.MuzzikUser.isFollow =[[[dic objectForKey:@"user"] objectForKey:@"isFollow"] boolValue];;
+        self.localmuzzik.MuzzikUser.isFans =[[[dic objectForKey:@"user"] objectForKey:@"isFans"] boolValue];
         
         self.localmuzzik.music.music_id = [[dic objectForKey:@"music"] objectForKey:@"_id"];
         self.localmuzzik.music.artist = [[dic objectForKey:@"music"] objectForKey:@"artist"];

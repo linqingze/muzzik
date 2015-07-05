@@ -545,6 +545,7 @@
         if (user.WeChatInstalled) {
             if (step == 0) {
                 step = 1;
+                [tipsLabel setHidden:YES];
                 [self initNagationBar:@"发布并分享" leftBtn:Constant_backImage rightBtn:5];
                 [shareLabel hideTextViewBox];
                 
@@ -991,6 +992,7 @@
         [super tapAction:tap];
     }else{
         step = 0 ;
+        [tipsLabel setHidden:NO];
         [self initNagationBar:@"填选一句话（3/3）" leftBtn:Constant_backImage rightBtn:2];
         [animationView setFrame:CGRectMake(SCREEN_WIDTH/2 - 156, 104, 170, 170)];
         [self.view addSubview:animationView];

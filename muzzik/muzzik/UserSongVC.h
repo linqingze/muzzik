@@ -10,4 +10,5 @@
 
 @interface UserSongVC : AMScrollingNavbarViewController
 @property (nonatomic,copy) NSString *uid;
+@property (nonatomic,copy) NSString *userName;
 @end

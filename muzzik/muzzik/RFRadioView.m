@@ -319,28 +319,29 @@
                     [headerImage setImage:[UIImage imageNamed:@"logo"] forState:UIControlStateNormal];
                 }
             }
-            
-            ASIHTTPRequest *requestUser = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@",BaseURL,_playMuzzik.MuzzikUser.user_id]]];
-            [requestUser addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
-            __weak ASIHTTPRequest *weakrequestUser = requestUser;
-            [requestUser setCompletionBlock :^{
-                NSLog(@"%@",[weakrequestUser responseString]);
-                NSLog(@"%d",[weakrequestUser responseStatusCode]);
-                if ([weakrequestUser responseStatusCode] == 200) {
-                    NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequestUser responseData]  options:NSJSONReadingMutableContainers error:nil];
-                    _playMuzzik.MuzzikUser.isFollow = [[dic objectForKey:@"isFollow"] boolValue];
-                    _playMuzzik.MuzzikUser.isFans = [[dic objectForKey:@"isFans"] boolValue];
-                    if (![[dic objectForKey:@"isFollow"] boolValue]) {
-                        [attentionButton setHidden:NO];
-                    }else{
-                        [attentionButton setHidden:YES];
+            if ([[userInfo shareClass].uid length]>0 &&[_playMuzzik.MuzzikUser.user_id isEqualToString:[userInfo shareClass].uid]) {
+                [attentionButton setHidden:YES];
+            }else{
+                ASIHTTPRequest *requestUser = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@",BaseURL,_playMuzzik.MuzzikUser.user_id]]];
+                [requestUser addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
+                __weak ASIHTTPRequest *weakrequestUser = requestUser;
+                [requestUser setCompletionBlock :^{
+                    NSLog(@"%@",[weakrequestUser responseString]);
+                    NSLog(@"%d",[weakrequestUser responseStatusCode]);
+                    if ([weakrequestUser responseStatusCode] == 200) {
+                        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequestUser responseData]  options:NSJSONReadingMutableContainers error:nil];
+                        if (![[dic objectForKey:@"isFollow"] boolValue]) {
+                            [attentionButton setHidden:NO];
+                        }else{
+                            [attentionButton setHidden:YES];
+                        }
                     }
-                }
-            }];
-            [requestUser setFailedBlock:^{
-                NSLog(@"%@",[weakrequestUser error]);
-            }];
-            [requestUser startAsynchronous];
+                }];
+                [requestUser setFailedBlock:^{
+                    NSLog(@"%@",[weakrequestUser error]);
+                }];
+                [requestUser startAsynchronous];
+            }
             
             [self.lyricArray removeAllObjects];
             [lyricTableView reloadData];
@@ -917,27 +918,31 @@
                 NSLog(@"  kkk%@",[weakrequest error]);
             }];
             [requestForm startAsynchronous];
-            
-            //检测用户是否已关注
-            ASIHTTPRequest *requestUser = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@",BaseURL,playMuzzik.MuzzikUser.user_id]]];
-            [requestUser addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
-            __weak ASIHTTPRequest *weakrequestUser = requestUser;
-            [requestUser setCompletionBlock :^{
-                NSLog(@"%@",[weakrequestUser responseString]);
-                NSLog(@"%d",[weakrequestUser responseStatusCode]);
-                if ([weakrequestUser responseStatusCode] == 200) {
-                    NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequestUser responseData]  options:NSJSONReadingMutableContainers error:nil];
-                    if (![[dic objectForKey:@"isFollow"] boolValue]) {
-                        [attentionButton setHidden:NO];
-                    }else{
-                        [attentionButton setHidden:YES];
+            if ([[userInfo shareClass].uid length]>0 &&[playMuzzik.MuzzikUser.user_id isEqualToString:[userInfo shareClass].uid]) {
+                [attentionButton setHidden:YES];
+            }else{
+                ASIHTTPRequest *requestUser = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@",BaseURL,playMuzzik.MuzzikUser.user_id]]];
+                [requestUser addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
+                __weak ASIHTTPRequest *weakrequestUser = requestUser;
+                [requestUser setCompletionBlock :^{
+                    NSLog(@"%@",[weakrequestUser responseString]);
+                    NSLog(@"%d",[weakrequestUser responseStatusCode]);
+                    if ([weakrequestUser responseStatusCode] == 200) {
+                        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequestUser responseData]  options:NSJSONReadingMutableContainers error:nil];
+                        if (![[dic objectForKey:@"isFollow"] boolValue]) {
+                            [attentionButton setHidden:NO];
+                        }else{
+                            [attentionButton setHidden:YES];
+                        }
                     }
-                }
-            }];
-            [requestUser setFailedBlock:^{
-                NSLog(@"%@",[weakrequestUser error]);
-            }];
-            [requestUser startAsynchronous];
+                }];
+                [requestUser setFailedBlock:^{
+                    NSLog(@"%@",[weakrequestUser error]);
+                }];
+                [requestUser startAsynchronous];
+            }
+            //检测用户是否已关注
+            
             
         }
         if ([playMuzzik.message length]>0) {

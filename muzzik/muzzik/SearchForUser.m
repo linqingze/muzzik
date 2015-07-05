@@ -112,6 +112,11 @@
     cell.muzzikUser = muzzikuser;
     cell.index = indexPath.row;
     cell.label.text = muzzikuser.name;
+    if ([[userInfo shareClass].uid length]>0 && [muzzikuser.user_id isEqualToString:[userInfo shareClass].uid]) {
+        [cell.attentionButton setHidden:YES];
+    }else{
+        [cell.attentionButton setHidden:NO];
+    }
     if (muzzikuser.isFollow &&muzzikuser.isFans) {
         [cell.attentionButton setImage:[UIImage imageNamed:Image_followedeachotherImageSQ] forState:UIControlStateNormal];
         [cell.attentionButton setFrame:CGRectMake(SCREEN_WIDTH-80, 0, 65, 60)];

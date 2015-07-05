@@ -72,12 +72,12 @@
     }
     else{
         ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@%@",BaseURL,URL_Update_Profile]]];
-        NSMutableDictionary *dic= [NSMutableDictionary dictionaryWithObjectsAndKeys:gender,@"gender",birthText.text,@"birthday", nil];
-        if ([gender length] == 0) {
-            [dic removeObjectForKey:@"gender"];
+        NSMutableDictionary *dic= [NSMutableDictionary dictionary];
+        if ([gender length] > 0) {
+            [dic setObject:gender forKey:@"gender"];
         }
-        if ([birthText.text length] == 0) {
-            [dic removeObjectForKey:@"birthday"];
+        if ([birthText.text length] > 0) {
+            [dic setObject:birthText.text forKey:@"birthday"];
         }
         [requestForm addBodyDataSourceWithJsonByDic:dic Method:PostMethod auth:YES];
         __weak ASIHTTPRequest *weakrequest = requestForm;
@@ -86,6 +86,11 @@
             NSLog(@"%@",[weakrequest responseString]);
             NSLog(@"%d",[weakrequest responseStatusCode]);
             if ([weakrequest responseStatusCode] == 200 && [[dic objectForKey:@"result"] boolValue]) {
+                userInfo *user = [userInfo shareClass];
+                user.gender = gender;
+                NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:user.token,@"token",user.uid,@"_id",user.name,@"name",user.avatar,@"avatar",gender,@"gender", nil];
+                [MuzzikItem addMessageToLocal:dic];
+                
                 [MuzzikItem showNotifyOnView:self.navigationController.view text:@"注册成功"];
                 [self.navigationController popToRootViewControllerAnimated:YES];
                 //

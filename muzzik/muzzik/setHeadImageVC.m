@@ -121,6 +121,12 @@
                     __weak ASIHTTPRequest *WeakImageRequest = updateImageRequest;
                     [updateImageRequest setCompletionBlock:^{
                         if ([WeakImageRequest responseStatusCode]==200) {
+                            userInfo *user = [userInfo shareClass];
+                            user.userHeadThumb = userImage;
+                            user.avatar = [keydic objectForKey:@"key"];
+                            NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:user.token,@"token",user.uid,@"_id",user.name,@"name",user.avatar,@"avatar", nil];
+                            [MuzzikItem addMessageToLocal:dic];
+                            
                             setGenderVC *sethead = [[setGenderVC alloc] init];
                             [self.navigationController pushViewController:sethead animated:YES];
                             //

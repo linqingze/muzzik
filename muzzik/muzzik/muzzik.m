@@ -47,8 +47,8 @@
         newmuzzik.MuzzikUser.user_id = [[dic objectForKey:@"user"] objectForKey:@"_id"];
         newmuzzik.MuzzikUser.gender = [[dic objectForKey:@"user"] objectForKey:@"gender"];
         newmuzzik.MuzzikUser.name = [[dic objectForKey:@"user"] objectForKey:@"name"];
-        newmuzzik.MuzzikUser.isFollow =[[dic objectForKey:@"user"] objectForKey:@"isFollow"];
-        newmuzzik.MuzzikUser.isFans =[[dic objectForKey:@"user"] objectForKey:@"isFans"];
+        newmuzzik.MuzzikUser.isFollow =[[[dic objectForKey:@"user"] objectForKey:@"isFollow"] boolValue];
+        newmuzzik.MuzzikUser.isFans =[[[dic objectForKey:@"user"] objectForKey:@"isFans"] boolValue];
         newmuzzik.music = [music new];
         newmuzzik.music.music_id = [[dic objectForKey:@"music"] objectForKey:@"_id"];
          newmuzzik.music.artist = [[dic objectForKey:@"music"] objectForKey:@"artist"];

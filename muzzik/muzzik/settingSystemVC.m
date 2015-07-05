@@ -135,7 +135,11 @@
                 NSLog(@"%d",[weakrequest responseStatusCode]);
                 if ([weakrequest responseStatusCode] == 200) {
                     userInfo *user = [userInfo shareClass];
-                    user.token = nil;
+                    user.token = @"";
+                    user.uid = @"";
+                    user.avatar = @"";
+                    user.name = @"";
+                    user.gender = @"";
                     [MuzzikItem removeMessageFromLocal:@"LoginAcess"];
                     [MuzzikItem addObjectToLocal:nil ForKey:Constant_Data_moved];
                     [MuzzikItem addObjectToLocal:nil ForKey:Constant_Data_ownMuzzik];

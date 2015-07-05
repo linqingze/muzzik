@@ -22,8 +22,8 @@
     NSInteger isPlayBack;
     
 }
-@property(nonatomic) NSMutableArray *muzziks;
-@property(nonatomic) musicPlayer *musicplayer;
+@property(nonatomic,retain) NSMutableArray *muzziks;
+@property(nonatomic,retain) musicPlayer *musicplayer;
 @property (nonatomic,weak) RootViewController *parentRoot;
 @property(nonatomic,assign) BOOL isRootSubview;
 @end

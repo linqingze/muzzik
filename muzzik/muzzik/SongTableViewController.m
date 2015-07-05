@@ -46,7 +46,7 @@
         if ([weakrequest responseStatusCode] == 200) {
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
             pageID = [dic objectForKey:@"page"];
-             pageID = [NSString stringWithFormat:@"%ld",[pageID integerValue]+1];
+             pageID = [NSString stringWithFormat:@"%d",[pageID intValue]+1];
             muzzik *tempMuzzik = [muzzik new];
             self.movedMusicArray = [tempMuzzik makeMuzziksByMusicArray:[dic objectForKey:@"music"]];
             [self.tableView reloadData];

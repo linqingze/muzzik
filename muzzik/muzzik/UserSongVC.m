@@ -257,8 +257,14 @@
     player.listType = TempList;
     player.MusicArray = self.muzziks;
     player.index = [self.muzziks indexOfObject:songModel];
-    [player playSongWithSongModel:songModel Title:@"我的歌单"];
-    [MuzzikItem SetUserInfoWithMuzziks: self.muzziks title:Constant_userInfo_temp description:@"我的歌单"];
+    NSString *titleName;
+    if ([self.uid isEqualToString:[userInfo shareClass].uid]) {
+        titleName = @"我的歌单";
+    }else{
+        titleName = [NSString stringWithFormat:@"%@的歌单",self.userName];
+    }
+    [player playSongWithSongModel:songModel Title:titleName];
+    [MuzzikItem SetUserInfoWithMuzziks: self.muzziks title:Constant_userInfo_temp description:titleName];
 }
 
 -(void)newMuzzik:(muzzik *)localMzzik{

@@ -26,6 +26,7 @@
     NSArray *userArray;
     muzzik *trendMuzzik;
     muzzik *suggestMuzzik;
+    NSMutableArray *suggestArray;
     muzzik *localMuzzik;
     //feed
     UIView *attentionView;
@@ -513,6 +514,11 @@
                     
                     UIButton_UserMuzzik *followImage = [[UIButton_UserMuzzik alloc] initWithFrame:CGRectMake((int)(userbutton.frame.origin.x+userbutton.frame.size.width-29), (int)(userbutton.frame.size.height+userbutton.frame.origin.y-29), 29, 29)];
                     followImage.user = tempUser;
+                    if ([[userInfo shareClass].uid length]>0 && [followImage.user.user_id isEqualToString:[userInfo shareClass].uid]) {
+                        [followImage setHidden:YES];
+                    }else{
+                        [followImage setHidden:NO];
+                    }
                     
                     if (tempUser.isFans && tempUser.isFollow) {
                         followImage.followType = @"1";
@@ -622,7 +628,8 @@
             muzzikLabel.text = user.suggestTitle;
         }
         loadedMuzzik = YES;
-        suggestMuzzik = [[user.playList objectForKey:Constant_userInfo_suggest] objectForKey:UserInfo_muzziks][0];
+        suggestArray = [[user.playList objectForKey:Constant_userInfo_suggest] objectForKey:UserInfo_muzziks];
+        suggestMuzzik = suggestArray[0];
         [self suggestViewLayout];
     }else{
         ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/suggest",BaseURL]]];
@@ -641,7 +648,8 @@
                 }else{
                     muzzikLabel.text = @"本期推荐";
                 }
-                suggestMuzzik =  [[[muzzik new] makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"] ] objectAtIndex:0];
+                suggestArray =  [[muzzik new] makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"] ];
+                suggestMuzzik = suggestArray[0];
                 [self suggestViewLayout];
             }
         }];
@@ -650,7 +658,8 @@
             if (![[weakrequest responseString] length]>0 && [MuzzikItem getDataFromLocalKey: Constant_Data_Suggest]) {
                 NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[MuzzikItem getDataFromLocalKey: Constant_Data_Suggest] options:NSJSONReadingMutableContainers error:nil];
                 if (dic&&[[dic objectForKey:@"muzziks"]count]>0) {
-                    suggestMuzzik =  [[[muzzik new] makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"] ] objectAtIndex:0];
+                    suggestArray = [[muzzik new] makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"] ] ;
+                    suggestMuzzik = suggestArray[0];
                     [self suggestViewLayout];
                 }
             }
@@ -742,7 +751,18 @@
     [musicPlayView addSubview:playButton];
     UIColor *color;
     if ([suggestMuzzik.color longLongValue]==1) {
-        color = [UIColor colorWithHexString:@"fea42c"];
+        color = Color_Action_Button_1;
+        
+        if (suggestMuzzik.ismoved) {
+            [likeButton setImage:[UIImage imageNamed:@"redlikedImage"] forState:UIControlStateNormal];
+        }else{
+            [likeButton setImage:[UIImage imageNamed:@"redlikeImage"] forState:UIControlStateNormal];
+        }
+        [playButton setImage:[UIImage imageNamed:@"redplayImage"] forState:UIControlStateNormal];
+    }
+    else if([suggestMuzzik.color longLongValue]==2){
+        //bluelikeImage
+        color = Color_Action_Button_2;
         if (suggestMuzzik.ismoved) {
             [likeButton setImage:[UIImage imageNamed:@"yellowlikedImage"] forState:UIControlStateNormal];
         }else{
@@ -750,25 +770,15 @@
         }
         [playButton setImage:[UIImage imageNamed:@"yellowplayImage"] forState:UIControlStateNormal];
     }
-    else if([suggestMuzzik.color longLongValue]==2){
-        //bluelikeImage
-        color = [UIColor colorWithHexString:@"04a0bf"];
+    
+    else{
+        color = Color_Action_Button_3;
         if (suggestMuzzik.ismoved) {
             [likeButton setImage:[UIImage imageNamed:@"bluelikedImage"] forState:UIControlStateNormal];
         }else{
             [likeButton setImage:[UIImage imageNamed:@"bluelikeImage"] forState:UIControlStateNormal];
         }
         [playButton setImage:[UIImage imageNamed:@"blueplayImage"] forState:UIControlStateNormal];
-    }
-    
-    else{
-        color = [UIColor colorWithHexString:@"f26d7d"];
-        if (suggestMuzzik.ismoved) {
-            [likeButton setImage:[UIImage imageNamed:@"redlikedImage"] forState:UIControlStateNormal];
-        }else{
-            [likeButton setImage:[UIImage imageNamed:@"redlikeImage"] forState:UIControlStateNormal];
-        }
-        [playButton setImage:[UIImage imageNamed:@"redplayImage"] forState:UIControlStateNormal];
     }
     [progress setTintColor:color];
     [musicArtist setTextColor:color];
@@ -843,10 +853,10 @@
 }
 
 -(void)playMusicAction{
-    [musicPlayer shareClass].listType = TempList;
-    [musicPlayer shareClass].MusicArray = [NSMutableArray arrayWithArray:@[suggestMuzzik]];
-    [[musicPlayer shareClass] playSongWithSongModel:suggestMuzzik Title:[NSString stringWithFormat:@"单曲<%@>",suggestMuzzik.music.name]];
-    [MuzzikItem SetUserInfoWithMuzziks:[NSMutableArray arrayWithArray:@[suggestMuzzik]] title:Constant_userInfo_temp description:[NSString stringWithFormat:@"单曲<%@>",suggestMuzzik.music.name]];
+    [musicPlayer shareClass].listType = suggestList;
+    [musicPlayer shareClass].MusicArray = [NSMutableArray arrayWithArray:suggestArray];
+    [[musicPlayer shareClass] playSongWithSongModel:suggestMuzzik Title:@"推荐列表"];
+    [MuzzikItem SetUserInfoWithMuzziks:suggestArray title:Constant_userInfo_temp description:@"推荐列表"];
 }
 -(void) tapForAttention{
     muzzikTrendController *muzziktablevc = [[muzzikTrendController alloc] init];
@@ -867,28 +877,28 @@
     Globle *glob = [Globle shareGloble];
     BOOL isPlaying = [[musicPlayer shareClass].localMuzzik.muzzik_id isEqualToString:suggestMuzzik.muzzik_id]&&!glob.isPause;
     if ([suggestMuzzik.color longLongValue]==1) {
-
-        if (isPlaying) {
-            [playButton setImage:[UIImage imageNamed:@"yellowstopImage"] forState:UIControlStateNormal];
-        }else{
-            [playButton setImage:[UIImage imageNamed:@"yellowplayImage"] forState:UIControlStateNormal];
-        }
-    }
-    else if([suggestMuzzik.color longLongValue]==2){
-
-        if (isPlaying) {
-            [playButton setImage:[UIImage imageNamed:@"bluestopImage"] forState:UIControlStateNormal];
-        }else{
-            [playButton setImage:[UIImage imageNamed:@"blueplayImage"] forState:UIControlStateNormal];
-        }
-    }
-    else{
-
         if (isPlaying) {
             [playButton setImage:[UIImage imageNamed:@"redstopImage"] forState:UIControlStateNormal];
         }else{
             [playButton setImage:[UIImage imageNamed:@"redplayImage"] forState:UIControlStateNormal];
         }
+        
+    }
+    else if([suggestMuzzik.color longLongValue]==2){
+        if (isPlaying) {
+            [playButton setImage:[UIImage imageNamed:@"yellowstopImage"] forState:UIControlStateNormal];
+        }else{
+            [playButton setImage:[UIImage imageNamed:@"yellowplayImage"] forState:UIControlStateNormal];
+        }
+        
+    }
+    else{
+        if (isPlaying) {
+            [playButton setImage:[UIImage imageNamed:@"bluestopImage"] forState:UIControlStateNormal];
+        }else{
+            [playButton setImage:[UIImage imageNamed:@"blueplayImage"] forState:UIControlStateNormal];
+        }
+        
     }
     
 }
@@ -921,29 +931,31 @@
         suggestMuzzik.comments = tempMuzzik.comments;
         UIColor *color ;
         if ([suggestMuzzik.color longLongValue]==1) {
-            color = [UIColor colorWithHexString:@"fea42c"];
+            color = Color_Action_Button_1;
+            if (suggestMuzzik.ismoved) {
+                [likeButton setImage:[UIImage imageNamed:@"redlikedImage"] forState:UIControlStateNormal];
+            }else{
+                [likeButton setImage:[UIImage imageNamed:@"redlikeImage"] forState:UIControlStateNormal];
+            }
+            
+            
+        }
+        else if([suggestMuzzik.color longLongValue]==2){
+            //bluelikeImage
+            color = Color_Action_Button_2;
             if (suggestMuzzik.ismoved) {
                 [likeButton setImage:[UIImage imageNamed:@"yellowlikedImage"] forState:UIControlStateNormal];
             }else{
                 [likeButton setImage:[UIImage imageNamed:@"yellowlikeImage"] forState:UIControlStateNormal];
             }
         }
-        else if([suggestMuzzik.color longLongValue]==2){
-            //bluelikeImage
-            color = [UIColor colorWithHexString:@"04a0bf"];
+        
+        else{
+            color = Color_Action_Button_3;
             if (suggestMuzzik.ismoved) {
                 [likeButton setImage:[UIImage imageNamed:@"bluelikedImage"] forState:UIControlStateNormal];
             }else{
                 [likeButton setImage:[UIImage imageNamed:@"bluelikeImage"] forState:UIControlStateNormal];
-            }
-        }
-        
-        else{
-            color = [UIColor colorWithHexString:@"f26d7d"];
-            if (suggestMuzzik.ismoved) {
-                [likeButton setImage:[UIImage imageNamed:@"redlikedImage"] forState:UIControlStateNormal];
-            }else{
-                [likeButton setImage:[UIImage imageNamed:@"redlikeImage"] forState:UIControlStateNormal];
             }
         }
     }

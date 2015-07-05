@@ -133,6 +133,8 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
             userInfo *user = [userInfo shareClass];
             user.token = [dic objectForKey:@"token"];
+            user.uid = [dic objectForKey:@"_id"];
+            [MuzzikItem addMessageToLocal:dic];
             setNameVc *setname = [[setNameVc alloc] init];
             [self.navigationController pushViewController:setname animated:YES];
         }else{

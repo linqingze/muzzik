@@ -949,67 +949,70 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 }
 
 +(void) showNewNotifyByText:(NSString *)text{
-    NotifyButton *alterLabel = [[NotifyButton alloc] initWithFrame:CGRectZero];
-    [alterLabel setTitle:text forState:UIControlStateNormal];
-    [alterLabel setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [alterLabel setBackgroundColor:Color_NavigationBar];
-    [alterLabel.titleLabel setFont:[UIFont boldSystemFontOfSize:14]];
-    [alterLabel sizeToFit];
-    [alterLabel setFrame:CGRectMake(20 , SCREEN_HEIGHT-64, alterLabel.frame.size.width+34, 34)];
-    alterLabel.layer.cornerRadius = 17;
-    alterLabel.clipsToBounds = YES;
-    alterLabel.layer.shadowColor = [UIColor blackColor].CGColor;//shadowColor阴影颜色
-    alterLabel.layer.shadowOffset = CGSizeMake(0,0);//shadowOffset阴影偏移，默认(0, -3),这个跟shadowRadius配合使用
-    alterLabel.layer.shadowOpacity = 1;//阴影透明度，默认0
-    alterLabel.layer.shadowRadius = 3;//阴影半径，默认3
-    //路径阴影
-    UIBezierPath *path = [UIBezierPath bezierPath];
-    
-    float width = alterLabel.bounds.size.width;
-    float height = alterLabel.bounds.size.height;
-    float x = alterLabel.bounds.origin.x;
-    float y = alterLabel.bounds.origin.y;
-    float addWH = 10;
-    
-    CGPoint topLeft      = alterLabel.bounds.origin;
-    CGPoint topMiddle = CGPointMake(x+(width/2),y-addWH);
-    CGPoint topRight     = CGPointMake(x+width,y);
-    
-    CGPoint rightMiddle = CGPointMake(x+width+addWH,y+(height/2));
-    
-    CGPoint bottomRight  = CGPointMake(x+width,y+height);
-    CGPoint bottomMiddle = CGPointMake(x+(width/2),y+height+addWH);
-    CGPoint bottomLeft   = CGPointMake(x,y+height);
-    
-    
-    CGPoint leftMiddle = CGPointMake(x-addWH,y+(height/2));
-    
-    [path moveToPoint:topLeft];
-    //添加四个二元曲线
-    [path addQuadCurveToPoint:topRight
-                 controlPoint:topMiddle];
-    [path addQuadCurveToPoint:bottomRight
-                 controlPoint:rightMiddle];
-    [path addQuadCurveToPoint:bottomLeft
-                 controlPoint:bottomMiddle];
-    [path addQuadCurveToPoint:topLeft
-                 controlPoint:leftMiddle];
+    MuzzikObject *mobject = [MuzzikObject shareClass];
+    if (!mobject.notifyBUtton) {
+        NotifyButton *alterLabel = [[NotifyButton alloc] initWithFrame:CGRectZero];
+        [alterLabel setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [alterLabel setBackgroundColor:Color_NavigationBar];
+        [alterLabel.titleLabel setFont:[UIFont boldSystemFontOfSize:14]];
+        
+        alterLabel.layer.cornerRadius = 17;
+        alterLabel.clipsToBounds = YES;
+        alterLabel.layer.shadowColor = [UIColor blackColor].CGColor;//shadowColor阴影颜色
+        alterLabel.layer.shadowOffset = CGSizeMake(0,0);//shadowOffset阴影偏移，默认(0, -3),这个跟shadowRadius配合使用
+        alterLabel.layer.shadowOpacity = 1;//阴影透明度，默认0
+        alterLabel.layer.shadowRadius = 3;//阴影半径，默认3
+        //路径阴影
+        UIBezierPath *path = [UIBezierPath bezierPath];
+        
+        float width = alterLabel.bounds.size.width;
+        float height = alterLabel.bounds.size.height;
+        float x = alterLabel.bounds.origin.x;
+        float y = alterLabel.bounds.origin.y;
+        float addWH = 10;
+        
+        CGPoint topLeft      = alterLabel.bounds.origin;
+        CGPoint topMiddle = CGPointMake(x+(width/2),y-addWH);
+        CGPoint topRight     = CGPointMake(x+width,y);
+        
+        CGPoint rightMiddle = CGPointMake(x+width+addWH,y+(height/2));
+        
+        CGPoint bottomRight  = CGPointMake(x+width,y+height);
+        CGPoint bottomMiddle = CGPointMake(x+(width/2),y+height+addWH);
+        CGPoint bottomLeft   = CGPointMake(x,y+height);
+        
+        
+        CGPoint leftMiddle = CGPointMake(x-addWH,y+(height/2));
+        
+        [path moveToPoint:topLeft];
+        //添加四个二元曲线
+        [path addQuadCurveToPoint:topRight
+                     controlPoint:topMiddle];
+        [path addQuadCurveToPoint:bottomRight
+                     controlPoint:rightMiddle];
+        [path addQuadCurveToPoint:bottomLeft
+                     controlPoint:bottomMiddle];
+        [path addQuadCurveToPoint:topLeft
+                     controlPoint:leftMiddle];
+        alterLabel.layer.shadowPath = path.CGPath;
+        mobject.notifyBUtton = alterLabel;
+    }
+    [mobject.notifyBUtton setHidden:NO];
     //设置阴影路径
+    [mobject.notifyBUtton setTitle:text forState:UIControlStateNormal];
+    [mobject.notifyBUtton sizeToFit];
+    [mobject.notifyBUtton setFrame:CGRectMake(20 , SCREEN_HEIGHT-64, mobject.notifyBUtton.frame.size.width+34, 34)];
     AppDelegate *myDelegate =(AppDelegate*)[[UIApplication sharedApplication] delegate];
-    
-    
-    alterLabel.layer.shadowPath = path.CGPath;
-    [alterLabel setAlpha:0];
-    [myDelegate.window.rootViewController.view addSubview:alterLabel];
+    [mobject.notifyBUtton setAlpha:0];
+    [myDelegate.window.rootViewController.view addSubview:mobject.notifyBUtton];
     [UIView animateWithDuration:0.4 animations:^{
-        [alterLabel setAlpha:0.8];
+        [mobject.notifyBUtton setAlpha:0.8];
     } completion:^(BOOL finished) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [alterLabel removeFromSuperview];
+            [mobject.notifyBUtton removeFromSuperview];
             
         });
     }];
-
 }
 
 +(void) showWarnOnView:(UIView *)view text:(NSString *)text{

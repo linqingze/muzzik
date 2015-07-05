@@ -49,12 +49,15 @@
     [WeiboSDK registerApp:Key_WeiBo];
     [self startSdkWith:kAppId appKey:kAppKey appSecret:kAppSecret];
     NSDictionary * dic = [MuzzikItem messageFromLocal];
-    userInfo *user = [userInfo shareClass];
-    user.uid = [dic objectForKey:@"_id"];
-    user.token = [dic objectForKey:@"token"];
-    user.gender = [dic objectForKey:@"gender"];
-    user.avatar = [dic objectForKey:@"avatar"];
-    user.name = [dic objectForKey:@"name"];
+    if (dic) {
+        userInfo *user = [userInfo shareClass];
+        user.uid = [dic objectForKey:@"_id"];
+        user.token = [dic objectForKey:@"token"];
+        user.gender = [dic objectForKey:@"gender"];
+        user.avatar = [dic objectForKey:@"avatar"];
+        user.name = [dic objectForKey:@"name"];
+    }
+    
     [self loadData];
     
     [self registerRemoteNotification];

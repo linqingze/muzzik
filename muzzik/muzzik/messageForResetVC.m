@@ -60,10 +60,10 @@
     [visibleButton addTarget:self action:@selector(setVisible) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:visibleButton];
     [MuzzikItem addLineOnView:self.view heightPoint:90 toLeft:13 toRight:13 withColor:Color_underLine];
-    UIButton *nextButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-67, SCREEN_HEIGHT-133, 54, 52)];
-    [nextButton setImage:[UIImage imageNamed:@"cycledone"] forState:UIControlStateNormal];
-    [self.view addSubview: nextButton];
-    [nextButton addTarget:self action:@selector(summitAction) forControlEvents:UIControlEventTouchUpInside];
+//    UIButton *nextButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-67, SCREEN_HEIGHT-133, 54, 52)];
+//    [nextButton setImage:[UIImage imageNamed:@"cycledone"] forState:UIControlStateNormal];
+//    [self.view addSubview: nextButton];
+//    [nextButton addTarget:self action:@selector(summitAction) forControlEvents:UIControlEventTouchUpInside];
     timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
     tipsLabel = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(20, 100, 200, 25)];
@@ -157,6 +157,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
             }else if([weakrequest responseStatusCode] == 200 && [[dic allKeys] containsObject:@"token"]) {
                 userInfo *user = [userInfo shareClass];
                 user.token = [dic objectForKey:@"token"];
+                [MuzzikItem showNotifyOnView:self.navigationController.view text:@"密码修改成功"];
                 [self.navigationController popToRootViewControllerAnimated:YES];
             }
         }];

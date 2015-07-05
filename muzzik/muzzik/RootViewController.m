@@ -157,7 +157,8 @@
     [UIView animateWithDuration:2 animations:^{
         [startLogo setAlpha:1];
     }];
-    [startLogo setFrame:CGRectMake(18, 64, startLogo.frame.size.width, startLogo.frame.size.height)];
+    [startLogo setFrame:CGRectMake(18, 64, SCREEN_WIDTH-36, startLogo.frame.size.height)];
+    startLogo.contentMode = UIViewContentModeScaleAspectFit;
     [coverImageView addSubview:startLogo];
     [coverImageView addSubview:startSlogan];
     [app.window addSubview:coverImageView];

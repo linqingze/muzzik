@@ -12,5 +12,6 @@
     UITextField *nameText;
     UILabel * tipsLabel;
     BOOL isOk;
+    BOOL isCheck;
 }
 @end

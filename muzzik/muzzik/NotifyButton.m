@@ -24,7 +24,14 @@
     AppDelegate *app = (AppDelegate*)[UIApplication sharedApplication].delegate;
     
     UINavigationController *nac = (UINavigationController *)app.window.rootViewController;
-    NotificationVC *notify = [[NotificationVC alloc] init];
-    [nac pushViewController:notify animated:YES];
+    if ([nac.viewControllers.lastObject isKindOfClass:[NotificationVC class]]) {
+        NotificationVC *currentVC = (NotificationVC *)nac.viewControllers.lastObject;
+        [currentVC reloadDataSource];
+        
+    }else{
+        NotificationVC *notify = [[NotificationVC alloc] init];
+        [nac pushViewController:notify animated:YES];
+    }
+    
 }
 @end

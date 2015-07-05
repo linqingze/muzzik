@@ -28,6 +28,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     page =1;
+    [[MuzzikObject shareClass].notifyBUtton setHidden:YES];
     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteMuzzik:) name:String_Muzzik_Delete object:nil];
     [self initNagationBar:@"通知" leftBtn:Constant_backImage rightBtn:0];
@@ -47,7 +48,7 @@
     [self loadDataMessage];
 }
 -(void)loadDataMessage{
-    
+    page = 1;
     NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,[NSNumber numberWithBool:YES],@"full", nil];
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Notify]]];
     [request addBodyDataSourceWithJsonByDic:requestDic Method:GetMethod auth:YES];

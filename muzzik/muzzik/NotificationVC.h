@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 #import "AMScrollingNavbarViewController.h"
 @interface NotificationVC : AMScrollingNavbarViewController
-
+-(void)loadDataMessage;
 @end

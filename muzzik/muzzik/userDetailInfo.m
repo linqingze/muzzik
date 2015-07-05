@@ -16,7 +16,6 @@
 #import "showUsersVC.h"
 #import <TencentOpenAPI/TencentOAuth.h>
 #import "TopicDetail.h"
-
 @interface userDetailInfo ()<UITableViewDataSource,UITableViewDelegate,TTTAttributedLabelDelegate,CellDelegate>{
     UITableView *MyTableView;
     int page;
@@ -33,6 +32,7 @@
     CGFloat maxScaleY;
     BOOL isDataSourceUpdated;
     UIImage *shareImage;
+    NSString *muzzikuserName;
 }
 @property(nonatomic,retain) muzzik *repostMuzzik;
 @property (nonatomic,retain) NSMutableDictionary *profileDic;
@@ -124,6 +124,7 @@
                 }
                 if ([dicKeys containsObject:@"name"]) {
                     _nameLabel.text = [_profileDic objectForKey:@"name"];
+                    muzzikuserName = [_profileDic objectForKey:@"name"];
                     [_nameLabel sizeToFit];
                     [_nameLabel setFrame:CGRectMake(16, SCREEN_WIDTH/2-_nameLabel.frame.size.height, _nameLabel.frame.size.width, _nameLabel.frame.size.height)];
                     [_genderImage setFrame:CGRectMake(CGRectGetMaxX(_nameLabel.frame)+6, CGRectGetMidY(_nameLabel.frame)-10, 16, 16)];
@@ -920,7 +921,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
                 if ([weakrequest responseStatusCode] == 200) {
                     [MuzzikItem showNotifyOnView:self.view text:@"转发成功"];
                     self.repostMuzzik.isReposted = YES;
-                    self.repostMuzzik.reposts = [NSString stringWithFormat:@"%ld",[self.repostMuzzik.reposts integerValue]+1];
+                    self.repostMuzzik.reposts = [NSString stringWithFormat:@"%d",[self.repostMuzzik.reposts intValue]+1];
                     [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:self.repostMuzzik];
                 }
                 
@@ -948,7 +949,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
                 if ([weakrequest responseStatusCode] == 200) {
                     [MuzzikItem showNotifyOnView:self.view text:@"取消转发"];
                     self.repostMuzzik.isReposted = NO;
-                    self.repostMuzzik.reposts = [NSString stringWithFormat:@"%ld",[self.repostMuzzik.reposts integerValue]-1];
+                    self.repostMuzzik.reposts = [NSString stringWithFormat:@"%d",[self.repostMuzzik.reposts intValue]-1];
                     [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:self.repostMuzzik];
                 }
                 
@@ -1048,6 +1049,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 -(void)showSong{
     UserSongVC *usersongvc = [[UserSongVC alloc] init];
     usersongvc.uid = self.uid;
+    usersongvc.userName = muzzikuserName;
     [self.navigationController pushViewController:usersongvc animated:YES];
 }
 

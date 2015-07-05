@@ -38,8 +38,9 @@
     UITapGestureRecognizer *tapOnview = [[UITapGestureRecognizer alloc] initWithTarget:self.view action:@selector(endEditing:)];
     [self.view addGestureRecognizer:tapOnview];
 }
--(void)textFieldDidEndEditing:(UITextField *)textField{
-    if (textField == phoneText && [textField.text length]>0) {
+
+-(void)rightBtnAction:(UIButton *)sender{
+    if ([phoneText.text length]>0) {
         ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_check_phone]]];
         [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:phoneText.text forKey:@"phone"] Method:PostMethod auth:NO];
         __weak ASIHTTPRequest *weakrequest = requestForm;
@@ -48,31 +49,26 @@
             NSLog(@"%d",[weakrequest responseStatusCode]);
             //NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
             if ([weakrequest responseStatusCode] == 409 ) {
-                isOk = YES;
+                ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_GetVerifiCode]]];
+                [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:phoneText.text forKey:@"phone"] Method:PostMethod auth:NO];
+                __weak ASIHTTPRequest *weakrequest = requestForm;
+                [requestForm setCompletionBlock :^{
+                    NSLog(@"%@",[weakrequest responseString]);
+                    NSLog(@"%d",[weakrequest responseStatusCode]);
+                    if ([weakrequest responseStatusCode] == 200) {
+                        messageForResetVC *mVC = [[messageForResetVC alloc] init];
+                        mVC.phoneNumber = phoneText.text;
+                        [self.navigationController pushViewController:mVC animated:YES];
+                    }
+                }];
+                [requestForm setFailedBlock:^{
+                    // [SVProgressHUD showErrorWithStatus:@"network error"];
+                }];
+                [requestForm startAsynchronous];
             }else{
                 [MuzzikItem showView:tipsLabel Text:@"手机号不存在"];
                 
                 isOk = NO;
-            }
-        }];
-        [requestForm setFailedBlock:^{
-            // [SVProgressHUD showErrorWithStatus:@"network error"];
-        }];
-        [requestForm startAsynchronous];
-    }
-}
--(void)rightBtnAction:(UIButton *)sender{
-    if (isOk) {
-        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_GetVerifiCode]]];
-        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:phoneText.text forKey:@"phone"] Method:PostMethod auth:NO];
-        __weak ASIHTTPRequest *weakrequest = requestForm;
-        [requestForm setCompletionBlock :^{
-            NSLog(@"%@",[weakrequest responseString]);
-            NSLog(@"%d",[weakrequest responseStatusCode]);
-            if ([weakrequest responseStatusCode] == 200) {
-                messageForResetVC *mVC = [[messageForResetVC alloc] init];
-                mVC.phoneNumber = phoneText.text;
-                [self.navigationController pushViewController:mVC animated:YES];
             }
         }];
         [requestForm setFailedBlock:^{

@@ -54,10 +54,16 @@
     [tempLabel setFont:[UIFont fontWithName:Font_Next_Bold size:15]];
     tempLabel.text = cell.songName.text;
     [tempLabel sizeToFit];
-    if (tempLabel.frame.size.width >SCREEN_WIDTH-50) {
+    UILabel *tempArtist = [[UILabel alloc] init];
+    [tempArtist setFont:[UIFont fontWithName:Font_Next_Bold size:12]];
+    tempArtist.text = cell.Artist.text;
+    [tempArtist sizeToFit];
+    
+    int maxWidtg = tempArtist.frame.size.width >tempLabel.frame.size.width ? tempArtist.frame.size.width:tempLabel.frame.size.width;
+    if (maxWidtg >SCREEN_WIDTH-50) {
         [cell.songImage setFrame:CGRectMake(SCREEN_WIDTH-30, 23, 15, 15)];
     }else{
-        [cell.songImage setFrame:CGRectMake(tempLabel.frame.size.width+40, 23, 15, 15)];
+        [cell.songImage setFrame:CGRectMake(maxWidtg+40, 23, 15, 15)];
     }
     UIColor *color = Color_Action_Button_2;
 //    if (indexPath.row%3 == 0) {

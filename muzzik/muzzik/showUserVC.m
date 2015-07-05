@@ -144,7 +144,11 @@
     }];
     cell.delegate = self;
     cell.muzzikUser = muzzikuser;
-    
+    if ([[userInfo shareClass].uid length]>0 && [muzzikuser.user_id isEqualToString:[userInfo shareClass].uid]) {
+        [cell.attentionButton setHidden:YES];
+    }else{
+        [cell.attentionButton setHidden:NO];
+    }
     cell.index = indexPath.row;
     cell.label.text = muzzikuser.name;
     if (muzzikuser.isFollow &&muzzikuser.isFans) {
