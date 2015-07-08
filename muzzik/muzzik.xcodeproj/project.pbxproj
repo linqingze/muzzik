@@ -199,6 +199,9 @@
 		F2ED22DB1B136029001F7787 /* UIButton_UserMuzzik.m in Sources */ = {isa = PBXBuildFile; fileRef = F2ED22DA1B136029001F7787 /* UIButton_UserMuzzik.m */; };
 		F2ED53711B20B73E0087D4BA /* songDetailVCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F2ED53701B20B73E0087D4BA /* songDetailVCViewController.m */; };
 		F2EDF71D1B0B240800400A85 /* StyledPageControl.m in Sources */ = {isa = PBXBuildFile; fileRef = F2EDF71C1B0B240800400A85 /* StyledPageControl.m */; };
+		F2EF736B1B4BBF6900E3A33A /* DialogVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2EF736A1B4BBF6900E3A33A /* DialogVC.m */; };
+		F2EF736E1B4C5CDB00E3A33A /* repostVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2EF736D1B4C5CDB00E3A33A /* repostVC.m */; };
+		F2EF73711B4C625300E3A33A /* InformCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2EF73701B4C625300E3A33A /* InformCell.m */; };
 		F2F089D91B00920D00FB1639 /* settingSystemVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F089D71B00920D00FB1639 /* settingSystemVC.m */; };
 		F2F089E01B009CCA00FB1639 /* SettingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F089DF1B009CCA00FB1639 /* SettingCell.m */; };
 		F2F0FC8C1ADD8B7100668103 /* TeachViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F0FC8A1ADD8B7100668103 /* TeachViewController.m */; };
@@ -638,6 +641,12 @@
 		F2ED53701B20B73E0087D4BA /* songDetailVCViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = songDetailVCViewController.m; sourceTree = "<group>"; };
 		F2EDF71B1B0B240800400A85 /* StyledPageControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StyledPageControl.h; sourceTree = "<group>"; };
 		F2EDF71C1B0B240800400A85 /* StyledPageControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StyledPageControl.m; sourceTree = "<group>"; };
+		F2EF73691B4BBF6900E3A33A /* DialogVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DialogVC.h; sourceTree = "<group>"; };
+		F2EF736A1B4BBF6900E3A33A /* DialogVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DialogVC.m; sourceTree = "<group>"; };
+		F2EF736C1B4C5CDB00E3A33A /* repostVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = repostVC.h; sourceTree = "<group>"; };
+		F2EF736D1B4C5CDB00E3A33A /* repostVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = repostVC.m; sourceTree = "<group>"; };
+		F2EF736F1B4C625300E3A33A /* InformCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InformCell.h; sourceTree = "<group>"; };
+		F2EF73701B4C625300E3A33A /* InformCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InformCell.m; sourceTree = "<group>"; };
 		F2F089D61B00920D00FB1639 /* settingSystemVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = settingSystemVC.h; sourceTree = "<group>"; };
 		F2F089D71B00920D00FB1639 /* settingSystemVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = settingSystemVC.m; sourceTree = "<group>"; };
 		F2F089DE1B009CCA00FB1639 /* SettingCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingCell.h; sourceTree = "<group>"; };
@@ -983,6 +992,12 @@
 				F212A76B1AF4E52E005B14DD /* showUserVC.m */,
 				F212A76D1AF5044A005B14DD /* DetaiMuzzikVC.h */,
 				F212A76E1AF5044A005B14DD /* DetaiMuzzikVC.m */,
+				F2EF736C1B4C5CDB00E3A33A /* repostVC.h */,
+				F2EF736D1B4C5CDB00E3A33A /* repostVC.m */,
+				F2EF736F1B4C625300E3A33A /* InformCell.h */,
+				F2EF73701B4C625300E3A33A /* InformCell.m */,
+				F2EF73691B4BBF6900E3A33A /* DialogVC.h */,
+				F2EF736A1B4BBF6900E3A33A /* DialogVC.m */,
 				F2E9336E1AFD232600B2C6B4 /* CommentMuzzikCell.h */,
 				F2E9336F1AFD232600B2C6B4 /* CommentMuzzikCell.m */,
 				F2EB60F01AF9FA1F000B7579 /* userDetailInfo.h */,
@@ -1742,6 +1757,7 @@
 				F25C504D1B034B5E00F03A61 /* showUsersVC.m in Sources */,
 				E1FA12E41AB18252005EDA1D /* FSCheckContentTypeRequest.m in Sources */,
 				F2A5E2091AD90F9F00FD8B3E /* MuzzikUser.m in Sources */,
+				F2EF736E1B4C5CDB00E3A33A /* repostVC.m in Sources */,
 				E16716251AAD77830068AE98 /* userInfo.m in Sources */,
 				E112468E1AAAB2CD0014D461 /* muzzikTrendController.m in Sources */,
 				E1FA12E81AB18252005EDA1D /* FSXMLHttpRequest.m in Sources */,
@@ -1776,6 +1792,7 @@
 				E112466E1AAAB20B0014D461 /* SDImageCache.m in Sources */,
 				F2EB60F21AF9FA1F000B7579 /* userDetailInfo.m in Sources */,
 				F212A76F1AF5044A005B14DD /* DetaiMuzzikVC.m in Sources */,
+				F2EF736B1B4BBF6900E3A33A /* DialogVC.m in Sources */,
 				F2FBE8FD1AFB56C50070831D /* CommentTableVC.m in Sources */,
 				F2ED22D81B12AC0C001F7787 /* TTTAttributedLabel.m in Sources */,
 				E1FA13461AB195E0005EDA1D /* Globle.m in Sources */,
@@ -1877,6 +1894,7 @@
 				F2F7EE251AEE213200265596 /* BATableView.m in Sources */,
 				F2A5E2061AD90D8000FD8B3E /* muzzik.m in Sources */,
 				E11246751AAAB20B0014D461 /* UIButton+WebCache.m in Sources */,
+				F2EF73711B4C625300E3A33A /* InformCell.m in Sources */,
 				F2E558AA1B164D420080F9C9 /* MJRefreshFooterView.m in Sources */,
 				E11246771AAAB20B0014D461 /* UIImage+MultiFormat.m in Sources */,
 				E1FA12C31AB1499F005EDA1D /* AudioPlayer.m in Sources */,

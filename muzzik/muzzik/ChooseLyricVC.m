@@ -1058,7 +1058,7 @@
     newmuzzik.topics = [dic objectForKey:@"topics"];
     newmuzzik.users = [dic objectForKey:@"users"];
     newmuzzik.type = [dic objectForKey:@"type"];
-    newmuzzik.onlytext = [[dic objectForKey:@"onlytext"] boolValue];
+    newmuzzik.onlytext = [[dic objectForKey:@"onlyText"] boolValue];
     newmuzzik.isReposted = NO;
     newmuzzik.reposts = [dic objectForKey:@"reposts"];
     newmuzzik.shares = [dic objectForKey:@"shares"];

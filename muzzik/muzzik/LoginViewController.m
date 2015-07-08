@@ -200,6 +200,7 @@
     QQButton.layer.cornerRadius = 3;
     QQButton.clipsToBounds = YES;
     [self.view addSubview:QQButton];
+
     
     UIButton *WeiChatButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-78, localPosition, 32, 32)];
     [WeiChatButton setImage:[UIImage imageNamed:@"LoginwechatImage"] forState:UIControlStateNormal];
@@ -214,6 +215,13 @@
     weiboButton.layer.cornerRadius = 3;
     weiboButton.clipsToBounds = YES;
     [self.view addSubview:weiboButton];
+    userInfo *user  = [userInfo shareClass];
+    if (!user.QQInstalled) {
+        [QQButton setEnabled:NO];
+    }
+    if (!user.WeChatInstalled) {
+        [WeiChatButton setEnabled:NO];
+    }
     
     
 }

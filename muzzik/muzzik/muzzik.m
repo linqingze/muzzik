@@ -61,6 +61,8 @@
             newmuzzik.reply.reply_id = [[dic objectForKey:@"reply"] objectForKey:@"_id"];
             newmuzzik.reply.message = [[dic objectForKey:@"reply"] objectForKey:@"message"];
             newmuzzik.reply.color = [[dic objectForKey:@"reply"] objectForKey:@"color"];
+        }else if([[dic allKeys ] containsObject:@"reply"] &&[[dic objectForKey:@"reply"] isKindOfClass:[NSString class]] && [[dic objectForKey:@"reply"] length]>0 ){
+            newmuzzik.replystring = [dic objectForKey:@"reply"];
         }
         [muzziks addObject:newmuzzik];
     }

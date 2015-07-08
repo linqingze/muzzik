@@ -8,7 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "TTTAttributedLabel.h"
-@interface CommentMuzzikCell : UITableViewCell
+#import "repostVC.h"
+@interface CommentMuzzikCell : UITableViewCell<UIActionSheetDelegate>
 
 @property(nonatomic ,retain) UIButton *userImage;
 @property(nonatomic ,retain) UILabel *userName;
@@ -21,4 +22,5 @@
 @property (nonatomic,retain) UIImageView *timeImage;
 @property(nonatomic,retain) UIView *lineview;
 @property(nonatomic ,retain) UIImageView *privateImage;
+@property(nonatomic,retain) UILongPressGestureRecognizer *longPress;
 @end

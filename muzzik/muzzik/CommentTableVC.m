@@ -51,7 +51,7 @@
 
 -(void)loadDataMessage{
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@/muzziks",BaseURL,self.uid]]];
-    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES],@"reply",Limit_Constant,Parameter_Limit, nil] Method:GetMethod auth:YES];
+    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:self.uid,@"uid",[NSNumber numberWithBool:YES],@"reply",Limit_Constant,Parameter_Limit, nil] Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = request;
     [request setCompletionBlock :^{
         // NSLog(@"%@",[weakrequest responseString]);
@@ -60,6 +60,12 @@
         if (dic) {
             muzzik *muzzikToy = [muzzik new];
             commentArray = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+            for (int i = (int)(commentArray.count-1); i>=0; i--) {
+                muzzik *tempMuzzik = commentArray[i];
+                if ([tempMuzzik.replystring isEqualToString:@"53e709da97c888c50b1a2fb8"]) {
+                    [commentArray removeObject:tempMuzzik];
+                }
+            }
             lastId = [dic objectForKey:Parameter_tail];
             [MytableView reloadData];
             
@@ -88,7 +94,7 @@
 {
     // [self updateSomeThing];
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@/muzziks",BaseURL,self.uid]]];
-    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES],@"reply",Limit_Constant,Parameter_Limit, nil] Method:GetMethod auth:YES];
+    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:self.uid,@"uid",[NSNumber numberWithBool:YES],@"reply",Limit_Constant,Parameter_Limit, nil] Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = request;
     [request setCompletionBlock :^{
         // NSLog(@"%@",[weakrequest responseString]);
@@ -97,6 +103,12 @@
         if (dic) {
             muzzik *muzzikToy = [muzzik new];
             commentArray = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+            for (int i = (int)(commentArray.count-1); i>=0; i--) {
+                muzzik *tempMuzzik = commentArray[i];
+                if ([tempMuzzik.replystring isEqualToString:@"53e709da97c888c50b1a2fb8"]) {
+                    [commentArray removeObject:tempMuzzik];
+                }
+            }
             lastId = [dic objectForKey:Parameter_tail];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [MytableView reloadData];
@@ -126,7 +138,7 @@
 {
     // [self updateSomeThing];
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@/muzziks",BaseURL,self.uid]]];
-    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES],@"reply",lastId,Parameter_from,Limit_Constant,Parameter_Limit, nil] Method:GetMethod auth:YES];
+    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:self.uid,@"uid",[NSNumber numberWithBool:YES],@"reply",lastId,Parameter_from,Limit_Constant,Parameter_Limit, nil] Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = request;
     [request setCompletionBlock :^{
         // NSLog(@"%@",[weakrequest responseString]);
@@ -134,7 +146,15 @@
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         if (dic) {
             muzzik *muzzikToy = [muzzik new];
-            [commentArray addObjectsFromArray:[muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]]];
+            NSMutableArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+            
+            for (int i = (int)(array.count-1); i>=0; i--) {
+                muzzik *tempMuzzik = array[i];
+                if ([tempMuzzik.replystring isEqualToString:@"53e709da97c888c50b1a2fb8"]) {
+                    [array removeObject:tempMuzzik];
+                }
+            }
+            [commentArray addObjectsFromArray:array];
             lastId = [dic objectForKey:@"tail"];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [MytableView footerEndRefreshing];
@@ -185,13 +205,14 @@
     label.text = tempMuzzik.message;
     
     [label setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
-    CGFloat textHeight = [MuzzikItem heightForLabel:label WithText:label.text];
+    int textHeight = [MuzzikItem heightForLabel:label WithText:label.text];
     
     if (tempMuzzik.onlytext) {
-        return 71+textHeight;
+        return 75+textHeight;
     }else{
-        return 106+textHeight;
+        return 110+textHeight;
     }
+    
     
 }
 

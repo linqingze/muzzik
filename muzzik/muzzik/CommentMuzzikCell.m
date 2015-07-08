@@ -52,15 +52,16 @@
     [self addSubview:_playButton];
     _songName = [[UILabel alloc] initWithFrame:CGRectMake(79, 12, SCREEN_WIDTH-150, 20)];
     [self addSubview:_songName];
-    _timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-76, 26, 45, 20)];
+    _timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-76, 4, 45, 20)];
     _timeLabel.textAlignment = NSTextAlignmentRight;
-    _timeImage = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-25, 31, 9, 9)];
+    _timeImage = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-25, 9, 9, 9)];
     [_timeImage setImage:[UIImage imageNamed:Image_timeImage]];
     [self addSubview:_timeImage];
     [_timeLabel setFont:[UIFont systemFontOfSize:9]];
     [_timeLabel setTextColor:Color_Additional_5];
     [self addSubview:_timeLabel];
-    
+    self.longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(informAction:)];
+    [self addGestureRecognizer:self.longPress];
 }
 -(void) playMuzzik{
      [self.delegate playSongWithSongModel:self.MuzzikModel];
@@ -68,5 +69,40 @@
 -(void) goToUser{
     [self.delegate userDetail:self.MuzzikModel.MuzzikUser.user_id];
 }
+-(void)informAction:(UILongPressGestureRecognizer *)longPressGesture{
+    if (longPressGesture.state == UIGestureRecognizerStateBegan){
+        userInfo *user = [userInfo shareClass];
+        if (![user.uid isEqualToString:self.MuzzikModel.MuzzikUser.user_id]) {
+            
+            UIActionSheet *alertSheet;
+            if ([user.token length]>0 ) {
+                alertSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"举报", nil];
+            }else{
+                alertSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"请先登录，再举报Ta", nil];
+            }
+            
+            [alertSheet showInView:self.window];
+        }
+        
+    }
+    
+    
+}
+-(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
 
+    if(buttonIndex==actionSheet.cancelButtonIndex){
+        return;
+    }else{
+        UIViewController *vc =  (UIViewController *)self.delegate;
+        userInfo *user = [userInfo shareClass];
+        if ([user.token length]>0) {
+            repostVC *informvc = [[repostVC alloc] init];
+            informvc.informString = [NSString stringWithFormat:@"muzzik id:%@",self.MuzzikModel.muzzik_id];
+            [vc.navigationController pushViewController:informvc animated:YES];
+        }else{
+            [userInfo checkLoginWithVC:vc];
+        }
+    }
+    
+}
 @end

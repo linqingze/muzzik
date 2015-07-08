@@ -214,6 +214,7 @@
             isLogiined = NO;
             muzzikvc = [[muzzikTrendController alloc] init];
             muzzikvc.isRootSubview = YES;
+            muzzikvc.parentRoot = self;
             pageControllers = @[muzzikvc,topicvc];
             NSArray* viewControllers = @[muzzikvc];
             [_pageViewController setViewControllers:viewControllers

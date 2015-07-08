@@ -23,7 +23,7 @@
             newmuzzik.topics = [[dic  objectForKey:@"muzzik"]objectForKey:@"topics"];
             newmuzzik.users = [[dic  objectForKey:@"muzzik"] objectForKey:@"users"];
             newmuzzik.type = [[dic  objectForKey:@"muzzik"] objectForKey:@"type"];
-            newmuzzik.onlytext = [[[dic  objectForKey:@"muzzik"] objectForKey:@"onlytext"] boolValue];
+            newmuzzik.onlytext = [[[dic  objectForKey:@"muzzik"] objectForKey:@"onlyText"] boolValue];
             newmuzzik.reposts = [[dic  objectForKey:@"muzzik"] objectForKey:@"reposts"];
             newmuzzik.shares = [[dic  objectForKey:@"muzzik"] objectForKey:@"shares"];
             newmuzzik.comments = [[dic  objectForKey:@"muzzik"] objectForKey:@"comments"];

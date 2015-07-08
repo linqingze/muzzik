@@ -175,7 +175,7 @@
             btnImage = [NSString stringWithFormat:@"下一步"];
             break;
         case 6:
-            btnImage = [NSString stringWithFormat:@"提交"];
+            btnImage = [UIImage imageNamed:@"submit"];
             break;
         case 7:
             btnImage = [UIImage imageNamed:@"自拍"];
@@ -187,10 +187,11 @@
             btnImage = [NSString stringWithFormat:@"注册"];
             break;
         case 10:
-            btnImage = [NSString stringWithFormat:@"管理"];
+            btnImage = [UIImage imageNamed:@"conversationImage"];
+            [self.rightBtn setFrame:CGRectMake(0, 0, 100, 44)];
             break;
         case 11:
-            btnImage = [UIImage imageNamed:@"添加"];
+            btnImage = [UIImage imageNamed:@"detailmoreImage"];
             break;
         case 12:
             btnImage = [NSString stringWithFormat:@"保存"];

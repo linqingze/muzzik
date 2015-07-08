@@ -16,7 +16,8 @@
 #import "showUsersVC.h"
 #import <TencentOpenAPI/TencentOAuth.h>
 #import "TopicDetail.h"
-@interface userDetailInfo ()<UITableViewDataSource,UITableViewDelegate,TTTAttributedLabelDelegate,CellDelegate>{
+#import "repostVC.h"
+@interface userDetailInfo ()<UITableViewDataSource,UITableViewDelegate,TTTAttributedLabelDelegate,CellDelegate,UIActionSheetDelegate>{
     UITableView *MyTableView;
     int page;
     //shareView
@@ -33,6 +34,7 @@
     BOOL isDataSourceUpdated;
     UIImage *shareImage;
     NSString *muzzikuserName;
+    UIAlertView *loginAlter;
 }
 @property(nonatomic,retain) muzzik *repostMuzzik;
 @property (nonatomic,retain) NSMutableDictionary *profileDic;
@@ -72,7 +74,7 @@
     self.muzziks = [NSMutableArray array];
     RefreshDic = [NSMutableDictionary dictionary];
     [self SettingShareView];
-    [self initNagationBar:@"Ta" leftBtn:Constant_backImage rightBtn:0];
+    [self initNagationBar:@"Ta" leftBtn:Constant_backImage rightBtn:11];
     MyTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     self.musicplayer = [musicPlayer shareClass];
     [self.view addSubview:MyTableView];
@@ -868,6 +870,11 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
             if ([weakrequest responseStatusCode] == 200) {
                 // NSData *data = [weakrequest responseData];
                 tempMuzzik.ismoved = !tempMuzzik.ismoved;
+                if (tempMuzzik.ismoved) {
+                    tempMuzzik.moveds = [NSString stringWithFormat:@"%d",[tempMuzzik.moveds intValue]+1 ];
+                }else{
+                    tempMuzzik.moveds = [NSString stringWithFormat:@"%d",[tempMuzzik.moveds intValue]-1 ];
+                }
                 [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:tempMuzzik];
                
                 
@@ -1544,6 +1551,37 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
             [_attentionButton setFrame:CGRectMake(SCREEN_WIDTH-65, 16, 45, 23)];
         }
     }
+}
+-(void)rightBtnAction:(UIButton *)sender{
+    UIActionSheet *sheet;
+    userInfo *user = [userInfo shareClass];
+    if ([user.token length]>0) {
+        sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"举报", nil];
+    }else{
+        sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"请先登录，再举报Ta", nil];
+    }
+    
+    [sheet showInView:self.view.window];
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    
+    if(buttonIndex==actionSheet.cancelButtonIndex){
+        return;
+    }else if (buttonIndex == 0){
+        userInfo *user = [userInfo shareClass];
+        if ([user.token length]>0) {
+            repostVC *informvc = [[repostVC alloc] init];
+            informvc.informString = [NSString stringWithFormat:@"user id:%@",self.uid];
+            [self.navigationController pushViewController:informvc animated:YES];
+        }else{
+            [userInfo checkLoginWithVC:self];
+        }
+        
+    }
+    
+    
 }
 
 @end
