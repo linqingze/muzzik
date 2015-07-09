@@ -532,6 +532,7 @@
     
     
     if (shareLabel) {
+        [shareLabel hideTextViewBox];
         userInfo *user = [userInfo shareClass];
         MuzzikObject *mobject = [MuzzikObject shareClass];
         if (fontTableShowed) {
@@ -547,7 +548,6 @@
                 step = 1;
                 [tipsLabel setHidden:YES];
                 [self initNagationBar:@"发布并分享" leftBtn:Constant_backImage rightBtn:5];
-                [shareLabel hideTextViewBox];
                 
                 [headImage addSubview:shareLabel];
                 
