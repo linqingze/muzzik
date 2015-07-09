@@ -58,7 +58,7 @@
     profileButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-104, 16, 85, 23)];
     [profileButton setImage:[UIImage imageNamed:Image_editInformationImage] forState:UIControlStateNormal];
     [profileButton addTarget:self action:@selector(editProfile) forControlEvents:UIControlEventTouchUpInside];
-    [mainTableView setTableHeaderView:mainView];
+    
     
     nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, SCREEN_WIDTH/2, 30, 30)];
     [nameLabel setFont:[UIFont fontWithName:Font_Next_DemiBold size:20]];
@@ -175,7 +175,7 @@
     
     [mainView addSubview: messageView];
     [mainView setFrame:CGRectMake(0,0,SCREEN_WIDTH, SCREEN_WIDTH+SCREEN_WIDTH/320.0*184.0)];
-    
+    [mainTableView setTableHeaderView:mainView];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
