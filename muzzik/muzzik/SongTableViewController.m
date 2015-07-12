@@ -111,6 +111,7 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     self.keeper.activityVC = self;
+    [self.keeper followScrollView:self.tableView];
 
 }
 - (void)didReceiveMemoryWarning {
