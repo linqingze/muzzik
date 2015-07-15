@@ -31,6 +31,7 @@
         headlabel.font = [UIFont boldSystemFontOfSize:17];
         [self.navigationItem setTitleView:headlabel];
         self.headerView = headlabel;
+        _HtitleName = title;
     }else if ([title isKindOfClass:[UIImage class]]) {
         UIImage *logoImage = (UIImage *)title;
         UIImageView *imageView = [[UIImageView alloc]

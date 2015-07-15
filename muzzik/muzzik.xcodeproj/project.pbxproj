@@ -153,6 +153,7 @@
 		F261312B1ADE4DD90042F1D4 /* setHeadImageVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F261312A1ADE4DD90042F1D4 /* setHeadImageVC.m */; };
 		F26167321ADEDD6300E1B11E /* setGenderVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F26167311ADEDD6300E1B11E /* setGenderVC.m */; };
 		F26167351ADEE3A300E1B11E /* ZHPickView.m in Sources */ = {isa = PBXBuildFile; fileRef = F26167341ADEE3A300E1B11E /* ZHPickView.m */; };
+		F26206731B56181F0023CDF5 /* libMobClickLibrary.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F26206701B56181F0023CDF5 /* libMobClickLibrary.a */; };
 		F2641F201AD988CC003BECDD /* registerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2641F1F1AD988CC003BECDD /* registerVC.m */; };
 		F2641F231AD9A652003BECDD /* NSString+MD5.m in Sources */ = {isa = PBXBuildFile; fileRef = F2641F221AD9A652003BECDD /* NSString+MD5.m */; };
 		F288A4CA1B0DC7EF00B89860 /* topicRankCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F288A4C91B0DC7EF00B89860 /* topicRankCell.m */; };
@@ -549,6 +550,9 @@
 		F26167311ADEDD6300E1B11E /* setGenderVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = setGenderVC.m; sourceTree = "<group>"; };
 		F26167331ADEE3A300E1B11E /* ZHPickView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZHPickView.h; sourceTree = "<group>"; };
 		F26167341ADEE3A300E1B11E /* ZHPickView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZHPickView.m; sourceTree = "<group>"; };
+		F26206701B56181F0023CDF5 /* libMobClickLibrary.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libMobClickLibrary.a; sourceTree = "<group>"; };
+		F26206711B56181F0023CDF5 /* MobClick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobClick.h; sourceTree = "<group>"; };
+		F26206721B56181F0023CDF5 /* MobClickSocialAnalytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobClickSocialAnalytics.h; sourceTree = "<group>"; };
 		F2641F1E1AD988CC003BECDD /* registerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = registerVC.h; sourceTree = "<group>"; };
 		F2641F1F1AD988CC003BECDD /* registerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = registerVC.m; sourceTree = "<group>"; };
 		F2641F211AD9A652003BECDD /* NSString+MD5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+MD5.h"; sourceTree = "<group>"; };
@@ -731,6 +735,7 @@
 				E1E857B01ABD6EC2006B1BA6 /* libWeiboSDK.a in Frameworks */,
 				E1FA12AD1AB14922005EDA1D /* AVFoundation.framework in Frameworks */,
 				E1FA13361AB18DAF005EDA1D /* Foundation.framework in Frameworks */,
+				F26206731B56181F0023CDF5 /* libMobClickLibrary.a in Frameworks */,
 				E1FA13341AB18D9B005EDA1D /* UIKit.framework in Frameworks */,
 				E1FA12F61AB185CA005EDA1D /* libxml2.dylib in Frameworks */,
 				E142A31A1AB834F3002BBCB0 /* libGexinSdk-1.1.1.a in Frameworks */,
@@ -880,6 +885,7 @@
 		E112461E1AAAB0F60014D461 /* 3plus-in */ = {
 			isa = PBXGroup;
 			children = (
+				F262066F1B56181F0023CDF5 /* UMAnalytics_Sdk_3.5.9 */,
 				F205539F1B36B78C0093AE8A /* switch */,
 				F200B7921B28B712002A6F61 /* progressView */,
 				F2E558961B164D060080F9C9 /* MJRefresh */,
@@ -1369,6 +1375,16 @@
 				F26131271ADE23DB0042F1D4 /* AFViewShaker.m */,
 			);
 			name = shaker;
+			sourceTree = "<group>";
+		};
+		F262066F1B56181F0023CDF5 /* UMAnalytics_Sdk_3.5.9 */ = {
+			isa = PBXGroup;
+			children = (
+				F26206701B56181F0023CDF5 /* libMobClickLibrary.a */,
+				F26206711B56181F0023CDF5 /* MobClick.h */,
+				F26206721B56181F0023CDF5 /* MobClickSocialAnalytics.h */,
+			);
+			path = UMAnalytics_Sdk_3.5.9;
 			sourceTree = "<group>";
 		};
 		F288A4CE1B0E50BB00B89860 /* kxMenu */ = {
@@ -2064,6 +2080,7 @@
 					"$(PROJECT_DIR)/muzzik/UMSocial_Sdk_4.2.1",
 					"$(PROJECT_DIR)/muzzik/QiniuSDK",
 					"$(PROJECT_DIR)/muzzik",
+					"$(PROJECT_DIR)/muzzik/UMAnalytics_Sdk_3.5.9",
 				);
 				OTHER_LDFLAGS = "-all_load";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2100,6 +2117,7 @@
 					"$(PROJECT_DIR)/muzzik/UMSocial_Sdk_4.2.1",
 					"$(PROJECT_DIR)/muzzik/QiniuSDK",
 					"$(PROJECT_DIR)/muzzik",
+					"$(PROJECT_DIR)/muzzik/UMAnalytics_Sdk_3.5.9",
 				);
 				OTHER_LDFLAGS = "-all_load";
 				PRODUCT_NAME = "$(TARGET_NAME)";

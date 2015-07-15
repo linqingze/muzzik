@@ -48,6 +48,9 @@
     [WeiboSDK enableDebugMode:NO];
     [WeiboSDK registerApp:Key_WeiBo];
     [self startSdkWith:kAppId appKey:kAppKey appSecret:kAppSecret];
+    [MobClick startWithAppkey:UMAPPKEY reportPolicy:BATCH channelId:@"App Store"];
+//    NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+//    [MobClick setAppVersion:version];
     NSDictionary * dic = [MuzzikItem messageFromLocal];
     if (dic) {
         userInfo *user = [userInfo shareClass];

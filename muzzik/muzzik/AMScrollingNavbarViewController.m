@@ -34,6 +34,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    [MobClick beginLogPageView:self.HtitleName];
     for (UIView *view in [self.navigationController.view subviews]) {
         if ([view isKindOfClass:[RFRadioView class]]) {
             RFRadioView *musicview = (RFRadioView *)view;
@@ -54,6 +55,7 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
+    [MobClick endLogPageView:self.HtitleName];
     for (UIView *view in [self.navigationController.view subviews]) {
         if ([view isKindOfClass:[RFRadioView class]]) {
             [view setAlpha:0];

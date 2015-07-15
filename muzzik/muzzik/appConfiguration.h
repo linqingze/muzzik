@@ -132,7 +132,8 @@
 
 // 909997353
 #define APP_ID @"976583158"
-#define UMAPPKEY @"5503f6b7fd98c520c4000362"
+#define UMAPPKEY @"55a5e35167e58e690d001c2d"
+
 
 #define ID_WeiChat_APP @"wx9d1e9620b322ce35"
 #define Secret_WeiChat_APP @"8f0094ad31273ba1b6ca45d25bae4910"
@@ -146,6 +147,7 @@
 #define kAppId           @"3rIHoZnUS56Bu3H9X2FKm1"
 #define kAppKey          @"M8W4PliA4EA2Oju4Zo0Z01"
 #define kAppSecret       @"uGD286iqV4AUBMY1JndC64"
+
 
 #pragma -mark string
 #define Is_Table_Create @"IsTableCreate"

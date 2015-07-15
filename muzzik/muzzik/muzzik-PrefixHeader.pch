@@ -22,7 +22,7 @@
 #import "StringConstantConfigure.h"
 #import "DeleGateMethodConfigure.h"
 #import "AppDelegate.h"
-
+#import "MobClick.h"
 #import "MuzzikObject.h"
 #import "WeiboSDK.h"
 #endif
