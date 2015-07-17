@@ -222,11 +222,7 @@ NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:textview.text,@"m
     mobject.music = nil;
     mobject.isMessageVCOpen = NO;
     mobject.tempmessage = @"";
-    if (_isNewSelected) {
-        [self.navigationController popToRootViewControllerAnimated:YES];
-    }else{
-        [self.navigationController popViewControllerAnimated:YES];
-    }
+    [self.navigationController popViewControllerAnimated:YES];
     
     
 }

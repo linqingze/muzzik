@@ -34,7 +34,7 @@
     [lineview setBackgroundColor:Color_NavigationBar];
     
     [self.view setBackgroundColor:Color_NavigationBar];
-    [self initNagationBar:nil leftBtn:0 rightBtn:0];
+    [self initNagationBar:@"搜索Root" leftBtn:0 rightBtn:0];
     _searchBar = [[UISearchBar alloc] initWithFrame: CGRectMake(6, 6, SCREEN_WIDTH-60, 28)];
     //[searchBar.subviews[0] removeFromSuperview];
     [_searchBar setBackgroundImage:[MuzzikItem createImageWithColor:Color_NavigationBar]];

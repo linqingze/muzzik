@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "BaseNagationViewController.h"
 @interface RootViewController : AMScrollingNavbarViewController
 
 @property (strong, nonatomic) UIPageViewController *pageViewController;

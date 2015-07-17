@@ -106,6 +106,9 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     self.keeper.activityVC = self;
+    if ([self.keeper.searchBar.text length]>0) {
+        [self updateDataSource:self.keeper.searchBar.text];
+    }
     [self.keeper followScrollView:self.tableView];
 }
 

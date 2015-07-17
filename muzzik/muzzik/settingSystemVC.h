@@ -6,9 +6,7 @@
 //  Copyright (c) 2015年 muzziker. All rights reserved.
 //
 
-#import "BaseNagationViewController.h"
-
-@interface settingSystemVC : BaseNagationViewController
+@interface settingSystemVC : AMScrollingNavbarViewController
 @property (nonatomic,assign) BOOL isClosed;
 -(void)reloadTable;
 @end

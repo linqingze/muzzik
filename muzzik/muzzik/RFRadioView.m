@@ -316,7 +316,7 @@
                 }else{
                     [headerImage setUserInteractionEnabled:NO];
                     nickLabel.text = @"Muzzik";
-                    [headerImage setImage:[UIImage imageNamed:@"logo"] forState:UIControlStateNormal];
+                    [headerImage setBackgroundImage:[UIImage imageNamed:@"logo"] forState:UIControlStateNormal];
                 }
             }
             if ([[userInfo shareClass].uid length]>0 &&[_playMuzzik.MuzzikUser.user_id isEqualToString:[userInfo shareClass].uid]) {
@@ -411,8 +411,9 @@
                     }
                     else{
                         
+                        
                         ASIHTTPRequest *requestForm1 = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Music_Lyric_get]]];
-                        [requestForm1 addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[[NSString stringWithFormat:@"%@+%@",_playMuzzik.music.artist,_playMuzzik.music.name] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] forKey:@"q"] Method:GetMethod auth:NO];
+                        [requestForm1 addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[[NSString stringWithFormat:@"%@",_playMuzzik.music.name] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] forKey:@"q"] Method:GetMethod auth:NO];
                         [requestForm1 setUseCookiePersistence:NO];
                         __weak ASIHTTPRequest *weakrequest1 = requestForm1;
                         [requestForm1 setCompletionBlock :^{
@@ -421,8 +422,15 @@
                             if ([weakrequest1 responseStatusCode] == 200) {
                                 NSData *data = [weakrequest1 responseData];
                                 NSDictionary *dic1 = [NSJSONSerialization JSONObjectWithData:data  options:NSJSONReadingMutableContainers error:nil];
+                                NSString *lyricAddress =[[[dic1 objectForKey:@"music"] objectAtIndex:0] objectForKey:@"lyric"];
                                 if ([[dic1 objectForKey:@"music"] count]>0) {
-                                    ASIHTTPRequest *lyricRequest1 = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[[[[dic1 objectForKey:@"music"] objectAtIndex:0] objectForKey:@"lyric"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+                                    for (NSDictionary *dic in [dic1 objectForKey:@"music"]) {
+                                        if ([[dic objectForKey:@"artist"] isEqualToString:_playMuzzik.music.artist]) {
+                                            lyricAddress = [dic objectForKey:@"lyric"];
+                                            break;
+                                        }
+                                    }
+                                    ASIHTTPRequest *lyricRequest1 = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[lyricAddress stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
                                     __weak ASIHTTPRequest *lrcRequest1 = lyricRequest1;
                                     [lyricRequest1 setCompletionBlock:^{
                                         NSString *lyric =  [[NSString alloc] initWithData:[lrcRequest1 responseData]   encoding:NSUTF8StringEncoding];
@@ -447,10 +455,58 @@
                             NSLog(@"  kkk%@",[weakrequest error]);
                         }];
                         [requestForm1 startAsynchronous];
+                        
+                        //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
                     }
                     
                 }
                 else{
+                    
+                    
+                    ASIHTTPRequest *requestForm1 = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Music_Lyric_get]]];
+                    [requestForm1 addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[[NSString stringWithFormat:@"%@",_playMuzzik.music.name] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] forKey:@"q"] Method:GetMethod auth:NO];
+                    [requestForm1 setUseCookiePersistence:NO];
+                    __weak ASIHTTPRequest *weakrequest1 = requestForm1;
+                    [requestForm1 setCompletionBlock :^{
+                        //  NSLog(@"%@",[weakrequest1 responseString]);
+                        // NSLog(@"URL:%@     status:%d",[weakrequest1 originalURL],[weakrequest1 responseStatusCode]);
+                        if ([weakrequest1 responseStatusCode] == 200) {
+                            NSData *data = [weakrequest1 responseData];
+                            NSDictionary *dic1 = [NSJSONSerialization JSONObjectWithData:data  options:NSJSONReadingMutableContainers error:nil];
+                            NSString *lyricAddress =[[[dic1 objectForKey:@"music"] objectAtIndex:0] objectForKey:@"lyric"];
+                            if ([[dic1 objectForKey:@"music"] count]>0) {
+                                for (NSDictionary *dic in [dic1 objectForKey:@"music"]) {
+                                    if ([[dic objectForKey:@"artist"] isEqualToString:_playMuzzik.music.artist]) {
+                                        lyricAddress = [dic objectForKey:@"lyric"];
+                                        break;
+                                    }
+                                }
+                                ASIHTTPRequest *lyricRequest1 = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[lyricAddress stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+                                __weak ASIHTTPRequest *lrcRequest1 = lyricRequest1;
+                                [lyricRequest1 setCompletionBlock:^{
+                                    NSString *lyric =  [[NSString alloc] initWithData:[lrcRequest1 responseData]   encoding:NSUTF8StringEncoding];
+                                    [self parseLrcLine:lyric];
+                                    // NSLog(@"%@",self.lyricArray);
+                                    //  NSLog(@"%@",[lrcRequest1 responseString]);
+                                    //  NSLog(@"URL:%@     status:%d",[lrcRequest1 originalURL],[lrcRequest1 responseStatusCode]);
+                                }];
+                                [lyricRequest1 setFailedBlock:^{
+                                    NSLog(@"%@",lrcRequest1.error);
+                                }];
+                                [lyricRequest1 startAsynchronous];
+                            }
+                            
+                        }
+                        else{
+                            //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+                        }
+                    }];
+                    [requestForm1 setFailedBlock:^{
+                        NSLog(@"URL:%@     status:%d",[weakrequest originalURL],[weakrequest responseStatusCode]);
+                        NSLog(@"  kkk%@",[weakrequest error]);
+                    }];
+                    [requestForm1 startAsynchronous];
+                    
                     //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
                 }
             }];
@@ -802,7 +858,7 @@
                 }else{
                     [headerImage setUserInteractionEnabled:NO];
                     nickLabel.text = @"Muzzik";
-                    [headerImage setImage:[UIImage imageNamed:@"logo"] forState:UIControlStateNormal];
+                    [headerImage setBackgroundImage:[UIImage imageNamed:@"logo"] forState:UIControlStateNormal];
                 }
             }
             [self.lyricArray removeAllObjects];
@@ -825,8 +881,10 @@
                                 [self parseLrcLine:lyric];
                             }
                             else{
+                                
+                                
                                 ASIHTTPRequest *requestForm1 = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Music_Lyric_get]]];
-                                [requestForm1 addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[[NSString stringWithFormat:@"%@+%@",playMuzzik.music.artist,playMuzzik.music.name] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] forKey:@"q"] Method:GetMethod auth:NO];
+                                [requestForm1 addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[[NSString stringWithFormat:@"%@",_playMuzzik.music.name] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] forKey:@"q"] Method:GetMethod auth:NO];
                                 [requestForm1 setUseCookiePersistence:NO];
                                 __weak ASIHTTPRequest *weakrequest1 = requestForm1;
                                 [requestForm1 setCompletionBlock :^{
@@ -835,8 +893,15 @@
                                     if ([weakrequest1 responseStatusCode] == 200) {
                                         NSData *data = [weakrequest1 responseData];
                                         NSDictionary *dic1 = [NSJSONSerialization JSONObjectWithData:data  options:NSJSONReadingMutableContainers error:nil];
+                                        NSString *lyricAddress =[[[dic1 objectForKey:@"music"] objectAtIndex:0] objectForKey:@"lyric"];
                                         if ([[dic1 objectForKey:@"music"] count]>0) {
-                                            ASIHTTPRequest *lyricRequest1 = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[[[[dic1 objectForKey:@"music"] objectAtIndex:0] objectForKey:@"lyric"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+                                            for (NSDictionary *dic in [dic1 objectForKey:@"music"]) {
+                                                if ([[dic objectForKey:@"artist"] isEqualToString:_playMuzzik.music.artist]) {
+                                                    lyricAddress = [dic objectForKey:@"lyric"];
+                                                    break;
+                                                }
+                                            }
+                                            ASIHTTPRequest *lyricRequest1 = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[lyricAddress stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
                                             __weak ASIHTTPRequest *lrcRequest1 = lyricRequest1;
                                             [lyricRequest1 setCompletionBlock:^{
                                                 NSString *lyric =  [[NSString alloc] initWithData:[lrcRequest1 responseData]   encoding:NSUTF8StringEncoding];
@@ -861,6 +926,8 @@
                                     NSLog(@"  kkk%@",[weakrequest error]);
                                 }];
                                 [requestForm1 startAsynchronous];
+                                
+                                //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
                             }
                         }];
                         [lyricRequest setFailedBlock:^{
@@ -870,8 +937,9 @@
                     }
                     else{
                         
+                        
                         ASIHTTPRequest *requestForm1 = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Music_Lyric_get]]];
-                        [requestForm1 addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[[NSString stringWithFormat:@"%@+%@",playMuzzik.music.artist,playMuzzik.music.name] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] forKey:@"q"] Method:GetMethod auth:NO];
+                        [requestForm1 addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[[NSString stringWithFormat:@"%@",_playMuzzik.music.name] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] forKey:@"q"] Method:GetMethod auth:NO];
                         [requestForm1 setUseCookiePersistence:NO];
                         __weak ASIHTTPRequest *weakrequest1 = requestForm1;
                         [requestForm1 setCompletionBlock :^{
@@ -880,8 +948,15 @@
                             if ([weakrequest1 responseStatusCode] == 200) {
                                 NSData *data = [weakrequest1 responseData];
                                 NSDictionary *dic1 = [NSJSONSerialization JSONObjectWithData:data  options:NSJSONReadingMutableContainers error:nil];
+                                NSString *lyricAddress =[[[dic1 objectForKey:@"music"] objectAtIndex:0] objectForKey:@"lyric"];
                                 if ([[dic1 objectForKey:@"music"] count]>0) {
-                                    ASIHTTPRequest *lyricRequest1 = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[[[[dic1 objectForKey:@"music"] objectAtIndex:0] objectForKey:@"lyric"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+                                    for (NSDictionary *dic in [dic1 objectForKey:@"music"]) {
+                                        if ([[dic objectForKey:@"artist"] isEqualToString:_playMuzzik.music.artist]) {
+                                            lyricAddress = [dic objectForKey:@"lyric"];
+                                            break;
+                                        }
+                                    }
+                                    ASIHTTPRequest *lyricRequest1 = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[lyricAddress stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
                                     __weak ASIHTTPRequest *lrcRequest1 = lyricRequest1;
                                     [lyricRequest1 setCompletionBlock:^{
                                         NSString *lyric =  [[NSString alloc] initWithData:[lrcRequest1 responseData]   encoding:NSUTF8StringEncoding];
@@ -906,10 +981,58 @@
                             NSLog(@"  kkk%@",[weakrequest error]);
                         }];
                         [requestForm1 startAsynchronous];
+                        
+                        //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
                     }
                     
                 }
                 else{
+                    
+                    
+                    ASIHTTPRequest *requestForm1 = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Music_Lyric_get]]];
+                    [requestForm1 addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[[NSString stringWithFormat:@"%@",_playMuzzik.music.name] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] forKey:@"q"] Method:GetMethod auth:NO];
+                    [requestForm1 setUseCookiePersistence:NO];
+                    __weak ASIHTTPRequest *weakrequest1 = requestForm1;
+                    [requestForm1 setCompletionBlock :^{
+                        //  NSLog(@"%@",[weakrequest1 responseString]);
+                        // NSLog(@"URL:%@     status:%d",[weakrequest1 originalURL],[weakrequest1 responseStatusCode]);
+                        if ([weakrequest1 responseStatusCode] == 200) {
+                            NSData *data = [weakrequest1 responseData];
+                            NSDictionary *dic1 = [NSJSONSerialization JSONObjectWithData:data  options:NSJSONReadingMutableContainers error:nil];
+                            NSString *lyricAddress =[[[dic1 objectForKey:@"music"] objectAtIndex:0] objectForKey:@"lyric"];
+                            if ([[dic1 objectForKey:@"music"] count]>0) {
+                                for (NSDictionary *dic in [dic1 objectForKey:@"music"]) {
+                                    if ([[dic objectForKey:@"artist"] isEqualToString:_playMuzzik.music.artist]) {
+                                        lyricAddress = [dic objectForKey:@"lyric"];
+                                        break;
+                                    }
+                                }
+                                ASIHTTPRequest *lyricRequest1 = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[lyricAddress stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+                                __weak ASIHTTPRequest *lrcRequest1 = lyricRequest1;
+                                [lyricRequest1 setCompletionBlock:^{
+                                    NSString *lyric =  [[NSString alloc] initWithData:[lrcRequest1 responseData]   encoding:NSUTF8StringEncoding];
+                                    [self parseLrcLine:lyric];
+                                    // NSLog(@"%@",self.lyricArray);
+                                    //  NSLog(@"%@",[lrcRequest1 responseString]);
+                                    //  NSLog(@"URL:%@     status:%d",[lrcRequest1 originalURL],[lrcRequest1 responseStatusCode]);
+                                }];
+                                [lyricRequest1 setFailedBlock:^{
+                                    NSLog(@"%@",lrcRequest1.error);
+                                }];
+                                [lyricRequest1 startAsynchronous];
+                            }
+                            
+                        }
+                        else{
+                            //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+                        }
+                    }];
+                    [requestForm1 setFailedBlock:^{
+                        NSLog(@"URL:%@     status:%d",[weakrequest originalURL],[weakrequest responseStatusCode]);
+                        NSLog(@"  kkk%@",[weakrequest error]);
+                    }];
+                    [requestForm1 startAsynchronous];
+                    
                     //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
                 }
             }];
@@ -1048,7 +1171,7 @@
         }
     }
     if ([self.lyricArray count] == 0) {
-        NSArray *tarray = [NSMutableArray arrayWithArray:[sourceLineText componentsSeparatedByString:@"\r"]];
+        NSArray *tarray = [NSMutableArray arrayWithArray:[sourceLineText componentsSeparatedByString:@"\n"]];
         for (long i = tarray.count-1; i>0; i--) {
             NSString *string = tarray[i];
             string = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];

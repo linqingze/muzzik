@@ -481,13 +481,13 @@
 }
 -(void)textViewDidChange:(UITextView *)textView{
     NSLog(@"%@",textView.text);
-    CGSize msize = [textView sizeThatFits:self.textView.frame.size];
-    if (msize.height>self.textView.frame.size.height) {
+    CGFloat height = [MuzzikItem heightForTextView:textView WithText:textView.text];
+    if (height>self.textView.frame.size.height) {
         [self.textView setFrame:CGRectMake(self.textView.frame.origin.x, self.textView.frame.origin.y, self.textView.frame.size.width, self.textView.frame.size.height+self.textView.textContainer.lineFragmentPadding+self.textView.font.pointSize)];
         [self setFrame:CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, self.frame.size.height+self.textView.textContainer.lineFragmentPadding+self.textView.font.pointSize)];
         [self layoutSubViewWithFrame:self.frame];
         [self setNeedsDisplay];
-    }else if (msize.height+self.textView.textContainer.lineFragmentPadding+self.textView.font.pointSize<self.textView.frame.size.height) {
+    }else if (height+self.textView.textContainer.lineFragmentPadding+self.textView.font.pointSize<self.textView.frame.size.height) {
         [self.textView setFrame:CGRectMake(self.textView.frame.origin.x, self.textView.frame.origin.y, self.textView.frame.size.width, self.textView.frame.size.height-self.textView.textContainer.lineFragmentPadding-self.textView.font.pointSize)];
         [self setFrame:CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, self.frame.size.height-self.textView.textContainer.lineFragmentPadding-self.textView.font.pointSize)];
         [self layoutSubViewWithFrame:self.frame];

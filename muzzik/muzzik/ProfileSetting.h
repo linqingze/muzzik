@@ -6,9 +6,8 @@
 //  Copyright (c) 2015年 muzziker. All rights reserved.
 //
 
-#import "BaseNagationViewController.h"
 #import "UserHomePage.h"
-@interface ProfileSetting : BaseNagationViewController
+@interface ProfileSetting : AMScrollingNavbarViewController
 @property (nonatomic,retain) NSMutableDictionary *profileDic;
 @property (nonatomic,weak) UserHomePage *userhome;
 @end

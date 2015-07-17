@@ -6,7 +6,6 @@
 //  Copyright (c) 2015年 muzziker. All rights reserved.
 //
 
-#import "BaseNagationViewController.h"
 
 @interface setNameVc : AMScrollingNavbarViewController<UITextFieldDelegate>{
     UITextField *nameText;

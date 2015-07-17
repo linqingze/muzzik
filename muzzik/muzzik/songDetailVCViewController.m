@@ -144,6 +144,7 @@
 -(void)newMuzzikBySong{
     MuzzikObject *mobject = [MuzzikObject shareClass];
     mobject.music = self.detailMuzzik.music;
+    [MuzzikItem getLyricByMusic:self.detailMuzzik.music];
     MessageStepViewController *msgVC = [[MessageStepViewController alloc] init];
 
     [self.navigationController pushViewController:msgVC animated:YES];

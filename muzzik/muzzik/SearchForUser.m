@@ -32,6 +32,7 @@
 - (void)viewDidLoad {
     page = 1;
     [super viewDidLoad];
+    [self initNagationBar:@"搜索用户" leftBtn:0 rightBtn:0];
     searchBlankLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 200)];
     [searchBlankLabel setTextColor:Color_Additional_5];
     searchBlankLabel.font = [UIFont boldSystemFontOfSize:15] ;

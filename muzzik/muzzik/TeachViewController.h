@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "BaseNagationViewController.h"
-@interface TeachViewController :BaseNagationViewController <UIWebViewDelegate>
+
+@interface TeachViewController :AMScrollingNavbarViewController <UIWebViewDelegate>
 
 @property (nonatomic,retain)UIWebView *teachWebView;
 @property (nonatomic,copy) NSString *showType;

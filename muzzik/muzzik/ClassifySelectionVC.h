@@ -6,8 +6,7 @@
 //  Copyright (c) 2015年 muzziker. All rights reserved.
 //
 
-#import "BaseNagationViewController.h"
 
-@interface ClassifySelectionVC : BaseNagationViewController
+@interface ClassifySelectionVC : AMScrollingNavbarViewController
 @property (nonatomic,retain) NSMutableDictionary *profileDic;
 @end

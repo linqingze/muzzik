@@ -28,8 +28,12 @@
         [headlabel setTextColor:[UIColor whiteColor]];
         headlabel.textAlignment = NSTextAlignmentCenter;
         [headlabel setText:title];
+        
+        _HtitleName = title;
+        
         headlabel.font = [UIFont boldSystemFontOfSize:15];
         [self.navigationItem setTitleView:headlabel];
+        
         
     }else if ([title isKindOfClass:[UIImage class]]) {
         UIImage *logoImage = (UIImage *)title;
@@ -97,6 +101,18 @@
     [self.navigationController.navigationBar setBackgroundColor:Color_NavigationBar];
     [self.navigationController.navigationBar setBarTintColor:Color_NavigationBar];
     [self.navigationController.navigationBar setTranslucent:NO];
+}
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [MobClick beginLogPageView:self.HtitleName];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [MobClick endLogPageView:self.HtitleName];
+    
 }
 
 - (void)tapAction:(UITapGestureRecognizer *)tap

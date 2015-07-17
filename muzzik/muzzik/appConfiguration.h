@@ -13,6 +13,7 @@
 #define SCREEN_HEIGHT [ UIScreen mainScreen ].bounds.size.height
 
 #pragma -mark URL Address
+#define URL_Muzzik_download     @"http://www.muzziker.com/download"
 #define URL_Muzzik_SharePage    @"http://www.muzziker.com/app/muzzik/"
 #define URL_Lyric_Me            @"http://geci.me/api/lyric/"
 #define BaseURL                 @"http://117.121.26.174/"
@@ -132,7 +133,7 @@
 
 // 909997353
 #define APP_ID @"976583158"
-#define UMAPPKEY @"55a5e35167e58e690d001c2d"
+#define UMAPPKEY @"55a7d11367e58e98ba005693"
 
 
 #define ID_WeiChat_APP @"wx9d1e9620b322ce35"

@@ -11,7 +11,6 @@
 #import "SearchLibraryMusicVC.h"
 @interface ChooseMusicVC () <baseDelegate, baseDataSource,UISearchBarDelegate>{
     UIView *searchView;
-    UISearchBar *searchBar;
     UIButton *cancelButton;
     UIView *lineview;
 }
@@ -31,20 +30,21 @@
     }
     
     [super viewDidLoad];
+    [self initNagationBar:@"发po选歌" leftBtn:0 rightBtn:0];
     lineview = [[UIView alloc] initWithFrame:CGRectMake(0, 64, SCREEN_WIDTH, 1)];
     [lineview setBackgroundColor:Color_NavigationBar];
     [self.navigationController.view addSubview:lineview];
     //[MuzzikItem addLineOnView:self.navigationController.view heightPoint:64 toLeft:0 toRight:0 withColor:Color_NavigationBar];
     [self.view setBackgroundColor:Color_NavigationBar];
     [self initNagationBar:@"选歌" leftBtn:Constant_backImage rightBtn:Constant_searchImage];
-    searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(6, 6, SCREEN_WIDTH-64, 28)];
+    _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(6, 6, SCREEN_WIDTH-64, 28)];
     //[searchBar.subviews[0] removeFromSuperview];
-    [searchBar setBackgroundImage:[MuzzikItem createImageWithColor:Color_NavigationBar]];
-    searchBar.placeholder = @"搜索";
-    [searchBar setTintColor:Color_Orange];
-    searchBar.delegate = self;
+    [_searchBar setBackgroundImage:[MuzzikItem createImageWithColor:Color_NavigationBar]];
+    _searchBar.placeholder = @"搜索";
+    [_searchBar setTintColor:Color_Orange];
+    _searchBar.delegate = self;
     UITextField *searchField;
-    UIView *view = searchBar.subviews[0];
+    UIView *view = _searchBar.subviews[0];
     
     for(int i = 0; i < [view.subviews count]; i++) {
         NSLog(@"%@",[[view.subviews objectAtIndex:i] class]);
@@ -54,13 +54,13 @@
     }
     if(!(searchField == nil)) {
         searchField.textColor = [UIColor whiteColor];
-        [searchField setFrame:CGRectMake(30, 5, searchBar.frame.size.width-30, searchBar.frame.size.height - 10)];
+        [searchField setFrame:CGRectMake(30, 5, _searchBar.frame.size.width-30, _searchBar.frame.size.height - 10)];
         [searchField setBackgroundColor:Color_search_background];//在这添加灰色的图片
         [searchField setBorderStyle:UITextBorderStyleNone];
         searchField.layer.cornerRadius = 5;
         searchField.clipsToBounds = YES;
     }
-    searchBar.returnKeyType = UIReturnKeySearch;
+    _searchBar.returnKeyType = UIReturnKeySearch;
     searchView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-150, 20, 0, 40)];
     [searchView setFrame:CGRectMake(0, 20, SCREEN_WIDTH, 40)];
     cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-52, 6, 40, 28)];
@@ -75,7 +75,7 @@
     NSArray *arr = [self.navigationController.view subviews];
     NSLog(@"%@",arr);
     [searchView setBackgroundColor:Color_NavigationBar];
-    [searchView addSubview:searchBar];
+    [searchView addSubview:_searchBar];
     [self.rightBtn setAlpha:1];
     [self.leftBtn setAlpha:1];
     [self.rightBtn setHidden:NO];
@@ -84,13 +84,13 @@
 
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-    searchBar.text = @"";
-    searchBar.placeholder = @"";
+    _searchBar.text = @"";
+    _searchBar.placeholder = @"";
     if ([self.activityVC respondsToSelector:@selector(updateDataSource:)]) {
         [self.activityVC updateDataSource:@""];
     }
-    [searchBar resignFirstResponder];
-    [searchBar setFrame:CGRectMake(SCREEN_WIDTH-52, 6, 40, 28)];
+    [_searchBar resignFirstResponder];
+    [_searchBar setFrame:CGRectMake(SCREEN_WIDTH-52, 6, 40, 28)];
     [searchView removeFromSuperview];
     [lineview removeFromSuperview];
 }
@@ -158,8 +158,8 @@
     return value;
 }
 -(void)rightBtnAction:(UIButton *)sender{
-    searchBar.placeholder = @"搜索";
-    [searchBar becomeFirstResponder];
+    _searchBar.placeholder = @"搜索";
+    [_searchBar becomeFirstResponder];
     [self.navigationController.view addSubview:searchView];
     [UIView animateWithDuration:0.3 animations:^{
         [searchView setAlpha:1];
@@ -171,8 +171,8 @@
 }
 
 -(void) searchBarBack{
-    searchBar.text = @"";
-    searchBar.placeholder = @"";
+    _searchBar.text = @"";
+    _searchBar.placeholder = @"";
     
     if ([self.activityVC respondsToSelector:@selector(updateDataSource:)]) {
         [self.activityVC updateDataSource:@""];
@@ -181,7 +181,7 @@
         
         [searchView setAlpha:0];
     } completion:^(BOOL finished) {
-        [searchBar resignFirstResponder];
+        [_searchBar resignFirstResponder];
         [searchView removeFromSuperview];
     }];
 }
@@ -196,7 +196,7 @@
 }
 -(void)searchBarSearchButtonClicked:(UISearchBar *)loclsearchBar{
     NSLog(@"search%@",loclsearchBar.text);
-    [searchBar resignFirstResponder];
+    [_searchBar resignFirstResponder];
     if ([self.activityVC respondsToSelector:@selector(searchDataSource:)]) {
         [self.activityVC searchDataSource:loclsearchBar.text];
     }
@@ -204,6 +204,6 @@
 
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    [searchBar resignFirstResponder];
+    [_searchBar resignFirstResponder];
 }
 @end

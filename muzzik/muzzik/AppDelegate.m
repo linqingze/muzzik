@@ -693,7 +693,23 @@
     
     [WXApi sendReq:req];
 }
-
+-(void)weCahtsendMusicContentByscen:(int)scene{
+    WXWebpageObject *wobject = [WXWebpageObject object];
+    wobject.webpageUrl = URL_Muzzik_download;
+    WXMediaMessage *message = [WXMediaMessage message];
+    message.title = @"一起来用Muzzik 吧";
+    message.description = @"听最喜欢的歌，遇见最好的Ta";
+    
+    [message setThumbImage:[UIImage imageNamed:@"logo"]];
+    message.mediaObject = wobject;
+    
+    SendMessageToWXReq* req = [[SendMessageToWXReq alloc] init];
+    req.bText = NO;
+    req.message = message;
+    req.scene = scene;
+    
+    [WXApi sendReq:req];
+}
 -(void) sendMusicContentByMuzzik:(muzzik*)localMuzzik scen:(int)scene image:(UIImage *)image
 {
     WXMediaMessage *message = [WXMediaMessage message];

@@ -33,6 +33,7 @@
 - (void)viewDidLoad {
     page = 1;
     [super viewDidLoad];
+    [self initNagationBar:@"搜索话题" leftBtn:0 rightBtn:0];
     myTableView  = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-94)];
     myTableView.delegate = self;
     myTableView.dataSource = self;

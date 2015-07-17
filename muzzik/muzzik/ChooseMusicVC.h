@@ -21,4 +21,5 @@
 @interface ChooseMusicVC : ScrollVCBase
 @property (nonatomic,weak) id<searchSource> activityVC;
 @property (nonatomic,copy) NSString *comeInType;
+@property (nonatomic,retain)UISearchBar *searchBar;
 @end

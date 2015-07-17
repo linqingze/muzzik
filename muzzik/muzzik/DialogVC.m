@@ -1663,7 +1663,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 }
 -(void) shareTimeLine{
     AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    [app sendMusicContentByMuzzik:self.localmuzzik scen:0 image:[self.userImage imageForState:UIControlStateNormal]];
+    [app sendMusicContentByMuzzik:self.localmuzzik scen:1 image:[self.userImage imageForState:UIControlStateNormal]];
     NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:self.localmuzzik.muzzik_id,@"_id",@"moment",@"channel", nil];
     
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Share_Muzzik]]];

@@ -131,11 +131,11 @@
     editView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH*2, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
     [Scroll addSubview:editView];
     //[editView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideControl)]];
-    editTextView = [[RJTextView alloc] initWithFrame:CGRectMake(70, 70, SCREEN_WIDTH-140, 70)
+    editTextView = [[RJTextView alloc] initWithFrame:CGRectMake(70, 70, SCREEN_WIDTH-140, 54)
                                          defaultText:@""
-                                                font:[UIFont fontWithName:Font_default_share size:15.f]
+                                                font:[UIFont fontWithName:Font_default_share size:16.f]
                                                color:shareColor
-                                             minSize:CGSizeMake(100, 60)];
+                                             minSize:CGSizeMake(100, 50)];
     editTextView.fontname = Font_default_share;
     editTextView.delegate = self;
     [editTextView.closeButton removeFromSuperview];
@@ -331,7 +331,7 @@
             cell.label.textColor = [UIColor blackColor];
         }
         UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 10, SCREEN_WIDTH-80, 80)];
-        tempLabel.font = [UIFont fontWithName:Font_default_share size:17];
+        tempLabel.font = [UIFont fontWithName:Font_default_share size:16];
         tempLabel.text = cell.label.text;
         tempLabel.numberOfLines = 0;
         [tempLabel sizeToFit];
@@ -346,7 +346,7 @@
         return 50;
     }else if(tableView == lyricTablenview){
         UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 0, SCREEN_WIDTH-80, 50)];
-        tempLabel.font = [UIFont fontWithName:Font_default_share size:17];
+        tempLabel.font = [UIFont fontWithName:Font_default_share size:16];
         
         tempLabel.numberOfLines = 0;
         if ([lyricArray count]>0) {
@@ -356,7 +356,7 @@
         return textHeight+25;
     }else{
         UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 0, SCREEN_WIDTH-80, 50)];
-        tempLabel.font = [UIFont fontWithName:Font_default_share size:17];
+        tempLabel.font = [UIFont fontWithName:Font_default_share size:16];
         tempLabel.numberOfLines = 0;
         if ([famousArray count]>0) {
             tempLabel.text = [famousArray[indexPath.row] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet ]];
@@ -389,7 +389,7 @@
                 CGPoint point = [cell.superview convertPoint:cell.frame.origin toView:Scroll];
                 RJTextView *textView = [[RJTextView alloc] initWithFrame:CGRectMake(cell.label.frame.origin.x-25, point.y-9, cell.label.frame.size.width+50, cell.label.frame.size.height*3.5+0.5)
                                                              defaultText:cell.label.text
-                                                                    font:[UIFont fontWithName:Font_default_share size:17]
+                                                                    font:[UIFont fontWithName:Font_default_share size:16]
                                                                    color:shareColor
                                                                  minSize:CGSizeMake(cell.label.frame.size.width+37, cell.label.frame.size.height+37)];
                 textView.fontname = Font_default_share;
@@ -406,7 +406,7 @@
             CGPoint point = [cell.superview convertPoint:cell.frame.origin toView:Scroll];
             RJTextView *textView = [[RJTextView alloc] initWithFrame:CGRectMake(cell.label.frame.origin.x-25, point.y-9, cell.label.frame.size.width+50, cell.label.frame.size.height*3.5+0.5)
                                                          defaultText:cell.label.text
-                                                                font:[UIFont fontWithName:Font_default_share size:17]
+                                                                font:[UIFont fontWithName:Font_default_share size:16]
                                                                color:shareColor
                                                              minSize:CGSizeMake(cell.label.frame.size.width+37, cell.label.frame.size.height+37)];
             textView.fontname = Font_default_share;

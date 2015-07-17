@@ -35,7 +35,7 @@
     myTableView.delegate = self;
     myTableView.dataSource = self;
     [self.view addSubview:myTableView];
-    
+    [self initNagationBar:@"搜索歌曲" leftBtn:0 rightBtn:0];
     
     myTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     searchView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 50)];
@@ -291,6 +291,7 @@
     MuzzikObject *mobject = [MuzzikObject shareClass];
     
     mobject.music = tempMuzzik.music;
+    [MuzzikItem getLyricByMusic:tempMuzzik.music];
     MessageStepViewController *messagebv = [[MessageStepViewController alloc] init];
     [self.keeper.navigationController pushViewController:messagebv animated:YES];
 }
