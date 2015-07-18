@@ -233,7 +233,7 @@
         [shareView addSubview:timeLineButton];
         
         UILabel *timeLineLabel = [[UILabel alloc] initWithFrame:CGRectMake(screenWidth*0.41, screenWidth*0.26, screenWidth*0.18, 20)];
-        timeLineLabel.text = @"微 信";
+        timeLineLabel.text = @"朋友圈";
         timeLineLabel.textAlignment = NSTextAlignmentCenter;
         [timeLineLabel setFont:[UIFont systemFontOfSize:12]];
         timeLineLabel.textColor =  Color_line_2;

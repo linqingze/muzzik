@@ -271,6 +271,7 @@
     MuzzikObject *mobject = [MuzzikObject shareClass];
     
     mobject.music = localMzzik.music;
+    [MuzzikItem getLyricByMusic:localMzzik.music];
     MessageStepViewController *messagebv = [[MessageStepViewController alloc] init];
     [self.navigationController pushViewController:messagebv animated:YES];
 }

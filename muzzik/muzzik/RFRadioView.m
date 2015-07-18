@@ -1612,6 +1612,7 @@
         MuzzikObject *mobject = [MuzzikObject shareClass];
         
         mobject.music = _playMuzzik.music;
+        [MuzzikItem getLyricByMusic:_playMuzzik.music];
         MessageStepViewController *messagebv = [[MessageStepViewController alloc] init];
         [nac pushViewController:messagebv animated:YES];
     }else{

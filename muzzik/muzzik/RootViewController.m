@@ -154,10 +154,18 @@
     
     [startSlogan setFrame:CGRectMake(SCREEN_WIDTH-18-startSlogan.frame.size.width, SCREEN_HEIGHT-startSlogan.frame.size.height-18, startSlogan.frame.size.width, startSlogan.frame.size.height)];
     [startLogo setAlpha:0];
+    NSLog(@"width:%f",[ UIScreen mainScreen ].bounds.size.width);
+    if([ UIScreen mainScreen ].bounds.size.width>320){
+        [startLogo setFrame:CGRectMake(20, 64, startLogo.frame.size.width, startLogo.frame.size.height)];
+    }else{
+        [startLogo setFrame:CGRectMake(13, 64, SCREEN_WIDTH-36, startLogo.frame.size.height)];
+    }
+    
+    
     [UIView animateWithDuration:2 animations:^{
         [startLogo setAlpha:1];
     }];
-    [startLogo setFrame:CGRectMake(18, 64, SCREEN_WIDTH-36, startLogo.frame.size.height)];
+    
     startLogo.contentMode = UIViewContentModeScaleAspectFit;
     [coverImageView addSubview:startLogo];
     [coverImageView addSubview:startSlogan];
