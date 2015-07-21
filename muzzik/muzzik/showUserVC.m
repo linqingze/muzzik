@@ -51,7 +51,7 @@
 }
 -(void)loadDataMessage{
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :URLString]];
-    [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:page] ,Parameter_page,@"20",Parameter_Limit, nil] Method:GetMethod auth:NO];
+    [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:page] ,Parameter_page,@"20",Parameter_Limit, nil] Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = requestForm;
     [requestForm setCompletionBlock :^{
         NSLog(@"%@",[weakrequest responseString]);
@@ -91,7 +91,7 @@
 {
     // [self updateSomeThing];
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :URLString]];
-    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:page] ,Parameter_page,@"20",Parameter_Limit, nil] Method:GetMethod auth:NO];
+    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:page] ,Parameter_page,@"20",Parameter_Limit, nil] Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = request;
     [request setCompletionBlock :^{
         NSLog(@"%@",[weakrequest responseString]);

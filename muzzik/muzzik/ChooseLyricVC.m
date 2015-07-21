@@ -5,7 +5,7 @@
 //  Created by muzzik on 15/4/28.
 //  Copyright (c) 2015年 muzziker. All rights reserved.
 //
-
+#import <AssetsLibrary/AssetsLibrary.h>
 #import "ChooseLyricVC.h"
 #import "TableViewCell.h"
 #import "RJTextView.h"
@@ -784,6 +784,7 @@
                                         }else{
                                             [storyLabel setFrame:CGRectMake(0, CDcover.frame.size.height-storyLabel.frame.size.height-184, 240, storyLabel.frame.size.height+20)];
                                         }
+                                  
                                         [storyView addSubview:storyLabel];
                                         UILabel *userName = [[UILabel alloc] initWithFrame:CGRectMake(0, storyLabel.frame.origin.y-tempNameLabel.frame.size.height-28, 240, tempNameLabel.frame.size.height+12)];
 
@@ -803,7 +804,7 @@
                                         
                                         UIGraphicsBeginImageContextWithOptions(weChatShareView.bounds.size, NO, 1.0f);
                                         //    UIGraphicsBeginImageContext(v.bounds.size,YES,2.0f);
-                                        
+                                        [weChatShareView setBackgroundColor:[UIColor whiteColor]];
                                         [weChatShareView.layer renderInContext:UIGraphicsGetCurrentContext()];
                                         
                                         UIImage *timage = UIGraphicsGetImageFromCurrentImageContext();
@@ -811,6 +812,29 @@
                                         UIGraphicsEndImageContext();
                                         
                                         [app sendImageContent:timage];
+                                        
+                                        [self saveToAlbumWithMetadata:nil imageData:UIImagePNGRepresentation(timage) customAlbumName:@"Muzzik相册" completionBlock:^
+                                         {
+                                             //这里可以创建添加成功的方法
+                                             [MuzzikItem showNotifyOnView:self.navigationController.view text:@"保存成功"];
+                                         }
+                                                         failureBlock:^(NSError *error)
+                                         {
+                                             //处理添加失败的方法显示alert让它回到主线程执行，不然那个框框死活不肯弹出来
+                                             dispatch_async(dispatch_get_main_queue(), ^{
+                                                 
+                                                 //添加失败一般是由用户不允许应用访问相册造成的，这边可以取出这种情况加以判断一下
+                                                 if([error.localizedDescription rangeOfString:@"User denied access"].location != NSNotFound ||[error.localizedDescription rangeOfString:@"用户拒绝访问"].location!=NSNotFound){
+                                                     
+                                                     UIAlertView *alert=[[UIAlertView alloc]initWithTitle:error.localizedDescription message:error.localizedFailureReason delegate:nil cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles: nil];
+                                                     
+                                                     [alert show];
+                                                     
+                                                 }
+                                             });
+                                         }];
+        
+                                        
                                         
                                     }
                                     [self setPoMuzzikMessage:muzzikDic];
@@ -1212,4 +1236,65 @@
 -(void) reloadTableView{
     [fontTableView reloadData];
 }
+
+- (void)saveToAlbumWithMetadata:(NSDictionary *)metadata
+                      imageData:(NSData *)imageData
+                customAlbumName:(NSString *)customAlbumName
+                completionBlock:(void (^)(void))completionBlock
+                   failureBlock:(void (^)(NSError *error))failureBlock
+{
+    
+    ALAssetsLibrary *assetsLibrary = [[ALAssetsLibrary alloc] init];
+    void (^AddAsset)(ALAssetsLibrary *, NSURL *) = ^(ALAssetsLibrary *assetsLibrary, NSURL *assetURL) {
+        [assetsLibrary assetForURL:assetURL resultBlock:^(ALAsset *asset) {
+            [assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupAll usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
+                
+                if ([[group valueForProperty:ALAssetsGroupPropertyName] isEqualToString:customAlbumName]) {
+                    [group addAsset:asset];
+                    if (completionBlock) {
+                        completionBlock();
+                    }
+                }
+            } failureBlock:^(NSError *error) {
+                if (failureBlock) {
+                    failureBlock(error);
+                }
+            }];
+        } failureBlock:^(NSError *error) {
+            if (failureBlock) {
+                failureBlock(error);
+            }
+        }];
+    };
+    __weak ALAssetsLibrary *weakassetsLibrary = assetsLibrary;
+    [assetsLibrary writeImageDataToSavedPhotosAlbum:imageData metadata:metadata completionBlock:^(NSURL *assetURL, NSError *error) {
+        if (customAlbumName) {
+            [assetsLibrary addAssetsGroupAlbumWithName:customAlbumName resultBlock:^(ALAssetsGroup *group) {
+                if (group) {
+                    [weakassetsLibrary assetForURL:assetURL resultBlock:^(ALAsset *asset) {
+                        [group addAsset:asset];
+                        if (completionBlock) {
+                            completionBlock();
+                            
+                        }
+                    } failureBlock:^(NSError *error) {
+                        if (failureBlock) {
+                            failureBlock(error);
+                        }
+                    }];
+                } else {
+                    AddAsset(weakassetsLibrary, assetURL);
+                }
+            } failureBlock:^(NSError *error) {
+                AddAsset(weakassetsLibrary, assetURL);
+            }];
+        } else {
+            if (completionBlock) {
+                completionBlock();
+            }
+        }
+    }];
+}
+
+
 @end

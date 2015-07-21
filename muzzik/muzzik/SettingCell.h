@@ -12,5 +12,6 @@
 @interface SettingCell : UITableViewCell
 @property (nonatomic,retain)UILabel *label;
 @property (nonatomic,retain)ZJSwitch *shakeSwitch;
-@property (nonatomic) settingSystemVC *cellKeeper;
+@property (nonatomic,weak) settingSystemVC *cellKeeper;
+@property (nonatomic,retain) UILabel *dataNum;
 @end

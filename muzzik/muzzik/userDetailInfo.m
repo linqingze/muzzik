@@ -104,6 +104,9 @@
         if ([weakrequest responseStatusCode] == 200) {
             _profileDic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData]  options:NSJSONReadingMutableContainers error:nil];
             if (_profileDic) {
+                if ([[_profileDic objectForKey:@"_id"] length]>0) {
+                    self.uid = [_profileDic objectForKey:@"_id"];
+                }
                 if ([[_profileDic objectForKey:@"isFollow"] boolValue] &&[[_profileDic objectForKey:@"isFans"] boolValue]) {
                     [_attentionButton setImage:[UIImage imageNamed:Image_profilefolloweacherother] forState:UIControlStateNormal];
                     [_attentionButton setFrame:CGRectMake(SCREEN_WIDTH-85, 16, 65, 23)];

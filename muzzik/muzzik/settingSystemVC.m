@@ -11,6 +11,7 @@
 #import "TeachViewController.h"
 #import "FeedBackVC.h"
 #import <TencentOpenAPI/TencentOAuth.h>
+#import "UIImageView+WebCache.h"
 @interface settingSystemVC ()<UITableViewDataSource,UITableViewDelegate>{
     UITableView *settingTable;
     UIView *shareViewFull;
@@ -21,6 +22,7 @@
     UIButton *shareToQQButton;
     UIButton *shareToQQZoneButton;
     CGFloat maxScaleY;
+    UIAlertView *cleanAlert;
 }
 
 @end
@@ -48,12 +50,14 @@
     cell.textLabel.textColor = Color_Text_1;
     [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     [cell.textLabel setFont:[UIFont systemFontOfSize:14]];
-    [MuzzikItem addLineOnView:cell heightPoint:60 toLeft:13 toRight:13 withColor:Color_line_1];
+    [MuzzikItem addLineOnView:cell heightPoint:59 toLeft:13 toRight:13 withColor:Color_line_1];
 
     if (indexPath.row == 0) {
         SettingCell *Scell = [tableView dequeueReusableCellWithIdentifier:@"SettingCell" forIndexPath:indexPath];
         Scell.label.text = @"摇一摇切歌";
         Scell.cellKeeper = self;
+        [Scell.shakeSwitch setHidden:NO];
+        [Scell.dataNum setHidden:YES];
         NSString * shakeSwitch = [MuzzikItem getStringForKey:@"User_shakeActionSwitch"];
         if (![shakeSwitch isEqualToString:@"close"]) {
             _isClosed = NO;
@@ -63,6 +67,7 @@
             [Scell.shakeSwitch setOn:NO];
         }
         return Scell;
+        
     }else if (indexPath.row == 1) {
         cell.textLabel.text = @"邀请好友一起来Muzzik";
     }
@@ -73,7 +78,17 @@
         cell.textLabel.text = @"意见反馈";
     }else if (indexPath.row == 4) {
         cell.textLabel.text = @"关于Muzzik";
-    }else if(indexPath.row == 5){
+    }else if (indexPath.row == 5) {
+        SettingCell *Scell = [tableView dequeueReusableCellWithIdentifier:@"SettingCell" forIndexPath:indexPath];
+        [Scell.shakeSwitch setHidden:YES];
+         [Scell.dataNum setHidden:NO];
+        float totalSize = [[SDImageCache sharedImageCache] getSize]/(1024.0*1024);
+
+        Scell.label.text = @"清除图片缓存数据";
+        Scell.dataNum.text = [NSString stringWithFormat:@"%.2f M",totalSize];
+        return Scell;
+    }
+    else if(indexPath.row == 6){
         userInfo *user = [userInfo shareClass];
         if ([user.token length]>0) {
             cell.textLabel.text = @"退出账号";
@@ -104,6 +119,15 @@
         teach.showType = @"about";
         [self.navigationController pushViewController:teach animated:YES];
     }else if (indexPath.row == 5){
+        
+        cleanAlert = [[UIAlertView alloc] initWithTitle:@"确认清除图片缓存" message:@"" delegate:self cancelButtonTitle:@"放弃" otherButtonTitles:nil];
+        // optional - add more buttons:
+        [cleanAlert addButtonWithTitle:@"确定"];
+        [cleanAlert show];
+
+        
+    }
+    else if (indexPath.row == 6){
         userInfo *user = [userInfo shareClass];
         if ([user.token length]>0) {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"确认退出登录" message:@"" delegate:self cancelButtonTitle:@"放弃" otherButtonTitles:nil];
@@ -121,7 +145,7 @@
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return 6;
+    return 7;
 }
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return 1;
@@ -133,7 +157,13 @@
 
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == 1) {
+    if (alertView == cleanAlert) {
+        if (buttonIndex == 1) {
+            [[SDImageCache sharedImageCache] clearDisk];
+            [settingTable reloadData];
+        }
+    }
+    else if (buttonIndex == 1) {
         // do stuff
         userInfo *user = [userInfo shareClass];
         ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/notify/tokens/%@?type=APN",BaseURL,user.deviceToken]]];

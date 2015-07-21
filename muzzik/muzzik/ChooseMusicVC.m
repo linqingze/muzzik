@@ -90,7 +90,6 @@
         [self.activityVC updateDataSource:@""];
     }
     [_searchBar resignFirstResponder];
-    [_searchBar setFrame:CGRectMake(SCREEN_WIDTH-52, 6, 40, 28)];
     [searchView removeFromSuperview];
     [lineview removeFromSuperview];
 }

@@ -184,7 +184,6 @@ BOOL ImageDataHasPNGPreffix(NSData *data) {
                 if (![_fileManager fileExistsAtPath:_diskCachePath]) {
                     [_fileManager createDirectoryAtPath:_diskCachePath withIntermediateDirectories:YES attributes:nil error:NULL];
                 }
-
                 [_fileManager createFileAtPath:[self defaultCachePathForKey:key] contents:data attributes:nil];
             }
         });
