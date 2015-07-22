@@ -8,7 +8,6 @@
 
 #import <QuartzCore/QuartzCore.h>
 
-#import "ScrollVCBase.h"
 @protocol searchSource <NSObject>
 
 
@@ -18,7 +17,7 @@
 -(void)searchDataSource:(NSString *)searchText;
 
 @end
-@interface ChooseMusicVC : ScrollVCBase
+@interface ChooseMusicVC : AMScrollingNavbarViewController
 @property (nonatomic,weak) id<searchSource> activityVC;
 @property (nonatomic,copy) NSString *comeInType;
 @property (nonatomic,retain)UISearchBar *searchBar;

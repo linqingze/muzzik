@@ -10,9 +10,9 @@
 #import "SearchForUser.h"
 #import "SearchForSong.h"
 #import "SearchForTopic.h"
-@interface searchViewController () {
+@interface searchViewController ()<UISearchBarDelegate,SUNSlideSwitchViewDelegate> {
     UIButton *cancelButton;
-    UIView *lineview;
+    SUNSlideSwitchView *sliderView;
 }
 
 @end
@@ -20,19 +20,14 @@
 @implementation searchViewController
 
 - (void)viewDidLoad {
-    
-    self.dataSource = self;
-    self.delegate = self;
-    self.tabWidth = SCREEN_WIDTH/3;
-    // Keeps tab bar below navigation bar on iOS 7.0+
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
-        self.edgesForExtendedLayout = UIRectEdgeNone;
-    }
-    
     [super viewDidLoad];
-    lineview = [[UIView alloc] initWithFrame:CGRectMake(0, 64, SCREEN_WIDTH, 1)];
-    [lineview setBackgroundColor:Color_NavigationBar];
-    
+    sliderView = [[SUNSlideSwitchView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
+    sliderView.tabItemNormalColor = Color_Text_1;
+    sliderView.tabItemSelectedColor = Color_Active_Button_1;
+    sliderView.shadowImage = [[UIImage imageNamed:@"red_line_and_shadow.png"]
+                              stretchableImageWithLeftCapWidth:59.0f topCapHeight:0.0f];
+    [self.view addSubview:sliderView];
+    sliderView.slideSwitchViewDelegate = self;
     [self.view setBackgroundColor:Color_NavigationBar];
     [self initNagationBar:@"搜索Root" leftBtn:0 rightBtn:0];
     _searchBar = [[UISearchBar alloc] initWithFrame: CGRectMake(6, 6, SCREEN_WIDTH-60, 28)];
@@ -75,6 +70,7 @@
     [_searchView setBackgroundColor:Color_NavigationBar];
     [_searchView addSubview:_searchBar];
     [self.navigationController.view addSubview:_searchView];
+    [sliderView buildUI];
 
 }
 -(void)viewWillAppear:(BOOL)animated{
@@ -85,14 +81,12 @@
             [self.navigationController.view insertSubview:self.searchView belowSubview:musicView];
         }
     }
-    [self.navigationController.view addSubview:lineview];
     [self.searchView setHidden:NO];
 }
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     [self.searchView removeFromSuperview];
     [self.searchView setHidden:YES];
-    [lineview removeFromSuperview];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -100,45 +94,35 @@
 }
 
 #pragma mark - ViewPagerDataSource
-- (NSUInteger)numberOfTabsForViewPager:(ScrollVCBase *)viewPager {
+
+#pragma mark - datasource delegate
+- (NSUInteger)numberOfTab:(SUNSlideSwitchView *)view
+{
     return 3;
 }
-- (UIView *)viewPager:(ScrollVCBase *)viewPager viewForTabAtIndex:(NSUInteger)index {
-    self.tabWidth = SCREEN_WIDTH/3;
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(index*SCREEN_WIDTH/3.0, 0, SCREEN_WIDTH/3.0, 15)];
-    label.backgroundColor = [UIColor clearColor];
-    label.font = [UIFont boldSystemFontOfSize:13.0];
-    if (index == 0) {
-        label.text = @"歌曲";
-    }else if(index == 1){
-        label.text = @"用户";
-    }else{
-        label.text = @"话题";
-    }
-    
-    label.textAlignment = NSTextAlignmentCenter;
-    label.textColor = [UIColor colorWithHexString:@"666c80"];
-    
-    return label;
-}
 
-- (UIViewController *)viewPager:(ScrollVCBase *)viewPager contentViewControllerForTabAtIndex:(NSUInteger)index {
-    
-    if (index == 0) {
+
+- (UIViewController *)slideSwitchView:(SUNSlideSwitchView *)view viewOfTab:(NSUInteger)number
+{
+    if (number == 0) {
         SearchForSong *svcsong = [[SearchForSong alloc] init];
         svcsong.keeper = self;
+        svcsong.title =@"歌曲";
         return svcsong;
     }
-    else if (index == 1) {
+    else if (number == 1) {
         SearchForUser *searchvcUser = [[SearchForUser alloc] init];
         searchvcUser.keeper = self;
+        searchvcUser.title =@"用户";
         return searchvcUser;
     }else{
         SearchForTopic *searchtopic = [[SearchForTopic alloc] init];
         searchtopic.keeper = self;
+        searchtopic.title =@"话题";
         return searchtopic;
     }
 }
+
 
 -(void) searchBarBack{
     [_searchBar resignFirstResponder];

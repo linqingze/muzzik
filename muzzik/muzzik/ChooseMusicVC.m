@@ -5,14 +5,16 @@
 //  Created by Ilter Cengiz on 28/08/2013.
 //  Copyright (c) 2013 Ilter Cengiz. All rights reserved.
 //
-
+#import "SUNSlideSwitchView.h"
 #import "ChooseMusicVC.h"
 #import "SongTableViewController.h"
 #import "SearchLibraryMusicVC.h"
-@interface ChooseMusicVC () <baseDelegate, baseDataSource,UISearchBarDelegate>{
+@interface ChooseMusicVC () <UISearchBarDelegate,SUNSlideSwitchViewDelegate>{
     UIView *searchView;
     UIButton *cancelButton;
-    UIView *lineview;
+    SUNSlideSwitchView *sliderView;
+    SearchLibraryMusicVC *searchVC;
+    SongTableViewController *svc;
 }
 
 @end
@@ -20,20 +22,15 @@
 @implementation ChooseMusicVC
 
 - (void)viewDidLoad {
-    
-    self.dataSource = self;
-    self.delegate = self;
-    self.tabWidth = SCREEN_WIDTH/2;
-    // Keeps tab bar below navigation bar on iOS 7.0+
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
-        self.edgesForExtendedLayout = UIRectEdgeNone;
-    }
-    
     [super viewDidLoad];
     [self initNagationBar:@"发po选歌" leftBtn:0 rightBtn:0];
-    lineview = [[UIView alloc] initWithFrame:CGRectMake(0, 64, SCREEN_WIDTH, 1)];
-    [lineview setBackgroundColor:Color_NavigationBar];
-
+    sliderView = [[SUNSlideSwitchView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
+    sliderView.tabItemNormalColor = Color_Text_1;
+    sliderView.tabItemSelectedColor = Color_Active_Button_1;
+    sliderView.shadowImage = [[UIImage imageNamed:@"red_line_and_shadow.png"]
+                              stretchableImageWithLeftCapWidth:59.0f topCapHeight:0.0f];
+    [self.view addSubview:sliderView];
+    sliderView.slideSwitchViewDelegate = self;
     //[MuzzikItem addLineOnView:self.navigationController.view heightPoint:64 toLeft:0 toRight:0 withColor:Color_NavigationBar];
     [self.view setBackgroundColor:Color_NavigationBar];
     [self initNagationBar:@"选歌" leftBtn:Constant_backImage rightBtn:Constant_searchImage];
@@ -79,6 +76,13 @@
     [self.rightBtn setAlpha:1];
     [self.leftBtn setAlpha:1];
     [self.rightBtn setHidden:NO];
+    searchVC = [[SearchLibraryMusicVC alloc] init];
+    searchVC.keeper = self;
+    searchVC.title = @"网络";
+    svc = [[SongTableViewController alloc] init];
+    svc.keeper = self;
+    svc.title = @"喜欢";
+    [sliderView buildUI];
 }
 
 
@@ -91,71 +95,35 @@
     }
     [_searchBar resignFirstResponder];
     [searchView removeFromSuperview];
-    [lineview removeFromSuperview];
+
 }
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self.navigationController.view addSubview:lineview];
+
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
-#pragma mark - ViewPagerDataSource
-- (NSUInteger)numberOfTabsForViewPager:(ScrollVCBase *)viewPager {
+#pragma mark - datasource delegate
+- (NSUInteger)numberOfTab:(SUNSlideSwitchView *)view
+{
     return 2;
 }
-- (UIView *)viewPager:(ScrollVCBase *)viewPager viewForTabAtIndex:(NSUInteger)index {
-    
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(index*SCREEN_WIDTH/2.0, 0, SCREEN_WIDTH/2.0, 15)];
-    label.backgroundColor = [UIColor clearColor];
-    label.font = [UIFont boldSystemFontOfSize:13.0];
-    if (index == 0) {
-        label.text = @"喜欢";
-    }else{
-        label.text = @"网络";
-    }
-    
-    label.textAlignment = NSTextAlignmentCenter;
-    label.textColor = [UIColor colorWithHexString:@"666c80"];
-        
-    return label;
-}
 
-- (UIViewController *)viewPager:(ScrollVCBase *)viewPager contentViewControllerForTabAtIndex:(NSUInteger)index {
-    
-    if (index == 0) {
-        SongTableViewController *svc = [[SongTableViewController alloc] init];
-        svc.keeper = self;
-        return svc;
-    }
-    else{
-        SearchLibraryMusicVC *searchVC = [[SearchLibraryMusicVC alloc] init];
-        searchVC.keeper = self;
+
+- (UIViewController *)slideSwitchView:(SUNSlideSwitchView *)view viewOfTab:(NSUInteger)number
+{
+    if (number == 0) {
+
         return searchVC;
+    } else if (number == 1) {
+        return svc;
+    }else {
+        return nil;
     }
 }
 
-#pragma mark - ViewPagerDelegate
-- (CGFloat)viewPager:(ScrollVCBase *)viewPager valueForOption:(ViewPagerOption)option withDefault:(CGFloat)value {
-    
-    switch (option) {
-        case ViewPagerOptionStartFromSecondTab:
-            return 0.0;
-            break;
-        case ViewPagerOptionCenterCurrentTab:
-            return 0.0;
-            break;
-        case ViewPagerOptionTabLocation:
-            return 1.0;
-            break;
-        default:
-            break;
-    }
-    
-    return value;
-}
 -(void)rightBtnAction:(UIButton *)sender{
     _searchBar.placeholder = @"搜索";
     [_searchBar becomeFirstResponder];

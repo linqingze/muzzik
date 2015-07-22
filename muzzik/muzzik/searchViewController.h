@@ -7,8 +7,7 @@
 //
 
 #import "BaseNagationViewController.h"
-#import "ScrollVCBase.h"
-
+#import "SUNSlideSwitchView.h"
 @protocol searchSource <NSObject>
 
 
@@ -18,7 +17,7 @@
 -(void)searchDataSource:(NSString *)searchText;
 
 @end
-@interface searchViewController :ScrollVCBase<baseDelegate, baseDataSource,UISearchBarDelegate>
+@interface searchViewController :AMScrollingNavbarViewController
 @property (nonatomic,weak) id<searchSource> activityVC;
 @property (nonatomic,retain) UISearchBar *searchBar;
 @property (nonatomic,retain) UIView *searchView;
