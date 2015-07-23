@@ -92,7 +92,7 @@
     newButton.clipsToBounds = YES;
     [newButton addTarget:self action:@selector(newOrLogin) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:newButton];
-    userView = [[UIView alloc] initWithFrame:CGRectMake(0, -65, SCREEN_WIDTH, 65)];
+    userView = [[UIView alloc] initWithFrame:CGRectMake(0, -75, SCREEN_WIDTH, 75)];
     [userView setBackgroundColor:Color_line_2];
     [userView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(seeMoreUser)]];
 }
@@ -1429,7 +1429,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     muzzik *tempMuzzik = (muzzik *)notify.object;
     
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/byMusic",BaseURL]]];
-    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:@"1",Parameter_page,tempMuzzik.music.artist,@"artist",tempMuzzik.music.name,@"name", nil];
+    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:@"1",Parameter_page,[tempMuzzik.music.artist stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],@"artist",[tempMuzzik.music.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],@"name", nil];
     [request addBodyDataSourceWithJsonByDic:dic Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = request;
     [request setCompletionBlock :^{
@@ -1441,18 +1441,34 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
                 [subview removeFromSuperview];
             }
             int fromX = 16;
-            UILabel *tipsLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, 3, 250, 14)];
-            [tipsLabel setText:@"他们也po了这首歌："];
-            [tipsLabel setTextColor:Color_Text_1];
+            UILabel *tipsLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, 8, 250, 14)];
+            if ([userArray count] == 1) {
+                [tipsLabel setText:[NSString stringWithFormat:@"Ta也分享了这首歌： %@",tempMuzzik.music.name]];
+            }else{
+                [tipsLabel setText:[NSString stringWithFormat:@"他们也分享了这首歌： %@",tempMuzzik.music.name]];
+            }
+            
+            [tipsLabel setTextColor:Color_Text_2];
             [tipsLabel setFont:[UIFont systemFontOfSize:11]];
             [userView addSubview:tipsLabel];
-            UIButton *closeViewButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-30, 40, 25, 25)];
-            [closeViewButton setImage:[UIImage imageNamed:@"PlayercloseImage"] forState:UIControlStateNormal];
+            UIButton *closeViewButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-31, 0, 31, 75)];
+            [closeViewButton setImage:[UIImage imageNamed:@"recommandcloseImage"] forState:UIControlStateNormal];
             [closeViewButton addTarget:self action:@selector(closeUserView) forControlEvents:UIControlEventTouchUpInside];
             [userView addSubview:closeViewButton];
+            BOOL GotMore = NO;
+            if ((SCREEN_WIDTH-50)/50<userArray.count) {
+                GotMore = YES;
+                UIButton *moreButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-71, 27, 40, 40)];
+                [moreButton setImage:[UIImage imageNamed:@"recommandmoreImage"] forState:UIControlStateNormal];
+                [moreButton addTarget:self action:@selector(seeMoreUser) forControlEvents:UIControlEventTouchUpInside];
+                [userView addSubview:moreButton];
+            }
+            
             for (MuzzikUser *user in userArray) {
-                if (fromX <SCREEN_WIDTH-66) {
-                    UIButton_UserMuzzik *userbutton = [[UIButton_UserMuzzik alloc] initWithFrame:CGRectMake(fromX, 20, 40, 40)];
+                int temp = GotMore ? SCREEN_WIDTH-110 :SCREEN_WIDTH-71;
+                if (fromX < temp) {
+                    
+                    UIButton_UserMuzzik *userbutton = [[UIButton_UserMuzzik alloc] initWithFrame:CGRectMake(fromX, 27, 40, 40)];
                     userbutton.user =user;
                     userbutton.layer.cornerRadius = 20;
                     userbutton.clipsToBounds = YES;
@@ -1463,7 +1479,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
                             [userbutton setAlpha:1];
                         }];
                     }];
-                    fromX += 45;
+                    fromX += 48;
                     [userView addSubview:userbutton];
                 }else{
                     break;
@@ -1471,13 +1487,13 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
             }
             [self.view addSubview:userView];
             [UIView animateWithDuration:1 animations:^{
-                [userView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 65)];
-                [MytableView setFrame:CGRectMake(0, 65, SCREEN_WIDTH, SCREEN_HEIGHT-129)];
+                [userView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 75)];
+                [MytableView setFrame:CGRectMake(0, 75, SCREEN_WIDTH, SCREEN_HEIGHT-139)];
             }];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(6.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 if (!isUserTaped) {
                     [UIView animateWithDuration:0.5 animations:^{
-                        [userView setFrame:CGRectMake(0, -65, SCREEN_WIDTH, 65)];
+                        [userView setFrame:CGRectMake(0, -75, SCREEN_WIDTH, 75)];
                         [MytableView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
                     } completion:^(BOOL finished) {
                         [userView removeFromSuperview];
@@ -1511,14 +1527,20 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     }
 }
 -(void)closeUserView{
+    isUserTaped = NO;
     [UIView animateWithDuration:0.5 animations:^{
-        [userView setFrame:CGRectMake(0, -65, SCREEN_WIDTH, 65)];
+        [userView setFrame:CGRectMake(0, -75, SCREEN_WIDTH, 75)];
         [MytableView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     } completion:^(BOOL finished) {
         [userView removeFromSuperview];
     }];
 }
 -(void)seeMoreUser{
-    
+    isUserTaped = YES;
+    showUserVC *showvc = [[showUserVC alloc] init];
+    showvc.showType = @"songUser";
+    showvc.userArray = userArray;
+    [self.navigationController pushViewController:showvc animated:YES];
+
 }
 @end

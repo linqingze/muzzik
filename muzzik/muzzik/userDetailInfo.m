@@ -1005,6 +1005,13 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         
         _attentionButton.frame = d;
     }
+    if (yOffset>320) {
+        [_messageView setFrame:CGRectMake(16, 0, SCREEN_WIDTH-32, 55)];
+        [self.view addSubview:_messageView];
+    }else{
+        [_messageView  setFrame:CGRectMake(16, SCREEN_WIDTH, SCREEN_WIDTH-32, 55)];
+        [_headView addSubview:_messageView];
+    }
 }
 
 -(void)playnextMuzzikUpdate{

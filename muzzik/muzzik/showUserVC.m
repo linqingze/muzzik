@@ -36,6 +36,8 @@
     }else if ([_showType isEqualToString:@"moved"]){
         URLString = [NSString stringWithFormat:@"%@%@%@",BaseURL,URL_MovedUsers,_muzzik_id];
         [self initNagationBar:@"喜欢用户" leftBtn:Constant_backImage rightBtn:0];
+    }else if([self.showType isEqualToString:@"songUser"]){
+        [self initNagationBar:@"相关用户" leftBtn:Constant_backImage rightBtn:0];
     }
     _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     [self.view addSubview:_tableView];
@@ -43,8 +45,12 @@
     _tableView.dataSource = self;
     [_tableView  setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     [_tableView registerClass:[searchUserCell class] forCellReuseIdentifier:@"searchUserCell"];
-    [self loadDataMessage];
-    [_tableView addFooterWithTarget:self action:@selector(refreshFooter)];
+    if(![self.showType isEqualToString:@"songUser"]){
+        [self loadDataMessage];
+        [_tableView addFooterWithTarget:self action:@selector(refreshFooter)];
+    }
+    
+    
 
     
     // Do any additional setup after loading the view.
@@ -131,13 +137,13 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
     // Return the number of rows in the section.
-    return userArray.count;
+    return [self.showType isEqualToString:@"songUser"]? self.userArray.count:userArray.count;
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     searchUserCell *cell = [tableView dequeueReusableCellWithIdentifier:@"searchUserCell" forIndexPath:indexPath];
-    MuzzikUser *muzzikuser = userArray[indexPath.row];
+    MuzzikUser *muzzikuser = [self.showType isEqualToString:@"songUser"]? self.userArray[indexPath.row]:userArray[indexPath.row];
     [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     [cell.headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,muzzikuser.avatar]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
         [cell.headerImage setAlpha:1];
@@ -148,6 +154,9 @@
         [cell.attentionButton setHidden:YES];
     }else{
         [cell.attentionButton setHidden:NO];
+    }
+    if ([self.showType isEqualToString:@"songUser"]) {
+        [cell.attentionButton setHidden:YES];
     }
     cell.index = indexPath.row;
     cell.label.text = muzzikuser.name;
@@ -170,16 +179,28 @@
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    MuzzikUser *attentionuser = userArray[indexPath.row];
+    MuzzikUser *attentionuser ;
+    if ([self.showType isEqualToString:@"songUser"]) {
+        attentionuser = self.userArray[indexPath.row];
+    }else{
+        attentionuser = userArray[indexPath.row];
+    }
     userInfo *user = [userInfo shareClass];
-    if ([attentionuser.user_id isEqualToString:user.uid]) {
-        UserHomePage *home = [[UserHomePage alloc] init];
-        [self.navigationController pushViewController:home animated:YES];
+    if (attentionuser.user_id) {
+        if ([attentionuser.user_id isEqualToString:user.uid]) {
+            UserHomePage *home = [[UserHomePage alloc] init];
+            [self.navigationController pushViewController:home animated:YES];
+        }else{
+            userDetailInfo *detailuser = [[userDetailInfo alloc] init];
+            detailuser.uid = attentionuser.user_id;
+            [self.navigationController pushViewController:detailuser animated:YES];
+        }
     }else{
         userDetailInfo *detailuser = [[userDetailInfo alloc] init];
-        detailuser.uid = attentionuser.user_id;
+        detailuser.uid = [attentionuser.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         [self.navigationController pushViewController:detailuser animated:YES];
     }
+    
     
 }
 

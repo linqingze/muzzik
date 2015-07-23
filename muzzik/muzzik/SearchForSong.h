@@ -13,5 +13,6 @@
 @property (nonatomic,weak) searchViewController *keeper;
 -(void) playMuzzikWithIndex:(NSInteger) index;
 -(void) commentMuzzikWithIndex:(NSInteger) index;
+- (void)viewDidCurrentView;
 @property (nonatomic,retain) NSMutableDictionary *shareDic;
 @end

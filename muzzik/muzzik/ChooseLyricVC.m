@@ -239,7 +239,7 @@
     UILabel *notify = [[UILabel alloc] initWithFrame:CGRectMake(40, 0, SCREEN_WIDTH-150, 30)];
     [notify setFont:[UIFont systemFontOfSize:14]];
     [notify setTextColor:Color_Text_2];
-    [notify setText:@"发送并同步到朋友圈"];
+    [notify setText:@"赞赞嗒封面发送并同步到朋友圈"];
     [sharaView addSubview:notify];
     shareCycle = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-40, 0, 30, 30)];
     [shareCycle setImage:[UIImage imageNamed:@"SmallshareselectedImage"]];

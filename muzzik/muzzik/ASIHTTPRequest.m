@@ -291,7 +291,7 @@ static NSOperationQueue *sharedQueue = nil;
             for (NSString *dicKey in [dic allKeys]) {
                 requestString  = [requestString stringByAppendingString:[NSString stringWithFormat:@"%@=%@&",dicKey,[dic objectForKey:dicKey]]];
             }
-            requestString = [[requestString substringToIndex:[requestString length]-1]stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            requestString = [requestString substringToIndex:[requestString length]-1];
             [self setURL:[NSURL URLWithString:requestString]];
         }
         [self setRequestMethod:@"GET"];

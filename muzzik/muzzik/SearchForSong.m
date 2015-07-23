@@ -54,8 +54,9 @@
     [self.view addSubview:blankTipsImage];
     
 }
--(void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
+- (void)viewDidCurrentView
+{
+    NSLog(@"加载为当前视图 = %@",self.title);
     self.keeper.activityVC = self;
     [self.keeper followScrollView:myTableView];
     if (![self.keeper.searchBar.text isEqualToString:_searchText]) {
@@ -75,6 +76,11 @@
         [myTableView reloadData];
         [blankTipsImage setHidden:NO];
     }
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    
 
 }
 

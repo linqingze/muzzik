@@ -211,7 +211,11 @@ static void *AFHTTPRequestSerializerObserverContext = &AFHTTPRequestSerializerOb
         *stop = q <= 0.5f;
     }];
     [self setValue:[acceptLanguagesComponents componentsJoinedByString:@", "] forHTTPHeaderField:@"Accept-Language"];
-
+    userInfo *user = [userInfo shareClass];
+    if ([user.token length]>0) {
+        [self setValue:user.token forHTTPHeaderField:@"X-Auth-Token"];
+    }
+    
     NSString *userAgent = nil;
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wgnu"

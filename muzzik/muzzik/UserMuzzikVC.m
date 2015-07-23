@@ -11,6 +11,8 @@
 #import "CommentTableVC.h"
 @interface UserMuzzikVC()<SUNSlideSwitchViewDelegate>{
     SUNSlideSwitchView *sliderView;
+    MuzzikTableVC *muzzikTable;
+    CommentTableVC *commentvc;
 }
 
 @end
@@ -22,12 +24,21 @@
     [self.view setBackgroundColor:[UIColor whiteColor]];
     [self initNagationBar:@"我的Muzzik" leftBtn:Constant_backImage rightBtn:0];
     sliderView = [[SUNSlideSwitchView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
-    sliderView.tabItemNormalColor = Color_Text_1;
-    sliderView.tabItemSelectedColor = Color_Active_Button_1;
+    sliderView.tabItemNormalColor = Color_Text_4;
+    sliderView.tabItemSelectedColor = Color_Text_2;
     sliderView.shadowImage = [[UIImage imageNamed:@"red_line_and_shadow.png"]
                               stretchableImageWithLeftCapWidth:59.0f topCapHeight:0.0f];
     [self.view addSubview:sliderView];
     sliderView.slideSwitchViewDelegate = self;
+    muzzikTable = [[MuzzikTableVC alloc] init];
+    muzzikTable.keeper = self;
+    muzzikTable.title =@"信息";
+    
+    commentvc = [[CommentTableVC alloc] init];
+    commentvc.keeper = self;
+    commentvc.title = @"评论";
+    
+    
     [sliderView buildUI];
     // Do any additional setup after loading the view.
 }
@@ -42,19 +53,22 @@
 - (UIViewController *)slideSwitchView:(SUNSlideSwitchView *)view viewOfTab:(NSUInteger)number
 {
     if (number == 0) {
-        MuzzikTableVC *muzzikTable = [[MuzzikTableVC alloc] init];
-        muzzikTable.keeper = self;
-        muzzikTable.title =@"信息";
         return muzzikTable;
     }
     else{
-        CommentTableVC *commentvc = [[CommentTableVC alloc] init];
-        commentvc.keeper = self;
-        commentvc.title = @"评论";
+        
         return commentvc;
     }
 }
-
+- (void)slideSwitchView:(SUNSlideSwitchView *)view didselectTab:(NSUInteger)number
+{
+    if (number == 0) {
+        [muzzikTable viewDidCurrentView];
+    }
+    else if (number == 1) {
+        [commentvc viewDidCurrentView];
+    }
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

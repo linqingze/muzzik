@@ -102,14 +102,16 @@
     }];
     [requestForm startAsynchronous];
 }
-
--(void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
+-(void)viewDidCurrentView{
     self.keeper.activityVC = self;
     if ([self.keeper.searchBar.text length]>0) {
         [self updateDataSource:self.keeper.searchBar.text];
     }
     [self.keeper followScrollView:self.tableView];
+}
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    
 }
 
 - (void)didReceiveMemoryWarning {

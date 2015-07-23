@@ -25,8 +25,8 @@
     [super viewDidLoad];
     [self initNagationBar:@"发po选歌" leftBtn:0 rightBtn:0];
     sliderView = [[SUNSlideSwitchView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
-    sliderView.tabItemNormalColor = Color_Text_1;
-    sliderView.tabItemSelectedColor = Color_Active_Button_1;
+    sliderView.tabItemNormalColor = Color_Text_4;
+    sliderView.tabItemSelectedColor = Color_Text_2;
     sliderView.shadowImage = [[UIImage imageNamed:@"red_line_and_shadow.png"]
                               stretchableImageWithLeftCapWidth:59.0f topCapHeight:0.0f];
     [self.view addSubview:sliderView];
@@ -121,6 +121,15 @@
         return svc;
     }else {
         return nil;
+    }
+}
+- (void)slideSwitchView:(SUNSlideSwitchView *)view didselectTab:(NSUInteger)number
+{
+    if (number == 0) {
+        [searchVC viewDidCurrentView];
+    }
+    else if (number == 1) {
+        [svc viewDidCurrentView];
     }
 }
 

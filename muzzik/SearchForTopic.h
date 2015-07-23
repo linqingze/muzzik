@@ -13,4 +13,5 @@
 @property (nonatomic,weak) searchViewController *keeper;
 @property (nonatomic,retain) NSMutableDictionary *shareDic;
 -(void) poAction:(NSInteger)index;
+- (void)viewDidCurrentView;
 @end

@@ -12,4 +12,5 @@
 @interface CommentTableVC :AMScrollingNavbarViewController
 @property (nonatomic,copy)NSString *uid;
 @property(nonatomic,weak) UserMuzzikVC *keeper;
+- (void)viewDidCurrentView;
 @end

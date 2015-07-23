@@ -11,5 +11,6 @@
 @interface SearchLibraryMusicVC : UITableViewController<searchSource>
 @property (nonatomic,weak) ChooseMusicVC *keeper;
 -(void) playMuzzikWithIndex:(NSInteger) index;
+- (void)viewDidCurrentView;
 @property (nonatomic,retain) NSMutableDictionary *shareDic;
 @end

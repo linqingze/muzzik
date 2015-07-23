@@ -13,6 +13,9 @@
 @interface searchViewController ()<UISearchBarDelegate,SUNSlideSwitchViewDelegate> {
     UIButton *cancelButton;
     SUNSlideSwitchView *sliderView;
+    SearchForSong *svcsong;
+    SearchForUser *searchvcUser;
+    SearchForTopic *searchtopic;
 }
 
 @end
@@ -22,8 +25,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     sliderView = [[SUNSlideSwitchView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
-    sliderView.tabItemNormalColor = Color_line_1;
-    sliderView.tabItemSelectedColor = Color_Text_1;
+    sliderView.tabItemNormalColor = Color_Text_4;
+    sliderView.tabItemSelectedColor = Color_Text_2;
     sliderView.shadowImage = [[UIImage imageNamed:@"red_line_and_shadow.png"]
                               stretchableImageWithLeftCapWidth:59.0f topCapHeight:0.0f];
     [self.view addSubview:sliderView];
@@ -70,6 +73,19 @@
     [_searchView setBackgroundColor:Color_NavigationBar];
     [_searchView addSubview:_searchBar];
     [self.navigationController.view addSubview:_searchView];
+    svcsong = [[SearchForSong alloc] init];
+    svcsong.keeper = self;
+    svcsong.title =@"歌曲";
+    
+    searchvcUser = [[SearchForUser alloc] init];
+    searchvcUser.keeper = self;
+    searchvcUser.title =@"用户";
+    
+    searchtopic = [[SearchForTopic alloc] init];
+    searchtopic.keeper = self;
+    searchtopic.title =@"话题";
+    
+    
     [sliderView buildUI];
 
 }
@@ -105,24 +121,26 @@
 - (UIViewController *)slideSwitchView:(SUNSlideSwitchView *)view viewOfTab:(NSUInteger)number
 {
     if (number == 0) {
-        SearchForSong *svcsong = [[SearchForSong alloc] init];
-        svcsong.keeper = self;
-        svcsong.title =@"歌曲";
+        
         return svcsong;
     }
     else if (number == 1) {
-        SearchForUser *searchvcUser = [[SearchForUser alloc] init];
-        searchvcUser.keeper = self;
-        searchvcUser.title =@"用户";
         return searchvcUser;
     }else{
-        SearchForTopic *searchtopic = [[SearchForTopic alloc] init];
-        searchtopic.keeper = self;
-        searchtopic.title =@"话题";
         return searchtopic;
     }
 }
-
+- (void)slideSwitchView:(SUNSlideSwitchView *)view didselectTab:(NSUInteger)number
+{
+    if (number == 0) {
+        [svcsong viewDidCurrentView];
+    }
+    else if (number == 1) {
+        [searchvcUser viewDidCurrentView];
+    }else{
+        [searchtopic viewDidCurrentView];
+    }
+}
 
 -(void) searchBarBack{
     [_searchBar resignFirstResponder];

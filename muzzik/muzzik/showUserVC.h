@@ -10,4 +10,5 @@
 @interface showUserVC : AMScrollingNavbarViewController
 @property (nonatomic,copy) NSString *showType;
 @property (nonatomic,copy) NSString *muzzik_id;
+@property (nonatomic,retain) NSMutableArray *userArray;
 @end

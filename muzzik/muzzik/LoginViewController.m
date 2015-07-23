@@ -113,6 +113,7 @@
     [phoneText setFont:[UIFont systemFontOfSize:15]];
     phoneText.placeholder = @"手机号码";
     phoneText.delegate = self;
+    
     [phoneText setValue:[UIFont boldSystemFontOfSize:15] forKeyPath:@"_placeholderLabel.font"];
     [phoneText setTextColor:[UIColor whiteColor]];
     [phoneText setValue:[UIColor colorWithHexString:@"dddddd"] forKeyPath:@"_placeholderLabel.textColor"];
@@ -129,6 +130,7 @@
     [passwordText setTextColor:[UIColor whiteColor]];
     passwordText.placeholder = @"密 码";
     passwordText.delegate = self;
+    [passwordText setReturnKeyType:UIReturnKeyDone];
     [passwordText setFont:[UIFont systemFontOfSize:15]];
     [passwordText setSecureTextEntry:YES];
     [passwordText setValue:[UIFont boldSystemFontOfSize:15] forKeyPath:@"_placeholderLabel.font"];
@@ -254,76 +256,60 @@
 }
 -(void) loginAction{
     loginButton.userInteractionEnabled = NO;
-    ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Login]]];
+    userInfo *user = [userInfo shareClass];
     NSString *passwordInMD5 = [[NSString stringWithFormat:@"%@Muzzik%@",phoneText.text,passwordText.text] md5Encrypt];
-    NSLog(@"%@",passwordInMD5);
-    [requestForm setUseCookiePersistence:NO];
-   
-    [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:phoneText.text,@"phone",passwordInMD5,@"hashedPassword",nil] Method:PostMethod auth:NO];
-    __weak ASIHTTPRequest *weakrequest = requestForm;
-    [requestForm setCompletionBlock :^{
+    AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
+    [manager POST:[NSString stringWithFormat:@"%@%@",BaseURL,URL_Login] parameters:[NSDictionary dictionaryWithObjectsAndKeys:phoneText.text,@"phone",passwordInMD5,@"hashedPassword",nil] success:^(AFHTTPRequestOperation * operation, id responseObject) {
         loginButton.userInteractionEnabled = YES;
-        NSLog(@"%@",[weakrequest responseString]);
-        NSLog(@"%d",[weakrequest responseStatusCode]);
-         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
-        if ([weakrequest responseStatusCode] == 200) {
-            NSDictionary *fileDic = [NSDictionary dictionaryWithObjectsAndKeys:[dic objectForKey:@"_id"],@"_id",[dic objectForKey:@"token"],@"token",[dic objectForKey:@"gender"],@"gender",[dic objectForKey:@"avatar"],@"avatar",[dic objectForKey:@"name"],@"name", nil];
-            [MuzzikItem addMessageToLocal:fileDic];
-            userInfo *user = [userInfo shareClass];
-            if ([[dic allKeys] containsObject:@"token"]) {
-                user.token = [dic objectForKey:@"token"];
-            }
-            if ([[dic allKeys] containsObject:@"avatar"]) {
-                user.avatar = [dic objectForKey:@"avatar"];
-            }
-            if ([[dic allKeys] containsObject:@"gender"]) {
-                user.gender = [dic objectForKey:@"gender"];
-            }
-            if ([[dic allKeys] containsObject:@"_id"]) {
-                user.uid = [dic objectForKey:@"_id"];
-            }
-            if ([[dic allKeys] containsObject:@"blocked"]) {
-                user.blocked = [[dic objectForKey:@"blocked"] boolValue];
-            }
-            if ([[dic allKeys] containsObject:@"name"]) {
-                user.name = [dic objectForKey:@"name"];
-            }
-            if ([[dic allKeys] containsObject:@"token"]) {
-                user.token = [dic objectForKey:@"token"];
-            }
-            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Set_Notify]]];
-            [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:user.deviceToken,@"deviceToken",@"APN",@"type", nil] Method:PostMethod auth:YES];
-            __weak ASIHTTPRequest *weakrequest = requestForm;
-            [requestForm setCompletionBlock :^{
-                NSLog(@"%@",[weakrequest responseString]);
-                NSLog(@"%d",[weakrequest responseStatusCode]);
-                if ([weakrequest responseStatusCode] == 200) {
-                    
-                    NSLog(@"register ok");
-                }
-                else{
-                    //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-                }
-            }];
-            [requestForm setFailedBlock:^{
-                NSLog(@"%@",[weakrequest error]);
-            }];
-            [requestForm startAsynchronous];
-            [self.navigationController popViewControllerAnimated:YES];
-        }else{
-            if ([weakrequest responseStatusCode] == 400) {
-                [MuzzikItem showNotifyOnView:self.view text:@"请输入正确的手机号"];
-            }else{
-                 [MuzzikItem showNotifyOnView:self.view text:@"账号密码错误"];
-            }
+        NSLog(@"JSON: %@", responseObject);
+        
+//        if ([weakrequest responseStatusCode] == 400) {
+//            [MuzzikItem showNotifyOnView:self.view text:@"请输入正确的手机号"];
+//        }else{
+//            [MuzzikItem showNotifyOnView:self.view text:@"账号密码错误"];
+//        }
+        NSDictionary *fileDic = [NSDictionary dictionaryWithObjectsAndKeys:[responseObject objectForKey:@"_id"],@"_id",[responseObject objectForKey:@"token"],@"token",[responseObject objectForKey:@"gender"],@"gender",[responseObject objectForKey:@"avatar"],@"avatar",[responseObject objectForKey:@"name"],@"name", nil];
+        [MuzzikItem addMessageToLocal:fileDic];
+        if ([[responseObject allKeys] containsObject:@"token"]) {
+            user.token = [responseObject objectForKey:@"token"];
         }
-    }];
-    [requestForm setFailedBlock:^{
+        if ([[responseObject allKeys] containsObject:@"avatar"]) {
+            user.avatar = [responseObject objectForKey:@"avatar"];
+        }
+        if ([[responseObject allKeys] containsObject:@"gender"]) {
+            user.gender = [responseObject objectForKey:@"gender"];
+        }
+        if ([[responseObject allKeys] containsObject:@"_id"]) {
+            user.uid = [responseObject objectForKey:@"_id"];
+        }
+        if ([[responseObject allKeys] containsObject:@"blocked"]) {
+            user.blocked = [[responseObject objectForKey:@"blocked"] boolValue];
+        }
+        if ([[responseObject allKeys] containsObject:@"name"]) {
+            user.name = [responseObject objectForKey:@"name"];
+        }
+        
+            AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
+        [manager POST:[NSString stringWithFormat:@"%@%@",BaseURL,URL_Set_Notify] parameters:[NSDictionary dictionaryWithObjectsAndKeys:user.deviceToken,@"deviceToken",@"APN",@"type", nil] success:^(AFHTTPRequestOperation * operation, id responseObject) {
+            NSLog(@"JSON: %@", responseObject);
+     
+        } failure:^(AFHTTPRequestOperation *operation, NSError * error) {
+            NSLog(@"op: %@    error:%@",operation,error);
+            
+        }];
+        [self.navigationController popViewControllerAnimated:YES];
+    } failure:^(AFHTTPRequestOperation *operation, NSError * error) {
         loginButton.userInteractionEnabled = YES;
-        NSLog(@"%@    %@   %@",[weakrequest responseString],[weakrequest responseHeaders],[weakrequest responseCookies]);
-        // [SVProgressHUD showErrorWithStatus:@"network error"];
+         [MuzzikItem showNotifyOnView:self.view text:@"账号密码错误"];
+//        NSDictionary *dic = operation.responseObject;
+//        if ([[dic objectForKey:@"error"] isEqualToString:@"wrong password or user not exists"]) {
+//           
+//        }else if([[dic objectForKey:@"error"] isEqualToString:@"wrong password or user not exists"]){
+//            
+//        }
+        NSLog(@"op: %@    error:%@",operation,error);
+        
     }];
-    [requestForm startAsynchronous];
 }
 - (void) registerAction{
     registerVC *registervc = [[registerVC alloc] init];
@@ -349,54 +335,46 @@
 - (void)tencentDidLogin {
     NSLog(@"qq");
     
+    userInfo *user = [userInfo shareClass];
+    AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
     
-    ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@%@",BaseURL,URL_QQ_AUTH,_tencentOAuth.accessToken]]];
-    [requestForm setUseCookiePersistence:NO];
-    __weak ASIHTTPRequest *weakrequest = requestForm;
-    [requestForm setCompletionBlock :^{
-          NSLog(@"%@",[weakrequest responseString]);
-          NSLog(@"%d",[weakrequest responseStatusCode]);
+    [manager GET:[NSString stringWithFormat:@"%@%@%@",BaseURL,URL_QQ_AUTH,_tencentOAuth.accessToken] parameters:nil success:^(AFHTTPRequestOperation * operation, id responseObject) {
         
-        if ([weakrequest responseStatusCode] == 200) {
-            NSData *data = [weakrequest responseData];
-            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data  options:NSJSONReadingMutableContainers error:nil];
-            NSDictionary *fileDic = [NSDictionary dictionaryWithObjectsAndKeys:[dic objectForKey:@"_id"],@"_id",[dic objectForKey:@"token"],@"token",[dic objectForKey:@"gender"],@"gender",[dic objectForKey:@"avatar"],@"avatar",[dic objectForKey:@"name"],@"name", nil];
-            [MuzzikItem addMessageToLocal:fileDic];
-            userInfo *user = [userInfo shareClass];
-            user.uid = [dic objectForKey:@"_id"];
-            user.token = [dic objectForKey:@"token"];
-            user.gender = [dic objectForKey:@"gender"];
-            user.avatar = [dic objectForKey:@"avatar"];
-            user.name = [dic objectForKey:@"name"];
-            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Set_Notify]]];
-            [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:user.deviceToken,@"deviceToken",@"APN",@"type", nil] Method:PostMethod auth:YES];
-            __weak ASIHTTPRequest *weakrequest = requestForm;
-            [requestForm setCompletionBlock :^{
-                NSLog(@"%@",[weakrequest responseString]);
-                NSLog(@"%d",[weakrequest responseStatusCode]);
-                if ([weakrequest responseStatusCode] == 200) {
-                    
-                    NSLog(@"register ok");
-                }
-                else{
-                    //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-                }
-            }];
-            [requestForm setFailedBlock:^{
-                NSLog(@"%@",[weakrequest error]);
-            }];
-            [requestForm startAsynchronous];
-            [self.navigationController popViewControllerAnimated:YES];
+        NSLog(@"JSON: %@", responseObject);
+        NSDictionary *fileDic = [NSDictionary dictionaryWithObjectsAndKeys:[responseObject objectForKey:@"_id"],@"_id",[responseObject objectForKey:@"token"],@"token",[responseObject objectForKey:@"gender"],@"gender",[responseObject objectForKey:@"avatar"],@"avatar",[responseObject objectForKey:@"name"],@"name", nil];
+        [MuzzikItem addMessageToLocal:fileDic];
+        if ([[responseObject allKeys] containsObject:@"token"]) {
+            user.token = [responseObject objectForKey:@"token"];
+        }
+        if ([[responseObject allKeys] containsObject:@"avatar"]) {
+            user.avatar = [responseObject objectForKey:@"avatar"];
+        }
+        if ([[responseObject allKeys] containsObject:@"gender"]) {
+            user.gender = [responseObject objectForKey:@"gender"];
+        }
+        if ([[responseObject allKeys] containsObject:@"_id"]) {
+            user.uid = [responseObject objectForKey:@"_id"];
+        }
+        if ([[responseObject allKeys] containsObject:@"blocked"]) {
+            user.blocked = [[responseObject objectForKey:@"blocked"] boolValue];
+        }
+        if ([[responseObject allKeys] containsObject:@"name"]) {
+            user.name = [responseObject objectForKey:@"name"];
+        }
+        
+        AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
+        [manager POST:[NSString stringWithFormat:@"%@%@",BaseURL,URL_Set_Notify] parameters:[NSDictionary dictionaryWithObjectsAndKeys:user.deviceToken,@"deviceToken",@"APN",@"type", nil] success:^(AFHTTPRequestOperation * operation, id responseObject) {
+            NSLog(@"JSON: %@", responseObject);
             
-        }
-        else{
-            //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-        }
+        } failure:^(AFHTTPRequestOperation *operation, NSError * error) {
+            NSLog(@"op: %@    error:%@",operation,error);
+            
+        }];
+        [self.navigationController popViewControllerAnimated:YES];
+    } failure:^(AFHTTPRequestOperation *operation, NSError * error) {
+        NSLog(@"op: %@    error:%@",operation,error);
+        
     }];
-    [requestForm setFailedBlock:^{
-        NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-    }];
-    [requestForm startAsynchronous];
 }
 - (void)tencentDidNotLogin:(BOOL)cancelled
 {
@@ -426,6 +404,63 @@
 #pragma -mark textField Delegate Method
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField{
+    if (textField == passwordText) {
+        loginButton.userInteractionEnabled = NO;
+        userInfo *user = [userInfo shareClass];
+        NSString *passwordInMD5 = [[NSString stringWithFormat:@"%@Muzzik%@",phoneText.text,passwordText.text] md5Encrypt];
+        AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
+        [manager POST:[NSString stringWithFormat:@"%@%@",BaseURL,URL_Login] parameters:[NSDictionary dictionaryWithObjectsAndKeys:phoneText.text,@"phone",passwordInMD5,@"hashedPassword",nil] success:^(AFHTTPRequestOperation * operation, id responseObject) {
+            loginButton.userInteractionEnabled = YES;
+            NSLog(@"JSON: %@", responseObject);
+            
+            //        if ([weakrequest responseStatusCode] == 400) {
+            //            [MuzzikItem showNotifyOnView:self.view text:@"请输入正确的手机号"];
+            //        }else{
+            //            [MuzzikItem showNotifyOnView:self.view text:@"账号密码错误"];
+            //        }
+            NSDictionary *fileDic = [NSDictionary dictionaryWithObjectsAndKeys:[responseObject objectForKey:@"_id"],@"_id",[responseObject objectForKey:@"token"],@"token",[responseObject objectForKey:@"gender"],@"gender",[responseObject objectForKey:@"avatar"],@"avatar",[responseObject objectForKey:@"name"],@"name", nil];
+            [MuzzikItem addMessageToLocal:fileDic];
+            if ([[responseObject allKeys] containsObject:@"token"]) {
+                user.token = [responseObject objectForKey:@"token"];
+            }
+            if ([[responseObject allKeys] containsObject:@"avatar"]) {
+                user.avatar = [responseObject objectForKey:@"avatar"];
+            }
+            if ([[responseObject allKeys] containsObject:@"gender"]) {
+                user.gender = [responseObject objectForKey:@"gender"];
+            }
+            if ([[responseObject allKeys] containsObject:@"_id"]) {
+                user.uid = [responseObject objectForKey:@"_id"];
+            }
+            if ([[responseObject allKeys] containsObject:@"blocked"]) {
+                user.blocked = [[responseObject objectForKey:@"blocked"] boolValue];
+            }
+            if ([[responseObject allKeys] containsObject:@"name"]) {
+                user.name = [responseObject objectForKey:@"name"];
+            }
+            
+            AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
+            [manager POST:[NSString stringWithFormat:@"%@%@",BaseURL,URL_Set_Notify] parameters:[NSDictionary dictionaryWithObjectsAndKeys:user.deviceToken,@"deviceToken",@"APN",@"type", nil] success:^(AFHTTPRequestOperation * operation, id responseObject) {
+                NSLog(@"JSON: %@", responseObject);
+                
+            } failure:^(AFHTTPRequestOperation *operation, NSError * error) {
+                NSLog(@"op: %@    error:%@",operation,error);
+                
+            }];
+            [self.navigationController popViewControllerAnimated:YES];
+        } failure:^(AFHTTPRequestOperation *operation, NSError * error) {
+            loginButton.userInteractionEnabled = YES;
+            [MuzzikItem showNotifyOnView:self.view text:@"账号密码错误"];
+            //        NSDictionary *dic = operation.responseObject;
+            //        if ([[dic objectForKey:@"error"] isEqualToString:@"wrong password or user not exists"]) {
+            //           
+            //        }else if([[dic objectForKey:@"error"] isEqualToString:@"wrong password or user not exists"]){
+            //            
+            //        }
+            NSLog(@"op: %@    error:%@",operation,error);
+            
+        }];
+    }
     [textField resignFirstResponder];
     return YES;
 }

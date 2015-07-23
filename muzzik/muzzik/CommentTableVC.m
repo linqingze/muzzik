@@ -124,10 +124,14 @@
     [request startAsynchronous];
     
 }
+
+-(void)viewDidCurrentView{
+    [self.keeper followScrollView:MytableView];
+}
+
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-
-    [self.keeper followScrollView:MytableView];
+    
 }
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];

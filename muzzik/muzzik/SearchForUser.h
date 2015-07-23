@@ -12,4 +12,5 @@
 @interface SearchForUser : AMScrollingNavbarViewController<UITableViewDelegate,UITableViewDataSource,searchSource>
 @property (nonatomic,weak) searchViewController *keeper;
 -(void) attention:(NSInteger) index;
+- (void)viewDidCurrentView;
 @end

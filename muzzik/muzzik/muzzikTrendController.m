@@ -197,9 +197,10 @@
 //        }
     userInfo *user = [userInfo shareClass];
     if ([user.token length]>0) {
-        [newButton setImage:[UIImage imageNamed:@"addsongImage"] forState:UIControlStateNormal];
+        [newButton setHidden:YES];
     }
     else{
+        [newButton setHidden:NO];
         [newButton setImage:[UIImage imageNamed:@"loginImage"] forState:UIControlStateNormal];
     }
     if (self.isRootSubview) {

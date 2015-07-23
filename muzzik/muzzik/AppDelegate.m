@@ -505,61 +505,56 @@
 
         self.wbtoken = [(WBAuthorizeResponse *)response accessToken];
         self.wbCurrentUserID = [(WBAuthorizeResponse *)response userID];
-        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@%@",BaseURL,URL_WeiBo_AUTH,[(WBAuthorizeResponse *)response accessToken]]]];
-        requestForm.shouldAttemptPersistentConnection = NO;
-        [requestForm setUseCookiePersistence:NO];
-        __weak ASIHTTPRequest *weakrequest = requestForm;
-        [requestForm setCompletionBlock :^{
-            //  NSLog(@"%@",[weakrequest responseString]);
-            //  NSLog(@"%d",[weakrequest responseStatusCode]);
-            if ([weakrequest responseStatusCode] == 200) {
-                NSData *data = [weakrequest responseData];
-                NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data  options:NSJSONReadingMutableContainers error:nil];
-                NSDictionary *fileDic = [NSDictionary dictionaryWithObjectsAndKeys:[dic objectForKey:@"_id"],@"_id",[dic objectForKey:@"token"],@"token",[dic objectForKey:@"gender"],@"gender",[dic objectForKey:@"avatar"],@"avatar",[dic objectForKey:@"name"],@"name", nil];
-                [MuzzikItem addMessageToLocal:fileDic];
+        AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
+        userInfo *user = [userInfo shareClass];
+        [manager GET:[NSString stringWithFormat:@"%@%@%@",BaseURL,URL_WeiBo_AUTH,[(WBAuthorizeResponse *)response accessToken]] parameters:nil success:^(AFHTTPRequestOperation * operation, id responseObject) {
+            
+            NSLog(@"JSON: %@", responseObject);
+            NSDictionary *fileDic = [NSDictionary dictionaryWithObjectsAndKeys:[responseObject objectForKey:@"_id"],@"_id",[responseObject objectForKey:@"token"],@"token",[responseObject objectForKey:@"gender"],@"gender",[responseObject objectForKey:@"avatar"],@"avatar",[responseObject objectForKey:@"name"],@"name", nil];
+            [MuzzikItem addMessageToLocal:fileDic];
+            if ([[responseObject allKeys] containsObject:@"token"]) {
+                user.token = [responseObject objectForKey:@"token"];
+            }
+            if ([[responseObject allKeys] containsObject:@"avatar"]) {
+                user.avatar = [responseObject objectForKey:@"avatar"];
+            }
+            if ([[responseObject allKeys] containsObject:@"gender"]) {
+                user.gender = [responseObject objectForKey:@"gender"];
+            }
+            if ([[responseObject allKeys] containsObject:@"_id"]) {
+                user.uid = [responseObject objectForKey:@"_id"];
+            }
+            if ([[responseObject allKeys] containsObject:@"blocked"]) {
+                user.blocked = [[responseObject objectForKey:@"blocked"] boolValue];
+            }
+            if ([[responseObject allKeys] containsObject:@"name"]) {
+                user.name = [responseObject objectForKey:@"name"];
+            }
+            if ([[responseObject allKeys] containsObject:@"token"]) {
+                user.token = [responseObject objectForKey:@"token"];
+            }
+            
+            AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
+            [manager POST:[NSString stringWithFormat:@"%@%@",BaseURL,URL_Set_Notify] parameters:[NSDictionary dictionaryWithObjectsAndKeys:user.deviceToken,@"deviceToken",@"APN",@"type", nil] success:^(AFHTTPRequestOperation * operation, id responseObject) {
+                NSLog(@"JSON: %@", responseObject);
                 
-                userInfo *user = [userInfo shareClass];
-                user.uid = [dic objectForKey:@"_id"];
-                user.token = [dic objectForKey:@"token"];
-                user.gender = [dic objectForKey:@"gender"];
-                user.avatar = [dic objectForKey:@"avatar"];
-                user.name = [dic objectForKey:@"name"];
-                ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Set_Notify]]];
-                [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:user.deviceToken,@"deviceToken",@"APN",@"type", nil] Method:PostMethod auth:YES];
-                __weak ASIHTTPRequest *weakreq = request;
-                [request setCompletionBlock :^{
-                    NSLog(@"%@",[weakreq responseString]);
-                    NSLog(@"%d",[weakreq responseStatusCode]);
-                    if ([weakreq responseStatusCode] == 200) {
-                       
-                        NSLog(@"register ok");
-                    }
-                    else{
-                        //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-                    }
-                }];
-                [request setFailedBlock:^{
-                    NSLog(@"%@",[weakreq error]);
-                }];
-                [request startAsynchronous];
-                UINavigationController *nac = (UINavigationController *)self.window.rootViewController;
-                for (UIViewController *vc in nac.viewControllers) {
-                    if ([vc isKindOfClass:[settingSystemVC class]]) {
-                        settingSystemVC *settingvc = (settingSystemVC*)vc;
-                        [settingvc reloadTable];
-                        break;
-                    }
+            } failure:^(AFHTTPRequestOperation *operation, NSError * error) {
+                NSLog(@"op: %@    error:%@",operation,error);
+                
+            }];
+            UINavigationController *nac = (UINavigationController *)self.window.rootViewController;
+            for (UIViewController *vc in nac.viewControllers) {
+                if ([vc isKindOfClass:[settingSystemVC class]]) {
+                    settingSystemVC *settingvc = (settingSystemVC*)vc;
+                    [settingvc reloadTable];
+                    break;
                 }
-                [nac popViewControllerAnimated:YES];
             }
-            else{
-                //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-            }
+            [nac popViewControllerAnimated:YES];
+        } failure:^(AFHTTPRequestOperation *operation, NSError * error) {
+            NSLog(@"op: %@    error:%@",operation,error);
+            
         }];
-        [requestForm setFailedBlock:^{
-            NSLog(@"%@",[weakrequest error]);
-        }];
-        [requestForm startAsynchronous];
         
     }
 }
@@ -588,6 +583,7 @@
     req.state = @"123";
     
     [WXApi sendAuthReq:req viewController:vc delegate:self];
+    req = nil;
 }
 
 -(void) onResp:(BaseResp*)resp
@@ -606,60 +602,61 @@
     else if([resp isKindOfClass:[SendAuthResp class]])
     {
         SendAuthResp *temp = (SendAuthResp*)resp;
-        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_WeiChat_AUTH]]];
-        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:@"json",@"result",temp.code,@"code", nil] Method:PostMethod auth:NO];
-        [requestForm setUseCookiePersistence:NO];
-        requestForm.shouldAttemptPersistentConnection = NO;
-        __weak ASIHTTPRequest *weakrequest = requestForm;
-        [requestForm setCompletionBlock :^{
-              NSLog(@"%@",[weakrequest responseString]);
-              NSLog(@"%d",[weakrequest responseStatusCode]);
-            if ([weakrequest responseStatusCode] == 200) {
-                NSData *data = [weakrequest responseData];
-                NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data  options:NSJSONReadingMutableContainers error:nil];
-                if([[dic objectForKey:@"token"] length]>0){
-                    NSDictionary *fileDic = [NSDictionary dictionaryWithObjectsAndKeys:[dic objectForKey:@"_id"],@"_id",[dic objectForKey:@"token"],@"token",[dic objectForKey:@"gender"],@"gender",[dic objectForKey:@"avatar"],@"avatar",[dic objectForKey:@"name"],@"name", nil];
-                    [MuzzikItem addMessageToLocal:fileDic];
-                    userInfo *user = [userInfo shareClass];
-                    user.uid = [dic objectForKey:@"_id"];
-                    user.token = [dic objectForKey:@"token"];
-                    user.gender = [dic objectForKey:@"gender"];
-                    user.avatar = [dic objectForKey:@"avatar"];
-                    user.name = [dic objectForKey:@"name"];
-                    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Set_Notify]]];
-                    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:user.deviceToken,@"deviceToken",@"APN",@"type", nil] Method:PostMethod auth:YES];
-                    __weak ASIHTTPRequest *weakreq = request;
-                    [request setCompletionBlock :^{
-                        NSLog(@"%@",[weakreq responseString]);
-                        NSLog(@"%d",[weakreq responseStatusCode]);
-                        if ([weakreq responseStatusCode] == 200) {
-                            
-                            NSLog(@"register ok");
-                        }
-                        else{
-                            //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-                        }
-                    }];
-                    [request setFailedBlock:^{
-                        NSLog(@"%@",[weakreq error]);
-                    }];
-                    [request startAsynchronous];
-                    UINavigationController *nac = (UINavigationController *)self.window.rootViewController;
-                    UIViewController *vc  = [nac.viewControllers lastObject];
+        
+        AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
+        userInfo *user = [userInfo shareClass];
+        [manager GET:[NSString stringWithFormat:@"%@%@",BaseURL,URL_WeiChat_AUTH] parameters:[NSDictionary dictionaryWithObjectsAndKeys:@"json",@"result",temp.code,@"code", nil] success:^(AFHTTPRequestOperation * operation, id responseObject) {
+            
+            NSLog(@"JSON: %@", responseObject);
+            NSDictionary *fileDic = [NSDictionary dictionaryWithObjectsAndKeys:[responseObject objectForKey:@"_id"],@"_id",[responseObject objectForKey:@"token"],@"token",[responseObject objectForKey:@"gender"],@"gender",[responseObject objectForKey:@"avatar"],@"avatar",[responseObject objectForKey:@"name"],@"name", nil];
+            [MuzzikItem addMessageToLocal:fileDic];
+            if ([[responseObject allKeys] containsObject:@"token"]) {
+                user.token = [responseObject objectForKey:@"token"];
+            }
+            if ([[responseObject allKeys] containsObject:@"avatar"]) {
+                user.avatar = [responseObject objectForKey:@"avatar"];
+            }
+            if ([[responseObject allKeys] containsObject:@"gender"]) {
+                user.gender = [responseObject objectForKey:@"gender"];
+            }
+            if ([[responseObject allKeys] containsObject:@"_id"]) {
+                user.uid = [responseObject objectForKey:@"_id"];
+            }
+            if ([[responseObject allKeys] containsObject:@"blocked"]) {
+                user.blocked = [[responseObject objectForKey:@"blocked"] boolValue];
+            }
+            if ([[responseObject allKeys] containsObject:@"name"]) {
+                user.name = [responseObject objectForKey:@"name"];
+            }
+            if ([[responseObject allKeys] containsObject:@"token"]) {
+                user.token = [responseObject objectForKey:@"token"];
+            }
+            if ([user.token length]>0) {
+                AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
+                [manager POST:[NSString stringWithFormat:@"%@%@",BaseURL,URL_Set_Notify] parameters:[NSDictionary dictionaryWithObjectsAndKeys:user.deviceToken,@"deviceToken",@"APN",@"type", nil] success:^(AFHTTPRequestOperation * operation, id responseObject) {
+                    NSLog(@"JSON: %@", responseObject);
+                    
+                } failure:^(AFHTTPRequestOperation *operation, NSError * error) {
+                    NSLog(@"op: %@    error:%@",operation,error);
+                    
+                }];
+                UINavigationController *nac = (UINavigationController *)self.window.rootViewController;
+                for (UIViewController *vc in nac.viewControllers) {
                     if ([vc isKindOfClass:[settingSystemVC class]]) {
                         settingSystemVC *settingvc = (settingSystemVC*)vc;
                         [settingvc reloadTable];
-                        [nac popViewControllerAnimated:YES];
-                    }else {
-                        [nac popViewControllerAnimated:YES];
+                        break;
                     }
                 }
+                [nac popViewControllerAnimated:YES];
             }
+            
+            
+            
+        } failure:^(AFHTTPRequestOperation *operation, NSError * error) {
+            NSLog(@"op: %@    error:%@",operation,error);
+            
         }];
-        [requestForm setFailedBlock:^{
-           
-        }];
-        [requestForm startAsynchronous];
     }
     else if ([resp isKindOfClass:[AddCardToWXCardPackageResp class]])
     {

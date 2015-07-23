@@ -122,11 +122,13 @@
     [requestForm startAsynchronous];
 
 }
-
--(void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
+-(void)viewDidCurrentView{
     self.keeper.activityVC = self;
     [self.keeper followScrollView:self.tableView];
+}
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    
 
 }
 - (void)didReceiveMemoryWarning {

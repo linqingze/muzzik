@@ -205,14 +205,16 @@
     [request startAsynchronous];
     
 }
--(void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
+-(void)viewDidCurrentView{
     if ([self.requstType  length]>0) {
         [self followScrollView:MytableView];
     }else{
         
         [self.keeper followScrollView:MytableView];
     }
+}
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
     
 
     
