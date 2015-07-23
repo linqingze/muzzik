@@ -15,7 +15,6 @@
 #import <TencentOpenAPI/TencentOAuth.h>
 #import "ASIHTTPRequest.h"
 #import "userInfo.h"
-#import "HostViewController.h"
 #import "RootViewController.h"
 #import "settingSystemVC.h"
 #import "UIImageView+WebCache.m"

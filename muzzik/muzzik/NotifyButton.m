@@ -22,8 +22,14 @@
 -(void)showNotify{
     [self setHidden:YES];
     AppDelegate *app = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    
     UINavigationController *nac = (UINavigationController *)app.window.rootViewController;
+    for (UIViewController *vc in nac.viewControllers) {
+        if ([vc isKindOfClass:[RootViewController class]]) {
+            RootViewController *rootvc = (RootViewController*)vc;
+            [rootvc seeMessage];
+            break;
+        }
+    }
     if ([nac.viewControllers.lastObject isKindOfClass:[NotificationVC class]]) {
         NotificationVC *currentVC = (NotificationVC *)nac.viewControllers.lastObject;
         [currentVC reloadDataSource];

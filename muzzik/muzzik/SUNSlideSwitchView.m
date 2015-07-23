@@ -156,7 +156,7 @@ static const NSUInteger kTagOfRightSideButton = 999;
     [_topScrollView addSubview:buttomline];
     _shadowImageView = [[UIImageView alloc] init];
     _shadowImageView.contentMode = UIViewContentModeScaleToFill;
-    [_shadowImageView setImage:_shadowImage];
+    [_shadowImageView setImage:[MuzzikItem createImageWithColor:Color_Active_Button_2]];
     [_topScrollView addSubview:_shadowImageView];
     CGFloat xOffset = kWidthOfButtonMargin;
     CGFloat width = (SCREEN_WIDTH-2*xOffset)/[_viewArray count];
@@ -179,7 +179,7 @@ static const NSUInteger kTagOfRightSideButton = 999;
         
         [button setTag:i+100];
         if (i == 0) {
-            _shadowImageView.frame = CGRectMake(kWidthOfButtonMargin, 0, width, _shadowImage.size.height);
+            _shadowImageView.frame = CGRectMake(kWidthOfButtonMargin, kHeightOfTopScrollView-2, width, 2);
             button.selected = YES;
         }
         if (i<[_viewArray count]-1) {
@@ -231,7 +231,7 @@ static const NSUInteger kTagOfRightSideButton = 999;
         
         [UIView animateWithDuration:0.25 animations:^{
             
-            [_shadowImageView setFrame:CGRectMake(sender.frame.origin.x, 0, sender.frame.size.width, _shadowImage.size.height)];
+            [_shadowImageView setFrame:CGRectMake(sender.frame.origin.x, kHeightOfTopScrollView-2, sender.frame.size.width, 2)];
             
         } completion:^(BOOL finished) {
             if (finished) {

@@ -15,5 +15,6 @@
 @property (nonatomic,retain) StyledPageControl *pagecontrol;
 @property (nonatomic,retain) UIView *titleShowView;
 -(void) getMessage;
+-(void)seeMessage;
 @end
 

@@ -34,6 +34,16 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     page = 1;
+    UIImageView *emptyImage;
+    int i = rand()%3;
+    if (i == 0) {
+        emptyImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"yellowlikedsongstips"]];
+    }else if (i == 1){
+        emptyImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bluelikedsongstips"]];
+    }else{
+        emptyImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"redlikedsongstips"]];
+    }
+    [emptyImage setFrame:CGRectMake((SCREEN_WIDTH-emptyImage.frame.size.width)/2, 80, emptyImage.frame.size.width, emptyImage.frame.size.height)];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
     [self.tableView registerClass:[MusicCell class] forCellReuseIdentifier:@"MusicCell"];
@@ -49,7 +59,12 @@
              pageID = [NSString stringWithFormat:@"%d",[pageID intValue]+1];
             muzzik *tempMuzzik = [muzzik new];
             self.movedMusicArray = [tempMuzzik makeMuzziksByMusicArray:[dic objectForKey:@"music"]];
-            [self.tableView reloadData];
+            if ([self.movedMusicArray count]>0) {
+                [self.tableView reloadData];
+            }else{
+                [self.view addSubview:emptyImage];
+            }
+            
         }
         else{
             //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];

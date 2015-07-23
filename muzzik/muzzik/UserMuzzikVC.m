@@ -9,8 +9,8 @@
 #import "UserMuzzikVC.h"
 #import "MuzzikTableVC.h"
 #import "CommentTableVC.h"
-@interface UserMuzzikVC()<baseDelegate, baseDataSource>{
-    UIView *lineView;
+@interface UserMuzzikVC()<SUNSlideSwitchViewDelegate>{
+    SUNSlideSwitchView *sliderView;
 }
 
 @end
@@ -18,83 +18,43 @@
 @implementation UserMuzzikVC
 
 - (void)viewDidLoad {
-    self.dataSource = self;
-    self.delegate = self;
-    self.tabWidth = SCREEN_WIDTH/2;
-    // Keeps tab bar below navigation bar on iOS 7.0+
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
-        self.edgesForExtendedLayout = UIRectEdgeNone;
-    }
-    
     [super viewDidLoad];
-    lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 64, SCREEN_WIDTH, 1)];
-    [lineView setBackgroundColor:Color_NavigationBar];
-    [self.view setBackgroundColor:Color_NavigationBar];
+    [self.view setBackgroundColor:[UIColor whiteColor]];
     [self initNagationBar:@"我的Muzzik" leftBtn:Constant_backImage rightBtn:0];
+    sliderView = [[SUNSlideSwitchView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
+    sliderView.tabItemNormalColor = Color_Text_1;
+    sliderView.tabItemSelectedColor = Color_Active_Button_1;
+    sliderView.shadowImage = [[UIImage imageNamed:@"red_line_and_shadow.png"]
+                              stretchableImageWithLeftCapWidth:59.0f topCapHeight:0.0f];
+    [self.view addSubview:sliderView];
+    sliderView.slideSwitchViewDelegate = self;
+    [sliderView buildUI];
     // Do any additional setup after loading the view.
 }
-- (NSUInteger)numberOfTabsForViewPager:(ScrollVCBase *)viewPager {
+
+#pragma mark - datasource delegate
+- (NSUInteger)numberOfTab:(SUNSlideSwitchView *)view
+{
     return 2;
 }
--(void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
-    [self.navigationController.view addSubview:lineView];
-    
-}
--(void)viewWillDisappear:(BOOL)animated{
-    [super viewWillDisappear:animated];
-    [lineView removeFromSuperview];
-}
-- (UIView *)viewPager:(ScrollVCBase *)viewPager viewForTabAtIndex:(NSUInteger)index {
-    
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(index*SCREEN_WIDTH/2.0, 0, SCREEN_WIDTH/2.0, 15)];
-    label.backgroundColor = [UIColor clearColor];
-    label.font = [UIFont boldSystemFontOfSize:13.0];
-    if (index == 0) {
-        label.text = @"信息";
-    }else{
-        label.text = @"评论";
-    }
-    
-    label.textAlignment = NSTextAlignmentCenter;
-    label.textColor = [UIColor colorWithHexString:@"666c80"];
-    
-    return label;
-}
 
-- (UIViewController *)viewPager:(ScrollVCBase *)viewPager contentViewControllerForTabAtIndex:(NSUInteger)index {
-    
-    if (index == 0) {
+
+- (UIViewController *)slideSwitchView:(SUNSlideSwitchView *)view viewOfTab:(NSUInteger)number
+{
+    if (number == 0) {
         MuzzikTableVC *muzzikTable = [[MuzzikTableVC alloc] init];
         muzzikTable.keeper = self;
+        muzzikTable.title =@"信息";
         return muzzikTable;
     }
     else{
         CommentTableVC *commentvc = [[CommentTableVC alloc] init];
         commentvc.keeper = self;
+        commentvc.title = @"评论";
         return commentvc;
     }
 }
 
-#pragma mark - ViewPagerDelegate
-- (CGFloat)viewPager:(ScrollVCBase *)viewPager valueForOption:(ViewPagerOption)option withDefault:(CGFloat)value {
-    
-    switch (option) {
-        case ViewPagerOptionStartFromSecondTab:
-            return 0.0;
-            break;
-        case ViewPagerOptionCenterCurrentTab:
-            return 0.0;
-            break;
-        case ViewPagerOptionTabLocation:
-            return 1.0;
-            break;
-        default:
-            break;
-    }
-    
-    return value;
-}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

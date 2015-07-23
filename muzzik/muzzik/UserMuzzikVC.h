@@ -6,8 +6,8 @@
 //  Copyright (c) 2015年 muzziker. All rights reserved.
 //
 
-#import "ScrollVCBase.h"
+#import "SUNSlideSwitchView.h"
 
-@interface UserMuzzikVC : ScrollVCBase
+@interface UserMuzzikVC : AMScrollingNavbarViewController
 
 @end

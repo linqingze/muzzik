@@ -504,7 +504,6 @@
                     userbutton.clipsToBounds = YES;
                     [userbutton addTarget:self action:@selector(seeVipUser:) forControlEvents:UIControlEventTouchUpInside];
                     [userbutton setAlpha:0];
-                    userbutton.layer.cornerRadius = SCREEN_WIDTH/6-15.5;
                     [userbutton sd_setBackgroundImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,tempUser.avatar]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                         [UIView animateWithDuration:0.5 animations:^{
                             [userbutton setAlpha:1];

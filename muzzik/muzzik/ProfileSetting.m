@@ -72,7 +72,7 @@
     [mainView addSubview:NameText];
     [MuzzikItem addLineOnView:mainView heightPoint:151 toLeft:13 toRight:13 withColor:Color_line_1];
     
-    decripText = [[HPGrowingTextView alloc] initWithFrame:CGRectMake(30, 152, SCREEN_WIDTH-60, 80)];
+    decripText = [[HPGrowingTextView alloc] initWithFrame:CGRectMake(30, 152, SCREEN_WIDTH-60, 25)];
     decripText.placeholder = @"编辑个性签名";
     [decripText setFont:[UIFont fontWithName:Font_Next_DemiBold size:15]];
     decripText.textColor = Color_Text_1;

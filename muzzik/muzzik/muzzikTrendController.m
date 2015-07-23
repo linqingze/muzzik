@@ -327,6 +327,8 @@
             }else{
                 cell.isPlaying = NO;
             }
+            [cell.privateImage setHidden:YES];
+            [cell.userName setFrame:CGRectMake(80, 55, SCREEN_WIDTH-120, 20)];
             if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
                 [cell.userImage setAlpha:0];
                 [RefreshDic setObject:indexPath forKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
@@ -519,6 +521,8 @@
             }else{
                 cell.isPlaying = NO;
             }
+            [cell.privateImage setHidden:YES];
+            [cell.userName setFrame:CGRectMake(80, 55, SCREEN_WIDTH-120, 20)];
             if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
                 [cell.userImage setAlpha:0];
                 [cell.poImage setAlpha:0];

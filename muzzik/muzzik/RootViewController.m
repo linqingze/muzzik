@@ -293,7 +293,7 @@
 
 -(void) searchAction{
     searchViewController *search = [[searchViewController alloc ] init];
-    [self.navigationController pushViewController:search animated:NO];
+    [self.navigationController pushViewController:search animated:YES];
 }
 
 -(void) moreAction:(UIButton *)sender{
@@ -348,6 +348,9 @@
     
     [notifyButton setImage:[UIImage imageNamed:Image_NotifynewnotificationImage] forState:UIControlStateNormal];
     [[[AFViewShaker alloc] initWithView:notifyButton] shake];
+}
+-(void)seeMessage{
+    [notifyButton setImage:[UIImage imageNamed:Image_Notify_clockButton] forState:UIControlStateNormal];
 }
 -(void)systemSetting{
     settingSystemVC *setting = [[settingSystemVC alloc] init];

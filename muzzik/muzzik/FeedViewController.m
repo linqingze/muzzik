@@ -27,7 +27,11 @@
 #import "userDetailInfo.h"
 #import "TopicDetail.h"
 #import <TencentOpenAPI/TencentOAuth.h>
+
 @interface FeedViewController ()<UITableViewDataSource,UITableViewDelegate,UICollectionViewDelegateFlowLayout,TTTAttributedLabelDelegate,CellDelegate>{
+    UIView *userView;
+    NSMutableArray *userArray;
+    BOOL isUserTaped;
     UIImage *shareImage;
     int numberOfProducts;
     BOOL needsLoad;
@@ -88,6 +92,9 @@
     newButton.clipsToBounds = YES;
     [newButton addTarget:self action:@selector(newOrLogin) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:newButton];
+    userView = [[UIView alloc] initWithFrame:CGRectMake(0, -65, SCREEN_WIDTH, 65)];
+    [userView setBackgroundColor:Color_line_2];
+    [userView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(seeMoreUser)]];
 }
 - (void)refreshHeader
 {
@@ -319,6 +326,8 @@
             }else{
                 cell.isPlaying = NO;
             }
+            [cell.privateImage setHidden:YES];
+            [cell.userName setFrame:CGRectMake(80, 55, SCREEN_WIDTH-120, 20)];
             if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
                 [cell.userImage setAlpha:0];
                 [RefreshDic setObject:indexPath forKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
@@ -511,6 +520,8 @@
             }else{
                 cell.isPlaying = NO;
             }
+            [cell.privateImage setHidden:YES];
+            [cell.userName setFrame:CGRectMake(80, 55, SCREEN_WIDTH-120, 20)];
             if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
                 [cell.userImage setAlpha:0];
                 [cell.poImage setAlpha:0];
@@ -1414,9 +1425,100 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     
 }
 -(void)receiveNewSendMuzzik:(NSNotification *)notify{
+    
     muzzik *tempMuzzik = (muzzik *)notify.object;
+    
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/byMusic",BaseURL]]];
+    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:@"1",Parameter_page,tempMuzzik.music.artist,@"artist",tempMuzzik.music.name,@"name", nil];
+    [request addBodyDataSourceWithJsonByDic:dic Method:GetMethod auth:YES];
+    __weak ASIHTTPRequest *weakrequest = request;
+    [request setCompletionBlock :^{
+        NSData *data = [weakrequest responseData];
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+        userArray = [[MuzzikUser new] makeMuzziksByUserArray:[dic objectForKey:@"users"]];
+        if ([userArray count]>0) {
+            for (UIView *subview in userView.subviews) {
+                [subview removeFromSuperview];
+            }
+            int fromX = 16;
+            UILabel *tipsLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, 3, 250, 14)];
+            [tipsLabel setText:@"他们也po了这首歌："];
+            [tipsLabel setTextColor:Color_Text_1];
+            [tipsLabel setFont:[UIFont systemFontOfSize:11]];
+            [userView addSubview:tipsLabel];
+            UIButton *closeViewButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-30, 40, 25, 25)];
+            [closeViewButton setImage:[UIImage imageNamed:@"PlayercloseImage"] forState:UIControlStateNormal];
+            [closeViewButton addTarget:self action:@selector(closeUserView) forControlEvents:UIControlEventTouchUpInside];
+            [userView addSubview:closeViewButton];
+            for (MuzzikUser *user in userArray) {
+                if (fromX <SCREEN_WIDTH-66) {
+                    UIButton_UserMuzzik *userbutton = [[UIButton_UserMuzzik alloc] initWithFrame:CGRectMake(fromX, 20, 40, 40)];
+                    userbutton.user =user;
+                    userbutton.layer.cornerRadius = 20;
+                    userbutton.clipsToBounds = YES;
+                    [userbutton addTarget:self action:@selector(seeVipUser:) forControlEvents:UIControlEventTouchUpInside];
+                    [userbutton setAlpha:0];
+                    [userbutton sd_setBackgroundImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,user.avatar]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                        [UIView animateWithDuration:0.5 animations:^{
+                            [userbutton setAlpha:1];
+                        }];
+                    }];
+                    fromX += 45;
+                    [userView addSubview:userbutton];
+                }else{
+                    break;
+                }
+            }
+            [self.view addSubview:userView];
+            [UIView animateWithDuration:1 animations:^{
+                [userView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 65)];
+                [MytableView setFrame:CGRectMake(0, 65, SCREEN_WIDTH, SCREEN_HEIGHT-129)];
+            }];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(6.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                if (!isUserTaped) {
+                    [UIView animateWithDuration:0.5 animations:^{
+                        [userView setFrame:CGRectMake(0, -65, SCREEN_WIDTH, 65)];
+                        [MytableView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
+                    } completion:^(BOOL finished) {
+                        [userView removeFromSuperview];
+                    }];
+                }else{
+                    isUserTaped = NO;
+                }
+                
+            });
+        }
+    }];
+    [request setFailedBlock:^{
+        NSLog(@"%@",[weakrequest error]);
+    }];
+    [request startAsynchronous];
     
     [self.muzziks insertObject:tempMuzzik atIndex:0];
     [MytableView reloadData];
+}
+
+-(void) seeVipUser:(UIButton_UserMuzzik *)button{
+    isUserTaped = YES;
+    userInfo *user = [userInfo shareClass];
+    if ([button.user.user_id isEqualToString:user.uid]) {
+        UserHomePage *home = [[UserHomePage alloc] init];
+        [self.navigationController pushViewController:home animated:YES];
+    }else{
+        userDetailInfo *detailuser = [[userDetailInfo alloc] init];
+        detailuser.uid = button.user.user_id;
+        [self.navigationController pushViewController:detailuser animated:YES];
+    }
+}
+-(void)closeUserView{
+    [UIView animateWithDuration:0.5 animations:^{
+        [userView setFrame:CGRectMake(0, -65, SCREEN_WIDTH, 65)];
+        [MytableView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
+    } completion:^(BOOL finished) {
+        [userView removeFromSuperview];
+    }];
+}
+-(void)seeMoreUser{
+    
 }
 @end
