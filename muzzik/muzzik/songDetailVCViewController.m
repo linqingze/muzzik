@@ -143,11 +143,20 @@
 }
 -(void)newMuzzikBySong{
     MuzzikObject *mobject = [MuzzikObject shareClass];
-    mobject.music = self.detailMuzzik.music;
-    [MuzzikItem getLyricByMusic:self.detailMuzzik.music];
-    MessageStepViewController *msgVC = [[MessageStepViewController alloc] init];
-
-    [self.navigationController pushViewController:msgVC animated:YES];
+    
+    userInfo *user = [userInfo shareClass];
+    if ([user.token length]>0) {
+        user.poController = self;
+        mobject.music = self.detailMuzzik.music;
+        [MuzzikItem getLyricByMusic:self.detailMuzzik.music];
+        MessageStepViewController *msgVC = [[MessageStepViewController alloc] init];
+        
+        [self.navigationController pushViewController:msgVC animated:YES];
+    }else{
+        [userInfo checkLoginWithVC:self];
+    }
+    
+   
 }
 
 

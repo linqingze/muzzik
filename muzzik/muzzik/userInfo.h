@@ -28,7 +28,7 @@
 @property (nonatomic,assign) BOOL checkTemp;
 @property (nonatomic,retain) UIImage *userHeadThumb;
 @property (nonatomic,copy) NSString *suggestTitle;
-@property (nonatomic,assign) int poType;
+@property (nonatomic,retain) id poController;
 +(userInfo *) shareClass;
 +(void)checkLoginWithVC:(UIViewController *)vc;
 @end

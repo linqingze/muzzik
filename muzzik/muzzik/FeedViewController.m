@@ -735,6 +735,7 @@
     userInfo *user = [userInfo shareClass];
     if ([user.token length]>0) {
         //new po
+        user.poController = self;
         ChooseMusicVC *choosevc = [[ChooseMusicVC alloc] init];
         [self.navigationController pushViewController:choosevc animated:YES];
         

@@ -82,6 +82,8 @@
     NSDictionary *dic = draftArray[indexPath.row];
     MuzzikObject *mobject = [MuzzikObject shareClass];
     music *localMusic = [music new];
+    userInfo *user = [userInfo shareClass];
+    user.poController = self;
     localMusic.music_id = [dic objectForKey:@"music_id"];
     localMusic.name = [dic objectForKey:@"music_name"];
     localMusic.artist = [dic objectForKey:@"music_artist"];

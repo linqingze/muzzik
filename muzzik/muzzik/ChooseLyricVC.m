@@ -839,8 +839,8 @@
                                     }
                                     [self setPoMuzzikMessage:muzzikDic];
                                     [mobject clearObject];
-                                    [self.navigationController popToRootViewControllerAnimated:YES];
-                                    
+                                    [self.navigationController popToViewController:user.poController animated:YES];
+                                    user.poController = nil;
                                 }
                             }];
                             [shareRequest setFailedBlock:^{
@@ -922,7 +922,8 @@
                                 
                                 [self setPoMuzzikMessage:muzzikDic];
                                 [mobject clearObject];
-                                [self.navigationController popToRootViewControllerAnimated:YES];
+                                [self.navigationController popToViewController:user.poController animated:YES];
+                                user.poController = nil;
                                 
                             }
                         }];

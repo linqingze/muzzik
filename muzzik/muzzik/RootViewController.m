@@ -340,8 +340,14 @@
                  menuItems:menuItems];
 }
 -(void) DraftAction{
-    DraftBoxVC *draftvc = [[DraftBoxVC alloc] init];
-    [self.navigationController pushViewController:draftvc animated:YES];
+    userInfo *user = [userInfo shareClass];
+    if ([user.token length]>0) {
+        DraftBoxVC *draftvc = [[DraftBoxVC alloc] init];
+        [self.navigationController pushViewController:draftvc animated:YES];
+    }else{
+        [userInfo checkLoginWithVC:self];
+    }
+    
     
 }
 -(void)getMessage{

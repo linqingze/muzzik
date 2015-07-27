@@ -175,7 +175,8 @@
 #define Constant_save           12
 #define Constant_back           13
 
-
+#define Trend_Po                1
+#define Feed_Po                 2
 
 #define SquareList             @"square"
 #define MovedList              @"move"

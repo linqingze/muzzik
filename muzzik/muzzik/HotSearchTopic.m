@@ -182,6 +182,9 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     if (!equalTopic && indexPath.row == 0) {
         MuzzikObject *mobject = [MuzzikObject shareClass];
+        userInfo *user = [userInfo shareClass];
+        user.poController = self;
+        
         mobject.tempmessage = [NSString stringWithFormat:@"#%@#",[self.searchArray[0] objectForKey:@"name"]];
         MessageStepViewController *messagebv = [[MessageStepViewController alloc] init];
         [self.navigationController pushViewController:messagebv animated:YES];
@@ -270,6 +273,8 @@
 
 -(void) poAction:(NSInteger)index{
     MuzzikObject *mobject = [MuzzikObject shareClass];
+    userInfo *user = [userInfo shareClass];
+    user.poController = self;
     mobject.tempmessage = [NSString stringWithFormat:@"#%@#",[self.searchArray[index] objectForKey:@"name"]];
     MessageStepViewController *messagebv = [[MessageStepViewController alloc] init];
     [self.navigationController pushViewController:messagebv animated:YES];

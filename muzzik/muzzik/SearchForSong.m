@@ -295,11 +295,17 @@
 -(void)commentMuzzikWithIndex:(NSInteger)index{
     muzzik *tempMuzzik = self.searchArray[index];
     MuzzikObject *mobject = [MuzzikObject shareClass];
+    userInfo *user = [userInfo shareClass];
+    if ([user.token length]>0) {
+        user.poController = self.keeper;
+        mobject.music = tempMuzzik.music;
+        [MuzzikItem getLyricByMusic:tempMuzzik.music];
+        MessageStepViewController *messagebv = [[MessageStepViewController alloc] init];
+        [self.keeper.navigationController pushViewController:messagebv animated:YES];
+    }else{
+        [userInfo checkLoginWithVC:self.keeper];
+    }
     
-    mobject.music = tempMuzzik.music;
-    [MuzzikItem getLyricByMusic:tempMuzzik.music];
-    MessageStepViewController *messagebv = [[MessageStepViewController alloc] init];
-    [self.keeper.navigationController pushViewController:messagebv animated:YES];
 }
 
 @end

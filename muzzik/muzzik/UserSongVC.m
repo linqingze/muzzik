@@ -272,8 +272,16 @@
     
     mobject.music = localMzzik.music;
     [MuzzikItem getLyricByMusic:localMzzik.music];
-    MessageStepViewController *messagebv = [[MessageStepViewController alloc] init];
-    [self.navigationController pushViewController:messagebv animated:YES];
+    userInfo *user = [userInfo shareClass];
+    if ([user.token length]>0) {
+        user.poController = self;
+        MessageStepViewController *messagebv = [[MessageStepViewController alloc] init];
+        [self.navigationController pushViewController:messagebv animated:YES];
+    }else{
+        [userInfo checkLoginWithVC:self];
+    }
+    
+    
 }
 
 -(void)playnextMuzzikUpdate{

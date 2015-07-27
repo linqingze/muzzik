@@ -147,9 +147,17 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     if (!equalTopic && indexPath.row == 0) {
         MuzzikObject *mobject = [MuzzikObject shareClass];
-        mobject.tempmessage = [NSString stringWithFormat:@"#%@#",[self.searchArray[0] objectForKey:@"name"]];
-        MessageStepViewController *messagebv = [[MessageStepViewController alloc] init];
-        [self.keeper.navigationController pushViewController:messagebv animated:YES];
+        userInfo *user = [userInfo shareClass];
+        if ([user.token length]>0) {
+            user.poController = self.keeper;
+            mobject.tempmessage = [NSString stringWithFormat:@"#%@#",[self.searchArray[0] objectForKey:@"name"]];
+            MessageStepViewController *messagebv = [[MessageStepViewController alloc] init];
+            [self.keeper.navigationController pushViewController:messagebv animated:YES];
+        }else{
+            [userInfo checkLoginWithVC:self.keeper];
+        }
+        
+        
     }else{
         TopicDetail *topic = [[TopicDetail alloc] init];
         topic.topic_id = [self.searchArray[indexPath.row] objectForKey:@"_id"];
@@ -232,9 +240,17 @@
 
 -(void) poAction:(NSInteger)index{
     MuzzikObject *mobject = [MuzzikObject shareClass];
-    mobject.tempmessage = [NSString stringWithFormat:@"#%@#",[self.searchArray[index] objectForKey:@"name"]];
-    MessageStepViewController *messagebv = [[MessageStepViewController alloc] init];
-    [self.keeper.navigationController pushViewController:messagebv animated:YES];
+    userInfo *user = [userInfo shareClass];
+    if ([user.token length]>0) {
+        user.poController = self.keeper;
+        mobject.tempmessage = [NSString stringWithFormat:@"#%@#",[self.searchArray[index] objectForKey:@"name"]];
+        MessageStepViewController *messagebv = [[MessageStepViewController alloc] init];
+        [self.keeper.navigationController pushViewController:messagebv animated:YES];
+    }else{
+        [userInfo checkLoginWithVC:self.keeper];
+    }
+    
+   
 }
 -(void)searchTopic{
     [self.keeper.searchBar resignFirstResponder];

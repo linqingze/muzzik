@@ -60,6 +60,9 @@
         self.playListView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH, 64, SCREEN_WIDTH, 338)];
         self.coverView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
         [self.coverView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(closeView)]];
+        UISwipeGestureRecognizer *recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(closeView)];
+        [recognizer setDirection:UISwipeGestureRecognizerDirectionUp];
+        [self.coverView addGestureRecognizer:recognizer];
         [self.coverView setHidden:YES];
         [self addSubview:self.smallView];
         
@@ -101,7 +104,7 @@
         [smallPlayButton setImage:[UIImage imageNamed:Image_PlayerplayImage] forState:UIControlStateNormal];
         [smallPlayButton addTarget:self action:@selector(playAction) forControlEvents:UIControlEventTouchUpInside];
         [self.smallView addSubview:smallPlayButton];
-        
+        [self.smallView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showFullPlayer:)]];
 
         headerImage = [[UIButton_UserMuzzik alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-37, 0, 75, 75)];
         headerImage.layer.cornerRadius = 38;
@@ -1609,12 +1612,18 @@
     UINavigationController *nac = (UINavigationController *)app.window.rootViewController;
     userInfo *user = [userInfo shareClass];
     if ([user.token length]>0) {
-        MuzzikObject *mobject = [MuzzikObject shareClass];
         
-        mobject.music = _playMuzzik.music;
-        [MuzzikItem getLyricByMusic:_playMuzzik.music];
-        MessageStepViewController *messagebv = [[MessageStepViewController alloc] init];
-        [nac pushViewController:messagebv animated:YES];
+        [self closeView];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            MuzzikObject *mobject = [MuzzikObject shareClass];
+            userInfo *user = [userInfo shareClass];
+            user.poController = nac.viewControllers.lastObject;
+            
+            mobject.music = _playMuzzik.music;
+            [MuzzikItem getLyricByMusic:_playMuzzik.music];
+            MessageStepViewController *messagebv = [[MessageStepViewController alloc] init];
+            [nac pushViewController:messagebv animated:YES];
+        });
     }else{
         AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
         UINavigationController *nac = (UINavigationController *)app.window.rootViewController;
