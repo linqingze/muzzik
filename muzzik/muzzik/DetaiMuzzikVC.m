@@ -24,7 +24,8 @@
 #import "PhotoImageView.h"
 #import "DialogVC.h"
 #import "repostVC.h"
-@interface DetaiMuzzikVC ()<UITableViewDataSource,UITableViewDelegate,TTTAttributedLabelDelegate,HPGrowingTextViewDelegate,CellDelegate,PhotoImageViewDelegate,UIActionSheetDelegate>{
+#import "IBActionSheet.h"
+@interface DetaiMuzzikVC ()<UITableViewDataSource,UITableViewDelegate,TTTAttributedLabelDelegate,HPGrowingTextViewDelegate,CellDelegate,PhotoImageViewDelegate,UIActionSheetDelegate,IBActionSheetDelegate>{
     BOOL isforRepost;
     UITableView *muzzikTableView;
     UIView *headView;
@@ -69,8 +70,8 @@
     UIImage *saveImage;           //保存图片
     BOOL isPrivate;
     UIImageView *MprivateImage;
-    UIActionSheet *commentDeleteSheet;
-    UIActionSheet *alertSheet;
+    IBActionSheet *commentDeleteSheet;
+    IBActionSheet *alertSheet;
 }
 @property (nonatomic,retain) NSMutableDictionary *profileDic;
 @property(nonatomic,retain)UIImageView *headimage;
@@ -512,7 +513,8 @@
     commentToMuzzik = commentArray[indexPath.row];
     if ([user.uid isEqualToString:tempMuzzik.MuzzikUser.user_id]) {
         [comnentTextView resignFirstResponder];
-        commentDeleteSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"删除评论", nil];
+        commentDeleteSheet = [[IBActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"删除评论", nil];
+        [commentDeleteSheet setButtonTextColor:Color_Active_Button_1 forButtonAtIndex:0];
         [commentDeleteSheet showInView:self.view.window];
     }else{
         isComment = YES;
@@ -657,12 +659,13 @@
     [sheet showInView:self.view.window];
 }
 
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+- (void)actionSheet:(IBActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
 
-    if(buttonIndex==actionSheet.cancelButtonIndex){
+    if(buttonIndex==1){
         return;
-    }else if(actionSheet == commentDeleteSheet){
+    }
+    else if(actionSheet == commentDeleteSheet){
         ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@api/muzzik/%@",BaseURL,commentToMuzzik.muzzik_id]]];
         [requestForm addBodyDataSourceWithJsonByDic:nil Method:DeleteMethod auth:YES];
         __weak ASIHTTPRequest *weakrequest = requestForm;
@@ -684,7 +687,8 @@
             // [SVProgressHUD showErrorWithStatus:@"network error"];
         }];
         [requestForm startAsynchronous];
-    }else if(actionSheet == alertSheet){
+    }
+    else if(actionSheet == alertSheet){
         userInfo *user = [userInfo shareClass];
         if ([user.token length]>0) {
             repostVC *informvc = [[repostVC alloc] init];
@@ -808,6 +812,8 @@
         }
         if (self.localmuzzik.isReposted) {
             [self.repostButton setImage:[UIImage imageNamed:Image_hottweetredretweetImage] forState:UIControlStateNormal];
+        }else{
+            [self.repostButton setImage:[UIImage imageNamed:Image_detailretweetImage] forState:UIControlStateNormal];
         }
         
     }
@@ -829,6 +835,8 @@
         }
         if (self.localmuzzik.isReposted) {
             [self.repostButton setImage:[UIImage imageNamed:Image_hottweetyellowretweetImage] forState:UIControlStateNormal];
+        }else{
+            [self.repostButton setImage:[UIImage imageNamed:Image_detailretweetImage] forState:UIControlStateNormal];
         }
         
     }
@@ -847,6 +855,8 @@
         }
         if (self.localmuzzik.isReposted) {
             [self.repostButton setImage:[UIImage imageNamed:Image_hottweetblueretweetImage] forState:UIControlStateNormal];
+        }else{
+            [self.repostButton setImage:[UIImage imageNamed:Image_detailretweetImage] forState:UIControlStateNormal];
         }
     }
     [_moves setTitle:[self.localmuzzik.moveds integerValue]>0? [NSString stringWithFormat:@"喜欢数%@",self.localmuzzik.moveds] : @"喜欢数" forState:UIControlStateNormal];
@@ -1055,9 +1065,9 @@
 
     userInfo *user = [userInfo shareClass];
     if ([user.token length]>0) {
-        alertSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"举报", nil];
+        alertSheet = [[IBActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"举报", nil];
     }else{
-        alertSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"请先登录，再举报Ta", nil];
+        alertSheet = [[IBActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"请先登录，再举报Ta", nil];
     }
     
     [alertSheet showInView:self.view.window];

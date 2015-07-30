@@ -28,6 +28,8 @@
     UIButton *notifyButton;
     UIImageView *notifyImage;
     UIImageView *coverImageView;
+    NSTimer *timer;
+    int timeCount;
 }
 
 @end
@@ -140,8 +142,60 @@
     [_musicView setBackgroundColor:[UIColor clearColor]];
     [self.navigationController.view addSubview:_musicView];
     [self addCoverVCToWindow];
+    NSDate *  senddate=[NSDate date];
+    
+    NSDateFormatter  *dateformatter=[[NSDateFormatter alloc] init];
+    
+    [dateformatter setDateFormat:@"YYYYMMdd"];
+    
+    NSString *  locationString=[dateformatter stringFromDate:senddate];
+    
+    NSLog(@"locationString:%@",locationString);
+    NSDictionary *dic = [MuzzikItem getDictionaryFromLocalForKey:@"Muzzik_Check_Comment_Five_star"];
+    if (dic == nil) {
+        dic = [NSDictionary dictionaryWithObjectsAndKeys:@"0",@"times",locationString,@"date",@"no",@"hasClicked", nil];
+        [MuzzikItem addObjectToLocal:dic ForKey:@"Muzzik_Check_Comment_Five_star"];
+    }else if(![[dic objectForKey:@"hasClicked"] isEqualToString:@"yes"]){
+        
+        if ([[dic objectForKey:@"date"] isEqualToString:locationString]) {
+            NSString *tempString = [dic objectForKey:@"times"];
+            tempString = [NSString stringWithFormat:@"%d",[tempString intValue]+1];
+            if ([tempString intValue]==2) {
+                [MuzzikItem addObjectToLocal:[NSDictionary dictionaryWithObjectsAndKeys:@"0",@"times",locationString,@"date",@"no",@"hasClicked", nil] ForKey:@"Muzzik_Check_Comment_Five_star"];
+                timeCount = 120;
+                timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
+                [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
+            }else{
+                [MuzzikItem addObjectToLocal:[NSDictionary dictionaryWithObjectsAndKeys:tempString,@"times",locationString,@"date",@"no",@"hasClicked", nil] ForKey:@"Muzzik_Check_Comment_Five_star"];
+            }
+        }
+    }
+    
+    
 }
-
+-(void)updateTime{
+    if (timeCount>0) {
+        NSLog(@"%d",timeCount);
+        timeCount-- ;
+    }else{
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"跪求五星好评" message:@"" delegate:self cancelButtonTitle:@"残忍拒绝" otherButtonTitles:nil];
+        // optional - add more buttons:
+        [alert addButtonWithTitle:@"走你!"];
+        [alert show];
+        [timer invalidate];
+        timer = nil;
+        
+    }
+}
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 1) {
+         NSDictionary *dic = [MuzzikItem getDictionaryFromLocalForKey:@"Muzzik_Check_Comment_Five_star"];
+        [MuzzikItem addObjectToLocal:[NSDictionary dictionaryWithObjectsAndKeys:[dic objectForKey:@"times"],@"times",[dic objectForKey:@"date"],@"date",@"yes",@"hasClicked", nil] ForKey:@"Muzzik_Check_Comment_Five_star"];
+        NSString *str = [NSString stringWithFormat:@"itms-apps://itunes.apple.com/app/id%@?mt=8",APP_ID ];
+        
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:str]];
+    }
+}
 - (void)addCoverVCToWindow {
     AppDelegate *app = (AppDelegate*)[UIApplication sharedApplication].delegate;
     

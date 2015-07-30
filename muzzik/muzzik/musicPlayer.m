@@ -141,8 +141,11 @@ static NSMutableArray *playList;
             
             
             NSMutableDictionary * dict = [[NSMutableDictionary alloc] init];
-            [dict setObject:_localMuzzik.music.name forKey:MPMediaItemPropertyTitle];
-            [dict setObject:_localMuzzik.music.artist  forKey:MPMediaItemPropertyArtist];
+            if ([_localMuzzik.music.key length]>0) {
+                [dict setObject:_localMuzzik.music.name forKey:MPMediaItemPropertyTitle];
+                [dict setObject:_localMuzzik.music.artist  forKey:MPMediaItemPropertyArtist];
+            }
+            
 
            // [dict setObject:retDic forKey:MPMediaItemPropertyArtwork];
             NSLog(@"%f",[AudioPlayer shareClass].duration);
@@ -223,7 +226,13 @@ static NSMutableArray *playList;
             self.index = 0;
         }
         if ([self.MusicArray count]>1) {
-            [self playSongWithSongModel:[self.MusicArray objectAtIndex:self.index] Title:nil];
+            muzzik *tempMuzzik =[self.MusicArray objectAtIndex:self.index];
+            if (tempMuzzik.music) {
+                [self playSongWithSongModel:[self.MusicArray objectAtIndex:self.index] Title:nil];
+            }else{
+                [self playNext];
+            }
+            
         }else{
             [[AudioPlayer shareClass] stop];
             globle.isPlaying = NO;

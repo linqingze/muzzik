@@ -296,8 +296,8 @@
 }
 -(void)deleteMuzzik:(NSNotification *)notify{
     muzzik *localMzzik = notify.object;
-    for (muzzik *tempMuzzik in notifyArray) {
-        if ([tempMuzzik.muzzik_id isEqualToString:localMzzik.muzzik_id]) {
+    for (NotifyObject *tempMuzzik in notifyArray) {
+        if ([tempMuzzik.muzzik.muzzik_id isEqualToString:localMzzik.muzzik_id]) {
             [notifyArray removeObject:localMzzik];
             [notifyTabelView reloadData];
             break;

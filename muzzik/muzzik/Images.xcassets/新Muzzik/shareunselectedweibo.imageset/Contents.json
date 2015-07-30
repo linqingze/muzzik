@@ -3,17 +3,17 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "sharewechat.png"
+      "filename" : "shareunselectedweibo.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "sharewechat@2x.png"
+      "filename" : "shareunselectedweibo@2x.png"
     },
     {
       "idiom" : "universal",
       "scale" : "3x",
-      "filename" : "sharewechat@3x.png"
+      "filename" : "shareunselectedweibo@3x.png"
     }
   ],
   "info" : {

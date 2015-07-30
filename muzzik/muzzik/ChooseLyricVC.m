@@ -62,13 +62,14 @@
     UIButton *weiboShare;
     UIButton *weChatshare;
     UIButton *QQZoneShare;
+    UILabel *NoLyricTips;
 }
 @end
 @implementation ChooseLyricVC
 
 -(void)viewDidLoad{
     [super viewDidLoad];
-    //isShareToWeiChat = YES;
+    isShareToWeiBo = YES;
     lyricArray = [NSMutableArray array];
     [self initNagationBar:@"填选一句话（3/3）" leftBtn:Constant_backImage rightBtn:0];
     MuzzikObject *mobject = [MuzzikObject shareClass];
@@ -139,11 +140,11 @@
     editView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH*2, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
     [Scroll addSubview:editView];
     //[editView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideControl)]];
-    editTextView = [[RJTextView alloc] initWithFrame:CGRectMake(70, 70, SCREEN_WIDTH-140, 54)
+    editTextView = [[RJTextView alloc] initWithFrame:CGRectMake(70, 120, SCREEN_WIDTH-140, 60)
                                          defaultText:@""
-                                                font:[UIFont fontWithName:Font_default_share size:16.f]
+                                                font:[UIFont fontWithName:Font_default_share size:20]
                                                color:shareColor
-                                             minSize:CGSizeMake(100, 50)];
+                                             minSize:CGSizeMake(100, 54)];
     editTextView.fontname = Font_default_share;
     editTextView.delegate = self;
     [editTextView.closeButton removeFromSuperview];
@@ -206,7 +207,7 @@
     
     
     
-    [MuzzikItem addLineOnView:self.view heightPoint:SCREEN_WIDTH+30 toLeft:0 toRight:0 withColor:Color_line_1];
+    [MuzzikItem addLineOnView:self.view heightPoint:SCREEN_WIDTH+30 toLeft:13 toRight:13 withColor:Color_line_1];
    
     //    nextButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-67, SCREEN_HEIGHT-113, 54, 52)];
     //    [nextButton setImage:[UIImage imageNamed:Image_Next] forState:UIControlStateNormal];
@@ -242,7 +243,7 @@
     UILabel *notify = [[UILabel alloc] initWithFrame:CGRectMake(16, 0, SCREEN_WIDTH-32, 30)];
     [notify setFont:[UIFont systemFontOfSize:14]];
     [notify setTextColor:Color_Text_2];
-    [notify setText:@"赞赞嗒封面发送并同步到朋友圈"];
+    [notify setText:@"赞赞哒,同步炫耀吧！"];
     [sharaView addSubview:notify];
     tipsLabel = [[UILabel alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-80, (SCREEN_WIDTH+SCREEN_HEIGHT)/2-47, 165, 50)];
     [self.view addSubview:tipsLabel];
@@ -257,13 +258,13 @@
     NSAttributedString * attr= [[NSAttributedString alloc] initWithString:@"拖动歌词选取你喜欢的话\n并移动到合适的位置" attributes:attributes];
     tipsLabel.attributedText = attr;
     shareChannelView = [[UIView alloc] initWithFrame:CGRectMake(-SCREEN_WIDTH, SCREEN_WIDTH+35, SCREEN_WIDTH, 60)];
-    weiboShare = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-30, 0, 60, 60)];
-    weChatshare = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-110, 0, 60, 60)];
-    QQZoneShare = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2+50, 0, 60, 60)];
+    weiboShare = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-45, 0, 90, 60)];
+    weChatshare = [[UIButton alloc] initWithFrame:CGRectMake(16, 0, 90, 60)];
+    QQZoneShare = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-106, 0, 90, 60)];
     
-    [weiboShare setImage:[UIImage imageNamed:@"shareweibo"] forState:UIControlStateNormal];
-    [weChatshare setImage:[UIImage imageNamed:@"sharewechat"] forState:UIControlStateNormal];
-    [QQZoneShare setImage:[UIImage imageNamed:@"shareqzone"] forState:UIControlStateNormal];
+    [weiboShare setImage:[UIImage imageNamed:@"shareunselectedweibo"] forState:UIControlStateNormal];
+    [weChatshare setImage:[UIImage imageNamed:@"shareunselectedfriendcircle"] forState:UIControlStateNormal];
+    [QQZoneShare setImage:[UIImage imageNamed:@"shareunselectedqzone"] forState:UIControlStateNormal];
     
     [QQZoneShare addTarget:self action:@selector(setChannelShare:) forControlEvents:UIControlEventTouchUpInside];
     [weChatshare addTarget:self action:@selector(setChannelShare:) forControlEvents:UIControlEventTouchUpInside];
@@ -278,47 +279,58 @@
     [shareChannelView addSubview:QQZoneShare];
     [shareChannelView addSubview:weiboShare];
     [shareChannelView addSubview:weChatshare];
-    
+    NoLyricTips = [[UILabel alloc] initWithFrame:CGRectMake(20, 60, SCREEN_WIDTH-40, 20)];
+    [NoLyricTips setTextColor:shareColor];
+    NoLyricTips.textAlignment = NSTextAlignmentCenter;
+    [NoLyricTips setFont:[UIFont fontWithName:Font_default_share size:15]];
+    if ([mobject.GeiLyricType isEqualToString:@"loading"]) {
+        [NoLyricTips setText:@"歌词加载Ing..."];
+        [Scroll addSubview:NoLyricTips];
+    }else if([mobject.GeiLyricType isEqualToString:@"error"]){
+        
+        [NoLyricTips setText:@"暂无歌词"];
+        [Scroll addSubview:NoLyricTips];
+    }
 
 }
 -(void)setChannelShare:(id)sender{
     if (sender == weChatshare) {
         if (isShareToWeiChat) {
             isShareToWeiChat = NO;
-            [weChatshare setImage:[UIImage imageNamed:@"sharewechat"] forState:UIControlStateNormal];
+            [weChatshare setImage:[UIImage imageNamed:@"shareunselectedfriendcircle"] forState:UIControlStateNormal];
         }else{
             isShareToQQ = NO;
             isShareToWeiBo = NO;
             isShareToWeiChat = YES;
-            [QQZoneShare setImage:[UIImage imageNamed:@"shareqzone"] forState:UIControlStateNormal];
-            [weiboShare setImage:[UIImage imageNamed:@"shareweibo"] forState:UIControlStateNormal];
-            [weChatshare setImage:[UIImage imageNamed:@"sharewechatSelected"] forState:UIControlStateNormal];
+            [QQZoneShare setImage:[UIImage imageNamed:@"shareunselectedqzone"] forState:UIControlStateNormal];
+            [weiboShare setImage:[UIImage imageNamed:@"shareunselectedweibo"] forState:UIControlStateNormal];
+            [weChatshare setImage:[UIImage imageNamed:@"sharefriendcircle"] forState:UIControlStateNormal];
         }
     }
     else if (sender == weiboShare) {
         if (isShareToWeiBo) {
             isShareToWeiBo = NO;
-            [weiboShare setImage:[UIImage imageNamed:@"shareweibo"] forState:UIControlStateNormal];
+            [weiboShare setImage:[UIImage imageNamed:@"shareunselectedweibo"] forState:UIControlStateNormal];
         }else{
             isShareToQQ = NO;
             isShareToWeiBo = YES;
             isShareToWeiChat = NO;
-            [QQZoneShare setImage:[UIImage imageNamed:@"shareqzone"] forState:UIControlStateNormal];
-            [weiboShare setImage:[UIImage imageNamed:@"shareweiboSelected"] forState:UIControlStateNormal];
-            [weChatshare setImage:[UIImage imageNamed:@"sharewechat"] forState:UIControlStateNormal];
+            [QQZoneShare setImage:[UIImage imageNamed:@"shareunselectedqzone"] forState:UIControlStateNormal];
+            [weiboShare setImage:[UIImage imageNamed:@"shareweibo"] forState:UIControlStateNormal];
+            [weChatshare setImage:[UIImage imageNamed:@"shareunselectedfriendcircle"] forState:UIControlStateNormal];
         }
     }
     else if (sender == QQZoneShare) {
         if (isShareToQQ) {
             isShareToQQ = NO;
-            [QQZoneShare setImage:[UIImage imageNamed:@"shareqzone"] forState:UIControlStateNormal];
+            [QQZoneShare setImage:[UIImage imageNamed:@"shareunselectedqzone"] forState:UIControlStateNormal];
         }else{
             isShareToQQ = YES;
             isShareToWeiBo = NO;
             isShareToWeiChat = NO;
-            [QQZoneShare setImage:[UIImage imageNamed:@"shareqzoneSelected"] forState:UIControlStateNormal];
-            [weiboShare setImage:[UIImage imageNamed:@"shareweibo"] forState:UIControlStateNormal];
-            [weChatshare setImage:[UIImage imageNamed:@"sharewechat"] forState:UIControlStateNormal];
+            [QQZoneShare setImage:[UIImage imageNamed:@"shareqzone"] forState:UIControlStateNormal];
+            [weiboShare setImage:[UIImage imageNamed:@"shareunselectedweibo"] forState:UIControlStateNormal];
+            [weChatshare setImage:[UIImage imageNamed:@"shareunselectedfriendcircle"] forState:UIControlStateNormal];
         }
     }
 }
@@ -330,9 +342,9 @@
         headImage.image = self.image;
         isShow = YES;
         [ImageButton setHidden:NO];
-        shareColor = [UIColor whiteColor];
-        [shareLabel.textView setTextColor:shareColor];
-        [lyricTablenview reloadData];
+//        shareColor = [UIColor whiteColor];
+//        [shareLabel.textView setTextColor:shareColor];
+//        [lyricTablenview reloadData];
     }
 }
 
@@ -385,7 +397,7 @@
     }else{
         TableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TableViewCell" forIndexPath:indexPath];
         if (tableView == lyricTablenview) {
-            [cell.label setFrame:CGRectMake(40, 10, SCREEN_WIDTH-80, 30)];
+            [cell.label setFrame:CGRectMake(26, 10, SCREEN_WIDTH-52, 40)];
             cell.label.text = [[lyricArray[indexPath.row] allObjects][0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet ]];
         }else{
             cell.label.text = famousArray[indexPath.row];
@@ -395,12 +407,12 @@
         }else{
             cell.label.textColor = [UIColor blackColor];
         }
-        UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 10, SCREEN_WIDTH-80, 80)];
-        tempLabel.font = [UIFont fontWithName:Font_default_share size:16];
+        UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(26, 10, SCREEN_WIDTH-52, 80)];
+        tempLabel.font = [UIFont fontWithName:Font_default_share size:19];
         tempLabel.text = cell.label.text;
         tempLabel.numberOfLines = 0;
         [tempLabel sizeToFit];
-        [cell.label setFrame:CGRectMake((SCREEN_WIDTH-tempLabel.frame.size.width)/2, cell.label.frame.origin.y, tempLabel.frame.size.width, tempLabel.frame.size.height+3)];
+        [cell.label setFrame:CGRectMake((SCREEN_WIDTH-(int)tempLabel.frame.size.width-5)/2, cell.label.frame.origin.y, (int)tempLabel.frame.size.width+5, (int)tempLabel.frame.size.height+3)];
         cell.label.textAlignment = NSTextAlignmentCenter;
         return cell;
     }
@@ -410,24 +422,24 @@
     if (tableView == fontTableView) {
         return 50;
     }else if(tableView == lyricTablenview){
-        UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 0, SCREEN_WIDTH-80, 50)];
-        tempLabel.font = [UIFont fontWithName:Font_default_share size:16];
+        UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(26, 0, SCREEN_WIDTH-52, 50)];
+        tempLabel.font = [UIFont fontWithName:Font_default_share size:19];
         
         tempLabel.numberOfLines = 0;
         if ([lyricArray count]>0) {
             tempLabel.text = [[lyricArray[indexPath.row] allObjects][0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet ]];
         }
-        CGFloat textHeight = [MuzzikItem heightForLabel:tempLabel WithText:tempLabel.text];
+        int textHeight = [MuzzikItem heightForLabel:tempLabel WithText:tempLabel.text];
         return textHeight+25;
     }else{
-        UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 0, SCREEN_WIDTH-80, 50)];
-        tempLabel.font = [UIFont fontWithName:Font_default_share size:16];
+        UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(26, 0, SCREEN_WIDTH-52, 50)];
+        tempLabel.font = [UIFont fontWithName:Font_default_share size:19];
         tempLabel.numberOfLines = 0;
         if ([famousArray count]>0) {
             tempLabel.text = [famousArray[indexPath.row] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet ]];
         }
         
-        CGFloat textHeight = [MuzzikItem heightForLabel:tempLabel WithText:tempLabel.text];
+        int textHeight = [MuzzikItem heightForLabel:tempLabel WithText:tempLabel.text];
         return textHeight+25;
     }
     
@@ -452,7 +464,7 @@
             if ([lyricArray count]>1) {
                 TableViewCell *cell = (TableViewCell*)[tableView cellForRowAtIndexPath:indexPath];
                 CGPoint point = [cell.superview convertPoint:cell.frame.origin toView:Scroll];
-                RJTextView *textView = [[RJTextView alloc] initWithFrame:CGRectMake(cell.label.frame.origin.x-25, point.y-7.5, cell.label.frame.size.width+50, cell.label.frame.size.height*3.5-4)
+                RJTextView *textView = [[RJTextView alloc] initWithFrame:CGRectMake(cell.label.frame.origin.x-25, point.y-7.5, cell.label.frame.size.width+50, cell.label.frame.size.height*3-4)
                                                              defaultText:cell.label.text
                                                                     font:[UIFont fontWithName:Font_default_share size:16]
                                                                    color:shareColor
@@ -469,7 +481,7 @@
         }else{
             TableViewCell *cell = (TableViewCell*)[tableView cellForRowAtIndexPath:indexPath];
             CGPoint point = [cell.superview convertPoint:cell.frame.origin toView:Scroll];
-            RJTextView *textView = [[RJTextView alloc] initWithFrame:CGRectMake(cell.label.frame.origin.x-25, point.y-7.5, cell.label.frame.size.width+50, cell.label.frame.size.height*3.5-4)
+            RJTextView *textView = [[RJTextView alloc] initWithFrame:CGRectMake(cell.label.frame.origin.x-25, point.y-7.5, cell.label.frame.size.width+50, cell.label.frame.size.height*3-4)
                                                          defaultText:cell.label.text
                                                                 font:[UIFont fontWithName:Font_default_share size:16]
                                                                color:shareColor
@@ -486,7 +498,13 @@
     }
 }
 #pragma mark - Gesture
-
+-(void)hideTips{
+    [NoLyricTips removeFromSuperview];
+}
+-(void)Notips{
+    [NoLyricTips setText:@"暂无歌词"];
+    [Scroll addSubview:NoLyricTips];
+}
 -(void)changFont{
     if (fontTableShowed) {
         fontTableShowed = NO;
@@ -968,6 +986,7 @@
                         
                     }];
                     [interRequest setFailedBlock:^{
+                        [MuzzikItem showNotifyOnView:self.view text:@"请求失败，请确认网络状态再次重试"];
                         NSLog(@"%@",[form responseString]);
                     }];
                     [interRequest startAsynchronous];
@@ -980,6 +999,7 @@
                 }
             }];
             [requestForm setFailedBlock:^{
+                [MuzzikItem showNotifyOnView:self.view text:@"请求失败，请确认网络状态再次重试"];
                 NSLog(@"%@",[weakrequest error ]);
             }];
             [requestForm startAsynchronous];
@@ -1006,9 +1026,10 @@
     }
 }
 -(void) changColor{
-    
+ 
     if (!isCharacterWhite) {
         isCharacterWhite = YES;
+        [editTextView.textView setTextColor:[UIColor whiteColor]];
         shareColor = [UIColor whiteColor];
         [ColorButton setImage:[UIImage imageNamed:Image_textwhiteImage] forState:UIControlStateNormal];
         shareLabel.textView.textColor = [UIColor whiteColor];
@@ -1016,6 +1037,7 @@
         [MuzzikLogo setImage:[UIImage imageNamed:@"sharewhiteMuzzik"]];
     }else{
         isCharacterWhite = NO;
+        [editTextView.textView setTextColor:[UIColor blackColor]];
         shareColor = [UIColor blackColor];
         [ColorButton setImage:[UIImage imageNamed:Image_textblackImage] forState:UIControlStateNormal];
         shareLabel.textView.textColor = [UIColor blackColor];
@@ -1098,11 +1120,11 @@
     photoPicker.cropBlock = ^(UIImage *image) {
         self.image = image;
         isShow = YES;
-        [MuzzikLogoImage setImage:[UIImage imageNamed:@"muzzikwhite"]];
+//        [MuzzikLogoImage setImage:[UIImage imageNamed:@"muzzikwhite"]];
         [headImage setImage:image];
-        shareColor = [UIColor whiteColor];
-        [shareLabel.textView setTextColor:shareColor];
-        [lyricTablenview reloadData];
+//        shareColor = [UIColor whiteColor];
+//        [shareLabel.textView setTextColor:shareColor];
+//        [lyricTablenview reloadData];
         [LibraryButton setImage:[UIImage imageNamed:Image_addedpicImage] forState:UIControlStateNormal];
     };
     [self presentViewController:photoPicker animated:YES completion:NULL];
@@ -1332,7 +1354,18 @@
 -(void) reloadTableView{
     [fontTableView reloadData];
 }
-
+-(void)reloadLyricTableView{
+    MuzzikObject *mobject = [MuzzikObject shareClass];
+    if ([mobject.lyricArray count]>0) {
+        for (NSDictionary *dic in mobject.lyricArray) {
+            if ([[[dic allValues][0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length] >0 ) {
+                [lyricArray addObject:dic];
+            }
+        }
+    }
+    
+    [lyricTablenview reloadData];
+}
 - (void)saveToAlbumWithMetadata:(NSDictionary *)metadata
                       imageData:(NSData *)imageData
                 customAlbumName:(NSString *)customAlbumName

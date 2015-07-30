@@ -3,17 +3,17 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "shareweiboSelected.png"
+      "filename" : "sharefriendcircle.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "shareweiboSelected@2x.png"
+      "filename" : "sharefriendcircle@2x.png"
     },
     {
       "idiom" : "universal",
       "scale" : "3x",
-      "filename" : "shareweiboSelected@3x.png"
+      "filename" : "sharefriendcircle@3x.png"
     }
   ],
   "info" : {

@@ -20,6 +20,7 @@
 @property (nonatomic,copy) NSString *lastDate;
 @property (nonatomic,retain) NotifyButton *notifyBUtton;
 @property (nonatomic,retain) UILabel *lyricTipsLabel;
+@property (nonatomic,copy) NSString *GeiLyricType;
 +(MuzzikObject *) shareClass;
 -(void) clearObject;
 @end

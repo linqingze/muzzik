@@ -132,6 +132,7 @@
 		F20C4EDD1B68CA5800331101 /* MuzzikUserCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F20C4EDC1B68CA5800331101 /* MuzzikUserCell.m */; };
 		F20C4EE01B68CA6E00331101 /* MuzzikTopic.m in Sources */ = {isa = PBXBuildFile; fileRef = F20C4EDF1B68CA6E00331101 /* MuzzikTopic.m */; };
 		F20C4EE21B69E23800331101 /* HYQuanTangShiF.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F20C4EE11B69E23800331101 /* HYQuanTangShiF.ttf */; };
+		F20C4EE61B6A48D100331101 /* IBActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = F20C4EE51B6A48D100331101 /* IBActionSheet.m */; };
 		F20FDD691AF74A05008A71C0 /* SearchForSong.m in Sources */ = {isa = PBXBuildFile; fileRef = F20FDD681AF74A05008A71C0 /* SearchForSong.m */; };
 		F20FDD6C1AF74B0C008A71C0 /* SearchForUser.m in Sources */ = {isa = PBXBuildFile; fileRef = F20FDD6B1AF74B0C008A71C0 /* SearchForUser.m */; };
 		F20FDD6F1AF74B24008A71C0 /* SearchForTopic.m in Sources */ = {isa = PBXBuildFile; fileRef = F20FDD6E1AF74B24008A71C0 /* SearchForTopic.m */; };
@@ -518,6 +519,8 @@
 		F20C4EDE1B68CA6E00331101 /* MuzzikTopic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MuzzikTopic.h; sourceTree = "<group>"; };
 		F20C4EDF1B68CA6E00331101 /* MuzzikTopic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MuzzikTopic.m; sourceTree = "<group>"; };
 		F20C4EE11B69E23800331101 /* HYQuanTangShiF.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = HYQuanTangShiF.ttf; sourceTree = "<group>"; };
+		F20C4EE41B6A48D100331101 /* IBActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IBActionSheet.h; sourceTree = "<group>"; };
+		F20C4EE51B6A48D100331101 /* IBActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IBActionSheet.m; sourceTree = "<group>"; };
 		F20FDD671AF74A05008A71C0 /* SearchForSong.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchForSong.h; sourceTree = "<group>"; };
 		F20FDD681AF74A05008A71C0 /* SearchForSong.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchForSong.m; sourceTree = "<group>"; };
 		F20FDD6A1AF74B0C008A71C0 /* SearchForUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchForUser.h; sourceTree = "<group>"; };
@@ -915,6 +918,7 @@
 		E112461E1AAAB0F60014D461 /* 3plus-in */ = {
 			isa = PBXGroup;
 			children = (
+				F20C4EE31B6A48C600331101 /* actionsheet */,
 				F2AD9F821B60D3710039FBC4 /* AFNetworking */,
 				F2AD9F7D1B5F9D180039FBC4 /* SUNSlideSwitchView.h */,
 				F2AD9F7E1B5F9D180039FBC4 /* SUNSlideSwitchView.m */,
@@ -1342,6 +1346,15 @@
 				F205539B1B340C1A0093AE8A /* SelectionLabel.m */,
 			);
 			name = "我";
+			sourceTree = "<group>";
+		};
+		F20C4EE31B6A48C600331101 /* actionsheet */ = {
+			isa = PBXGroup;
+			children = (
+				F20C4EE41B6A48D100331101 /* IBActionSheet.h */,
+				F20C4EE51B6A48D100331101 /* IBActionSheet.m */,
+			);
+			name = actionsheet;
 			sourceTree = "<group>";
 		};
 		F20FDD661AF749B0008A71C0 /* search */ = {
@@ -1814,6 +1827,7 @@
 				F2F089E01B009CCA00FB1639 /* SettingCell.m in Sources */,
 				F200B7AF1B2AC7F6002A6F61 /* FeedViewController.m in Sources */,
 				E14F4A4E1ACD2B9800270903 /* LoginViewController.m in Sources */,
+				F20C4EE61B6A48D100331101 /* IBActionSheet.m in Sources */,
 				F20C4EDD1B68CA5800331101 /* MuzzikUserCell.m in Sources */,
 				E1FA12D21AB14CEF005EDA1D /* UIView+Additions.m in Sources */,
 				F2E9A8F71AFFB21000F4F461 /* TopicDetail.m in Sources */,

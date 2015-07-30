@@ -13,7 +13,8 @@
 #import "ChooseMusicVC.h"
 #import "choosImageVC.h"
 #import "HPGrowingTextView.h"
-@interface MessageStepViewController ()<UITextViewDelegate>{
+#import "IBActionSheet.h"
+@interface MessageStepViewController ()<UITextViewDelegate,UIActionSheetDelegate, IBActionSheetDelegate>{
     UILabel *charaterLabel;
     UIView *actionView;
     UIButton *atButton;
@@ -26,6 +27,7 @@
     UITextField *_textfield;
     UIButton *AtButton;
     UILabel *addMusicTipsLabel;
+    IBActionSheet *actionSheet;
 }
 @end
 
@@ -187,26 +189,27 @@
     
 }
 -(void)tapAction:(UITapGestureRecognizer *)tap{
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"保存至草稿箱",@"不保存", nil];
-        // optional - add more buttons:
-        [alert show];
+    actionSheet = [[IBActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"保存至草稿箱",@"不保存", nil];
+    [actionSheet showInView:self.view.window];
+    [actionSheet setButtonTextColor:Color_Active_Button_1 forButtonAtIndex:1];
     
 }
+- (void)actionSheet:(IBActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
 
-
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == 1) {
-        // do stuff
+    if(buttonIndex==2){
+        return;
+    }else if(buttonIndex == 0){
         NSArray *muzzikDrafts = [MuzzikItem muzzikDraftsFromLocal];
         MuzzikObject *mobject = [MuzzikObject shareClass];
-
+        
         NSDate *  senddate=[NSDate date];
         
         NSDateFormatter  *dateformatter=[[NSDateFormatter alloc] init];
         
         [dateformatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
         
-NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:textview.text,@"message",[dateformatter stringFromDate:senddate],@"lastdate",mobject.music.music_id,@"music_id",mobject.music.name,@"music_name",mobject.music.artist,@"music_artist",mobject.music.key,@"music_key", nil];
+        NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:textview.text,@"message",[dateformatter stringFromDate:senddate],@"lastdate",mobject.music.music_id,@"music_id",mobject.music.name,@"music_name",mobject.music.artist,@"music_artist",mobject.music.key,@"music_key", nil];
         if ([muzzikDrafts count] == 0) {
             muzzikDrafts = @[dic];
         }else{
@@ -219,8 +222,7 @@ NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:textview.text,@"m
         mobject.isMessageVCOpen = NO;
         mobject.tempmessage = @"";
         [self.navigationController popViewControllerAnimated:YES];
-       
-    }else if (buttonIndex == 2){
+    }else if(buttonIndex == 1){
         MuzzikObject *mobject = [MuzzikObject shareClass];
         mobject.music = nil;
         mobject.isMessageVCOpen = NO;
@@ -228,9 +230,8 @@ NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:textview.text,@"m
         [self.navigationController popViewControllerAnimated:YES];
     }
     
-    
-    
 }
+
 /*
 #pragma mark - Navigation
 

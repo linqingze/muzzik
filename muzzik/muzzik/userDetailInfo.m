@@ -1005,7 +1005,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         
         _attentionButton.frame = d;
     }
-    if (yOffset>320) {
+    if (yOffset>SCREEN_WIDTH) {
         [_messageView setFrame:CGRectMake(16, 0, SCREEN_WIDTH-32, 55)];
         [self.view addSubview:_messageView];
     }else{

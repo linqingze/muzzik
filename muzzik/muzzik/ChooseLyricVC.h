@@ -14,4 +14,7 @@
 @property(nonatomic,retain) SDTransparentPieProgressView *pieProgress;
 -(void)startDownload;
 -(void) reloadTableView;
+-(void) reloadLyricTableView;
+-(void)hideTips;
+-(void)Notips;
 @end

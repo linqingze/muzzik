@@ -21,10 +21,10 @@
 }
 
 -(void)setup{
-    self.label = [[UILabel alloc] initWithFrame:CGRectMake(40, 10, SCREEN_WIDTH-80, 30)];
+    self.label = [[UILabel alloc] initWithFrame:CGRectMake(20, 10, SCREEN_WIDTH-40, 30)];
     self.label.numberOfLines = 0;
     self.label.lineBreakMode = NSLineBreakByWordWrapping;
-    self.label.font = [UIFont fontWithName:Font_default_share size:16];
+    self.label.font = [UIFont fontWithName:Font_default_share size:19];
     self.label.textColor = Color_Text_1;
     self.label.textAlignment = NSTextAlignmentCenter;
     [self setSelectionStyle:UITableViewCellSelectionStyleNone];

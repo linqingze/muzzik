@@ -1261,6 +1261,7 @@
     }else if (audioPlayer.state == AudioPlayerStateError){
         if (!isError) {
             isError = YES;
+            [nextButton setEnabled:YES];
             [ MuzzikItem showNotifyOnView:nil text:@"歌曲文件读取失败"];
             if (![Reachability reachabilityWithHostName:@"www.muzziker.com"].currentReachabilityStatus == NotReachable) {
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
