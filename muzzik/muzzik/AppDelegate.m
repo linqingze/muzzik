@@ -802,7 +802,7 @@
     
     if ([user.token length]>0) {
         ASIHTTPRequest *requestOwn = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@/muzziks",BaseURL,user.uid]]];
-        [requestOwn addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:30],Parameter_Limit ,nil] Method:GetMethod auth:YES];
+        [requestOwn addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:20],Parameter_Limit ,nil] Method:GetMethod auth:YES];
         __weak ASIHTTPRequest *weakrequestOwn = requestOwn;
         [requestOwn setCompletionBlock :^{
             if ([weakrequestOwn responseStatusCode] == 200) {

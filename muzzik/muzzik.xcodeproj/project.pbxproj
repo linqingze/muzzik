@@ -128,6 +128,10 @@
 		F20B68201AF340FE0058820D /* PlayListObject.m in Sources */ = {isa = PBXBuildFile; fileRef = F20B681F1AF340FE0058820D /* PlayListObject.m */; };
 		F20B682A1AF39FC00058820D /* MuzzikCard.m in Sources */ = {isa = PBXBuildFile; fileRef = F20B68291AF39FC00058820D /* MuzzikCard.m */; };
 		F20B682D1AF3E39A0058820D /* MuzzikNoCardCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F20B682C1AF3E39A0058820D /* MuzzikNoCardCell.m */; };
+		F20C4EDA1B68CA4200331101 /* MuzzikSongCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F20C4ED91B68CA4200331101 /* MuzzikSongCell.m */; };
+		F20C4EDD1B68CA5800331101 /* MuzzikUserCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F20C4EDC1B68CA5800331101 /* MuzzikUserCell.m */; };
+		F20C4EE01B68CA6E00331101 /* MuzzikTopic.m in Sources */ = {isa = PBXBuildFile; fileRef = F20C4EDF1B68CA6E00331101 /* MuzzikTopic.m */; };
+		F20C4EE21B69E23800331101 /* HYQuanTangShiF.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F20C4EE11B69E23800331101 /* HYQuanTangShiF.ttf */; };
 		F20FDD691AF74A05008A71C0 /* SearchForSong.m in Sources */ = {isa = PBXBuildFile; fileRef = F20FDD681AF74A05008A71C0 /* SearchForSong.m */; };
 		F20FDD6C1AF74B0C008A71C0 /* SearchForUser.m in Sources */ = {isa = PBXBuildFile; fileRef = F20FDD6B1AF74B0C008A71C0 /* SearchForUser.m */; };
 		F20FDD6F1AF74B24008A71C0 /* SearchForTopic.m in Sources */ = {isa = PBXBuildFile; fileRef = F20FDD6E1AF74B24008A71C0 /* SearchForTopic.m */; };
@@ -507,6 +511,13 @@
 		F20B68291AF39FC00058820D /* MuzzikCard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MuzzikCard.m; sourceTree = "<group>"; };
 		F20B682B1AF3E39A0058820D /* MuzzikNoCardCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MuzzikNoCardCell.h; sourceTree = "<group>"; };
 		F20B682C1AF3E39A0058820D /* MuzzikNoCardCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MuzzikNoCardCell.m; sourceTree = "<group>"; };
+		F20C4ED81B68CA4200331101 /* MuzzikSongCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MuzzikSongCell.h; sourceTree = "<group>"; };
+		F20C4ED91B68CA4200331101 /* MuzzikSongCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MuzzikSongCell.m; sourceTree = "<group>"; };
+		F20C4EDB1B68CA5800331101 /* MuzzikUserCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MuzzikUserCell.h; sourceTree = "<group>"; };
+		F20C4EDC1B68CA5800331101 /* MuzzikUserCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MuzzikUserCell.m; sourceTree = "<group>"; };
+		F20C4EDE1B68CA6E00331101 /* MuzzikTopic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MuzzikTopic.h; sourceTree = "<group>"; };
+		F20C4EDF1B68CA6E00331101 /* MuzzikTopic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MuzzikTopic.m; sourceTree = "<group>"; };
+		F20C4EE11B69E23800331101 /* HYQuanTangShiF.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = HYQuanTangShiF.ttf; sourceTree = "<group>"; };
 		F20FDD671AF74A05008A71C0 /* SearchForSong.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchForSong.h; sourceTree = "<group>"; };
 		F20FDD681AF74A05008A71C0 /* SearchForSong.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchForSong.m; sourceTree = "<group>"; };
 		F20FDD6A1AF74B0C008A71C0 /* SearchForUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchForUser.h; sourceTree = "<group>"; };
@@ -832,6 +843,7 @@
 		E11245F51AAAAE4B0014D461 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				F20C4EE11B69E23800331101 /* HYQuanTangShiF.ttf */,
 				F20553B21B3E0CF80093AE8A /* chineseF.ttf */,
 				F208EF4E1B1F7A7700DB5A68 /* VNI_HLThuphap.ttf */,
 				F200B7AB1B2ABF6E002A6F61 /* Copperplate_00.ttf */,
@@ -1035,6 +1047,12 @@
 				F212A7681AF4D825005B14DD /* NormalNoCardCell.m */,
 				F20B68281AF39FC00058820D /* MuzzikCard.h */,
 				F20B68291AF39FC00058820D /* MuzzikCard.m */,
+				F20C4ED81B68CA4200331101 /* MuzzikSongCell.h */,
+				F20C4ED91B68CA4200331101 /* MuzzikSongCell.m */,
+				F20C4EDB1B68CA5800331101 /* MuzzikUserCell.h */,
+				F20C4EDC1B68CA5800331101 /* MuzzikUserCell.m */,
+				F20C4EDE1B68CA6E00331101 /* MuzzikTopic.h */,
+				F20C4EDF1B68CA6E00331101 /* MuzzikTopic.m */,
 				F20B682B1AF3E39A0058820D /* MuzzikNoCardCell.h */,
 				F20B682C1AF3E39A0058820D /* MuzzikNoCardCell.m */,
 				E112468C1AAAB2CD0014D461 /* TopicHeaderView.h */,
@@ -1767,6 +1785,7 @@
 				F2E558A71B164D420080F9C9 /* MJRefresh.bundle in Resources */,
 				F208EF511B1F7D5500DB5A68 /* kilsonburg.ttf in Resources */,
 				F2FD3B061B30617F001B2332 /* popWords.plist in Resources */,
+				F20C4EE21B69E23800331101 /* HYQuanTangShiF.ttf in Resources */,
 				F2F0FC8D1ADD8B7100668103 /* TeachViewController.xib in Resources */,
 				E1E857B11ABD6EC2006B1BA6 /* WeiboSDK.bundle in Resources */,
 				F2B703671AC67EBF005F0903 /* TencentOpenApi_IOS_Bundle.bundle in Resources */,
@@ -1795,6 +1814,7 @@
 				F2F089E01B009CCA00FB1639 /* SettingCell.m in Sources */,
 				F200B7AF1B2AC7F6002A6F61 /* FeedViewController.m in Sources */,
 				E14F4A4E1ACD2B9800270903 /* LoginViewController.m in Sources */,
+				F20C4EDD1B68CA5800331101 /* MuzzikUserCell.m in Sources */,
 				E1FA12D21AB14CEF005EDA1D /* UIView+Additions.m in Sources */,
 				F2E9A8F71AFFB21000F4F461 /* TopicDetail.m in Sources */,
 				E1FA12C71AB1499F005EDA1D /* DataSourceWrapper.m in Sources */,
@@ -1911,6 +1931,7 @@
 				E112469A1AAAC02A0014D461 /* AMScrollingNavbarViewController.m in Sources */,
 				F2AD9F9C1B60D3710039FBC4 /* AFURLRequestSerialization.m in Sources */,
 				E11246471AAAB1F20014D461 /* ASIHTTPRequest.m in Sources */,
+				F20C4EDA1B68CA4200331101 /* MuzzikSongCell.m in Sources */,
 				E1FA12C61AB1499F005EDA1D /* DataSource.m in Sources */,
 				E11246731AAAB20B0014D461 /* SDWebImageManager.m in Sources */,
 				E11246711AAAB20B0014D461 /* SDWebImageDownloader.m in Sources */,
@@ -1931,6 +1952,7 @@
 				E1FA12E61AB18252005EDA1D /* FSParseRssPodcastFeedRequest.m in Sources */,
 				F2E558AD1B164D420080F9C9 /* UIScrollView+MJRefresh.m in Sources */,
 				F20B10391AF6B4DE0067EBD3 /* NotificationVC.m in Sources */,
+				F20C4EE01B68CA6E00331101 /* MuzzikTopic.m in Sources */,
 				E1FA12E21AB18252005EDA1D /* FSAudioController.m in Sources */,
 				F20FDD751AF77ECE008A71C0 /* searchUserCell.m in Sources */,
 				F2FF11001B0A138A0022A57D /* NotifyMuzzikCell.m in Sources */,

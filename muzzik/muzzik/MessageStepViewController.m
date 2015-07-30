@@ -187,9 +187,8 @@
     
 }
 -(void)tapAction:(UITapGestureRecognizer *)tap{
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"是否保存编辑信息至草稿箱" message:@"" delegate:self cancelButtonTitle:@"放弃" otherButtonTitles:nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"保存至草稿箱",@"不保存", nil];
         // optional - add more buttons:
-        [alert addButtonWithTitle:@"确定"];
         [alert show];
     
 }
@@ -216,13 +215,19 @@ NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:textview.text,@"m
             muzzikDrafts = [mutableArr copy];
         }
         [MuzzikItem addMuzzikDraftsToLocal:muzzikDrafts];
+        mobject.music = nil;
+        mobject.isMessageVCOpen = NO;
+        mobject.tempmessage = @"";
+        [self.navigationController popViewControllerAnimated:YES];
        
+    }else if (buttonIndex == 2){
+        MuzzikObject *mobject = [MuzzikObject shareClass];
+        mobject.music = nil;
+        mobject.isMessageVCOpen = NO;
+        mobject.tempmessage = @"";
+        [self.navigationController popViewControllerAnimated:YES];
     }
-    MuzzikObject *mobject = [MuzzikObject shareClass];
-    mobject.music = nil;
-    mobject.isMessageVCOpen = NO;
-    mobject.tempmessage = @"";
-    [self.navigationController popViewControllerAnimated:YES];
+    
     
     
 }

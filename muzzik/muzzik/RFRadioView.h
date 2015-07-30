@@ -74,6 +74,8 @@
     UITableView *plistTableView;
     UIView *messageView;
     NSMutableArray *playListArray;
+    UILabel *lyricTipsLabel;
+    BOOL isError;
     
 }
 @property (nonatomic,retain) NSMutableArray *lyricArray;

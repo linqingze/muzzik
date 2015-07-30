@@ -122,7 +122,7 @@
         NSData *data = [weakrequest responseData];
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         if (dic) {
-            
+            page = 1;
             TopicModel *topicToy = [TopicModel new];
             topicArray = [topicToy makeTopicssByMuzzikArray:[dic objectForKey:@"topics"]];
             ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/topic",BaseURL]]];

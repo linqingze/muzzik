@@ -683,6 +683,58 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
         }
     }];
     [requestForm setFailedBlock:^{
+        
+        
+        
+        ASIHTTPRequest *requestForm1 = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Music_Lyric_get]]];
+        [requestForm1 addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[[NSString stringWithFormat:@"%@",localMusic.name] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] forKey:@"q"] Method:GetMethod auth:NO];
+        [requestForm1 setUseCookiePersistence:NO];
+        __weak ASIHTTPRequest *weakrequest1 = requestForm1;
+        [requestForm1 setCompletionBlock :^{
+            //  NSLog(@"%@",[weakrequest1 responseString]);
+            // NSLog(@"URL:%@     status:%d",[weakrequest1 originalURL],[weakrequest1 responseStatusCode]);
+            if ([weakrequest1 responseStatusCode] == 200) {
+                NSData *data = [weakrequest1 responseData];
+                NSDictionary *dic1 = [NSJSONSerialization JSONObjectWithData:data  options:NSJSONReadingMutableContainers error:nil];
+                NSString *lyricAddress =[[[dic1 objectForKey:@"music"] objectAtIndex:0] objectForKey:@"lyric"];
+                if ([[dic1 objectForKey:@"music"] count]>0) {
+                    for (NSDictionary *dic in [dic1 objectForKey:@"music"]) {
+                        if ([[dic objectForKey:@"artist"] isEqualToString:localMusic.artist]) {
+                            lyricAddress = [dic objectForKey:@"lyric"];
+                            break;
+                        }
+                    }
+                    ASIHTTPRequest *lyricRequest1 = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[lyricAddress stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+                    __weak ASIHTTPRequest *lrcRequest1 = lyricRequest1;
+                    [lyricRequest1 setCompletionBlock:^{
+                        NSString *lyric =  [[NSString alloc] initWithData:[lrcRequest1 responseData]   encoding:NSUTF8StringEncoding];
+                        NSMutableArray *tempLyric = [MuzzikItem parseLrcLine:lyric];
+                        if ([tempLyric count]>1) {
+                            mobject.lyricArray = tempLyric;
+                        }
+                        // NSLog(@"%@",self.lyricArray);
+                        //  NSLog(@"%@",[lrcRequest1 responseString]);
+                        //  NSLog(@"URL:%@     status:%d",[lrcRequest1 originalURL],[lrcRequest1 responseStatusCode]);
+                    }];
+                    [lyricRequest1 setFailedBlock:^{
+                        NSLog(@"%@",lrcRequest1.error);
+                    }];
+                    [lyricRequest1 startAsynchronous];
+                }
+                
+            }
+            else{
+                //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+            }
+        }];
+        [requestForm1 setFailedBlock:^{
+            NSLog(@"URL:%@     status:%d",[weakrequest originalURL],[weakrequest responseStatusCode]);
+            NSLog(@"  kkk%@",[weakrequest error]);
+        }];
+        [requestForm1 startAsynchronous];
+        
+        //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+        
         NSLog(@"URL:%@     status:%d",[weakrequest originalURL],[weakrequest responseStatusCode]);
         NSLog(@"  kkk%@",[weakrequest error]);
     }];
@@ -951,61 +1003,71 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     }];
 }
 +(void) showNotifyOnView:(UIView *)view text:(NSString *)text{
-    UILabel *alterLabel = [[UILabel alloc] init];
-    [alterLabel setFont:[UIFont boldSystemFontOfSize:14]];
-    [alterLabel setTextColor:[UIColor whiteColor]];
-    [alterLabel setBackgroundColor:Color_NavigationBar];
-    alterLabel.text = text;
-    [alterLabel sizeToFit];
-    [alterLabel setFrame:CGRectMake(SCREEN_WIDTH/2-alterLabel.frame.size.width/2-10, SCREEN_HEIGHT-150, alterLabel.frame.size.width+20, alterLabel.frame.size.height+20)];
-    alterLabel.layer.cornerRadius = 5;
-    alterLabel.clipsToBounds = YES;
-    alterLabel.layer.shadowColor = [UIColor blackColor].CGColor;//shadowColor阴影颜色
-    alterLabel.layer.shadowOffset = CGSizeMake(0,0);//shadowOffset阴影偏移，默认(0, -3),这个跟shadowRadius配合使用
-    alterLabel.layer.shadowOpacity = 1;//阴影透明度，默认0
-    alterLabel.layer.shadowRadius = 3;//阴影半径，默认3
-    alterLabel.textAlignment = NSTextAlignmentCenter;
-    //路径阴影
-    UIBezierPath *path = [UIBezierPath bezierPath];
-    
-    float width = alterLabel.bounds.size.width;
-    float height = alterLabel.bounds.size.height;
-    float x = alterLabel.bounds.origin.x;
-    float y = alterLabel.bounds.origin.y;
-    float addWH = 10;
-    
-    CGPoint topLeft      = alterLabel.bounds.origin;
-    CGPoint topMiddle = CGPointMake(x+(width/2),y-addWH);
-    CGPoint topRight     = CGPointMake(x+width,y);
-    
-    CGPoint rightMiddle = CGPointMake(x+width+addWH,y+(height/2));
-    
-    CGPoint bottomRight  = CGPointMake(x+width,y+height);
-    CGPoint bottomMiddle = CGPointMake(x+(width/2),y+height+addWH);
-    CGPoint bottomLeft   = CGPointMake(x,y+height);
-    
-    
-    CGPoint leftMiddle = CGPointMake(x-addWH,y+(height/2));
-    
-    [path moveToPoint:topLeft];
-    //添加四个二元曲线
-    [path addQuadCurveToPoint:topRight
-                 controlPoint:topMiddle];
-    [path addQuadCurveToPoint:bottomRight
-                 controlPoint:rightMiddle];
-    [path addQuadCurveToPoint:bottomLeft
-                 controlPoint:bottomMiddle];
-    [path addQuadCurveToPoint:topLeft
-                 controlPoint:leftMiddle];
-    //设置阴影路径
-    alterLabel.layer.shadowPath = path.CGPath;
-    [alterLabel setAlpha:0];
-    [view addSubview:alterLabel];
+    MuzzikObject *mobject = [MuzzikObject shareClass];
+    if (!mobject.lyricTipsLabel) {
+        UILabel *alterLabel = [[UILabel alloc] init];
+        [alterLabel setFont:[UIFont boldSystemFontOfSize:14]];
+        [alterLabel setTextColor:[UIColor whiteColor]];
+        [alterLabel setBackgroundColor:Color_NavigationBar];
+        alterLabel.text = text;
+        [alterLabel sizeToFit];
+        [alterLabel setFrame:CGRectMake(SCREEN_WIDTH/2-alterLabel.frame.size.width/2-10, SCREEN_HEIGHT-150, alterLabel.frame.size.width+20, alterLabel.frame.size.height+20)];
+        alterLabel.layer.cornerRadius = 5;
+        alterLabel.clipsToBounds = YES;
+        alterLabel.layer.shadowColor = [UIColor blackColor].CGColor;//shadowColor阴影颜色
+        alterLabel.layer.shadowOffset = CGSizeMake(0,0);//shadowOffset阴影偏移，默认(0, -3),这个跟shadowRadius配合使用
+        alterLabel.layer.shadowOpacity = 1;//阴影透明度，默认0
+        alterLabel.layer.shadowRadius = 3;//阴影半径，默认3
+        alterLabel.textAlignment = NSTextAlignmentCenter;
+        //路径阴影
+        UIBezierPath *path = [UIBezierPath bezierPath];
+        
+        float width = alterLabel.bounds.size.width;
+        float height = alterLabel.bounds.size.height;
+        float x = alterLabel.bounds.origin.x;
+        float y = alterLabel.bounds.origin.y;
+        float addWH = 10;
+        
+        CGPoint topLeft      = alterLabel.bounds.origin;
+        CGPoint topMiddle = CGPointMake(x+(width/2),y-addWH);
+        CGPoint topRight     = CGPointMake(x+width,y);
+        
+        CGPoint rightMiddle = CGPointMake(x+width+addWH,y+(height/2));
+        
+        CGPoint bottomRight  = CGPointMake(x+width,y+height);
+        CGPoint bottomMiddle = CGPointMake(x+(width/2),y+height+addWH);
+        CGPoint bottomLeft   = CGPointMake(x,y+height);
+        
+        
+        CGPoint leftMiddle = CGPointMake(x-addWH,y+(height/2));
+        
+        [path moveToPoint:topLeft];
+        //添加四个二元曲线
+        [path addQuadCurveToPoint:topRight
+                     controlPoint:topMiddle];
+        [path addQuadCurveToPoint:bottomRight
+                     controlPoint:rightMiddle];
+        [path addQuadCurveToPoint:bottomLeft
+                     controlPoint:bottomMiddle];
+        [path addQuadCurveToPoint:topLeft
+                     controlPoint:leftMiddle];
+        //设置阴影路径
+        
+        alterLabel.layer.shadowPath = path.CGPath;
+        mobject.lyricTipsLabel = alterLabel;
+
+    }
+    [mobject.lyricTipsLabel setAlpha:0];
+    if (view == nil) {
+        AppDelegate *myDelegate =(AppDelegate*)[[UIApplication sharedApplication] delegate];
+        view = myDelegate.window.rootViewController.view;
+    }
+    [view addSubview:mobject.lyricTipsLabel];
     [UIView animateWithDuration:0.4 animations:^{
-        [alterLabel setAlpha:0.8];
+        [mobject.lyricTipsLabel setAlpha:0.8];
     } completion:^(BOOL finished) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [alterLabel removeFromSuperview];
+            [mobject.lyricTipsLabel removeFromSuperview];
             
         });
     }];

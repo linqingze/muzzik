@@ -1885,7 +1885,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         
         NSArray *dicKeys = [proDic allKeys];
         if ([dicKeys containsObject:@"avatar"]) {
-            [_headimage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,[proDic objectForKey:@"avatar"]]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            [_headimage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/600/h/600",BaseURL_image,[proDic objectForKey:@"avatar"]]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                 [UIView animateWithDuration:0.5 animations:^{
                     [_headimage setAlpha:1];
                     [_coverImage setAlpha:1];

@@ -128,7 +128,7 @@
 #define Font_Next_Bold           @"AvenirNext-Bold"
 #define Font_Next_DemiBold           @"AvenirNext-DemiBold"
 #define Font_Next_UltraLight     @"AvenirNext-UltraLight"
-#define Font_default_share      @"FZSSFW--GB1-0"
+#define Font_default_share      @"HYQuanTangShiF"
 #define DocumentsPath [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"]
 
 // 909997353
