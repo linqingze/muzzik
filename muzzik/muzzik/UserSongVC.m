@@ -271,7 +271,7 @@
     MuzzikObject *mobject = [MuzzikObject shareClass];
     
     mobject.music = localMzzik.music;
-    [MuzzikItem getLyricByMusic:localMzzik.music];
+   // [MuzzikItem getLyricByMusic:localMzzik.music];
     userInfo *user = [userInfo shareClass];
     if ([user.token length]>0) {
         user.poController = self;

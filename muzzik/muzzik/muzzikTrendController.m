@@ -858,6 +858,11 @@
         cell.musicName.text = tempMuzzik.music.name;
         cell.songModel = tempMuzzik;
         cell.delegate = self;
+        if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.localMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
+            [cell.playButton setImage:[UIImage imageNamed:Image_stoporangeImage] forState:UIControlStateNormal];
+        }else{
+            [cell.playButton setImage:[UIImage imageNamed:Image_playgreyImage] forState:UIControlStateNormal];
+        }
         return cell;
     }
     else if([tempMuzzik.type isEqualToString:@"topicCard"]){

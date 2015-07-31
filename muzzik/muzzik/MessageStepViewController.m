@@ -112,10 +112,11 @@
     [self.navigationController.view addSubview:AtButton];
     MuzzikObject *mobject = [MuzzikObject shareClass];
     mobject.isMessageVCOpen = YES;
-    if (mobject.music) {
+    if (mobject.music ) {
         songName.text = mobject.music.name;
         artist.text = mobject.music.artist;
         [addMusicTipsLabel setHidden:YES];
+        [MuzzikItem getLyricByMusic:mobject.music];
     }
     if ([mobject.tempmessage length]>0) {
         [placeHolder setHidden:YES];

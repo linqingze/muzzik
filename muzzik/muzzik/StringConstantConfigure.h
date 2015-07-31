@@ -200,7 +200,7 @@
 #define Image_userTips                      @"userTips"
 #define Image_topicTips                     @"topicTips"
 #define Image_musicTips                     @"musicTips"
-
+#define Muzzik_local_Music_Moved_Array      @"Muzzik_local_Music_Moved_Array"
 
 
 

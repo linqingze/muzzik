@@ -89,6 +89,8 @@
     localMusic.artist = [dic objectForKey:@"music_artist"];
     localMusic.key  =   [dic objectForKey:@"music_key"];
     mobject.music = localMusic;
+    //[MuzzikItem getLyricByMusic:localMusic];
+    
     MessageStepViewController *msgvc = [[MessageStepViewController alloc] init];
     msgvc.message = [dic objectForKey:@"message"];
     NSMutableArray * array = [NSMutableArray arrayWithArray:draftArray];

@@ -280,7 +280,7 @@
     [shareChannelView addSubview:QQZoneShare];
     [shareChannelView addSubview:weiboShare];
     [shareChannelView addSubview:weChatshare];
-    NoLyricTips = [[UILabel alloc] initWithFrame:CGRectMake(20, 60, SCREEN_WIDTH-40, 20)];
+    NoLyricTips = [[UILabel alloc] initWithFrame:CGRectMake(20, 130, SCREEN_WIDTH-40, 20)];
     [NoLyricTips setTextColor:shareColor];
     NoLyricTips.textAlignment = NSTextAlignmentCenter;
     [NoLyricTips setFont:[UIFont fontWithName:Font_default_share size:15]];

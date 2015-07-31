@@ -103,6 +103,7 @@
         [self createAlbum];
     }
     
+    
     return YES;
 }
 
@@ -878,13 +879,15 @@
         [requestfollow startAsynchronous];
         
         ASIHTTPRequest *requestmove = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/movedMuzzik",BaseURL]]];
-        [requestmove addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:30] forKey:Parameter_Limit] Method:GetMethod auth:YES];
+        [requestmove addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:20] forKey:Parameter_Limit] Method:GetMethod auth:YES];
         __weak ASIHTTPRequest *weakrequestmove = requestmove;
         [requestmove setCompletionBlock :^{
             // NSLog(@"%@",[weakrequest responseString]);
             NSData *data = [weakrequestmove responseData];
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-            
+            if ([[Reachability reachabilityForLocalWiFi] currentReachabilityStatus] == kReachableViaWiFi) {
+                NSArray *musicArray = [MuzzikItem getArrayFromLocalForKey:Muzzik_local_Music_Moved_Array];
+            }
             
             
             if (dic  && [[dic objectForKey:@"muzziks"] count]>0 ) {

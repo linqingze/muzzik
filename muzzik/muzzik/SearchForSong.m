@@ -299,7 +299,7 @@
     if ([user.token length]>0) {
         user.poController = self.keeper;
         mobject.music = tempMuzzik.music;
-        [MuzzikItem getLyricByMusic:tempMuzzik.music];
+        //[MuzzikItem getLyricByMusic:tempMuzzik.music];
         MessageStepViewController *messagebv = [[MessageStepViewController alloc] init];
         [self.keeper.navigationController pushViewController:messagebv animated:YES];
     }else{

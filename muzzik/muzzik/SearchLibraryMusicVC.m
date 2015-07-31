@@ -167,7 +167,7 @@
         mobject.music = tempMuzzik.music;
         [self.keeper.navigationController popViewControllerAnimated:YES];
     }else{
-        [MuzzikItem getLyricByMusic:tempMuzzik.music];
+       // [MuzzikItem getLyricByMusic:tempMuzzik.music];
         if (mobject.isMessageVCOpen) {
             mobject.music = tempMuzzik.music;
             [self.keeper.navigationController popViewControllerAnimated:YES];

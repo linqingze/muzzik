@@ -374,7 +374,8 @@
             DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
             detail.localmuzzik = tempMuzzik;
             [self.navigationController pushViewController:detail animated:YES];
-        }else if([tempMuzzik.type isEqualToString:@"musicCard"]){
+        }
+        else if([tempMuzzik.type isEqualToString:@"musicCard"]){
             NSMutableArray *suggestDic = [[MuzzikItem getArrayFromLocalForKey:@"Muzzik_suggest_Day_ClickArray"] mutableCopy];
             if (!suggestDic) {
                 suggestDic = [NSMutableArray array];
@@ -436,7 +437,8 @@
 {
     Globle *glob = [Globle shareGloble];
     muzzik *tempMuzzik = [self.muzziks objectAtIndex:indexPath.row];
-    if ([tempMuzzik.type isEqualToString:@"repost"] || [tempMuzzik.type isEqualToString:@"normal"] || [tempMuzzik.type isEqualToString:@"muzzikCard"]) {
+    if ([tempMuzzik.type isEqualToString:@"repost"] || [tempMuzzik.type isEqualToString:@"normal"] || [tempMuzzik.type isEqualToString:@"muzzikCard"])
+    {
         if (![tempMuzzik.image isKindOfClass:[NSNull class]] && [tempMuzzik.image length] == 0) {
             if ([tempMuzzik.type isEqualToString:@"repost"] ){
                 NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
@@ -851,6 +853,11 @@
         cell.musicName.text = tempMuzzik.music.name;
         cell.songModel = tempMuzzik;
         cell.delegate = self;
+        if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.localMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
+            [cell.playButton setImage:[UIImage imageNamed:Image_stoporangeImage] forState:UIControlStateNormal];
+        }else{
+             [cell.playButton setImage:[UIImage imageNamed:Image_playgreyImage] forState:UIControlStateNormal];
+        }
         return cell;
     }
     else if([tempMuzzik.type isEqualToString:@"topicCard"]){

@@ -20,6 +20,7 @@
 }
 
 -(void)setup{
+    [self setSelectionStyle:UITableViewCellSelectionStyleNone];
     _cardView = [[UIView alloc] initWithFrame:CGRectMake(8, 16, SCREEN_WIDTH-16, 73)];
     [_cardView setBackgroundColor:Color_line_2];
     _cardView.layer.cornerRadius = 3;
@@ -57,6 +58,7 @@
 -(void)newMuzzik{
     MuzzikObject *mobject = [MuzzikObject shareClass];
     mobject.music = self.songModel.music;
+   // [MuzzikItem getLyricByMusic:self.songModel.music];
     [self.delegate newMuzzik:self.songModel];
 }
 -(void)playMusic{
