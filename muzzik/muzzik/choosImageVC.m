@@ -41,7 +41,7 @@
     headImage.contentMode = UIViewContentModeScaleAspectFit;
     [self.view addSubview:headImage];
     [MuzzikItem addLineOnView:self.view heightPoint:SCREEN_WIDTH toLeft:13 toRight:13 withColor:Color_underLine];
-    notifyLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, SCREEN_WIDTH+15, SCREEN_WIDTH, 20)];
+    notifyLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, SCREEN_WIDTH+15, SCREEN_WIDTH, 30)];
     UIFont *font = [UIFont boldSystemFontOfSize:12];
     NSMutableAttributedString *text = [[NSMutableAttributedString alloc] init];
     NSString *itemStr = @"点击图片，";

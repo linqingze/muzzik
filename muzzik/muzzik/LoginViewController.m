@@ -218,6 +218,7 @@
     weiboButton.clipsToBounds = YES;
     [self.view addSubview:weiboButton];
     userInfo *user  = [userInfo shareClass];
+    user.isSwitchUser = YES;
     if (!user.QQInstalled) {
         [QQButton setEnabled:NO];
     }

@@ -191,6 +191,8 @@
 #define PutMethod              @"3"
 #define DeleteMethod           @"4"
 
+#define Is_Logined              2
+#define Is_Not_Logined          1
 
 #pragma request Key 常量
 #define Parameter_Limit             @"limit"

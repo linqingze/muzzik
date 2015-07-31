@@ -215,14 +215,10 @@
 #define Parameter_repost_id         @"repost"
 
 #define Constant_Data_Square            @"Persistence_suqare_data"
-#define Constant_Data_moved             @"Persistence_moved_data"
-#define Constant_Data_ownMuzzik         @"Persistence_ownMuzzik_data"
-#define Constant_Data_Feed              @"Persistence_feed_data"
+//#define Constant_Data_ownMuzzik         @"Persistence_ownMuzzik_data"
 #define Constant_Data_Suggest           @"Persistence_Suggest_data"
-#define Constant_Data_User_home         @"Persistence_user_data"
 #define Constant_Data_topic             @"Persistence_user_topic"
 #define Constant_Data_User_Vip          @"Persistence_user_vip"
-#define Constant_Data_notify            @"Persistence_user_data"
 
 
 

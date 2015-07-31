@@ -43,6 +43,7 @@
 #endif
 }
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
     [WXApi registerApp:ID_WeiChat_APP];
     [WeiboSDK enableDebugMode:NO];
     [WeiboSDK registerApp:Key_WeiBo];
@@ -50,14 +51,21 @@
     [MobClick startWithAppkey:UMAPPKEY reportPolicy:BATCH channelId:@"App Store"];
 //    NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
 //    [MobClick setAppVersion:version];
+     userInfo *user = [userInfo shareClass];
     NSDictionary * dic = [MuzzikItem messageFromLocal];
     if (dic) {
-        userInfo *user = [userInfo shareClass];
+       
         user.uid = [dic objectForKey:@"_id"];
         user.token = [dic objectForKey:@"token"];
         user.gender = [dic objectForKey:@"gender"];
         user.avatar = [dic objectForKey:@"avatar"];
         user.name = [dic objectForKey:@"name"];
+        
+    }
+    if ([user.token length]==0) {
+        user.loginType = Is_Not_Logined;
+    }else{
+        user.loginType = Is_Logined;
     }
     
     [self loadData];
@@ -778,7 +786,6 @@
     
     
     
-    
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/suggest",BaseURL]]];
     [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:@"10",Parameter_Limit,[NSNumber numberWithBool:YES],@"image", nil] Method:GetMethod auth:NO];
     __weak ASIHTTPRequest *weakrequest = request;
@@ -826,7 +833,7 @@
                         isContained = NO;
                     }
                     [MuzzikItem SetUserInfoWithMuzziks:ownerMuzziks title:Constant_userInfo_own description:[NSString stringWithFormat:@"我的Muzzik"]];
-                     [MuzzikItem addObjectToLocal:[weakrequestOwn responseData] ForKey:Constant_Data_ownMuzzik];
+                     [MuzzikItem addObjectToLocal:[weakrequestOwn responseData] ForKey:[NSString stringWithFormat:@"Persistence_own_data%@",user.token]];
                 }
             }
             }];
@@ -862,13 +869,13 @@
                     isContained = NO;
                 }
                  [MuzzikItem SetUserInfoWithMuzziks:feedMuzziks title:Constant_userInfo_follow description:[NSString stringWithFormat:@"关注列表"]];
-                [MuzzikItem addObjectToLocal:data ForKey:Constant_Data_Feed];
+                [MuzzikItem addObjectToLocal:data ForKey:[NSString stringWithFormat:@"User_Feed%@",user.uid]];
             }
         }];
         [requestfollow setFailedBlock:^{
             NSLog(@"%@,%@",[weakrequestfollow error],[weakrequestfollow responseString]);
         }];
-        [requestfollow startSynchronous];
+        [requestfollow startAsynchronous];
         
         ASIHTTPRequest *requestmove = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/movedMuzzik",BaseURL]]];
         [requestmove addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:30] forKey:Parameter_Limit] Method:GetMethod auth:YES];
@@ -899,7 +906,7 @@
                     isContained = NO;
                 }
                 [MuzzikItem SetUserInfoWithMuzziks:movedMuzziks title:Constant_userInfo_move description:[NSString stringWithFormat:@"喜欢列表"]];
-                [MuzzikItem addObjectToLocal:data ForKey:Constant_Data_moved];
+                [MuzzikItem addObjectToLocal:data ForKey:[NSString stringWithFormat:@"Persistence_moved_data%@",user.token]];
             }
         }];
         [requestmove setFailedBlock:^{

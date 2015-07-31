@@ -63,13 +63,14 @@
     UIButton *weChatshare;
     UIButton *QQZoneShare;
     UILabel *NoLyricTips;
+    BOOL isSending;
 }
 @end
 @implementation ChooseLyricVC
 
 -(void)viewDidLoad{
     [super viewDidLoad];
-    isShareToWeiBo = YES;
+    isShareToWeiChat = YES;
     lyricArray = [NSMutableArray array];
     [self initNagationBar:@"填选一句话（3/3）" leftBtn:Constant_backImage rightBtn:0];
     MuzzikObject *mobject = [MuzzikObject shareClass];
@@ -263,7 +264,7 @@
     QQZoneShare = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-106, 0, 90, 60)];
     
     [weiboShare setImage:[UIImage imageNamed:@"shareunselectedweibo"] forState:UIControlStateNormal];
-    [weChatshare setImage:[UIImage imageNamed:@"shareunselectedfriendcircle"] forState:UIControlStateNormal];
+    [weChatshare setImage:[UIImage imageNamed:@"sharefriendcircle"] forState:UIControlStateNormal];
     [QQZoneShare setImage:[UIImage imageNamed:@"shareunselectedqzone"] forState:UIControlStateNormal];
     
     [QQZoneShare addTarget:self action:@selector(setChannelShare:) forControlEvents:UIControlEventTouchUpInside];
@@ -621,6 +622,7 @@
         
         
         if (step == 0) {
+            isSending = NO;
             step = 1;
             [tipsLabel setHidden:YES];
             [self initNagationBar:@"发布并分享" leftBtn:Constant_backImage rightBtn:5];
@@ -729,280 +731,287 @@
             
         }
         else{
-            
-            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@%@",BaseURL,URL_Upload_Image]]];
-            
-            [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
-            __weak ASIHTTPRequest *weakrequest = requestForm;
-            [requestForm setCompletionBlock :^{
-                NSLog(@"%@    %@",[weakrequest originalURL],[weakrequest requestHeaders]);
-                NSLog(@"%@",[weakrequest responseHeaders]);
-                NSLog(@"%@",[weakrequest responseString]);
-                NSLog(@"%d",[weakrequest responseStatusCode]);
-                if ([weakrequest responseStatusCode] == 200) {
-                    NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
-                    
-                    ASIFormDataRequest *interRequest = [[ASIFormDataRequest alloc] initWithURL:[NSURL URLWithString:[dic objectForKey:@"url"]]];
-                    [ASIFormDataRequest clearSession];
-                    [interRequest setPostFormat:ASIMultipartFormDataPostFormat];
-                    [interRequest setPostValue:[[dic objectForKey:@"data"] objectForKey:@"token"] forKey:@"token"];
-                    NSData *imageData = UIImageJPEGRepresentation(Muzzikimage, 1);
-                    [interRequest addData:imageData forKey:@"file"];
-                    __weak ASIFormDataRequest *form = interRequest;
-                    [interRequest buildRequestHeaders];
-                    NSLog(@"header:%@",interRequest.requestHeaders);
-                    [interRequest setCompletionBlock:^{
-                        NSDictionary *keydic = [NSJSONSerialization JSONObjectWithData:[form responseData] options:NSJSONReadingMutableContainers error:nil];
-                        mobject.imageKey = [keydic objectForKey:@"key"];
-                        ASIHTTPRequest *shareRequest = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_new]]];
-                        NSMutableDictionary *requestDic = [NSMutableDictionary dictionary];
-                        if (mobject.isPrivate) {
-                            [requestDic setObject:[NSNumber numberWithBool:YES] forKey:Parameter_private];
-                        }
-                        if ([mobject.imageKey length]>0) {
-                            [requestDic setObject:mobject.imageKey forKey:Parameter_image_key];
-                        }
-                        if ([mobject.message length]>0) {
-                            [requestDic setObject:mobject.message forKey:Parameter_message];
-                        }else{
-                            [requestDic setObject:@"I Love This Muzzik!" forKey:Parameter_message];
-                        }
-                        NSDictionary *musicDic = [NSDictionary dictionaryWithObjectsAndKeys:mobject.music.key,@"key",mobject.music.name,@"name",mobject.music.artist,@"artist", nil];
-                        [requestDic setObject:musicDic forKey:@"music"];
-                        [shareRequest addBodyDataSourceWithJsonByDic:requestDic Method:PutMethod auth:YES];
-                        __weak ASIHTTPRequest *weakShare = shareRequest;
-                        [shareRequest setCompletionBlock:^{
-                            NSLog(@"data:%@",[weakShare responseString]);
-                            if ([weakShare responseStatusCode] == 200) {
-                                NSDictionary *muzzikDic = [NSJSONSerialization JSONObjectWithData:[weakShare responseData] options:NSJSONReadingMutableContainers error:nil];
-                                if (isShareToWeiChat || isShareToWeiBo) {
-                                    UIView *weChatShareView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 1324, 748)];
-                                    UIImageView *CDcover = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 1324, 748)];
-                                    [weChatShareView addSubview:CDcover];
-                                    UIImageView *usershareHeadThumb = [[UIImageView alloc] initWithFrame:CGRectMake(555, 254, 254, 254)];
-                                    usershareHeadThumb.layer.cornerRadius = 127 ;
-                                    usershareHeadThumb.clipsToBounds = YES;
-                                    [usershareHeadThumb setImage:user.userHeadThumb];
-                                    [weChatShareView addSubview:usershareHeadThumb];
-                                    
-                                    [CDcover setImage:[UIImage imageNamed:Image_cover_CD]];
-                                    [MuzzikLogoImage setFrame:CGRectMake(10, SCREEN_WIDTH-MuzzikLogoImage.frame.size.height-10,MuzzikLogoImage.frame.size.width , MuzzikLogoImage.frame.size.height)];
-                                    
-                                    UIImageView *picImage = [[UIImageView alloc] initWithFrame:CGRectMake(10, 12, 724, 724)];
-                                    //                                        if (self.image) {
-                                    //                                            [picImage setImage:self.image];
-                                    //                                        }else{
-                                    //                                            [picImage setImage:[MuzzikItem createImageWithColor:[UIColor whiteColor]]];
-                                    //                                            picImage.contentMode = UIViewContentModeScaleAspectFill;
-                                    //                                        }
-                                    [MuzzikLogo setFrame:CGRectMake(20, 704-MuzzikLogo.frame.size.height,MuzzikLogo.frame.size.width , MuzzikLogo.frame.size.height)];
-                                    if (isShow && self.image) {
-                                        [picImage setImage:headImage.image];
-                                        
-                                    }else{
-                                        [picImage setImage:[UIImage imageNamed:@"TextureShare"]];
-                                        
-                                    }
-                                    [picImage addSubview:MuzzikLogo];
-                                    picImage.contentMode = UIViewContentModeScaleAspectFill;
-                                    picImage.layer.cornerRadius = 5;
-                                    picImage.clipsToBounds = YES;
-                                    [weChatShareView addSubview:picImage];
-                                    UIView *storyView = [[UIView alloc] initWithFrame:CGRectMake(1074, 10, 240, 738)];
-                                    [weChatShareView addSubview:storyView];
-                                    UILabel *dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 12, 240, 40)];
-                                    dateLabel.textColor = Color_Text_1;
-                                    dateLabel.font = [UIFont fontWithName:Font_default_share size:24];
-                                    NSDate *  senddate=[NSDate date];
-                                    
-                                    NSDateFormatter  *dateformatter=[[NSDateFormatter alloc] init];
-                                    
-                                    [dateformatter setDateFormat:@"yyyy.MM.dd"];
-                                    dateLabel.text = [dateformatter stringFromDate:senddate];
-                                    [storyView addSubview:dateLabel];
-                                    
-                                    
-                                    UIView *playerLine = [[UIView alloc] initWithFrame:CGRectMake(0, CDcover.frame.size.height-148, 240, 4)];
-                                    [playerLine setBackgroundColor:Color_Active_Button_1];
-                                    [storyView addSubview:playerLine];
-                                    UILabel *musicName = [[UILabel alloc] initWithFrame:CGRectMake(0, CDcover.frame.size.height-120, 200, 40)];
-                                    [musicName setFont:[UIFont fontWithName:Font_default_share size:32]];
-                                    musicName.text = mobject.music.name;
-                                    [musicName setTextColor:Color_Active_Button_1];
-                                    [storyView addSubview:musicName];
-                                    UILabel *musicArtist = [[UILabel alloc] initWithFrame:CGRectMake(0, CDcover.frame.size.height-72, 200, 40)];
-                                    [musicArtist setFont:[UIFont fontWithName:Font_default_share size:24]];
-                                    [musicArtist setTextColor:Color_Active_Button_1];
-                                    musicArtist.text = mobject.music.artist;
-                                    [storyView addSubview:musicArtist];
-                                    UIImageView *playImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:Image_shareplay]];
-                                    [playImage setFrame:CGRectMake(216, CDcover.frame.size.height-88, 24, 28)];
-                                    [storyView addSubview:playImage];
-                                    UILabel *storyLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 148, 240, CDcover.frame.size.height-320)];
-                                    NSDictionary *attributes;
-                                    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
-                                    paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
-                                    paragraphStyle.lineSpacing = 7;
-                                    attributes = @{NSFontAttributeName:[UIFont fontWithName:Font_default_share size:31], NSParagraphStyleAttributeName:paragraphStyle,NSForegroundColorAttributeName:Color_Text_2};
-                                    NSAttributedString * attr= [[NSAttributedString alloc] initWithString:mobject.message attributes:attributes];
-                                    storyLabel.attributedText = attr;
-                                    storyLabel.numberOfLines = 0;
-                                    [storyLabel sizeToFit];
-                                    
-                                    UILabel *tempNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 240, 300)];
-                                    tempNameLabel.font = [UIFont fontWithName:Font_default_share size:44];
-                                    tempNameLabel.text = [userInfo shareClass].name;
-                                    tempNameLabel.numberOfLines = 0;
-                                    [tempNameLabel sizeToFit];
-                                    
-                                    
-                                    if (storyLabel.frame.size.height>CDcover.frame.size.height-400) {
-                                        [storyLabel setFrame:CGRectMake(0, 236, 240, CDcover.frame.size.height-400)];
-                                    }else{
-                                        [storyLabel setFrame:CGRectMake(0, CDcover.frame.size.height-storyLabel.frame.size.height-184, 240, storyLabel.frame.size.height+20)];
-                                    }
-                                    
-                                    [storyView addSubview:storyLabel];
-                                    UILabel *userName = [[UILabel alloc] initWithFrame:CGRectMake(0, storyLabel.frame.origin.y-tempNameLabel.frame.size.height-28, 240, tempNameLabel.frame.size.height+12)];
-                                    
-                                    userName.text = [userInfo shareClass].name;
-                                    userName.textColor = Color_Text_1;
-                                    userName.numberOfLines = 0;
-                                    userName.font = [UIFont fontWithName:Font_default_share size:44];
-                                    [storyView addSubview:userName];
-                                    CGFloat scale = 724.0/SCREEN_WIDTH;
-                                    [shareLabel setFrame:CGRectMake(shareLabel.frame.origin.x * scale, shareLabel.frame.origin.y * scale, shareLabel.frame.size.width * scale, shareLabel.frame.size.height *scale)];
-                                    [shareLabel.textView setFrame:CGRectMake(shareLabel.textView.frame.origin.x * scale, shareLabel.textView.frame.origin.y * scale, shareLabel.textView.frame.size.width * scale, shareLabel.textView.frame.size.height *scale)];
-                                    //                                    NSLog(@"%f",shareLabel.fontSize);
-                                    shareLabel.textView.font = [UIFont fontWithName:shareLabel.fontname size:shareLabel.fontsize * scale];
-                                    [picImage addSubview:shareLabel];
-                                    [picImage setBackgroundColor:[UIColor whiteColor]];
-                                    AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
-                                    
-                                    UIGraphicsBeginImageContextWithOptions(weChatShareView.bounds.size, NO, 1.0f);
-                                    //    UIGraphicsBeginImageContext(v.bounds.size,YES,2.0f);
-                                    [weChatShareView setBackgroundColor:[UIColor whiteColor]];
-                                    [weChatShareView.layer renderInContext:UIGraphicsGetCurrentContext()];
-                                    
-                                    UIImage *timage = UIGraphicsGetImageFromCurrentImageContext();
-                                    
-                                    UIGraphicsEndImageContext();
-                                    if (isShareToWeiChat) {
-                                        [app sendImageContent:timage];
-                                        [self saveToAlbumWithMetadata:nil imageData:UIImagePNGRepresentation(timage) customAlbumName:@"Muzzik相册" completionBlock:^
-                                         {
-                                             //这里可以创建添加成功的方法
-                                            // [MuzzikItem showNotifyOnView:self.navigationController.view text:@"保存成功"];
-                                         }
-                                                         failureBlock:^(NSError *error)
-                                         {
-                                             //处理添加失败的方法显示alert让它回到主线程执行，不然那个框框死活不肯弹出来
-                                             dispatch_async(dispatch_get_main_queue(), ^{
-                                                 
-                                                 //添加失败一般是由用户不允许应用访问相册造成的，这边可以取出这种情况加以判断一下
-                                                 if([error.localizedDescription rangeOfString:@"User denied access"].location != NSNotFound ||[error.localizedDescription rangeOfString:@"用户拒绝访问"].location!=NSNotFound){
-                                                     
-                                                     UIAlertView *alert=[[UIAlertView alloc]initWithTitle:error.localizedDescription message:error.localizedFailureReason delegate:nil cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles: nil];
-                                                     
-                                                     [alert show];
-                                                     
-                                                 }
-                                             });
-                                         }];
-                                    }
-                                    else if(isShareToWeiBo){
-                                        WBMessageObject *message = [WBMessageObject message];
-                                        
-                                        message.text =[NSString stringWithFormat:@"一起来用Muzzik吧 %@%@",URL_Muzzik_SharePage,[muzzikDic objectForKey:@"_id" ]];
-                                        
-                                        WBImageObject *image = [WBImageObject object];
-                                        image.imageData = UIImageJPEGRepresentation(timage, 1.0);
-                                        message.imageObject = image;
-                                        AppDelegate *myDelegate =(AppDelegate*)[[UIApplication sharedApplication] delegate];
-                                        
-                                        WBAuthorizeRequest *authRequest = [WBAuthorizeRequest request];
-                                        authRequest.redirectURI = URL_WeiBo_redirectURI;
-                                        authRequest.scope = @"all";
-                                        
-                                        WBSendMessageToWeiboRequest *request = [WBSendMessageToWeiboRequest requestWithMessage:message authInfo:authRequest access_token:myDelegate.wbtoken];
-                                        
-                                        //    request.shouldOpenWeiboAppInstallPageIfNotInstalled = NO;
-                                        [WeiboSDK sendRequest:request];
-                                        NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:[muzzikDic objectForKey:@"_id" ],@"_id",@"weibo",@"channel", nil];
-                                        
-                                        ASIHTTPRequest *requestShare = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Share_Muzzik]]];
-                                        
-                                        [requestShare addBodyDataSourceWithJsonByDic:requestDic Method:PostMethod auth:YES];
-                                        __weak ASIHTTPRequest *weakrequest = requestShare;
-                                        [requestShare setCompletionBlock :^{
-                                        }];
-                                        [requestShare setFailedBlock:^{
-                                            NSLog(@"%@",[weakrequest error]);
-                                        }];
-                                        [requestShare startAsynchronous];
-                                        
-                                        
-                                        [self saveToAlbumWithMetadata:nil imageData:UIImagePNGRepresentation(timage) customAlbumName:@"Muzzik相册" completionBlock:^
-                                         {
-                                             //这里可以创建添加成功的方法
-                                            // [MuzzikItem showNotifyOnView:self.navigationController.view text:@"保存成功"];
-                                         }
-                                                         failureBlock:^(NSError *error)
-                                         {
-                                             //处理添加失败的方法显示alert让它回到主线程执行，不然那个框框死活不肯弹出来
-                                             dispatch_async(dispatch_get_main_queue(), ^{
-                                                 
-                                                 //添加失败一般是由用户不允许应用访问相册造成的，这边可以取出这种情况加以判断一下
-                                                 if([error.localizedDescription rangeOfString:@"User denied access"].location != NSNotFound ||[error.localizedDescription rangeOfString:@"用户拒绝访问"].location!=NSNotFound){
-                                                     
-                                                     UIAlertView *alert=[[UIAlertView alloc]initWithTitle:error.localizedDescription message:error.localizedFailureReason delegate:nil cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles: nil];
-                                                     
-                                                     [alert show];
-                                                     
-                                                 }
-                                             });
-                                         }];
-                                    }
-                                }
-                                else if (isShareToQQ){
-                                    TencentOAuth *tencentOAuth = [[TencentOAuth alloc] initWithAppId:ID_QQ_APP
-                                                                                         andDelegate:nil];
-                                    QQApiNewsObject* img = [QQApiNewsObject objectWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",URL_Muzzik_SharePage,[muzzikDic objectForKey:@"_id" ]]] title:@"在Muzzik上分享了首歌" description:[NSString stringWithFormat:@"%@  %@",mobject.music.name,mobject.music.artist] previewImageData:UIImageJPEGRepresentation([MuzzikItem convertViewToImage:headImage], 0.7)];
-                                    SendMessageToQQReq* req = [SendMessageToQQReq reqWithContent:img];
-                                    QQApiSendResultCode sent = [QQApiInterface SendReqToQZone:req];
-                                    [self handleSendResult:sent];
-                                }
-                                [self setPoMuzzikMessage:muzzikDic];
-                                [mobject clearObject];
-                                [self.navigationController popToViewController:user.poController animated:YES];
-                                user.poController = nil;
+            if (!isSending) {
+                ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@%@",BaseURL,URL_Upload_Image]]];
+                
+                [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
+                __weak ASIHTTPRequest *weakrequest = requestForm;
+                [requestForm setCompletionBlock :^{
+                    NSLog(@"%@    %@",[weakrequest originalURL],[weakrequest requestHeaders]);
+                    NSLog(@"%@",[weakrequest responseHeaders]);
+                    NSLog(@"%@",[weakrequest responseString]);
+                    NSLog(@"%d",[weakrequest responseStatusCode]);
+                    if ([weakrequest responseStatusCode] == 200) {
+                        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
+                        
+                        ASIFormDataRequest *interRequest = [[ASIFormDataRequest alloc] initWithURL:[NSURL URLWithString:[dic objectForKey:@"url"]]];
+                        [ASIFormDataRequest clearSession];
+                        [interRequest setPostFormat:ASIMultipartFormDataPostFormat];
+                        [interRequest setPostValue:[[dic objectForKey:@"data"] objectForKey:@"token"] forKey:@"token"];
+                        NSData *imageData = UIImageJPEGRepresentation(Muzzikimage, 1);
+                        [interRequest addData:imageData forKey:@"file"];
+                        __weak ASIFormDataRequest *form = interRequest;
+                        [interRequest buildRequestHeaders];
+                        NSLog(@"header:%@",interRequest.requestHeaders);
+                        [interRequest setCompletionBlock:^{
+                            NSDictionary *keydic = [NSJSONSerialization JSONObjectWithData:[form responseData] options:NSJSONReadingMutableContainers error:nil];
+                            mobject.imageKey = [keydic objectForKey:@"key"];
+                            ASIHTTPRequest *shareRequest = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_new]]];
+                            NSMutableDictionary *requestDic = [NSMutableDictionary dictionary];
+                            if (mobject.isPrivate) {
+                                [requestDic setObject:[NSNumber numberWithBool:YES] forKey:Parameter_private];
                             }
+                            if ([mobject.imageKey length]>0) {
+                                [requestDic setObject:mobject.imageKey forKey:Parameter_image_key];
+                            }
+                            if ([mobject.message length]>0) {
+                                [requestDic setObject:mobject.message forKey:Parameter_message];
+                            }else{
+                                [requestDic setObject:@"I Love This Muzzik!" forKey:Parameter_message];
+                            }
+                            NSDictionary *musicDic = [NSDictionary dictionaryWithObjectsAndKeys:mobject.music.key,@"key",mobject.music.name,@"name",mobject.music.artist,@"artist", nil];
+                            [requestDic setObject:musicDic forKey:@"music"];
+                            [shareRequest addBodyDataSourceWithJsonByDic:requestDic Method:PutMethod auth:YES];
+                            __weak ASIHTTPRequest *weakShare = shareRequest;
+                            [shareRequest setCompletionBlock:^{
+                                NSLog(@"data:%@",[weakShare responseString]);
+                                if ([weakShare responseStatusCode] == 200) {
+                                    isSending = NO;
+                                    NSDictionary *muzzikDic = [NSJSONSerialization JSONObjectWithData:[weakShare responseData] options:NSJSONReadingMutableContainers error:nil];
+                                    if (isShareToWeiChat || isShareToWeiBo) {
+                                        UIView *weChatShareView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 1324, 748)];
+                                        UIImageView *CDcover = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 1324, 748)];
+                                        [weChatShareView addSubview:CDcover];
+                                        UIImageView *usershareHeadThumb = [[UIImageView alloc] initWithFrame:CGRectMake(555, 254, 254, 254)];
+                                        usershareHeadThumb.layer.cornerRadius = 127 ;
+                                        usershareHeadThumb.clipsToBounds = YES;
+                                        [usershareHeadThumb setImage:user.userHeadThumb];
+                                        [weChatShareView addSubview:usershareHeadThumb];
+                                        
+                                        [CDcover setImage:[UIImage imageNamed:Image_cover_CD]];
+                                        [MuzzikLogoImage setFrame:CGRectMake(10, SCREEN_WIDTH-MuzzikLogoImage.frame.size.height-10,MuzzikLogoImage.frame.size.width , MuzzikLogoImage.frame.size.height)];
+                                        
+                                        UIImageView *picImage = [[UIImageView alloc] initWithFrame:CGRectMake(10, 12, 724, 724)];
+                                        //                                        if (self.image) {
+                                        //                                            [picImage setImage:self.image];
+                                        //                                        }else{
+                                        //                                            [picImage setImage:[MuzzikItem createImageWithColor:[UIColor whiteColor]]];
+                                        //                                            picImage.contentMode = UIViewContentModeScaleAspectFill;
+                                        //                                        }
+                                        [MuzzikLogo setFrame:CGRectMake(20, 704-MuzzikLogo.frame.size.height,MuzzikLogo.frame.size.width , MuzzikLogo.frame.size.height)];
+                                        if (isShow && self.image) {
+                                            [picImage setImage:headImage.image];
+                                            
+                                        }else{
+                                            [picImage setImage:[UIImage imageNamed:@"TextureShare"]];
+                                            
+                                        }
+                                        [picImage addSubview:MuzzikLogo];
+                                        picImage.contentMode = UIViewContentModeScaleAspectFill;
+                                        picImage.layer.cornerRadius = 5;
+                                        picImage.clipsToBounds = YES;
+                                        [weChatShareView addSubview:picImage];
+                                        UIView *storyView = [[UIView alloc] initWithFrame:CGRectMake(1074, 10, 240, 738)];
+                                        [weChatShareView addSubview:storyView];
+                                        UILabel *dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 12, 240, 40)];
+                                        dateLabel.textColor = Color_Text_1;
+                                        dateLabel.font = [UIFont fontWithName:Font_default_share size:24];
+                                        NSDate *  senddate=[NSDate date];
+                                        
+                                        NSDateFormatter  *dateformatter=[[NSDateFormatter alloc] init];
+                                        
+                                        [dateformatter setDateFormat:@"yyyy.MM.dd"];
+                                        dateLabel.text = [dateformatter stringFromDate:senddate];
+                                        [storyView addSubview:dateLabel];
+                                        
+                                        
+                                        UIView *playerLine = [[UIView alloc] initWithFrame:CGRectMake(0, CDcover.frame.size.height-148, 240, 4)];
+                                        [playerLine setBackgroundColor:Color_Active_Button_1];
+                                        [storyView addSubview:playerLine];
+                                        UILabel *musicName = [[UILabel alloc] initWithFrame:CGRectMake(0, CDcover.frame.size.height-120, 200, 40)];
+                                        [musicName setFont:[UIFont fontWithName:Font_default_share size:32]];
+                                        musicName.text = mobject.music.name;
+                                        [musicName setTextColor:Color_Active_Button_1];
+                                        [storyView addSubview:musicName];
+                                        UILabel *musicArtist = [[UILabel alloc] initWithFrame:CGRectMake(0, CDcover.frame.size.height-72, 200, 40)];
+                                        [musicArtist setFont:[UIFont fontWithName:Font_default_share size:24]];
+                                        [musicArtist setTextColor:Color_Active_Button_1];
+                                        musicArtist.text = mobject.music.artist;
+                                        [storyView addSubview:musicArtist];
+                                        UIImageView *playImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:Image_shareplay]];
+                                        [playImage setFrame:CGRectMake(216, CDcover.frame.size.height-88, 24, 28)];
+                                        [storyView addSubview:playImage];
+                                        UILabel *storyLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 148, 240, CDcover.frame.size.height-320)];
+                                        NSDictionary *attributes;
+                                        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
+                                        paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
+                                        paragraphStyle.lineSpacing = 7;
+                                        attributes = @{NSFontAttributeName:[UIFont fontWithName:Font_default_share size:31], NSParagraphStyleAttributeName:paragraphStyle,NSForegroundColorAttributeName:Color_Text_2};
+                                        NSAttributedString * attr= [[NSAttributedString alloc] initWithString:mobject.message attributes:attributes];
+                                        storyLabel.attributedText = attr;
+                                        storyLabel.numberOfLines = 0;
+                                        [storyLabel sizeToFit];
+                                        
+                                        UILabel *tempNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 240, 300)];
+                                        tempNameLabel.font = [UIFont fontWithName:Font_default_share size:44];
+                                        tempNameLabel.text = [userInfo shareClass].name;
+                                        tempNameLabel.numberOfLines = 0;
+                                        [tempNameLabel sizeToFit];
+                                        
+                                        
+                                        if (storyLabel.frame.size.height>CDcover.frame.size.height-400) {
+                                            [storyLabel setFrame:CGRectMake(0, 236, 240, CDcover.frame.size.height-400)];
+                                        }else{
+                                            [storyLabel setFrame:CGRectMake(0, CDcover.frame.size.height-storyLabel.frame.size.height-184, 240, storyLabel.frame.size.height+20)];
+                                        }
+                                        
+                                        [storyView addSubview:storyLabel];
+                                        UILabel *userName = [[UILabel alloc] initWithFrame:CGRectMake(0, storyLabel.frame.origin.y-tempNameLabel.frame.size.height-28, 240, tempNameLabel.frame.size.height+12)];
+                                        
+                                        userName.text = [userInfo shareClass].name;
+                                        userName.textColor = Color_Text_1;
+                                        userName.numberOfLines = 0;
+                                        userName.font = [UIFont fontWithName:Font_default_share size:44];
+                                        [storyView addSubview:userName];
+                                        CGFloat scale = 724.0/SCREEN_WIDTH;
+                                        [shareLabel setFrame:CGRectMake(shareLabel.frame.origin.x * scale, shareLabel.frame.origin.y * scale, shareLabel.frame.size.width * scale, shareLabel.frame.size.height *scale)];
+                                        [shareLabel.textView setFrame:CGRectMake(shareLabel.textView.frame.origin.x * scale, shareLabel.textView.frame.origin.y * scale, shareLabel.textView.frame.size.width * scale, shareLabel.textView.frame.size.height *scale)];
+                                        //                                    NSLog(@"%f",shareLabel.fontSize);
+                                        shareLabel.textView.font = [UIFont fontWithName:shareLabel.fontname size:shareLabel.fontsize * scale];
+                                        [picImage addSubview:shareLabel];
+                                        [picImage setBackgroundColor:[UIColor whiteColor]];
+                                        AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
+                                        
+                                        UIGraphicsBeginImageContextWithOptions(weChatShareView.bounds.size, NO, 1.0f);
+                                        //    UIGraphicsBeginImageContext(v.bounds.size,YES,2.0f);
+                                        [weChatShareView setBackgroundColor:[UIColor whiteColor]];
+                                        [weChatShareView.layer renderInContext:UIGraphicsGetCurrentContext()];
+                                        
+                                        UIImage *timage = UIGraphicsGetImageFromCurrentImageContext();
+                                        
+                                        UIGraphicsEndImageContext();
+                                        if (isShareToWeiChat) {
+                                            [app sendImageContent:timage];
+                                            [self saveToAlbumWithMetadata:nil imageData:UIImagePNGRepresentation(timage) customAlbumName:@"Muzzik相册" completionBlock:^
+                                             {
+                                                 //这里可以创建添加成功的方法
+                                                 // [MuzzikItem showNotifyOnView:self.navigationController.view text:@"保存成功"];
+                                             }
+                                                             failureBlock:^(NSError *error)
+                                             {
+                                                 //处理添加失败的方法显示alert让它回到主线程执行，不然那个框框死活不肯弹出来
+                                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                                     
+                                                     //添加失败一般是由用户不允许应用访问相册造成的，这边可以取出这种情况加以判断一下
+                                                     if([error.localizedDescription rangeOfString:@"User denied access"].location != NSNotFound ||[error.localizedDescription rangeOfString:@"用户拒绝访问"].location!=NSNotFound){
+                                                         
+                                                         UIAlertView *alert=[[UIAlertView alloc]initWithTitle:error.localizedDescription message:error.localizedFailureReason delegate:nil cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles: nil];
+                                                         
+                                                         [alert show];
+                                                         
+                                                     }
+                                                 });
+                                             }];
+                                        }
+                                        else if(isShareToWeiBo){
+                                            WBMessageObject *message = [WBMessageObject message];
+                                            
+                                            message.text =[NSString stringWithFormat:@"一起来用Muzzik吧 %@%@",URL_Muzzik_SharePage,[muzzikDic objectForKey:@"_id" ]];
+                                            
+                                            WBImageObject *image = [WBImageObject object];
+                                            image.imageData = UIImageJPEGRepresentation(timage, 1.0);
+                                            message.imageObject = image;
+                                            AppDelegate *myDelegate =(AppDelegate*)[[UIApplication sharedApplication] delegate];
+                                            
+                                            WBAuthorizeRequest *authRequest = [WBAuthorizeRequest request];
+                                            authRequest.redirectURI = URL_WeiBo_redirectURI;
+                                            authRequest.scope = @"all";
+                                            
+                                            WBSendMessageToWeiboRequest *request = [WBSendMessageToWeiboRequest requestWithMessage:message authInfo:authRequest access_token:myDelegate.wbtoken];
+                                            
+                                            //    request.shouldOpenWeiboAppInstallPageIfNotInstalled = NO;
+                                            [WeiboSDK sendRequest:request];
+                                            NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:[muzzikDic objectForKey:@"_id" ],@"_id",@"weibo",@"channel", nil];
+                                            
+                                            ASIHTTPRequest *requestShare = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Share_Muzzik]]];
+                                            
+                                            [requestShare addBodyDataSourceWithJsonByDic:requestDic Method:PostMethod auth:YES];
+                                            __weak ASIHTTPRequest *weakrequest = requestShare;
+                                            [requestShare setCompletionBlock :^{
+                                            }];
+                                            [requestShare setFailedBlock:^{
+                                                NSLog(@"%@",[weakrequest error]);
+                                            }];
+                                            [requestShare startAsynchronous];
+                                            
+                                            
+                                            [self saveToAlbumWithMetadata:nil imageData:UIImagePNGRepresentation(timage) customAlbumName:@"Muzzik相册" completionBlock:^
+                                             {
+                                                 //这里可以创建添加成功的方法
+                                                 // [MuzzikItem showNotifyOnView:self.navigationController.view text:@"保存成功"];
+                                             }
+                                                             failureBlock:^(NSError *error)
+                                             {
+                                                 //处理添加失败的方法显示alert让它回到主线程执行，不然那个框框死活不肯弹出来
+                                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                                     
+                                                     //添加失败一般是由用户不允许应用访问相册造成的，这边可以取出这种情况加以判断一下
+                                                     if([error.localizedDescription rangeOfString:@"User denied access"].location != NSNotFound ||[error.localizedDescription rangeOfString:@"用户拒绝访问"].location!=NSNotFound){
+                                                         
+                                                         UIAlertView *alert=[[UIAlertView alloc]initWithTitle:error.localizedDescription message:error.localizedFailureReason delegate:nil cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles: nil];
+                                                         
+                                                         [alert show];
+                                                         
+                                                     }
+                                                 });
+                                             }];
+                                        }
+                                    }
+                                    else if (isShareToQQ){
+                                        TencentOAuth *tencentOAuth = [[TencentOAuth alloc] initWithAppId:ID_QQ_APP
+                                                                                             andDelegate:nil];
+                                        QQApiNewsObject* img = [QQApiNewsObject objectWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",URL_Muzzik_SharePage,[muzzikDic objectForKey:@"_id" ]]] title:@"在Muzzik上分享了首歌" description:[NSString stringWithFormat:@"%@  %@",mobject.music.name,mobject.music.artist] previewImageData:UIImageJPEGRepresentation([MuzzikItem convertViewToImage:headImage], 0.7)];
+                                        SendMessageToQQReq* req = [SendMessageToQQReq reqWithContent:img];
+                                        QQApiSendResultCode sent = [QQApiInterface SendReqToQZone:req];
+                                        [self handleSendResult:sent];
+                                    }
+                                    [self setPoMuzzikMessage:muzzikDic];
+                                    [mobject clearObject];
+                                    [self.navigationController popToViewController:user.poController animated:YES];
+                                    user.poController = nil;
+                                }
+                            }];
+                            [shareRequest setFailedBlock:^{
+                                isSending = NO;
+                                NSLog(@"%@",[weakShare error]);
+                            }];
+                            [shareRequest startAsynchronous];
+                            
+                            
                         }];
-                        [shareRequest setFailedBlock:^{
-                            NSLog(@"%@",[weakShare error]);
+                        [interRequest setFailedBlock:^{
+                            isSending = NO;
+                            [MuzzikItem showNotifyOnView:self.view text:@"请求失败，请确认网络状态再次重试"];
+                            NSLog(@"%@",[form responseString]);
                         }];
-                        [shareRequest startAsynchronous];
+                        [interRequest startAsynchronous];
                         
-                        
-                    }];
-                    [interRequest setFailedBlock:^{
-                        [MuzzikItem showNotifyOnView:self.view text:@"请求失败，请确认网络状态再次重试"];
-                        NSLog(@"%@",[form responseString]);
-                    }];
-                    [interRequest startAsynchronous];
-                    
-                }
-                else if([weakrequest responseStatusCode] == 400){
-                }
-                else if([weakrequest responseStatusCode] == 409){
-                    
-                }
-            }];
-            [requestForm setFailedBlock:^{
-                [MuzzikItem showNotifyOnView:self.view text:@"请求失败，请确认网络状态再次重试"];
-                NSLog(@"%@",[weakrequest error ]);
-            }];
-            [requestForm startAsynchronous];
+                    }
+                    else if([weakrequest responseStatusCode] == 400){
+                        isSending = NO;
+                    }
+                    else if([weakrequest responseStatusCode] == 409){
+                        isSending = NO;
+                    }
+                }];
+                [requestForm setFailedBlock:^{
+                    isSending = NO;
+                    [MuzzikItem showNotifyOnView:self.view text:@"请求失败，请确认网络状态再次重试"];
+                    NSLog(@"%@",[weakrequest error ]);
+                }];
+                [requestForm startAsynchronous];
+            }
+            
             
             
             
@@ -1271,15 +1280,15 @@
     NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
     NSArray *fontDic = [userDefault arrayForKey:@"Font_Array_local_Address"];
     if ([fontDic count] == 0) {
-        fontDic = @[[NSDictionary dictionaryWithObjectsAndKeys:@"http://7d9m5z.com1.z0.glb.clouddn.com/SongTiHeiTi.ttf",@"urladdress",[NSNumber numberWithBool:NO],@"islocal",@"STSongti-SC-Black",@"fontname", nil],[NSDictionary dictionaryWithObjectsAndKeys:@"http://7d9m5z.com1.z0.glb.clouddn.com/HanYiYanKaiTi.ttf",@"urladdress",[NSNumber numberWithBool:NO],@"islocal",@"HYx4gf",@"fontname", nil],[NSDictionary dictionaryWithObjectsAndKeys:@"http://7d9m5z.com1.z0.glb.clouddn.com/HuaKangWaWaTi.ttf",@"urladdress",[NSNumber numberWithBool:NO],@"islocal",@"DFPWaWaW5",@"fontname", nil], [NSDictionary dictionaryWithObjectsAndKeys:@"http://7d9m5z.com1.z0.glb.clouddn.com/FangZhengLiBianFanTi.ttf",@"urladdress",[NSNumber numberWithBool:NO],@"islocal",@"FZLBFW--GB1-0",@"fontname", nil]];
+        fontDic = @[[NSDictionary dictionaryWithObjectsAndKeys:@"http://7d9m5z.com1.z0.glb.clouddn.com/SongTiHeiTi.ttf",@"urladdress",[NSNumber numberWithBool:NO],@"islocal",@"STSongti-SC-Black",@"fontname", nil],
+                    [NSDictionary dictionaryWithObjectsAndKeys:@"http://7d9m5z.com1.z0.glb.clouddn.com/HanYiYanKaiTi.ttf",@"urladdress",[NSNumber numberWithBool:NO],@"islocal",@"HYx4gf",@"fontname", nil],
+                    [NSDictionary dictionaryWithObjectsAndKeys:@"http://7d9m5z.com1.z0.glb.clouddn.com/HuaKangWaWaTi.ttf",@"urladdress",[NSNumber numberWithBool:NO],@"islocal",@"DFPWaWaW5",@"fontname", nil],
+                    [NSDictionary dictionaryWithObjectsAndKeys:@"http://7d9m5z.com1.z0.glb.clouddn.com/FangZhengLiBianFanTi.ttf",@"urladdress",[NSNumber numberWithBool:NO],@"islocal",@"FZLBFW--GB1-0",@"fontname", nil],
+                    [NSDictionary dictionaryWithObjectsAndKeys:@"http://7d9m5z.com1.z0.glb.clouddn.com/FangZhengShuSong.ttf",@"urladdress",[NSNumber numberWithBool:NO],@"islocal",@"FZSSFW--GB1-0",@"fontname", nil]];
         [userDefault setObject:fontDic forKey:@"Font_Array_local_Address"];
         [userDefault synchronize];
     }
-    //STHeitiSC-Medium
     [fontArray addObjectsFromArray:fontDic];
-    NSString *fontPathch = [[NSBundle mainBundle] pathForResource:@"chineseF" ofType:@"ttf"];
-    NSDictionary *dicCh = [NSDictionary dictionaryWithObjectsAndKeys:[MuzzikItem customFontWithPath:fontPathch],@"fontname",[NSNumber numberWithBool:YES],@"islocal", nil];
-    [fontArray addObject:dicCh];
     
     NSString *fontPathchdefault = [[NSBundle mainBundle] pathForResource:@"HYQuanTangShiF" ofType:@"ttf"];
     NSDictionary *dicfontPathchdefault = [NSDictionary dictionaryWithObjectsAndKeys:[MuzzikItem customFontWithPath:fontPathchdefault],@"fontname",[NSNumber numberWithBool:YES],@"islocal", nil];

@@ -76,6 +76,14 @@
 }
 
 -(void)loadDataMessage{
+    if ([MuzzikItem getDataFromLocalKey: Constant_Data_Suggest] ) {
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[MuzzikItem getDataFromLocalKey: Constant_Data_Suggest] options:NSJSONReadingMutableContainers error:nil];
+        if (dic&&[[dic objectForKey:@"muzziks"]count]>0) {
+            suggestMuzzik =  [[muzzik new] makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+            [MuzzikItem SetUserInfoWithMuzziks:suggestMuzzik title:Constant_userInfo_suggest description:[NSString stringWithFormat:@"推荐列表"]];
+            [_suggestCollectionView reloadData];
+        }
+    }
     userInfo *user = [userInfo shareClass];
     if (user.checkSuggest) {
         suggestMuzzik = [[user.playList objectForKey:Constant_userInfo_suggest] objectForKey:UserInfo_muzziks];
@@ -99,14 +107,7 @@
             if (![[weakrequest responseString] length]>0) {
                 [self networkErrorShow];
             }
-            if (![[weakrequest responseString] length]>0 && [MuzzikItem getDataFromLocalKey: Constant_Data_Suggest] ) {
-                NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[MuzzikItem getDataFromLocalKey: Constant_Data_Suggest] options:NSJSONReadingMutableContainers error:nil];
-                if (dic&&[[dic objectForKey:@"muzziks"]count]>0) {
-                    suggestMuzzik =  [[muzzik new] makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
-                    [MuzzikItem SetUserInfoWithMuzziks:suggestMuzzik title:Constant_userInfo_suggest description:[NSString stringWithFormat:@"推荐列表"]];
-                    [_suggestCollectionView reloadData];
-                }
-            }
+            
         }];
         [request startAsynchronous];
     }

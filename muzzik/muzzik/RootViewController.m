@@ -24,7 +24,6 @@
     TopicVC *topicvc ;
     UserHomePage *userHome;
     FeedViewController *feedvc;
-    BOOL isLogiined;
     UIButton *notifyButton;
     UIImageView *notifyImage;
     UIImageView *coverImageView;
@@ -157,7 +156,7 @@
         [MuzzikItem addObjectToLocal:dic ForKey:@"Muzzik_Check_Comment_Five_star"];
     }else if(![[dic objectForKey:@"hasClicked"] isEqualToString:@"yes"]){
         
-        if ([[dic objectForKey:@"date"] isEqualToString:locationString]) {
+        if (![[dic objectForKey:@"date"] isEqualToString:locationString]) {
             NSString *tempString = [dic objectForKey:@"times"];
             tempString = [NSString stringWithFormat:@"%d",[tempString intValue]+1];
             if ([tempString intValue]==2) {
@@ -244,52 +243,44 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    BOOL hasToken = NO;
     [self.navigationController.view insertSubview:nacView belowSubview:_musicView];
     userInfo *user = [userInfo shareClass];
-    if ([user.token length]>0) {
+    if (([user.token length]>0 && (user.isSwitchUser || user.loginType== Is_Not_Logined )) || user.loginType == Is_Logined) {
+        user.isSwitchUser = NO;
+        user.loginType = 0;
         [notifyButton setHidden:NO];
-        hasToken = YES;
-        if (isLogiined != hasToken) {
-            isLogiined = YES;
-            feedvc = [[FeedViewController alloc] init];
-            feedvc.parentRoot = self;
-            userHome = [[UserHomePage alloc] init];
-            userHome.parentRoot = self;
-            
-            pageControllers = @[feedvc,topicvc,userHome];
-            NSArray* viewControllers = @[feedvc];
-            [_pageViewController setViewControllers:viewControllers
-                                          direction:UIPageViewControllerNavigationDirectionForward
-                                           animated:NO
-                                         completion:nil];
-            [muzzikvc.view removeFromSuperview];
-            muzzikvc = nil;
-            
-            
-        }
+        feedvc = [[FeedViewController alloc] init];
+        feedvc.isNewCreate = YES;
+        feedvc.parentRoot = self;
+        userHome = [[UserHomePage alloc] init];
+        userHome.parentRoot = self;
         
-    }else{
+        pageControllers = @[feedvc,topicvc,userHome];
+        NSArray* viewControllers = @[feedvc];
+        [_pageViewController setViewControllers:viewControllers
+                                      direction:UIPageViewControllerNavigationDirectionForward
+                                       animated:NO
+                                     completion:nil];
+        [muzzikvc.view removeFromSuperview];
+        muzzikvc = nil;
+        
+    }else if(user.isSwitchUser){
+        user.isSwitchUser = NO;
         [notifyButton setHidden:YES];
-        hasToken = NO;
-        if (isLogiined != hasToken) {
-            isLogiined = NO;
-            muzzikvc = [[muzzikTrendController alloc] init];
-            muzzikvc.isRootSubview = YES;
-            muzzikvc.parentRoot = self;
-            pageControllers = @[muzzikvc,topicvc];
-            NSArray* viewControllers = @[muzzikvc];
-            [_pageViewController setViewControllers:viewControllers
-                                          direction:UIPageViewControllerNavigationDirectionForward
-                                           animated:NO
-                                         completion:nil];
-            
-            [userHome.view removeFromSuperview];
-            userHome = nil;
-            [feedvc.view removeFromSuperview];
-            feedvc = nil;
-            
-        }
+        muzzikvc = [[muzzikTrendController alloc] init];
+        muzzikvc.isRootSubview = YES;
+        muzzikvc.parentRoot = self;
+        pageControllers = @[muzzikvc,topicvc];
+        NSArray* viewControllers = @[muzzikvc];
+        [_pageViewController setViewControllers:viewControllers
+                                      direction:UIPageViewControllerNavigationDirectionForward
+                                       animated:NO
+                                     completion:nil];
+        
+        [userHome.view removeFromSuperview];
+        userHome = nil;
+        [feedvc.view removeFromSuperview];
+        feedvc = nil;
         
         
     }

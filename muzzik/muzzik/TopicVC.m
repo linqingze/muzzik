@@ -44,6 +44,7 @@
     UIImageView *userNext;
     
     //muzzik
+    UIButton *headButton;
     UIImageView *muzzikImage;
     UIView *MainMuzzikView ;
     UIView *muzzikView;
@@ -110,6 +111,7 @@
     hotLabel = [[UILabel alloc] initWithFrame:CGRectMake(15,0 , attentionView.frame.size.width-30, 40)];
     hotLabel.font = [UIFont boldSystemFontOfSize:15];
     [hotLabel setTextColor:Color_Text_2];
+    hotLabel.adjustsFontSizeToFitWidth = YES;
     hotLabel.text = @"热门话题";
     
     topicNext = [[UIImageView alloc] initWithFrame:CGRectMake(attentionView.frame.size.width-22, 14, 7, 12)];
@@ -127,6 +129,7 @@
     [mainScroll addSubview:userView];
     userLabel = [[UILabel alloc] initWithFrame:CGRectMake(15,0 , attentionView.frame.size.width-30, 40)];
     userLabel.font = [UIFont boldSystemFontOfSize:15];
+    userLabel.adjustsFontSizeToFitWidth = YES;
     [userLabel setTextColor:Color_Text_2];
     [userView addSubview:userLabel];
     userNext = [[UIImageView alloc] initWithFrame:CGRectMake(attentionView.frame.size.width-22, 14, 7, 12)];
@@ -146,6 +149,7 @@
     [MainMuzzikView addSubview:muzzikView];
     muzzikLabel = [[UILabel alloc] initWithFrame:CGRectMake(15,0 , attentionView.frame.size.width-30 , 40)];
     muzzikLabel.font = [UIFont boldSystemFontOfSize:15];
+    muzzikLabel.adjustsFontSizeToFitWidth = YES;
     [muzzikLabel setTextColor:Color_Text_2];
     [muzzikView addSubview:muzzikLabel];
     muzzikNext = [[UIImageView alloc] initWithFrame:CGRectMake(attentionView.frame.size.width-22, 14, 7, 12)];
@@ -239,148 +243,167 @@
 #pragma mark -loadData
 
 -(void) loadFeeds{
-    userInfo *user = [userInfo shareClass];
-    if (user.checkSquare) {
-        if ([[[user.playList objectForKey:Constant_userInfo_square] objectForKey:@"muzziks"] count]>0) {
-            loadedSquare = YES;
-            trendMuzzik = [[user.playList objectForKey:Constant_userInfo_square] objectForKey:UserInfo_muzziks][0];
-            if ([localMuzzik.muzzik_id isEqualToString:trendMuzzik.muzzik_id]) {
-                [attentionView setBackgroundColor:Color_line_2];
-                [attentionLabel setTextColor:Color_Text_2];
-                [nextImage setImage:[UIImage imageNamed:Image_recommendarrowImage]];
-            }else{
-                if ([trendMuzzik.color longLongValue]==1) {
-                    [attentionView setBackgroundColor:Color_Action_Button_1];
-                    [attentionLabel setTextColor:[UIColor whiteColor]];
-                    [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
-                }else if ([trendMuzzik.color longLongValue]==2){
-                    [attentionView setBackgroundColor:Color_Action_Button_2];
-                    [attentionLabel setTextColor:[UIColor whiteColor]];
-                    [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
-                }else{
-                    [attentionView setBackgroundColor:Color_Action_Button_3];
-                    [attentionLabel setTextColor:[UIColor whiteColor]];
-                    [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
-                }
-            }
-        }
-    }else{
-        ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_Trending]]];
-        [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:@"20" forKey:Parameter_Limit] Method:GetMethod auth:YES];
-        __weak ASIHTTPRequest *weakrequest = request;
-        [request setCompletionBlock :^{
-            //    NSLog(@"%@",weakrequest.originalURL);
+    if ([MuzzikItem getDataFromLocalKey: Constant_Data_Square]) {
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[MuzzikItem getDataFromLocalKey: Constant_Data_Square] options:NSJSONReadingMutableContainers error:nil];
+        if (dic) {
             
-            NSData *data = [weakrequest responseData];
-            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-            if (dic) {
-                
-                muzzik *muzzikToy = [muzzik new];
-                NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
-                if ([array count]>0) {
-                    loadedSquare = YES;
-                    trendMuzzik = array[0];
-                    if ([localMuzzik.muzzik_id isEqualToString:trendMuzzik.muzzik_id]) {
-                        [attentionView setBackgroundColor:Color_line_2];
-                        [attentionLabel setTextColor:Color_Text_2];
-                        [nextImage setImage:[UIImage imageNamed:Image_recommendarrowImage]];
+            muzzik *muzzikToy = [muzzik new];
+            NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+            if ([array count]>0) {
+                loadedSquare = YES;
+                trendMuzzik = array[0];
+                if ([localMuzzik.muzzik_id isEqualToString:trendMuzzik.muzzik_id]) {
+                    [attentionView setBackgroundColor:Color_line_2];
+                    [attentionLabel setTextColor:Color_Text_2];
+                    [nextImage setImage:[UIImage imageNamed:Image_recommendarrowImage]];
+                }else{
+                    if ([trendMuzzik.color longLongValue]==1) {
+                        [attentionView setBackgroundColor:Color_Action_Button_1];
+                        [attentionLabel setTextColor:[UIColor whiteColor]];
+                        [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
+                    }else if ([trendMuzzik.color longLongValue]==2){
+                        [attentionView setBackgroundColor:Color_Action_Button_2];
+                        [attentionLabel setTextColor:[UIColor whiteColor]];
+                        [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
                     }else{
-                        if ([trendMuzzik.color longLongValue]==1) {
-                            [attentionView setBackgroundColor:Color_Action_Button_1];
-                            [attentionLabel setTextColor:[UIColor whiteColor]];
-                            [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
-                        }else if ([trendMuzzik.color longLongValue]==2){
-                            [attentionView setBackgroundColor:Color_Action_Button_2];
-                            [attentionLabel setTextColor:[UIColor whiteColor]];
-                            [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
-                        }else{
-                            [attentionView setBackgroundColor:Color_Action_Button_3];
-                            [attentionLabel setTextColor:[UIColor whiteColor]];
-                            [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
-                        }
+                        [attentionView setBackgroundColor:Color_Action_Button_3];
+                        [attentionLabel setTextColor:[UIColor whiteColor]];
+                        [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
                     }
-                }
-                
-                NSMutableArray *resultArray = [NSMutableArray array];
-                for (muzzik *tempmuzzik in array) {
-                    BOOL isContained = NO;
-                    for (muzzik *arrayMuzzik in resultArray) {
-                        if ([arrayMuzzik.muzzik_id isEqualToString:tempmuzzik.muzzik_id]) {
-                            isContained = YES;
-                            break;
-                        }
-                        
-                    }
-                    if (!isContained) {
-                        [resultArray addObject:tempmuzzik];
-                    }
-                    isContained = NO;
-                }
-                [MuzzikItem SetUserInfoWithMuzziks:resultArray title:Constant_userInfo_square description:nil];
-                
-            }
-        }];
-        [request setFailedBlock:^{
-            NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
-            if (![[weakrequest responseString] length]>0 && [MuzzikItem getDataFromLocalKey: Constant_Data_Square]) {
-                NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[MuzzikItem getDataFromLocalKey: Constant_Data_Square] options:NSJSONReadingMutableContainers error:nil];
-                if (dic) {
-                    
-                    muzzik *muzzikToy = [muzzik new];
-                    NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
-                    if ([array count]>0) {
-                        loadedSquare = YES;
-                        trendMuzzik = array[0];
-                        if ([localMuzzik.muzzik_id isEqualToString:trendMuzzik.muzzik_id]) {
-                            [attentionView setBackgroundColor:Color_line_2];
-                            [attentionLabel setTextColor:Color_Text_2];
-                            [nextImage setImage:[UIImage imageNamed:Image_recommendarrowImage]];
-                        }else{
-                            if ([trendMuzzik.color longLongValue]==1) {
-                                [attentionView setBackgroundColor:Color_Action_Button_1];
-                                [attentionLabel setTextColor:[UIColor whiteColor]];
-                                [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
-                            }else if ([trendMuzzik.color longLongValue]==2){
-                                [attentionView setBackgroundColor:Color_Action_Button_2];
-                                [attentionLabel setTextColor:[UIColor whiteColor]];
-                                [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
-                            }else{
-                                [attentionView setBackgroundColor:Color_Action_Button_3];
-                                [attentionLabel setTextColor:[UIColor whiteColor]];
-                                [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
-                            }
-                        }
-                    }
-                    
-                    NSMutableArray *resultArray = [NSMutableArray array];
-                    for (muzzik *tempmuzzik in array) {
-                        BOOL isContained = NO;
-                        for (muzzik *arrayMuzzik in resultArray) {
-                            if ([arrayMuzzik.muzzik_id isEqualToString:tempmuzzik.muzzik_id]) {
-                                isContained = YES;
-                                break;
-                            }
-                            
-                        }
-                        if (!isContained) {
-                            [resultArray addObject:tempmuzzik];
-                        }
-                        isContained = NO;
-                    }
-                    [MuzzikItem SetUserInfoWithMuzziks:resultArray title:Constant_userInfo_square description:nil];
-                    
                 }
             }
-        }];
-        [request startAsynchronous];
-        
+            
+            NSMutableArray *resultArray = [NSMutableArray array];
+            for (muzzik *tempmuzzik in array) {
+                BOOL isContained = NO;
+                for (muzzik *arrayMuzzik in resultArray) {
+                    if ([arrayMuzzik.muzzik_id isEqualToString:tempmuzzik.muzzik_id]) {
+                        isContained = YES;
+                        break;
+                    }
+                    
+                }
+                if (!isContained) {
+                    [resultArray addObject:tempmuzzik];
+                }
+                isContained = NO;
+            }
+            [MuzzikItem SetUserInfoWithMuzziks:resultArray title:Constant_userInfo_square description:nil];
+            
+        }
     }
+    
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_Trending]]];
+    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:@"20" forKey:Parameter_Limit] Method:GetMethod auth:YES];
+    __weak ASIHTTPRequest *weakrequest = request;
+    [request setCompletionBlock :^{
+        //    NSLog(@"%@",weakrequest.originalURL);
+        
+        NSData *data = [weakrequest responseData];
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+        if (dic) {
+            
+            muzzik *muzzikToy = [muzzik new];
+            NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+            if ([array count]>0) {
+                loadedSquare = YES;
+                trendMuzzik = array[0];
+                if ([localMuzzik.muzzik_id isEqualToString:trendMuzzik.muzzik_id]) {
+                    [attentionView setBackgroundColor:Color_line_2];
+                    [attentionLabel setTextColor:Color_Text_2];
+                    [nextImage setImage:[UIImage imageNamed:Image_recommendarrowImage]];
+                }else{
+                    if ([trendMuzzik.color longLongValue]==1) {
+                        [attentionView setBackgroundColor:Color_Action_Button_1];
+                        [attentionLabel setTextColor:[UIColor whiteColor]];
+                        [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
+                    }else if ([trendMuzzik.color longLongValue]==2){
+                        [attentionView setBackgroundColor:Color_Action_Button_2];
+                        [attentionLabel setTextColor:[UIColor whiteColor]];
+                        [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
+                    }else{
+                        [attentionView setBackgroundColor:Color_Action_Button_3];
+                        [attentionLabel setTextColor:[UIColor whiteColor]];
+                        [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
+                    }
+                }
+            }
+            
+            NSMutableArray *resultArray = [NSMutableArray array];
+            for (muzzik *tempmuzzik in array) {
+                BOOL isContained = NO;
+                for (muzzik *arrayMuzzik in resultArray) {
+                    if ([arrayMuzzik.muzzik_id isEqualToString:tempmuzzik.muzzik_id]) {
+                        isContained = YES;
+                        break;
+                    }
+                    
+                }
+                if (!isContained) {
+                    [resultArray addObject:tempmuzzik];
+                }
+                isContained = NO;
+            }
+            [MuzzikItem SetUserInfoWithMuzziks:resultArray title:Constant_userInfo_square description:nil];
+            
+        }
+    }];
+    [request setFailedBlock:^{
+        NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
+        
+    }];
+    [request startAsynchronous];
+    
+    
     
     
     
     
 }
 -(void) loadTopics{
+    if ([MuzzikItem getDataFromLocalKey: Constant_Data_topic]) {
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[MuzzikItem getDataFromLocalKey: Constant_Data_topic] options:NSJSONReadingMutableContainers error:nil];
+        if (dic) {
+
+            for (UIView *view in [topicView subviews]) {
+                [view removeFromSuperview];
+            }
+            [topicView addSubview: hotLabel];
+            
+            [topicView addSubview:topicNext];
+            
+            loadedTopic =YES;
+            CGFloat MaxX = SCREEN_WIDTH-23;
+            CGFloat localX = 15;
+            CGFloat localY = 42;
+            topicArray = [dic objectForKey:@"topics"];
+            if ([[[dic objectForKey:@"data"] allKeys] containsObject:@"title"] && [[[dic objectForKey:@"data"] objectForKey:@"title"] length]>0) {
+                hotLabel.text = [[dic objectForKey:@"data"] objectForKey:@"title"];
+            }
+            for (int i = 0; i<topicArray.count; i++) {
+                topicLabel *tempLabel = [[topicLabel alloc] init];
+                tempLabel.delegate = self;
+                [tempLabel setText:[topicArray[i] objectForKey:@"name"] font:[UIFont boldSystemFontOfSize:12] color:[[topicArray[i] objectForKey:@"color"] longValue]];
+                tempLabel.tid = [topicArray[i] objectForKey:@"_id"];
+                if (localX +tempLabel.frame.size.width+8>MaxX) {
+                    localX = 15;
+                    localY = localY+38;
+                    if (localY<224) {
+                        [tempLabel setFrame:CGRectMake(localX, localY, tempLabel.frame.size.width, tempLabel.frame.size.height)];
+                        [topicView addSubview:tempLabel];
+                        localX = localX+tempLabel.frame.size.width+8;
+                    }else{
+                        break;
+                    }
+                }else{
+                    [tempLabel setFrame:CGRectMake(localX, localY, tempLabel.frame.size.width, tempLabel.frame.size.height)];
+                    [topicView addSubview:tempLabel];
+                    localX = localX+tempLabel.frame.size.width+8;
+                }
+            }
+        }
+    }
+    
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/topic/suggest",BaseURL]]];
     [request addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:NO];
     __weak ASIHTTPRequest *weakrequest = request;
@@ -392,6 +415,12 @@
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         if (dic) {
             loadedTopic = YES;
+            for (UIView *view in [topicView subviews]) {
+                [view removeFromSuperview];
+            }
+            [topicView addSubview: hotLabel];
+            
+            [topicView addSubview:topicNext];
             if ([[dic allKeys] containsObject:@"data"] && [[[dic objectForKey:@"data"] allKeys] containsObject:@"title"] && [[[dic objectForKey:@"data"] objectForKey:@"title"] length] >0) {
                 hotLabel.text = [[dic objectForKey:@"data"] objectForKey:@"title"];
             }
@@ -424,45 +453,92 @@
     }];
     [request setFailedBlock:^{
         NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
-        if (![[weakrequest responseString] length]>0 && [MuzzikItem getDataFromLocalKey: Constant_Data_topic]) {
-            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[MuzzikItem getDataFromLocalKey: Constant_Data_topic] options:NSJSONReadingMutableContainers error:nil];
-            if (dic) {
-                loadedTopic =YES;
-            CGFloat MaxX = SCREEN_WIDTH-23;
-            CGFloat localX = 15;
-            CGFloat localY = 42;
-            topicArray = [dic objectForKey:@"topics"];
-            if ([[[dic objectForKey:@"data"] allKeys] containsObject:@"title"] && [[[dic objectForKey:@"data"] objectForKey:@"title"] length]>0) {
-                attentionLabel.text = [[dic objectForKey:@"data"] objectForKey:@"title"];
-            }
-            for (int i = 0; i<topicArray.count; i++) {
-                topicLabel *tempLabel = [[topicLabel alloc] init];
-                tempLabel.delegate = self;
-                [tempLabel setText:[topicArray[i] objectForKey:@"name"] font:[UIFont boldSystemFontOfSize:12] color:[[topicArray[i] objectForKey:@"color"] longValue]];
-                tempLabel.tid = [topicArray[i] objectForKey:@"_id"];
-                if (localX +tempLabel.frame.size.width+8>MaxX) {
-                    localX = 15;
-                    localY = localY+38;
-                    if (localY<224) {
-                        [tempLabel setFrame:CGRectMake(localX, localY, tempLabel.frame.size.width, tempLabel.frame.size.height)];
-                        [topicView addSubview:tempLabel];
-                        localX = localX+tempLabel.frame.size.width+8;
-                    }else{
-                        break;
-                    }
-                }else{
-                    [tempLabel setFrame:CGRectMake(localX, localY, tempLabel.frame.size.width, tempLabel.frame.size.height)];
-                    [topicView addSubview:tempLabel];
-                    localX = localX+tempLabel.frame.size.width+8;
-                }
-            }
-        }
-        }
+        
     }];
     [request startAsynchronous];
 }
 
 -(void) loadUser{
+    if ([MuzzikItem getDataFromLocalKey: Constant_Data_User_Vip]) {
+        for (UIView *view in [userView subviews]) {
+            [view removeFromSuperview];
+        }
+        [userView addSubview: userLabel];
+
+        [userView addSubview:userNext];
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[MuzzikItem getDataFromLocalKey: Constant_Data_User_Vip] options:NSJSONReadingMutableContainers error:nil];
+        if (dic) {
+            if ([[dic allKeys] containsObject:@"data"] && [[[dic objectForKey:@"data"] allKeys] containsObject:@"title"] && [[[dic objectForKey:@"data"] objectForKey:@"title"] length] >0) {
+                userLabel.text = [[dic objectForKey:@"data"] objectForKey:@"title"];
+            }else{
+                userLabel.text = @"我上榜了";
+            }
+            
+            loadedUser = YES;
+            MuzzikUser *muzzikToy = [MuzzikUser new];
+            userArray = [muzzikToy makeMuzziksByUserArray:[dic objectForKey:@"users"]];
+            NSMutableArray *tempArray = [NSMutableArray array];
+            if ([userArray count]>6) {
+                while (tempArray.count<6) {
+                    MuzzikUser *user = [userArray objectAtIndex:arc4random()%userArray.count];
+                    if (![tempArray containsObject:user]) {
+                        [tempArray addObject:user];
+                    }
+                }
+            }else{
+                [tempArray addObjectsFromArray:userArray];
+            }
+            
+            CGFloat localX = 15;
+            CGFloat localY = 52;
+            for (int i = 0; i<2; i++) {
+                for (int j=0; j<3; j++) {
+                    MuzzikUser * tempUser = tempArray[i*3+j];
+                    UIButton_UserMuzzik *userbutton = [[UIButton_UserMuzzik alloc] initWithFrame:CGRectMake(localX, localY, SCREEN_WIDTH/3-31, SCREEN_WIDTH/3-31)];
+                    userbutton.user =tempUser;
+                    userbutton.layer.cornerRadius = SCREEN_WIDTH/6-15.5;
+                    userbutton.clipsToBounds = YES;
+                    [userbutton addTarget:self action:@selector(seeVipUser:) forControlEvents:UIControlEventTouchUpInside];
+                    [userbutton setAlpha:0];
+                    userbutton.layer.cornerRadius = SCREEN_WIDTH/6-15.5;
+                    [userbutton sd_setBackgroundImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,tempUser.avatar]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                        [UIView animateWithDuration:0.5 animations:^{
+                            [userbutton setAlpha:1];
+                        }];
+                    }];
+                    
+                    
+                    UIButton_UserMuzzik *followImage = [[UIButton_UserMuzzik alloc] initWithFrame:CGRectMake((int)(userbutton.frame.origin.x+userbutton.frame.size.width-29), (int)(userbutton.frame.size.height+userbutton.frame.origin.y-29), 29, 29)];
+                    followImage.user = tempUser;
+                    
+                    if (tempUser.isFans && tempUser.isFollow) {
+                        followImage.followType = @"1";
+                        [followImage setImage:[UIImage imageNamed:Image_recommendfollowedeachother] forState:UIControlStateNormal];
+                    }else if (tempUser.isFollow){
+                        followImage.followType = @"1";
+                        [followImage setImage:[UIImage imageNamed:Image_recommendfollowed] forState:UIControlStateNormal];
+                    }else{
+                        followImage.followType = @"0";
+                        [followImage setImage:[UIImage imageNamed:Image_recommendfollow] forState:UIControlStateNormal];
+                    }
+                    [followImage addTarget:self action:@selector(follwUser:) forControlEvents:UIControlEventTouchUpInside];
+                    [userImageArray addObject:followImage];
+                    UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake((int)localX, (int)(userbutton.frame.size.height+userbutton.frame.origin.y+5), (int)(SCREEN_WIDTH/3-31), 15)];
+                    [nameLabel setFont:[UIFont systemFontOfSize:12]];
+                    [nameLabel setText:tempUser.name];
+                    [nameLabel setTextColor:Color_Text_2];
+                    nameLabel.textAlignment = NSTextAlignmentCenter;
+                    [userView addSubview:nameLabel];
+                    [userView addSubview:userbutton];
+                    [userView addSubview:followImage];
+                    localX = SCREEN_WIDTH/3-7+localX;
+                }
+                localY = localY +SCREEN_WIDTH/3+1;
+                localX = 15;
+            }
+            
+        }
+    }
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/suggest",BaseURL]]];
     [request addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = request;
@@ -473,6 +549,13 @@
         [MuzzikItem addObjectToLocal:data ForKey:Constant_Data_User_Vip];
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         if (dic) {
+            for (UIView *view in [userView subviews]) {
+                [view removeFromSuperview];
+            }
+            [userView addSubview: userLabel];
+            
+            [userView addSubview:userNext];
+            
             loadedUser = YES;
             if ([[dic allKeys] containsObject:@"data"] && [[[dic objectForKey:@"data"] allKeys] containsObject:@"title"] && [[[dic objectForKey:@"data"] objectForKey:@"title"] length] >0) {
                 userLabel.text = [[dic objectForKey:@"data"] objectForKey:@"title"];
@@ -549,78 +632,23 @@
     }];
     [request setFailedBlock:^{
         NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
-        if (![[weakrequest responseString] length]>0 && [MuzzikItem getDataFromLocalKey: Constant_Data_User_Vip]) {
-            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[MuzzikItem getDataFromLocalKey: Constant_Data_User_Vip] options:NSJSONReadingMutableContainers error:nil];
-            if (dic) {
-                loadedUser = YES;
-            MuzzikUser *muzzikToy = [MuzzikUser new];
-            userArray = [muzzikToy makeMuzziksByUserArray:[dic objectForKey:@"users"]];
-            NSMutableArray *tempArray = [NSMutableArray array];
-            if ([userArray count]>6) {
-                while (tempArray.count<6) {
-                    MuzzikUser *user = [userArray objectAtIndex:arc4random()%userArray.count];
-                    if (![tempArray containsObject:user]) {
-                        [tempArray addObject:user];
-                    }
-                }
-            }else{
-                [tempArray addObjectsFromArray:userArray];
-            }
-            
-            CGFloat localX = 15;
-            CGFloat localY = 52;
-            for (int i = 0; i<2; i++) {
-                for (int j=0; j<3; j++) {
-                    MuzzikUser * tempUser = tempArray[i*3+j];
-                    UIButton_UserMuzzik *userbutton = [[UIButton_UserMuzzik alloc] initWithFrame:CGRectMake(localX, localY, SCREEN_WIDTH/3-31, SCREEN_WIDTH/3-31)];
-                    userbutton.user =tempUser;
-                    userbutton.layer.cornerRadius = SCREEN_WIDTH/6-15.5;
-                    userbutton.clipsToBounds = YES;
-                    [userbutton addTarget:self action:@selector(seeVipUser:) forControlEvents:UIControlEventTouchUpInside];
-                    [userbutton setAlpha:0];
-                    userbutton.layer.cornerRadius = SCREEN_WIDTH/6-15.5;
-                    [userbutton sd_setBackgroundImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,tempUser.avatar]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                        [UIView animateWithDuration:0.5 animations:^{
-                            [userbutton setAlpha:1];
-                        }];
-                    }];
-                    
-                    
-                    UIButton_UserMuzzik *followImage = [[UIButton_UserMuzzik alloc] initWithFrame:CGRectMake((int)(userbutton.frame.origin.x+userbutton.frame.size.width-29), (int)(userbutton.frame.size.height+userbutton.frame.origin.y-29), 29, 29)];
-                    followImage.user = tempUser;
-                    
-                    if (tempUser.isFans && tempUser.isFollow) {
-                        followImage.followType = @"1";
-                        [followImage setImage:[UIImage imageNamed:Image_recommendfollowedeachother] forState:UIControlStateNormal];
-                    }else if (tempUser.isFollow){
-                        followImage.followType = @"1";
-                        [followImage setImage:[UIImage imageNamed:Image_recommendfollowed] forState:UIControlStateNormal];
-                    }else{
-                        followImage.followType = @"0";
-                        [followImage setImage:[UIImage imageNamed:Image_recommendfollow] forState:UIControlStateNormal];
-                    }
-                    [followImage addTarget:self action:@selector(follwUser:) forControlEvents:UIControlEventTouchUpInside];
-                    [userImageArray addObject:followImage];
-                    UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake((int)localX, (int)(userbutton.frame.size.height+userbutton.frame.origin.y+5), (int)(SCREEN_WIDTH/3-31), 15)];
-                    [nameLabel setFont:[UIFont systemFontOfSize:12]];
-                    [nameLabel setText:tempUser.name];
-                    [nameLabel setTextColor:Color_Text_2];
-                    nameLabel.textAlignment = NSTextAlignmentCenter;
-                    [userView addSubview:nameLabel];
-                    [userView addSubview:userbutton];
-                    [userView addSubview:followImage];
-                    localX = SCREEN_WIDTH/3-7+localX;
-                }
-                localY = localY +SCREEN_WIDTH/3+1;
-                localX = 15;
-            }
-            
-        }
-        }
+        
     }];
     [request startAsynchronous];
 }
 -(void) loadMuzzik{
+    if ([MuzzikItem getDataFromLocalKey: Constant_Data_Suggest]) {
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[MuzzikItem getDataFromLocalKey: Constant_Data_Suggest] options:NSJSONReadingMutableContainers error:nil];
+        if (dic&&[[dic objectForKey:@"muzziks"]count]>0) {
+            suggestArray = [[muzzik new] makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"] ] ;
+            suggestMuzzik = suggestArray[0];
+            if ([[dic allKeys] containsObject:@"data"] && [[[dic objectForKey:@"data"] allKeys] containsObject:@"title"] && [[[dic objectForKey:@"data"] objectForKey:@"title"] length] >0) {
+                muzzikLabel.text = [[dic objectForKey:@"data"] objectForKey:@"title"];
+            }
+            
+            [self suggestViewLayout];
+        }
+    }
     userInfo *user = [userInfo shareClass];
     if (user.checkSuggest) {
         if ([user.suggestTitle length]>0) {
@@ -683,7 +711,9 @@
         }];
     }];
     [MainMuzzikView addSubview:muzzikImage];
-    UIButton *headButton = [[UIButton alloc] initWithFrame:CGRectMake(16, SCREEN_WIDTH+2, 56, 56)];
+    
+    [headButton removeFromSuperview];
+    headButton = [[UIButton alloc] initWithFrame:CGRectMake(16, SCREEN_WIDTH+2, 56, 56)];
     headButton.layer.cornerRadius = 28;
     headButton.layer.borderColor = [UIColor whiteColor].CGColor;
     headButton.layer.borderWidth =2;

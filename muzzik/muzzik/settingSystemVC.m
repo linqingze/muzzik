@@ -184,11 +184,8 @@
                     user.avatar = @"";
                     user.name = @"";
                     user.gender = @"";
+                    user.isSwitchUser = YES;
                     [MuzzikItem removeMessageFromLocal:@"LoginAcess"];
-                    [MuzzikItem addObjectToLocal:nil ForKey:Constant_Data_moved];
-                    [MuzzikItem addObjectToLocal:nil ForKey:Constant_Data_ownMuzzik];
-                    [MuzzikItem addObjectToLocal:nil ForKey:Constant_Data_User_home];
-                    [MuzzikItem addObjectToLocal:nil ForKey:Constant_Data_notify];
                     
                     [settingTable reloadData];
                     [userInfo checkLoginWithVC:self];

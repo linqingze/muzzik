@@ -48,6 +48,18 @@
     [self loadDataMessage];
 }
 -(void)loadDataMessage{
+    userInfo *user = [userInfo shareClass];
+    if ([user.token length]>0) {
+        if ([MuzzikItem getDataFromLocalKey:[NSString stringWithFormat:@"user_Notify%@",user.uid]]) {
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[MuzzikItem getDataFromLocalKey:[NSString stringWithFormat:@"user_Notify%@",user.uid]]options:NSJSONReadingMutableContainers error:nil];
+            if (dic) {
+                page++;
+                notifyArray = [[NotifyObject new] makeMuzziksByNotifyArray:[dic objectForKey:@"notifies"]];
+                [notifyTabelView reloadData];
+                
+            }
+        }
+    }
     page = 1;
     NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,[NSNumber numberWithBool:YES],@"full", nil];
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Notify]]];
@@ -59,7 +71,7 @@
         NSData *data = [weakrequest responseData];
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         if (dic) {
-            [MuzzikItem addObjectToLocal:data ForKey:Constant_Data_notify];
+          //  [MuzzikItem addObjectToLocal:data ForKey:Constant_Data_notify];
             page++;
             notifyArray = [[NotifyObject new] makeMuzziksByNotifyArray:[dic objectForKey:@"notifies"]];
             [notifyTabelView reloadData];
@@ -74,15 +86,9 @@
             [self networkErrorShow];
         }
         NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
-        if (![[weakrequest responseString] length]>0) {
-            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[MuzzikItem getDataFromLocalKey:Constant_Data_notify] options:NSJSONReadingMutableContainers error:nil];
-            if (dic) {
-                page++;
-                notifyArray = [[NotifyObject new] makeMuzziksByNotifyArray:[dic objectForKey:@"notifies"]];
-                [notifyTabelView reloadData];
-                
-            }
-        }
+        
+        
+        
     }];
     [request startAsynchronous];
 }

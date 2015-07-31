@@ -1050,6 +1050,65 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     [self addShareView];
 }
 -(void)reloadMuzzikSource{
+    if ([MuzzikItem getDataFromLocalKey: Constant_Data_Square] ) {
+        NSData *data = [MuzzikItem getDataFromLocalKey: Constant_Data_Square];
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+        if (dic) {
+            
+            muzzik *muzzikToy = [muzzik new];
+            NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+            for (muzzik *tempmuzzik in array) {
+                BOOL isContained = NO;
+                for (muzzik *arrayMuzzik in self.muzziks) {
+                    if ([arrayMuzzik.muzzik_id isEqualToString:tempmuzzik.muzzik_id]) {
+                        isContained = YES;
+                        break;
+                    }
+                    
+                }
+                if (!isContained) {
+                    [self.muzziks addObject:tempmuzzik];
+                }
+                isContained = NO;
+            }
+            AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
+            
+            [manager GET:[NSString stringWithFormat:@"%@api/muzzik/card",BaseURL] parameters:nil success:^(AFHTTPRequestOperation * operation, id responseObject) {
+                NSMutableArray *suggestDic = [[MuzzikItem getArrayFromLocalForKey:@"Muzzik_suggest_Day_ClickArray"] mutableCopy];
+                NSArray *requestArray = [responseObject objectForKey:@"muzziks"];
+                
+                for (NSDictionary *tempDic in requestArray) {
+                    
+                    if (![suggestDic containsObject:[tempDic objectForKey:@"_id"]]) {
+                        for (muzzik *checkMuzzik in self.muzziks) {
+                            if ([[tempDic objectForKey:@"_id"] isEqualToString:checkMuzzik.muzzik_id]) {
+                                if (self.muzziks.count >1) {
+                                    
+                                    [self.muzziks removeObject:checkMuzzik];
+                                }
+                                break;
+                            }
+                            
+                        }
+                        [self.muzziks insertObject:[[muzzik new] makeMuzziksByMuzzikArray:[NSMutableArray arrayWithObjects:tempDic, nil]][0] atIndex:1];
+                        break;
+                    }
+                    
+                    
+                }
+                [MuzzikItem SetUserInfoWithMuzziks:self.muzziks title:Constant_userInfo_square description:nil];
+                lastId = [dic objectForKey:@"tail"];
+                [MytableView reloadData];
+                
+            } failure:^(AFHTTPRequestOperation *operation, NSError * error) {
+                NSLog(@"op: %@    error:%@",operation,error);
+                [MytableView headerEndRefreshing];
+                
+            }];
+            
+        }
+    }
+    
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_Trending]]];
     [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:@"20" forKey:Parameter_Limit] Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = request;
@@ -1107,7 +1166,6 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
                 
             } failure:^(AFHTTPRequestOperation *operation, NSError * error) {
                 NSLog(@"op: %@    error:%@",operation,error);
-                [MytableView headerEndRefreshing];
                 
             }];
             
@@ -1120,64 +1178,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         if (![[weakrequest responseString] length]>0) {
             [self networkErrorShow];
         }
-        if (![[weakrequest responseString] length]>0 && [MuzzikItem getDataFromLocalKey: Constant_Data_Square] ) {
-            NSData *data = [MuzzikItem getDataFromLocalKey: Constant_Data_Square];
-            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-            if (dic) {
-                
-                muzzik *muzzikToy = [muzzik new];
-                NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
-                for (muzzik *tempmuzzik in array) {
-                    BOOL isContained = NO;
-                    for (muzzik *arrayMuzzik in self.muzziks) {
-                        if ([arrayMuzzik.muzzik_id isEqualToString:tempmuzzik.muzzik_id]) {
-                            isContained = YES;
-                            break;
-                        }
-                        
-                    }
-                    if (!isContained) {
-                        [self.muzziks addObject:tempmuzzik];
-                    }
-                    isContained = NO;
-                }
-                AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
-                
-                [manager GET:[NSString stringWithFormat:@"%@api/muzzik/card",BaseURL] parameters:nil success:^(AFHTTPRequestOperation * operation, id responseObject) {
-                    NSMutableArray *suggestDic = [[MuzzikItem getArrayFromLocalForKey:@"Muzzik_suggest_Day_ClickArray"] mutableCopy];
-                    NSArray *requestArray = [responseObject objectForKey:@"muzziks"];
-                    
-                    for (NSDictionary *tempDic in requestArray) {
-                        
-                        if (![suggestDic containsObject:[tempDic objectForKey:@"_id"]]) {
-                            for (muzzik *checkMuzzik in self.muzziks) {
-                                if ([[tempDic objectForKey:@"_id"] isEqualToString:checkMuzzik.muzzik_id]) {
-                                    if (self.muzziks.count >1) {
-                                        
-                                        [self.muzziks removeObject:checkMuzzik];
-                                    }
-                                    break;
-                                }
-                                
-                            }
-                            [self.muzziks insertObject:[[muzzik new] makeMuzziksByMuzzikArray:[NSMutableArray arrayWithObjects:tempDic, nil]][0] atIndex:1];
-                            break;
-                        }
-                        
-                        
-                    }
-                    [MuzzikItem SetUserInfoWithMuzziks:self.muzziks title:Constant_userInfo_square description:nil];
-                    lastId = [dic objectForKey:@"tail"];
-                    [MytableView reloadData];
-                    
-                } failure:^(AFHTTPRequestOperation *operation, NSError * error) {
-                    NSLog(@"op: %@    error:%@",operation,error);
-                    [MytableView headerEndRefreshing];
-                    
-                }];
-                
-            }
-        }
+        
     }];
     [request startAsynchronous];
     

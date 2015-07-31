@@ -29,6 +29,8 @@
 @property (nonatomic,retain) UIImage *userHeadThumb;
 @property (nonatomic,copy) NSString *suggestTitle;
 @property (nonatomic,retain) id poController;
+@property (nonatomic,assign) BOOL isSwitchUser;
+@property (nonatomic,assign) int loginType;
 +(userInfo *) shareClass;
 +(void)checkLoginWithVC:(UIViewController *)vc;
 @end

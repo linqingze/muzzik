@@ -193,8 +193,12 @@
     [self loadDataMessage];
 }
 -(void)loadDataMessage{
-    
     userInfo *user = [userInfo shareClass];
+    if ([MuzzikItem getDataFromLocalKey: [NSString stringWithFormat:@"Persistence_home_data%@",user.token]]) {
+        _profileDic = [NSJSONSerialization JSONObjectWithData:[MuzzikItem getDataFromLocalKey: [NSString stringWithFormat:@"Persistence_home_data%@",user.token]] options:NSJSONReadingMutableContainers error:nil];
+        [self.view setNeedsLayout];
+        
+    }
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@",BaseURL,user.uid]]];
     [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = requestForm;
@@ -203,7 +207,7 @@
         NSLog(@"%d",[weakrequest responseStatusCode]);
         
         if ([weakrequest responseStatusCode] == 200) {
-            [MuzzikItem addObjectToLocal:[weakrequest responseData]  ForKey:Constant_Data_User_home];
+            [MuzzikItem addObjectToLocal:[weakrequest responseData]  ForKey:[NSString stringWithFormat:@"Persistence_home_data%@",user.token]];
             _profileDic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData]  options:NSJSONReadingMutableContainers error:nil];
             [self.view setNeedsLayout];
         }
@@ -218,11 +222,7 @@
             [self networkErrorShow];
         }
         
-        if (![[weakrequest responseString] length]>0 && [MuzzikItem getDataFromLocalKey: Constant_Data_User_home]) {
-            _profileDic = [NSJSONSerialization JSONObjectWithData:[MuzzikItem getDataFromLocalKey: Constant_Data_User_home] options:NSJSONReadingMutableContainers error:nil];
-            [self.view setNeedsLayout];
-            
-        }
+        
     }];
     [requestForm startAsynchronous];
 

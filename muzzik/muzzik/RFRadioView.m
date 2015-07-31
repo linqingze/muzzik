@@ -320,9 +320,13 @@
                 [headerImage sd_setBackgroundImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,_playMuzzik.MuzzikUser.avatar]]  forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder]];
             }else{
                 [attentionButton setHidden:YES];
-                [headerImage setUserInteractionEnabled:NO];
+                
                 userInfo *user = [userInfo shareClass];
                 if ([user.token length]>0) {
+                    [headerImage setUserInteractionEnabled:YES];
+                    MuzzikUser *muser = [MuzzikUser new];
+                    muser.user_id = user.uid;
+                    headerImage.user = muser;
                     [headerImage sd_setBackgroundImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,user.avatar]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder]];
                     nickLabel.text = user.name;
                 }else{
