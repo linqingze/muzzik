@@ -464,8 +464,15 @@
             }else{
                 cell.isPlaying = NO;
             }
-            [cell.privateImage setHidden:YES];
-            [cell.userName setFrame:CGRectMake(80, 55, SCREEN_WIDTH-120, 20)];
+            cell.userName.text = tempMuzzik.MuzzikUser.name;
+            if (tempMuzzik.isprivate ) {
+                [cell.privateImage setHidden:NO];
+                [cell.userName sizeToFit];
+                [cell.privateImage setFrame:CGRectMake(cell.userName.frame.origin.x+cell.userName.frame.size.width+2, cell.userName.frame.origin.y, 20, 20)];
+            }else{
+                [cell.privateImage setHidden:YES];
+                [cell.userName setFrame:CGRectMake(80, 55, SCREEN_WIDTH-120, 20)];
+            }
             if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
                 [cell.userImage setAlpha:0];
                 [RefreshDic setObject:indexPath forKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
@@ -477,7 +484,6 @@
                 
             }];
             
-            cell.userName.text = tempMuzzik.MuzzikUser.name;
             [cell.repostImage setHidden:NO];
             cell.repostUserName.text = tempMuzzik.reposter.name;
             cell.muzzikMessage.text = tempMuzzik.message;
@@ -557,7 +563,6 @@
             
             cell.repostUserName.text = @"";
             [cell.repostImage setHidden:YES];
-            cell.repostUserName.text = tempMuzzik.reposter.name;
             cell.muzzikMessage.text = tempMuzzik.message;
             [cell.muzzikMessage addClickMessagewithTopics:tempMuzzik.topics];
             [cell.muzzikMessage addClickMessageForAt];
@@ -617,8 +622,15 @@
             }else{
                 cell.isPlaying = NO;
             }
-            [cell.privateImage setHidden:YES];
-            [cell.userName setFrame:CGRectMake(80, 55, SCREEN_WIDTH-120, 20)];
+            cell.userName.text = tempMuzzik.MuzzikUser.name;
+            if (tempMuzzik.isprivate ) {
+                [cell.privateImage setHidden:NO];
+                [cell.userName sizeToFit];
+                [cell.privateImage setFrame:CGRectMake(cell.userName.frame.origin.x+cell.userName.frame.size.width+2, cell.userName.frame.origin.y, 20, 20)];
+            }else{
+                [cell.privateImage setHidden:YES];
+                [cell.userName setFrame:CGRectMake(80, 55, SCREEN_WIDTH-120, 20)];
+            }
             if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
                 [cell.userImage setAlpha:0];
                 [cell.poImage setAlpha:0];
@@ -636,7 +648,6 @@
                 }];
                 
             }];
-            cell.userName.text = tempMuzzik.MuzzikUser.name;
             [cell.repostImage setHidden:NO];
             cell.repostUserName.text = tempMuzzik.reposter.name;
             cell.muzzikMessage.text = tempMuzzik.message;
@@ -722,7 +733,6 @@
             }
             cell.repostUserName.text = @"";
             [cell.repostImage setHidden:YES];
-            cell.repostUserName.text = tempMuzzik.reposter.name;
             cell.muzzikMessage.text = tempMuzzik.message;
             [cell.muzzikMessage addClickMessagewithTopics:tempMuzzik.topics];
             [cell.muzzikMessage addClickMessageForAt];

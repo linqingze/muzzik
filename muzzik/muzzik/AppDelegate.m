@@ -885,9 +885,9 @@
             // NSLog(@"%@",[weakrequest responseString]);
             NSData *data = [weakrequestmove responseData];
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-            if ([[Reachability reachabilityForLocalWiFi] currentReachabilityStatus] == kReachableViaWiFi) {
-                NSArray *musicArray = [MuzzikItem getArrayFromLocalForKey:Muzzik_local_Music_Moved_Array];
-            }
+//            if ([[Reachability reachabilityForLocalWiFi] currentReachabilityStatus] == kReachableViaWiFi) {
+//                NSArray *musicArray = [MuzzikItem getArrayFromLocalForKey:Muzzik_local_Music_Moved_Array];
+//            }
             
             
             if (dic  && [[dic objectForKey:@"muzziks"] count]>0 ) {

@@ -22,7 +22,7 @@
 
 -(void)setup{
     [self setSelectionStyle:UITableViewCellSelectionStyleNone];
-    _cardView = [[UIView alloc] initWithFrame:CGRectMake(8, 16, SCREEN_WIDTH-16, 73)];
+    _cardView = [[UIView alloc] initWithFrame:CGRectMake(8, 23, SCREEN_WIDTH-16, 73)];
     [_cardView setBackgroundColor:Color_line_2];
     _cardView.layer.cornerRadius = 3;
     _cardView.clipsToBounds = YES;
@@ -30,8 +30,8 @@
     _MusicCardLogo = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 28)];
     [_MusicCardLogo setImage:[UIImage imageNamed:@"topicImage"]];
     [_cardView addSubview:_MusicCardLogo];
-    _cardTitle = [[UILabel alloc] initWithFrame:CGRectMake(30, 0, SCREEN_WIDTH-100, 20)];
-    [_cardTitle setFont:[UIFont systemFontOfSize:10]];
+    _cardTitle = [[UILabel alloc] initWithFrame:CGRectMake(30, 3, SCREEN_WIDTH-100, 20)];
+    [_cardTitle setFont:[UIFont boldSystemFontOfSize:11]];
     [_cardTitle setTextColor:Color_Text_1];
     [_cardView addSubview:_cardTitle];
     

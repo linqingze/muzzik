@@ -611,7 +611,6 @@
             }
             cell.repostUserName.text = @"";
             [cell.repostImage setHidden:YES];
-            cell.repostUserName.text = tempMuzzik.reposter.name;
             cell.muzzikMessage.text = tempMuzzik.message;
             [cell.muzzikMessage addClickMessagewithTopics:tempMuzzik.topics];
             [cell.muzzikMessage addClickMessageForAt];

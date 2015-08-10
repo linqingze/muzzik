@@ -12,10 +12,11 @@
 #import "userDetailInfo.h"
 @interface showUserVC ()<UITableViewDataSource,UITableViewDelegate,CellDelegate>{
     UITableView *_tableView;
-    NSMutableArray *userArray;
+    NSMutableArray *localUserArray;
     NSString *URLString;
     int page;
     int updated;
+    NSMutableDictionary *RefreshDic;
     
 }
 
@@ -26,6 +27,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceUserUpdate:) name:String_UserDataSource_update object:nil];
+    RefreshDic = [NSMutableDictionary dictionary];
     page = 1;
     if ([_showType isEqualToString:@"repost"]){
         [self initNagationBar:@"转发用户" leftBtn:Constant_backImage rightBtn:0];
@@ -65,7 +67,7 @@
         if ([weakrequest responseStatusCode] == 200) {
             page++;
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
-            userArray = [[MuzzikUser new] makeMuzziksByUserArray:[dic objectForKey:@"users"]];
+            localUserArray = [[MuzzikUser new] makeMuzziksByUserArray:[dic objectForKey:@"users"]];
             if ([[dic objectForKey:@"users"] count]<1) {
                 [_tableView removeFooter];
             }
@@ -105,7 +107,7 @@
         if ([weakrequest responseStatusCode] == 200) {
             page++;
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
-            [userArray addObjectsFromArray:[[MuzzikUser new] makeMuzziksByUserArray:[dic objectForKey:@"users"]]];
+            [localUserArray addObjectsFromArray:[[MuzzikUser new] makeMuzziksByUserArray:[dic objectForKey:@"users"]]];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 if ([[dic objectForKey:@"users"] count]<1) {
                     [_tableView removeFooter];
@@ -137,17 +139,24 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
     // Return the number of rows in the section.
-    return [self.showType isEqualToString:@"songUser"]? self.userArray.count:userArray.count;
+    return [self.showType isEqualToString:@"songUser"]? self.userArray.count:localUserArray.count;
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     searchUserCell *cell = [tableView dequeueReusableCellWithIdentifier:@"searchUserCell" forIndexPath:indexPath];
-    MuzzikUser *muzzikuser = [self.showType isEqualToString:@"songUser"]? self.userArray[indexPath.row]:userArray[indexPath.row];
+    MuzzikUser *muzzikuser = [self.showType isEqualToString:@"songUser"]? self.userArray[indexPath.row]:localUserArray[indexPath.row];
     [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-    [cell.headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,muzzikuser.avatar]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-        [cell.headerImage setAlpha:1];
+    if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
+        [cell.headerImage setAlpha:0];
+        [RefreshDic setObject:indexPath forKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
+    }
+    [cell.headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,muzzikuser.avatar]] placeholderImage:[UIImage imageNamed:Image_user_placeHolder] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+        [UIView animateWithDuration:0.5 animations:^{
+             [cell.headerImage setAlpha:1];
+        }];
     }];
+
     cell.delegate = self;
     cell.muzzikUser = muzzikuser;
     if ([[userInfo shareClass].uid length]>0 && [muzzikuser.user_id isEqualToString:[userInfo shareClass].uid]) {
@@ -183,7 +192,7 @@
     if ([self.showType isEqualToString:@"songUser"]) {
         attentionuser = self.userArray[indexPath.row];
     }else{
-        attentionuser = userArray[indexPath.row];
+        attentionuser = localUserArray[indexPath.row];
     }
     userInfo *user = [userInfo shareClass];
     if (attentionuser.user_id) {
@@ -209,56 +218,61 @@
     // Dispose of any resources that can be recreated.
 }
 -(void)attention:(NSInteger)index{
-    MuzzikUser *attentionuser = userArray[index];
-    if (attentionuser.isFollow) {
-        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_user_Unfollow]]];
-        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:attentionuser.user_id forKey:@"_id"] Method:PostMethod auth:YES];
-        __weak ASIHTTPRequest *weakrequest = requestForm;
-        [requestForm setCompletionBlock :^{
-            NSLog(@"%@",[weakrequest responseString]);
-            NSLog(@"%d",[weakrequest responseStatusCode]);
-            
-            if ([weakrequest responseStatusCode] == 200) {
-                attentionuser.isFollow = NO;
-                 [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
-            }
-            else{
-                //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-            }
-        }];
-        [requestForm setFailedBlock:^{
-            NSLog(@"%@",[weakrequest error]);
-            NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-            [userInfo checkLoginWithVC:self];
-        }];
-        [requestForm startAsynchronous];
+    MuzzikUser *attentionuser = localUserArray[index];
+    userInfo *user = [userInfo shareClass];
+    if ([user.token length]>0) {
+        if (attentionuser.isFollow) {
+            attentionuser.isFollow = NO;
+            [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
+            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_user_Unfollow]]];
+            [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:attentionuser.user_id forKey:@"_id"] Method:PostMethod auth:YES];
+            //__weak ASIHTTPRequest *weakrequest = requestForm;
+            [requestForm setCompletionBlock :^{
+//                NSLog(@"%@",[weakrequest responseString]);
+//                NSLog(@"%d",[weakrequest responseStatusCode]);
+//                
+//                if ([weakrequest responseStatusCode] == 200) {
+//                    
+//                }
+//                else{
+//                    //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+//                }
+            }];
+            [requestForm setFailedBlock:^{
+            }];
+            [requestForm startAsynchronous];
+        }
+        else{
+            attentionuser.isFollow = YES;
+            [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
+            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_User_Follow]]];
+            [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:attentionuser.user_id forKey:@"_id"] Method:PostMethod auth:YES];
+            //__weak ASIHTTPRequest *weakrequest = requestForm;
+            [requestForm setCompletionBlock :^{
+//                NSLog(@"%@",[weakrequest responseString]);
+//                NSLog(@"%d",[weakrequest responseStatusCode]);
+//                
+//                if ([weakrequest responseStatusCode] == 200) {
+//                    attentionuser.isFollow = YES;
+//                    [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
+//                }
+//                else{
+//                    //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+//                }
+            }];
+            [requestForm setFailedBlock:^{
+                
+            }];
+            [requestForm startAsynchronous];
+        }
     }else{
-        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_User_Follow]]];
-        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:attentionuser.user_id forKey:@"_id"] Method:PostMethod auth:YES];
-        __weak ASIHTTPRequest *weakrequest = requestForm;
-        [requestForm setCompletionBlock :^{
-            NSLog(@"%@",[weakrequest responseString]);
-            NSLog(@"%d",[weakrequest responseStatusCode]);
-            
-            if ([weakrequest responseStatusCode] == 200) {
-                attentionuser.isFollow = YES;
-                [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
-            }
-            else{
-                //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-            }
-        }];
-        [requestForm setFailedBlock:^{
-            NSLog(@"%@",[weakrequest error]);
-            NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-            [userInfo checkLoginWithVC:self];
-        }];
-        [requestForm startAsynchronous];
+        [userInfo checkLoginWithVC:self];
     }
+    
 }
 -(void)dataSourceUserUpdate:(NSNotification *)notify{
     MuzzikUser *user = notify.object;
-    if ([MuzzikItem checkMutableArray:userArray isContainUser:user]) {
+    if ([MuzzikItem checkMutableArray:localUserArray isContainUser:user]) {
         [_tableView reloadData];
     }
 }

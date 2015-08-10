@@ -111,7 +111,6 @@
 		F20553A81B396FCC0093AE8A /* NewSearchCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F20553A71B396FCC0093AE8A /* NewSearchCell.m */; };
 		F20553AB1B3D7FC70093AE8A /* MusicLyricCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F20553AA1B3D7FC70093AE8A /* MusicLyricCell.m */; };
 		F20553B11B3DED940093AE8A /* NotifyButton.m in Sources */ = {isa = PBXBuildFile; fileRef = F20553B01B3DED940093AE8A /* NotifyButton.m */; };
-		F20553B31B3E0CF80093AE8A /* chineseF.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F20553B21B3E0CF80093AE8A /* chineseF.ttf */; };
 		F20553B61B400C840093AE8A /* HotSearchTopic.m in Sources */ = {isa = PBXBuildFile; fileRef = F20553B51B400C840093AE8A /* HotSearchTopic.m */; };
 		F20553B91B400D9D0093AE8A /* HotSearchTopicCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F20553B81B400D9D0093AE8A /* HotSearchTopicCell.m */; };
 		F208EF4B1B1E1D2E00DB5A68 /* RJTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = F208EF4A1B1E1D2E00DB5A68 /* RJTextView.m */; };
@@ -484,7 +483,6 @@
 		F20553AA1B3D7FC70093AE8A /* MusicLyricCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MusicLyricCell.m; sourceTree = "<group>"; };
 		F20553AF1B3DED940093AE8A /* NotifyButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotifyButton.h; sourceTree = "<group>"; };
 		F20553B01B3DED940093AE8A /* NotifyButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotifyButton.m; sourceTree = "<group>"; };
-		F20553B21B3E0CF80093AE8A /* chineseF.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = chineseF.ttf; sourceTree = "<group>"; };
 		F20553B41B400C840093AE8A /* HotSearchTopic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotSearchTopic.h; sourceTree = "<group>"; };
 		F20553B51B400C840093AE8A /* HotSearchTopic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotSearchTopic.m; sourceTree = "<group>"; };
 		F20553B71B400D9D0093AE8A /* HotSearchTopicCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotSearchTopicCell.h; sourceTree = "<group>"; };
@@ -847,7 +845,6 @@
 			isa = PBXGroup;
 			children = (
 				F20C4EE11B69E23800331101 /* HYQuanTangShiF.ttf */,
-				F20553B21B3E0CF80093AE8A /* chineseF.ttf */,
 				F208EF4E1B1F7A7700DB5A68 /* VNI_HLThuphap.ttf */,
 				F200B7AB1B2ABF6E002A6F61 /* Copperplate_00.ttf */,
 				F208EF521B1F7D6100DB5A68 /* Bluehigh.ttf */,
@@ -1793,7 +1790,6 @@
 				F208EF551B1F7D6100DB5A68 /* calico_cyrillic.ttf in Resources */,
 				F208EF541B1F7D6100DB5A68 /* Bluehigh.ttf in Resources */,
 				F208EF4F1B1F7A7700DB5A68 /* VNI_HLThuphap.ttf in Resources */,
-				F20553B31B3E0CF80093AE8A /* chineseF.ttf in Resources */,
 				E11246061AAAAE4B0014D461 /* LaunchScreen.xib in Resources */,
 				F2E558A71B164D420080F9C9 /* MJRefresh.bundle in Resources */,
 				F208EF511B1F7D5500DB5A68 /* kilsonburg.ttf in Resources */,

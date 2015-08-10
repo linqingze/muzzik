@@ -190,6 +190,7 @@
     
 }
 -(void)tapAction:(UITapGestureRecognizer *)tap{
+    [textview resignFirstResponder];
     actionSheet = [[IBActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"保存至草稿箱",@"不保存", nil];
     [actionSheet showInView:self.view.window];
     [actionSheet setButtonTextColor:Color_Active_Button_1 forButtonAtIndex:1];

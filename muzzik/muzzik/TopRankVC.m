@@ -43,7 +43,7 @@
     [newButton setImage:[UIImage imageNamed:@"topicsearchImage"] forState:UIControlStateNormal];
     [newButton addTarget:self action:@selector(searchTopic) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:newButton];
-    [topicTableView addHeaderWithTarget:self action:@selector(refreshHeader)];
+    //[topicTableView addHeaderWithTarget:self action:@selector(refreshHeader)];
     // Do any additional setup after loading the view.
 }
 -(void)viewWillAppear:(BOOL)animated{

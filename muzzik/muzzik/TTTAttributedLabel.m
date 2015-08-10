@@ -364,6 +364,8 @@ static inline CGSize CTFramesetterSuggestFrameSizeForAttributedStringWithConstra
     self.userInteractionEnabled = YES;
     self.multipleTouchEnabled = NO;
 
+    UILongPressGestureRecognizer *touch = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(copyTouchAction:)];
+    [self addGestureRecognizer:touch];
     self.textInsets = UIEdgeInsetsZero;
     self.lineHeightMultiple = 1.0f;
     self.numberOfLines = 0;
@@ -436,6 +438,19 @@ static inline CGSize CTFramesetterSuggestFrameSizeForAttributedStringWithConstra
     
     
 }
+-(void)copyTouchAction:(UIGestureRecognizer*) recognizer
+{
+    if (recognizer.state == UIGestureRecognizerStateBegan) {
+        [self becomeFirstResponder];
+        
+        UIMenuItem *copyLink = [[UIMenuItem alloc] initWithTitle:nil action:nil];
+        
+        [[UIMenuController sharedMenuController] setMenuItems:[NSArray arrayWithObjects:copyLink, nil]];
+        [[UIMenuController sharedMenuController] setTargetRect:self.frame inView:self.superview];
+        [[UIMenuController sharedMenuController] setMenuVisible:YES animated: YES];
+    }
+}
+
 #pragma mark - 转换 点击
 -(void)addClickMessagewithTopics:(NSArray *)topics{
     self.text = [self.text stringByReplacingOccurrencesOfString:@"＃" withString:@"#"];

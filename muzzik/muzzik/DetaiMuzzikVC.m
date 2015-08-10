@@ -2213,11 +2213,6 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         self.localmuzzik.repostID = [dic objectForKey:@"repostID"];
         self.localmuzzik.title = [dic objectForKey:@"title"];
         self.localmuzzik.repostDate = [dic objectForKey:@"repostDate"];
-        self.localmuzzik.reposter = [MuzzikUser new];
-        self.localmuzzik.reposter.name = [[dic objectForKey:@"repostUser"] objectForKey:@"name"];
-        self.localmuzzik.reposter.user_id = [[dic objectForKey:@"repostUser"] objectForKey:@"_id"];
-        self.localmuzzik.reposter.avatar = [[dic objectForKey:@"repostUser"] objectForKey:@"avatar"];
-        self.localmuzzik.reposter.gender = [[dic objectForKey:@"repostUser"] objectForKey:@"gender"];
         
         self.localmuzzik.MuzzikUser.avatar = [[dic objectForKey:@"user"] objectForKey:@"avatar"];
         self.localmuzzik.MuzzikUser.user_id = [[dic objectForKey:@"user"] objectForKey:@"_id"];
