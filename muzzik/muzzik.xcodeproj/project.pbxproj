@@ -196,6 +196,7 @@
 		F2B703671AC67EBF005F0903 /* TencentOpenApi_IOS_Bundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F2B703651AC67EBF005F0903 /* TencentOpenApi_IOS_Bundle.bundle */; };
 		F2B703681AC67EBF005F0903 /* TencentOpenAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2B703661AC67EBF005F0903 /* TencentOpenAPI.framework */; };
 		F2B81FF11ADD6C6A00012ED6 /* MuzzikItem.m in Sources */ = {isa = PBXBuildFile; fileRef = F2B81FF01ADD6C6A00012ED6 /* MuzzikItem.m */; };
+		F2E380001B790663008FF496 /* MuzzikRequestCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = F2E37FFF1B790663008FF496 /* MuzzikRequestCenter.m */; };
 		F2E558A71B164D420080F9C9 /* MJRefresh.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F2E558971B164D420080F9C9 /* MJRefresh.bundle */; };
 		F2E558A81B164D420080F9C9 /* MJRefreshBaseView.m in Sources */ = {isa = PBXBuildFile; fileRef = F2E5589A1B164D420080F9C9 /* MJRefreshBaseView.m */; };
 		F2E558A91B164D420080F9C9 /* MJRefreshConst.m in Sources */ = {isa = PBXBuildFile; fileRef = F2E5589C1B164D420080F9C9 /* MJRefreshConst.m */; };
@@ -648,6 +649,8 @@
 		F2B703661AC67EBF005F0903 /* TencentOpenAPI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TencentOpenAPI.framework; sourceTree = "<group>"; };
 		F2B81FEF1ADD6C6A00012ED6 /* MuzzikItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MuzzikItem.h; sourceTree = "<group>"; };
 		F2B81FF01ADD6C6A00012ED6 /* MuzzikItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MuzzikItem.m; sourceTree = "<group>"; };
+		F2E37FFE1B790663008FF496 /* MuzzikRequestCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MuzzikRequestCenter.h; sourceTree = "<group>"; };
+		F2E37FFF1B790663008FF496 /* MuzzikRequestCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MuzzikRequestCenter.m; sourceTree = "<group>"; };
 		F2E558971B164D420080F9C9 /* MJRefresh.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = MJRefresh.bundle; sourceTree = "<group>"; };
 		F2E558981B164D420080F9C9 /* MJRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJRefresh.h; sourceTree = "<group>"; };
 		F2E558991B164D420080F9C9 /* MJRefreshBaseView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJRefreshBaseView.h; sourceTree = "<group>"; };
@@ -1140,6 +1143,8 @@
 			children = (
 				E16716231AAD77830068AE98 /* userInfo.h */,
 				E16716241AAD77830068AE98 /* userInfo.m */,
+				F2E37FFE1B790663008FF496 /* MuzzikRequestCenter.h */,
+				F2E37FFF1B790663008FF496 /* MuzzikRequestCenter.m */,
 				F2B81FEF1ADD6C6A00012ED6 /* MuzzikItem.h */,
 				F2B81FF01ADD6C6A00012ED6 /* MuzzikItem.m */,
 				E1FA12A71AB148B1005EDA1D /* RFRadioView.h */,
@@ -1870,6 +1875,7 @@
 				F2A7F9931AEFFB0C000FCC57 /* TableViewCell.m in Sources */,
 				E1FA12E51AB18252005EDA1D /* FSParsePlaylistRequest.m in Sources */,
 				E11246721AAAB20B0014D461 /* SDWebImageDownloaderOperation.m in Sources */,
+				F2E380001B790663008FF496 /* MuzzikRequestCenter.m in Sources */,
 				F20FDD691AF74A05008A71C0 /* SearchForSong.m in Sources */,
 				F26131281ADE23DB0042F1D4 /* AFViewShaker.m in Sources */,
 				E1FA12E31AB18252005EDA1D /* FSAudioStream.mm in Sources */,

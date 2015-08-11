@@ -868,63 +868,73 @@
     [_musicName setTextColor:color];
 }
 -(void)attentionAction{
-    if ([[_profileDic objectForKey:@"isFollow"] boolValue]) {
-        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_user_Unfollow]]];
-        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[_profileDic objectForKey:@"_id"] forKey:@"_id"] Method:PostMethod auth:YES];
-        __weak ASIHTTPRequest *weakrequest = requestForm;
-        [requestForm setCompletionBlock :^{
-            NSLog(@"%@",[weakrequest responseString]);
-            NSLog(@"%d",[weakrequest responseStatusCode]);
+    userInfo *user = [userInfo shareClass];
+    if ([user.token length]>0) {
+        if ([[_profileDic objectForKey:@"isFollow"] boolValue]) {
+            [_profileDic setValue:[NSNumber numberWithBool:NO] forKey:@"isFollow"];
             
-            if ([weakrequest responseStatusCode] == 200) {
+            MuzzikUser *attentionuser = [MuzzikUser new];
+            attentionuser.user_id = [_profileDic objectForKey:@"_id"];
+            attentionuser.isFans = [[_profileDic objectForKey:@"isFans"] boolValue];
+            attentionuser.isFollow = [[_profileDic objectForKey:@"isFollow"] boolValue];
+            [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
+            
+            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_user_Unfollow]]];
+            [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[_profileDic objectForKey:@"_id"] forKey:@"_id"] Method:PostMethod auth:YES];
+            __weak ASIHTTPRequest *weakrequest = requestForm;
+            [requestForm setCompletionBlock :^{
+                NSLog(@"%@",[weakrequest responseString]);
+                NSLog(@"%d",[weakrequest responseStatusCode]);
                 
+                if ([weakrequest responseStatusCode] == 200) {
+                    
+                    
+    
+                }
+                else{
+                    //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+                }
+            }];
+            [requestForm setFailedBlock:^{
+                NSLog(@"%@",[weakrequest error]);
+                NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
+            }];
+            [requestForm startAsynchronous];
+        }
+        else{
+            [_profileDic setValue:[NSNumber numberWithBool:YES] forKey:@"isFollow"];
+            
+            MuzzikUser *attentionuser = [MuzzikUser new];
+            attentionuser.user_id = [_profileDic objectForKey:@"_id"];
+            attentionuser.isFans = [[_profileDic objectForKey:@"isFans"] boolValue];
+            attentionuser.isFollow = [[_profileDic objectForKey:@"isFollow"] boolValue];
+            [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
+            
+            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_User_Follow]]];
+            [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:self.localmuzzik.MuzzikUser.user_id forKey:@"_id"] Method:PostMethod auth:YES];
+            __weak ASIHTTPRequest *weakrequest = requestForm;
+            [requestForm setCompletionBlock :^{
+                NSLog(@"%@",[weakrequest responseString]);
+                NSLog(@"%d",[weakrequest responseStatusCode]);
                 
-                [_profileDic setValue:[NSNumber numberWithBool:NO] forKey:@"isFollow"];
-
-                MuzzikUser *attentionuser = [MuzzikUser new];
-                attentionuser.user_id = [_profileDic objectForKey:@"_id"];
-                attentionuser.isFans = [[_profileDic objectForKey:@"isFans"] boolValue];
-                attentionuser.isFollow = [[_profileDic objectForKey:@"isFollow"] boolValue];
-                [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
-            }
-            else{
-                //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-            }
-        }];
-        [requestForm setFailedBlock:^{
-            NSLog(@"%@",[weakrequest error]);
-            NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-            [userInfo checkLoginWithVC:self];
-        }];
-        [requestForm startAsynchronous];
+                if ([weakrequest responseStatusCode] == 200) {
+                    
+                }
+                else{
+                    //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+                }
+            }];
+            [requestForm setFailedBlock:^{
+                NSLog(@"%@",[weakrequest error]);
+                NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
+                
+            }];
+            [requestForm startAsynchronous];
+        }
     }else{
-        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_User_Follow]]];
-        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:self.localmuzzik.MuzzikUser.user_id forKey:@"_id"] Method:PostMethod auth:YES];
-        __weak ASIHTTPRequest *weakrequest = requestForm;
-        [requestForm setCompletionBlock :^{
-            NSLog(@"%@",[weakrequest responseString]);
-            NSLog(@"%d",[weakrequest responseStatusCode]);
-            
-            if ([weakrequest responseStatusCode] == 200) {
-                [_profileDic setValue:[NSNumber numberWithBool:YES] forKey:@"isFollow"];
-                
-                MuzzikUser *attentionuser = [MuzzikUser new];
-                attentionuser.user_id = [_profileDic objectForKey:@"_id"];
-                attentionuser.isFans = [[_profileDic objectForKey:@"isFans"] boolValue];
-                attentionuser.isFollow = [[_profileDic objectForKey:@"isFollow"] boolValue];
-                [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
-            }
-            else{
-                //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-            }
-        }];
-        [requestForm setFailedBlock:^{
-            NSLog(@"%@",[weakrequest error]);
-            NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-            [userInfo checkLoginWithVC:self];
-        }];
-        [requestForm startAsynchronous];
+        [userInfo checkLoginWithVC:self];
     }
+    
 }
 -(void)attentionOrVisit{
     if ([[_profileDic objectForKey:@"isFollow"] boolValue]) {
@@ -932,31 +942,39 @@
         uInfo.uid = self.localmuzzik.MuzzikUser.user_id;
         [self.navigationController pushViewController:uInfo animated:YES];
     }else{
-        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_User_Follow]]];
-        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:self.localmuzzik.MuzzikUser.user_id forKey:@"_id"] Method:PostMethod auth:YES];
-        __weak ASIHTTPRequest *weakrequest = requestForm;
-        [requestForm setCompletionBlock :^{
-            NSLog(@"%@",[weakrequest responseString]);
-            NSLog(@"%d",[weakrequest responseStatusCode]);
+        userInfo *user = [userInfo shareClass];
+        if ([user.token length]>0) {
+            [_profileDic setValue:[NSNumber numberWithBool:YES] forKey:@"isFollow"];
+            MuzzikUser *attentionuser = [MuzzikUser new];
+            attentionuser.user_id = [_profileDic objectForKey:@"_id"];
+            attentionuser.isFans = [[_profileDic objectForKey:@"isFans"] boolValue];
+            attentionuser.isFollow = [[_profileDic objectForKey:@"isFollow"] boolValue];
+            [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
             
-            if ([weakrequest responseStatusCode] == 200) {
-                [_profileDic setValue:[NSNumber numberWithBool:YES] forKey:@"isFollow"];
-                MuzzikUser *attentionuser = [MuzzikUser new];
-                attentionuser.user_id = [_profileDic objectForKey:@"_id"];
-                attentionuser.isFans = [[_profileDic objectForKey:@"isFans"] boolValue];
-                attentionuser.isFollow = [[_profileDic objectForKey:@"isFollow"] boolValue];
-                [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
-            }
-            else{
-                //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-            }
-        }];
-        [requestForm setFailedBlock:^{
-            NSLog(@"%@",[weakrequest error]);
-            NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
+            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_User_Follow]]];
+            [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:self.localmuzzik.MuzzikUser.user_id forKey:@"_id"] Method:PostMethod auth:YES];
+            __weak ASIHTTPRequest *weakrequest = requestForm;
+            [requestForm setCompletionBlock :^{
+                NSLog(@"%@",[weakrequest responseString]);
+                NSLog(@"%d",[weakrequest responseStatusCode]);
+                
+                if ([weakrequest responseStatusCode] == 200) {
+                    
+                }
+                else{
+                    //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+                }
+            }];
+            [requestForm setFailedBlock:^{
+                NSLog(@"%@",[weakrequest error]);
+                NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
+                
+            }];
+            [requestForm startAsynchronous];
+        }else{
             [userInfo checkLoginWithVC:self];
-        }];
-        [requestForm startAsynchronous];
+        }
+        
     }
 }
 -(void)goToUser{
@@ -1000,19 +1018,20 @@
 -(void) moveAction{
     userInfo *user = [userInfo shareClass];
     if ([user.token length]>0) {
+        self.localmuzzik.ismoved = !self.localmuzzik.ismoved;
+        if (self.localmuzzik.ismoved) {
+            self.localmuzzik.moveds = [NSString stringWithFormat:@"%d",[self.localmuzzik.moveds intValue]+1 ];
+        }else{
+            self.localmuzzik.moveds = [NSString stringWithFormat:@"%d",[self.localmuzzik.moveds intValue]-1 ];
+        }
+        [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:self.localmuzzik];
        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/%@/moved",BaseURL,self.localmuzzik.muzzik_id]]];
-        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:!self.localmuzzik.ismoved] forKey:@"ismoved"] Method:PostMethod auth:YES];
+        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:self.localmuzzik.ismoved] forKey:@"ismoved"] Method:PostMethod auth:YES];
         __weak ASIHTTPRequest *weakrequest = requestForm;
         [requestForm setCompletionBlock :^{
             if ([weakrequest responseStatusCode] == 200) {
                 // NSData *data = [weakrequest responseData];
-                self.localmuzzik.ismoved = !self.localmuzzik.ismoved;
-                if (self.localmuzzik.ismoved) {
-                    self.localmuzzik.moveds = [NSString stringWithFormat:@"%d",[self.localmuzzik.moveds intValue]+1 ];
-                }else{
-                    self.localmuzzik.moveds = [NSString stringWithFormat:@"%d",[self.localmuzzik.moveds intValue]-1 ];
-                }
-                [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:self.localmuzzik];
+                
                 
                 
             }
@@ -1034,19 +1053,25 @@
     
 }
 -(void)repostAction{
-    isforRepost = YES;
-    if (!self.localmuzzik.isReposted) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"确定转发这条Muzzik吗?" message:@"" delegate:self cancelButtonTitle:@"放弃" otherButtonTitles:nil];
-        // optional - add more buttons:
-        [alert addButtonWithTitle:@"确定"];
-        [alert show];
-        
+    userInfo *user = [userInfo shareClass];
+    if ([user.token length]>0) {
+        isforRepost = YES;
+        if (!self.localmuzzik.isReposted) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"确定转发这条Muzzik吗?" message:@"" delegate:self cancelButtonTitle:@"放弃" otherButtonTitles:nil];
+            // optional - add more buttons:
+            [alert addButtonWithTitle:@"确定"];
+            [alert show];
+            
+        }else{
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"确定取消转发这条Muzzik吗?" message:@"" delegate:self cancelButtonTitle:@"放弃" otherButtonTitles:nil];
+            // optional - add more buttons:
+            [alert addButtonWithTitle:@"确定"];
+            [alert show];
+        }
     }else{
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"确定取消转发这条Muzzik吗?" message:@"" delegate:self cancelButtonTitle:@"放弃" otherButtonTitles:nil];
-        // optional - add more buttons:
-        [alert addButtonWithTitle:@"确定"];
-        [alert show];
+        [userInfo checkLoginWithVC:self];
     }
+    
 }
 -(void)shareAction{
     [self addShareView];
@@ -1073,6 +1098,11 @@
     [alertSheet showInView:self.view.window];
 }
 -(void)playMusicLocal{
+    MuzzikRequestCenter *center = [MuzzikRequestCenter shareClass];
+
+    center.singleMusic = YES;
+
+    
     _musicplayer.MusicArray = [NSMutableArray arrayWithArray:@[self.localmuzzik]];
      _musicplayer.listType = TempList;
     [_musicplayer playSongWithSongModel:self.localmuzzik Title:[NSString stringWithFormat:@"单曲<%@>",self.localmuzzik.music.name]];
@@ -1089,79 +1119,6 @@
 //            }
 //        }
 //    }
-}
--(void) sendComment{
-    if ([comnentTextView.text length]>0) {
-        MuzzikObject *mobject = [MuzzikObject shareClass];
-        ASIHTTPRequest *shareRequest = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_new]]];
-        NSMutableDictionary *requestDic = [NSMutableDictionary dictionary];
-        if (isPrivate) {
-            [requestDic setObject:[NSNumber numberWithBool:YES] forKey:Parameter_private];
-        }
-        [requestDic setObject:[NSString stringWithFormat:@"@%@ %@",commentToMuzzik.MuzzikUser.name,comnentTextView.text] forKey:Parameter_message];
-        if (mobject.music) {
-            NSDictionary *musicDic = [NSDictionary dictionaryWithObjectsAndKeys:mobject.music.key,@"key",mobject.music.name,@"name",mobject.music.artist,@"artist", nil];
-            [requestDic setObject:musicDic forKey:@"music"];
-        }
-        if (isPrivate) {
-            [requestDic setValue:[NSNumber numberWithBool:YES] forKey:@"private"];
-        }else{
-            [requestDic setValue:[NSNumber numberWithBool:NO] forKey:@"private"];
-        }
-        [requestDic setObject:commentToMuzzik.muzzik_id forKey:@"reply"];
-        [shareRequest addBodyDataSourceWithJsonByDic:requestDic Method:PutMethod auth:YES];
-        __weak ASIHTTPRequest *weakShare = shareRequest;
-        [shareRequest setCompletionBlock:^{
-            NSLog(@"data:%@",[weakShare responseString]);
-            if ([weakShare responseStatusCode] == 200) {
-                
-                comnentTextView.internalTextView.text = @"";
-                if (mobject.music) {
-                    [self deleSong];
-                }
-                [mobject clearObject];
-                [comnentTextView performSelector:@selector(resignFirstResponder) withObject:nil afterDelay:0.3];
-                
-                ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/%@/comments",BaseURL,self.localmuzzik.muzzik_id]]];
-                [request addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:NO];
-                __weak ASIHTTPRequest *weakre = request;
-                [request setCompletionBlock :^{
-                    NSLog(@"%@",[weakre responseString]);
-                    NSLog(@"%d",[weakre responseStatusCode]);
-                    if ([weakre responseStatusCode] == 200) {
-                        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakre responseData]  options:NSJSONReadingMutableContainers error:nil];
-                        commentArray = [[muzzik new] makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
-                        if ([commentArray count]>0) {
-                            [_muzzikView addSubview:commentTitle];
-                        }
-                        [muzzikTableView reloadData];
-                        [muzzikTableView scrollToRowAtIndexPath:
-                         [NSIndexPath indexPathForRow:0 inSection:0]
-                                               atScrollPosition: UITableViewScrollPositionBottom
-                                                       animated:YES];
-                        
-                    }
-                    else{
-                        //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-                    }
-                }];
-                [request setFailedBlock:^{
-                    NSLog(@"%@",[weakre error]);
-                    NSLog(@"hhhh%@  kkk%@",[weakre responseString],[weakre responseHeaders]);
-                    [userInfo checkLoginWithVC:self];
-                }];
-                [request startAsynchronous];
- 
-            }
-        }];
-        [shareRequest setFailedBlock:^{
-            [userInfo checkLoginWithVC:self];
-            NSLog(@"%@",[weakShare error]);
-        }];
-        [shareRequest startAsynchronous];
-    }
-   
-
 }
 -(void)deleSong{
     [musicButton setImage:[UIImage imageNamed:Image_detailaddsongImage] forState:UIControlStateNormal];
@@ -1792,6 +1749,11 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         if (isforRepost) {
             isforRepost = NO;
             if (!self.localmuzzik.isReposted) {
+               
+                self.localmuzzik.isReposted = YES;
+                self.localmuzzik.reposts = [NSString stringWithFormat:@"%d",[self.localmuzzik.reposts intValue]+1];
+                [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:self.localmuzzik];
+                
                 ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik",BaseURL]]];
                 NSDictionary *dictionary = [NSDictionary dictionaryWithObject:self.localmuzzik.muzzik_id forKey:@"repost"];
                 [requestForm addBodyDataSourceWithJsonByDic:dictionary Method:PutMethod auth:YES];
@@ -1801,19 +1763,15 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
                     NSLog(@"%@",[weakrequest responseString]);
                     NSLog(@"%d",[weakrequest responseStatusCode]);
                     if ([weakrequest responseStatusCode] == 200) {
-                        [MuzzikItem showNotifyOnView:self.view text:@"转发成功"];
-                        self.localmuzzik.isReposted = YES;
-                        self.localmuzzik.reposts = [NSString stringWithFormat:@"%d",[self.localmuzzik.reposts intValue]+1];
-                        [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:self.localmuzzik];
+                         [MuzzikItem showNotifyOnView:self.view text:@"转发成功"];
                     }
                     
                     else if([weakrequest responseStatusCode] == 401){
-                        [userInfo checkLoginWithVC:self];
                         //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
                     }else if ([weakrequest responseStatusCode] == 400){
-                        [MuzzikItem showNotifyOnView:self.view text:@"转发成功"];
-                        self.localmuzzik.isReposted = YES;
-                        [self colorViewWithColorString:self.localmuzzik.color];
+//                        [MuzzikItem showNotifyOnView:self.view text:@"转发成功"];
+//                        self.localmuzzik.isReposted = YES;
+//                        [self colorViewWithColorString:self.localmuzzik.color];
 
                     }
                 }];
@@ -1824,6 +1782,10 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
                 [requestForm startAsynchronous];
             }
             else{
+                
+                self.localmuzzik.isReposted = NO;
+                self.localmuzzik.reposts = [NSString stringWithFormat:@"%d",[self.localmuzzik.reposts intValue]-1];
+                [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:self.localmuzzik];
                 ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/%@/repost",BaseURL,self.localmuzzik.muzzik_id]]];
                 [requestForm addBodyDataSourceWithJsonByDic:nil Method:DeleteMethod auth:YES];
                 __weak ASIHTTPRequest *weakrequest = requestForm;
@@ -1832,14 +1794,10 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
                     NSLog(@"%@",[weakrequest responseString]);
                     NSLog(@"%d",[weakrequest responseStatusCode]);
                     if ([weakrequest responseStatusCode] == 200) {
-                        [MuzzikItem showNotifyOnView:self.view text:@"取消转发"];
-                        self.localmuzzik.isReposted = NO;
-                        self.localmuzzik.reposts = [NSString stringWithFormat:@"%d",[self.localmuzzik.reposts intValue]-1];
-                        [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:self.localmuzzik];
+                       [MuzzikItem showNotifyOnView:self.view text:@"取消转发"];
                     }
                     
                     else if([weakrequest responseStatusCode] == 401){
-                        [userInfo checkLoginWithVC:self];
                         //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
                     }else if ([weakrequest responseStatusCode] == 400){
                         

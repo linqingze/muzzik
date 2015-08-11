@@ -874,7 +874,11 @@
    // NSLog(@"%@",[NSString stringWithFormat:@"%@/%@",playMuzzik.music.name,playMuzzik.music.artist]);
     if (!([playMuzzik.muzzik_id isEqualToString:_playMuzzik.muzzik_id]||([playMuzzik.muzzik_id length] == 0 &&[playMuzzik.music.music_id isEqualToString:_playMuzzik.music.music_id]))||([[musicPlayer shareClass].MusicArray count] ==1 && ![playMuzzik.muzzik_id isEqualToString:_playMuzzik.muzzik_id])) {
         [Globle shareGloble].isPause = NO;
-        
+        muzzik *lastMuzzik = [[musicPlayer shareClass].MusicArray lastObject];
+        if ([lastMuzzik.muzzik_id isEqualToString:playMuzzik.muzzik_id] ||([lastMuzzik.muzzik_id length] == 0 && [lastMuzzik.music.music_id isEqualToString:playMuzzik.music.music_id])) {
+            MuzzikRequestCenter *center = [MuzzikRequestCenter shareClass];
+            [center requestToAddMoreMuzziks:[musicPlayer shareClass].MusicArray];
+        }
         _playMuzzik.isCheckFollow = NO;
         _playMuzzik = playMuzzik;
         if (_IsShowDetail) {
@@ -1591,6 +1595,9 @@
 }
 -(void) attentionAction{
     if ([[userInfo shareClass].token length]>0) {
+        _playMuzzik.MuzzikUser.isFollow = YES;
+        [attentionButton setHidden:YES];
+        [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:_playMuzzik.MuzzikUser];
         ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_User_Follow]]];
         [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:_playMuzzik.MuzzikUser.user_id forKey:@"_id"] Method:PostMethod auth:YES];
         __weak ASIHTTPRequest *weakrequest = requestForm;
@@ -1599,9 +1606,7 @@
             NSLog(@"%d",[weakrequest responseStatusCode]);
             
             if ([weakrequest responseStatusCode] == 200) {
-                _playMuzzik.MuzzikUser.isFollow = YES;
-                [attentionButton setHidden:YES];
-                [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:_playMuzzik.MuzzikUser];
+                
             }
             else{
                 
@@ -1633,19 +1638,20 @@
 -(void)moveAction{
     userInfo *user = [userInfo shareClass];
     if ([user.token length]>0) {
+        _playMuzzik.ismoved = !_playMuzzik.ismoved;
+        if (_playMuzzik.ismoved) {
+            _playMuzzik.moveds = [NSString stringWithFormat:@"%d",[_playMuzzik.moveds intValue]+1 ];
+        }else{
+            _playMuzzik.moveds = [NSString stringWithFormat:@"%d",[_playMuzzik.moveds intValue]-1 ];
+        }
+        [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:_playMuzzik];
         ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/%@/moved",BaseURL,_playMuzzik.muzzik_id]]];
-        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:!_playMuzzik.ismoved] forKey:@"ismoved"] Method:PostMethod auth:YES];
+        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:_playMuzzik.ismoved] forKey:@"ismoved"] Method:PostMethod auth:YES];
         __weak ASIHTTPRequest *weakrequest = requestForm;
         [requestForm setCompletionBlock :^{
             if ([weakrequest responseStatusCode] == 200) {
                 // NSData *data = [weakrequest responseData];
-                _playMuzzik.ismoved = !_playMuzzik.ismoved;
-                if (_playMuzzik.ismoved) {
-                    _playMuzzik.moveds = [NSString stringWithFormat:@"%d",[_playMuzzik.moveds intValue]+1 ];
-                }else{
-                    _playMuzzik.moveds = [NSString stringWithFormat:@"%d",[_playMuzzik.moveds intValue]-1 ];
-                }
-                [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:_playMuzzik];
+                
                 //                NSIndexPath *indexPath=[NSIndexPath indexPathForRow:[self.muzziks indexOfObject:tempMuzzik] inSection:0];
                 //                [MytableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];
                 

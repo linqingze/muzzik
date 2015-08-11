@@ -111,12 +111,18 @@
         NSData *data = [weakrequest responseData];
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         if (dic) {
+            if ([[dic allKeys] containsObject:@"tail"]) {
+                lastId = [dic objectForKey:@"tail"];
+            }else{
+                lastId = @"";
+            }
+            
             muzzik *muzzikToy = [muzzik new];
             NSMutableArray *songarray = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
             for (muzzik *localMuzzik in songarray) {
                 BOOL isContained = NO;
                 for (muzzik *originMuzzik in self.muzziks) {
-                    if ([originMuzzik.music.key isEqualToString:localMuzzik.music.key]) {
+                    if ([originMuzzik.music.name isEqualToString:localMuzzik.music.name] && [originMuzzik.music.artist isEqualToString:localMuzzik.music.artist]) {
                         isContained = YES;
                         break;
                     }
@@ -157,16 +163,18 @@
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
      SongListCell *cell = [tableView dequeueReusableCellWithIdentifier:@"SongListCell" forIndexPath:indexPath];
     muzzik *tempMuzzik = self.muzziks[indexPath.row];
+    Globle *glob = [Globle shareGloble];
     cell.timeLabel.text = [MuzzikItem transtromTime:tempMuzzik.date];
     cell.songName.text = tempMuzzik.music.name;
     cell.Artist.text = tempMuzzik.music.artist;
     cell.cellMuzzik = tempMuzzik;
     cell.delegate = self;
     BOOL isplaying = NO;
-    if ([[musicPlayer shareClass].localMuzzik.music.key isEqualToString:tempMuzzik.music.key]) {
+    if ([tempMuzzik.muzzik_id isEqualToString:[musicPlayer shareClass].localMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
         isplaying = YES;
+    }else{
+        isplaying = NO;
     }
-    Globle *glob = [Globle shareGloble];
     UIColor *color;
     if (isplaying) {
         if ([tempMuzzik.color longLongValue] == 1) {
@@ -253,10 +261,17 @@
 }
 */
 -(void)playSongWithSongModel:(muzzik *)songModel{
+    MuzzikRequestCenter *center = [MuzzikRequestCenter shareClass];
+    center.subUrlString = [NSString stringWithFormat:@"api/user/%@/muzziks",self.uid];
+    center.requestDic = [NSDictionary dictionaryWithObjectsAndKeys:lastId,Parameter_from,Limit_Constant,Parameter_Limit, nil];
+    center.isPage = NO;
+    center.singleMusic = NO;
+    center.MuzzikType = Type_Muzzik_Muzzik;
+    center.lastId = lastId;
+    
     musicPlayer *player = [musicPlayer shareClass];
     player.listType = TempList;
-    player.MusicArray = self.muzziks;
-    player.index = [self.muzziks indexOfObject:songModel];
+    player.MusicArray = [self.muzziks mutableCopy];
     NSString *titleName;
     if ([self.uid isEqualToString:[userInfo shareClass].uid]) {
         titleName = @"我的歌单";

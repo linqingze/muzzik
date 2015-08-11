@@ -16,6 +16,7 @@
 }
 @property (nonatomic,retain)muzzik * localMuzzik;
 @property (nonatomic,strong) NSMutableArray * MusicArray;
+
 @property (nonatomic,assign) NSInteger index;
 @property (nonatomic) NSInteger playModel;
 @property (nonatomic,retain) RFRadioView * radioView;

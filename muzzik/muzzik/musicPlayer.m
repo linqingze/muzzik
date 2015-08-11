@@ -104,8 +104,15 @@ static NSMutableArray *playList;
     //[_radioView setRadioViewLrc];
    
    
-    
-    self.index = [self.MusicArray indexOfObject:playMuzzik];
+    for (muzzik *tempmuzzik in self.MusicArray) {
+       
+        if ([tempmuzzik.muzzik_id isEqualToString:playMuzzik.muzzik_id] ||([playMuzzik.muzzik_id length]==0 && [tempmuzzik.music.music_id isEqualToString:playMuzzik.music.music_id])) {
+            NSLog(@"%d",[tempmuzzik.muzzik_id isEqualToString:playMuzzik.muzzik_id]);
+            NSLog(@"%d",([playMuzzik.muzzik_id length]==0 && [tempmuzzik.music.music_id isEqualToString:playMuzzik.music.music_id]));
+            self.index = [self.MusicArray indexOfObject:tempmuzzik];
+            break;
+        }
+    }
     
 }
 
@@ -188,14 +195,9 @@ static NSMutableArray *playList;
             case 0:
             {
                 self.index+=1;
-                if (self.index>=[self.MusicArray count]) {
-                    self.index = 0;
-                }
-                if ([self.MusicArray count]>1) {
+                if (self.index < [self.MusicArray count]) {
                     _localMuzzik = [self.MusicArray objectAtIndex:self.index];
                     [self playSongWithSongModel:_localMuzzik Title:nil];
-                }else{
-                    [[AudioPlayer shareClass] play:self.radioView.musicUrl];
                 }
                 
             }
@@ -221,23 +223,33 @@ static NSMutableArray *playList;
 }
 -(void)playNext{
     if ([self.MusicArray count]!=0) {
+        
         self.index+=1;
-        if (self.index==[self.MusicArray count] ) {
-            self.index = 0;
-        }
-        if ([self.MusicArray count]>1) {
-            muzzik *tempMuzzik =[self.MusicArray objectAtIndex:self.index];
-            if (tempMuzzik.music) {
-                [self playSongWithSongModel:[self.MusicArray objectAtIndex:self.index] Title:nil];
-            }else{
-                [self playNext];
-            }
-            
+        if (self.index < [self.MusicArray count]) {
+            _localMuzzik = [self.MusicArray objectAtIndex:self.index];
+            [self playSongWithSongModel:_localMuzzik Title:nil];
         }else{
             [[AudioPlayer shareClass] stop];
             globle.isPlaying = NO;
             [[NSNotificationCenter defaultCenter] postNotificationName:String_SetSongPlayNextNotification object:nil];
         }
+//        
+//        
+//        self.index+=1;
+//
+//        if ([self.MusicArray count]>1) {
+//            muzzik *tempMuzzik =[self.MusicArray objectAtIndex:self.index];
+//            if (tempMuzzik.music) {
+//                [self playSongWithSongModel:[self.MusicArray objectAtIndex:self.index] Title:nil];
+//            }else{
+//                [self playNext];
+//            }
+//            
+//        }else{
+//            [[AudioPlayer shareClass] stop];
+//            globle.isPlaying = NO;
+//            [[NSNotificationCenter defaultCenter] postNotificationName:String_SetSongPlayNextNotification object:nil];
+//        }
         
     }
 

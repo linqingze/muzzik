@@ -23,6 +23,7 @@
     UITableView *myTableView;
     UIImageView *blankTipsImage;
     UILabel *searchBlankLabel;
+    NSMutableDictionary *RefreshDic;
 }
 @property(nonatomic,retain)NSMutableArray *searchArray;
 @end
@@ -32,6 +33,7 @@
 - (void)viewDidLoad {
     page = 1;
     [super viewDidLoad];
+    RefreshDic = [NSMutableDictionary dictionary];
     [self initNagationBar:@"搜索用户" leftBtn:0 rightBtn:0];
     searchBlankLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 200)];
     [searchBlankLabel setTextColor:Color_Additional_5];
@@ -109,8 +111,16 @@
     searchUserCell *cell = [tableView dequeueReusableCellWithIdentifier:@"searchUserCell" forIndexPath:indexPath];
     MuzzikUser *muzzikuser = self.searchArray[indexPath.row];
     [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+    if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
+        [cell.headerImage setAlpha:0];
+        [RefreshDic setObject:indexPath forKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
+    }
+    
     [cell.headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,muzzikuser.avatar]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-        [cell.headerImage setAlpha:1];
+        [UIView animateWithDuration:0.5 animations:^{
+            [cell.headerImage setAlpha:1];
+        }];
+        
     }];
     cell.delegate = self;
     cell.muzzikUser = muzzikuser;
@@ -170,52 +180,60 @@
 //关注用户
 -(void)attention:(NSInteger)index{
     MuzzikUser *attentionuser = self.searchArray[index];
-    if (attentionuser.isFollow) {
-        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_user_Unfollow]]];
-        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:attentionuser.user_id forKey:@"_id"] Method:PostMethod auth:YES];
-        __weak ASIHTTPRequest *weakrequest = requestForm;
-        [requestForm setCompletionBlock :^{
-            NSLog(@"%@",[weakrequest responseString]);
-            NSLog(@"%d",[weakrequest responseStatusCode]);
-            
-            if ([weakrequest responseStatusCode] == 200) {
-                attentionuser.isFollow = NO;
-                [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
+    userInfo *user = [userInfo shareClass];
+    if ([user.token length]>0) {
+        if (attentionuser.isFollow) {
+            attentionuser.isFollow = NO;
+            [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
+            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_user_Unfollow]]];
+            [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:attentionuser.user_id forKey:@"_id"] Method:PostMethod auth:YES];
+            __weak ASIHTTPRequest *weakrequest = requestForm;
+            [requestForm setCompletionBlock :^{
+                NSLog(@"%@",[weakrequest responseString]);
+                NSLog(@"%d",[weakrequest responseStatusCode]);
                 
-            }
-            else{
-                //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-            }
-        }];
-        [requestForm setFailedBlock:^{
-            NSLog(@"%@",[weakrequest error]);
-            NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-            [userInfo checkLoginWithVC:self];
-        }];
-        [requestForm startAsynchronous];
+                if ([weakrequest responseStatusCode] == 200) {
+                    
+                    
+                }
+                else{
+                    //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+                }
+            }];
+            [requestForm setFailedBlock:^{
+                NSLog(@"%@",[weakrequest error]);
+                NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
+                
+            }];
+            [requestForm startAsynchronous];
+        }
+        else{
+            attentionuser.isFollow = YES;
+            [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
+            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_User_Follow]]];
+            [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:attentionuser.user_id forKey:@"_id"] Method:PostMethod auth:YES];
+            __weak ASIHTTPRequest *weakrequest = requestForm;
+            [requestForm setCompletionBlock :^{
+                NSLog(@"%@",[weakrequest responseString]);
+                NSLog(@"%d",[weakrequest responseStatusCode]);
+                
+                if ([weakrequest responseStatusCode] == 200) {
+                    
+                }
+                else{
+                    //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+                }
+            }];
+            [requestForm setFailedBlock:^{
+                NSLog(@"%@",[weakrequest error]);
+                NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
+            }];
+            [requestForm startAsynchronous];
+        }
     }else{
-        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_User_Follow]]];
-        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:attentionuser.user_id forKey:@"_id"] Method:PostMethod auth:YES];
-        __weak ASIHTTPRequest *weakrequest = requestForm;
-        [requestForm setCompletionBlock :^{
-            NSLog(@"%@",[weakrequest responseString]);
-            NSLog(@"%d",[weakrequest responseStatusCode]);
-            
-            if ([weakrequest responseStatusCode] == 200) {
-                attentionuser.isFollow = YES;
-                [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
-            }
-            else{
-                //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-            }
-        }];
-        [requestForm setFailedBlock:^{
-            NSLog(@"%@",[weakrequest error]);
-            NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-            [userInfo checkLoginWithVC:self];
-        }];
-        [requestForm startAsynchronous];
+        [userInfo checkLoginWithVC:self];
     }
+   
 }
 
 -(void) searchUser{

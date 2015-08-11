@@ -14,10 +14,10 @@
 @interface SongTableViewController (){
     NSInteger indexOfMuzzik;
     BOOL isSearch;
-    NSString *pageID;
     NSInteger _index;
     NSString *_searchText;
-    NSInteger page;
+    NSUInteger page;
+    NSUInteger SearchPage;
 }
 @property(nonatomic,retain)NSMutableArray *movedMusicArray;
 @property(nonatomic,retain)NSMutableArray *searchArray;
@@ -34,6 +34,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     page = 1;
+    SearchPage = 1;
+    self.movedMusicArray = [NSMutableArray array];
+    self.searchArray = [NSMutableArray array];
     UIImageView *emptyImage;
     int i = rand()%3;
     if (i == 0) {
@@ -55,10 +58,22 @@
         NSLog(@"%d",[weakrequest responseStatusCode]);
         if ([weakrequest responseStatusCode] == 200) {
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
-            pageID = [dic objectForKey:@"page"];
-             pageID = [NSString stringWithFormat:@"%d",[pageID intValue]+1];
-            muzzik *tempMuzzik = [muzzik new];
-            self.movedMusicArray = [tempMuzzik makeMuzziksByMusicArray:[dic objectForKey:@"music"]];
+            page ++;
+            muzzik *muzzikToy = [muzzik new];
+            NSMutableArray *songarray = [muzzikToy makeMuzziksByMusicArray:[dic objectForKey:@"music"]];
+            for (muzzik *localMuzzik in songarray) {
+                BOOL isContained = NO;
+                for (muzzik *originMuzzik in self.movedMusicArray ) {
+                    if ([originMuzzik.music.name isEqualToString:localMuzzik.music.name] && [originMuzzik.music.artist isEqualToString:localMuzzik.music.artist]) {
+                        isContained = YES;
+                        break;
+                    }
+                    
+                }
+                if (!isContained) {
+                    [self.movedMusicArray  addObject:localMuzzik];
+                }
+            }
             if ([self.movedMusicArray count]>0) {
                 [self.tableView reloadData];
             }else{
@@ -83,12 +98,14 @@
 
 - (void)refreshFooter
 {
-   
-    // [self updateSomeThing];
-    page++;
 
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Get_Moved_music]]];
-    [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%ld",(long)page],Parameter_page,Limit_Constant,Parameter_Limit,[_searchText stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],@"search", nil] Method:GetMethod auth:YES];
+    if (isSearch) {
+        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%ld",(long)SearchPage],Parameter_page,Limit_Constant,Parameter_Limit,[_searchText stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],@"search", nil] Method:GetMethod auth:YES];
+    }else{
+        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%ld",(long)page],Parameter_page,Limit_Constant,Parameter_Limit,[_searchText stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],@"search", nil] Method:GetMethod auth:YES];
+    }
+    
     __weak ASIHTTPRequest *weakrequest = requestForm;
     [requestForm setCompletionBlock :^{
         NSLog(@"%@",[weakrequest responseString]);
@@ -97,11 +114,42 @@
         if ([weakrequest responseStatusCode] == 200) {
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
             if (isSearch) {
-                
-                [self.searchArray addObjectsFromArray:[[muzzik new] makeMuzziksByMusicArray:[dic objectForKey:@"music"]]];
+                SearchPage ++;
+                muzzik *muzzikToy = [muzzik new];
+                NSMutableArray *songarray = [muzzikToy makeMuzziksByMusicArray:[dic objectForKey:@"music"]];
+                for (muzzik *localMuzzik in songarray) {
+                    BOOL isContained = NO;
+                    for (muzzik *originMuzzik in self.searchArray ) {
+                        if ([originMuzzik.music.name isEqualToString:localMuzzik.music.name] && [originMuzzik.music.artist isEqualToString:localMuzzik.music.artist]) {
+                            isContained = YES;
+                            break;
+                        }
+                        
+                    }
+                    if (!isContained) {
+                        [self.searchArray  addObject:localMuzzik];
+                    }
+                }
+
                                     
             }else{
-                [self.movedMusicArray addObjectsFromArray:[[muzzik new] makeMuzziksByMusicArray:[dic objectForKey:@"music"]]];
+                page++;
+                muzzik *muzzikToy = [muzzik new];
+                NSMutableArray *songarray = [muzzikToy makeMuzziksByMusicArray:[dic objectForKey:@"music"]];
+                for (muzzik *localMuzzik in songarray) {
+                    BOOL isContained = NO;
+                    for (muzzik *originMuzzik in self.movedMusicArray ) {
+                        if ([originMuzzik.music.name isEqualToString:localMuzzik.music.name] && [originMuzzik.music.artist isEqualToString:localMuzzik.music.artist]) {
+                            isContained = YES;
+                            break;
+                        }
+                        
+                    }
+                    if (!isContained) {
+                        [self.movedMusicArray  addObject:localMuzzik];
+                    }
+                }
+
                 [MuzzikItem SetUserInfoWithMuzziks:self.movedMusicArray title:Constant_userInfo_move description:[NSString stringWithFormat:@"喜欢列表"]];
             }
             
@@ -200,10 +248,23 @@
 }
 
 -(void)playMuzzikWithIndex:(NSInteger)index{
+    
+    MuzzikRequestCenter *center = [MuzzikRequestCenter shareClass];
+    center.subUrlString = URL_Get_Moved_music;
+
+    center.isPage = YES;
+    center.singleMusic = NO;
+    if (isSearch) {
+        center.requestDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%ld",(long)SearchPage],Parameter_page,Limit_Constant,Parameter_Limit,[_searchText stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],@"search", nil];
+        center.page = SearchPage;
+    }else{
+        center.requestDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%ld",(long)page],Parameter_page,Limit_Constant,Parameter_Limit,[_searchText stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],@"search", nil];
+        center.page = page;
+    }
+    
     musicPlayer *player = [musicPlayer shareClass];
     player.listType = MovedList;
-    player.MusicArray = [self.searchArray count]>0 ?self.searchArray:self.movedMusicArray;
-    player.index = index;
+    player.MusicArray = [[self.searchArray count]>0 ?self.searchArray:self.movedMusicArray mutableCopy];
     [player playSongWithSongModel:isSearch ?self.searchArray[index]:self.movedMusicArray[index] Title:isSearch? [NSString stringWithFormat:@"搜索 %@ 的歌曲",_searchText] : @"喜欢列表"];
     if (isSearch) {
         [MuzzikItem SetUserInfoWithMuzziks:self.searchArray title:Constant_userInfo_temp description:[NSString stringWithFormat:@"搜索 %@ 的歌曲",_searchText]];
@@ -268,6 +329,7 @@
 }
 -(void)updateDataSource:(NSString *)searchText{
     _searchText = searchText;
+    [self.searchArray removeAllObjects];
    // [self.searchArray removeAllObjects];
     if ([searchText length]>0) {
         isSearch = YES;
@@ -279,8 +341,24 @@
             NSLog(@"%d",[weakrequest responseStatusCode]);
             
             if ([weakrequest responseStatusCode] == 200) {
+                SearchPage = 2;
                 NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
-                self.searchArray = [[muzzik new] makeMuzziksByMusicArray:[dic objectForKey:@"music"]];
+                muzzik *muzzikToy = [muzzik new];
+                NSMutableArray *songarray = [muzzikToy makeMuzziksByMusicArray:[dic objectForKey:@"music"]];
+                for (muzzik *localMuzzik in songarray) {
+                    BOOL isContained = NO;
+                    for (muzzik *originMuzzik in self.searchArray ) {
+                        if ([originMuzzik.music.name isEqualToString:localMuzzik.music.name] && [originMuzzik.music.artist isEqualToString:localMuzzik.music.artist]) {
+                            isContained = YES;
+                            break;
+                        }
+                        
+                    }
+                    if (!isContained) {
+                        [self.searchArray  addObject:localMuzzik];
+                    }
+                }
+
                 [self.tableView reloadData];
             }
             else{

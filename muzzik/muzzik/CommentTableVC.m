@@ -356,6 +356,8 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     }
 }
 -(void)playSongWithSongModel:(muzzik *)songModel{
+    MuzzikRequestCenter *center = [MuzzikRequestCenter shareClass];
+    center.singleMusic = YES;
     [musicPlayer shareClass].listType = TempList;
     [musicPlayer shareClass].MusicArray = [NSMutableArray arrayWithArray:@[songModel]];
     [[musicPlayer shareClass] playSongWithSongModel:songModel Title:[NSString stringWithFormat:@"单曲<%@>",songModel.music.name]];

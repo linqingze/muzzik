@@ -27,6 +27,7 @@
 #import "MobClick.h"
 #import "MuzzikObject.h"
 #import "WeiboSDK.h"
+#import "MuzzikRequestCenter.h"
 #endif
 #define muzzik_muzzik_PrefixHeader_pch
 

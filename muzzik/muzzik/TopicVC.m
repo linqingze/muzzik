@@ -849,19 +849,20 @@
     
     userInfo *user = [userInfo shareClass];
     if ([user.token length]>0) {
+        suggestMuzzik.ismoved = !suggestMuzzik.ismoved;
+        if (suggestMuzzik.ismoved) {
+            suggestMuzzik.moveds = [NSString stringWithFormat:@"%d",[suggestMuzzik.moveds intValue]+1 ];
+        }else{
+            suggestMuzzik.moveds = [NSString stringWithFormat:@"%d",[suggestMuzzik.moveds intValue]-1 ];
+        }
+        [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:suggestMuzzik];
         ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/%@/moved",BaseURL,suggestMuzzik.muzzik_id]]];
-        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:!suggestMuzzik.ismoved] forKey:@"ismoved"] Method:PostMethod auth:YES];
+        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:suggestMuzzik.ismoved] forKey:@"ismoved"] Method:PostMethod auth:YES];
         __weak ASIHTTPRequest *weakrequest = requestForm;
         [requestForm setCompletionBlock :^{
             if ([weakrequest responseStatusCode] == 200) {
                 // NSData *data = [weakrequest responseData];
-                suggestMuzzik.ismoved = !suggestMuzzik.ismoved;
-                if (suggestMuzzik.ismoved) {
-                    suggestMuzzik.moveds = [NSString stringWithFormat:@"%d",[suggestMuzzik.moveds intValue]+1 ];
-                }else{
-                    suggestMuzzik.moveds = [NSString stringWithFormat:@"%d",[suggestMuzzik.moveds intValue]-1 ];
-                }
-                [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:suggestMuzzik];
+                
                 
                 
             }
@@ -882,6 +883,8 @@
 }
 
 -(void)playMusicAction{
+    MuzzikRequestCenter *center = [MuzzikRequestCenter shareClass];
+    center.singleMusic = YES;
     [musicPlayer shareClass].listType = suggestList;
     [musicPlayer shareClass].MusicArray = [NSMutableArray arrayWithArray:suggestArray];
     [[musicPlayer shareClass] playSongWithSongModel:suggestMuzzik Title:@"推荐列表"];
@@ -1003,54 +1006,59 @@
     }
 }
 -(void)follwUser:(UIButton_UserMuzzik *)button{
-    if ([button.followType isEqualToString:@"0"]) {
-        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_User_Follow]]];
-        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:button.user.user_id forKey:@"_id"] Method:PostMethod auth:YES];
-        __weak ASIHTTPRequest *weakrequest = requestForm;
-        [requestForm setCompletionBlock :^{
-            NSLog(@"%@",[weakrequest responseString]);
-            NSLog(@"%d",[weakrequest responseStatusCode]);
-            
-            if ([weakrequest responseStatusCode] == 200) {
-                button.user.isFollow = YES;
-                button.followType = @"1";
-                [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:button.user];
-            }
-            else{
-                //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-            }
-        }];
-        [requestForm setFailedBlock:^{
-            NSLog(@"%@",[weakrequest error]);
-            NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-            [userInfo checkLoginWithVC:self];
-        }];
-        [requestForm startAsynchronous];
+    userInfo *user = [userInfo shareClass];
+    if ([user.token length]>0) {
         
-    }else{
-        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_user_Unfollow]]];
-        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:button.user.user_id forKey:@"_id"] Method:PostMethod auth:YES];
-        __weak ASIHTTPRequest *weakrequest = requestForm;
-        [requestForm setCompletionBlock :^{
-            NSLog(@"%@",[weakrequest responseString]);
-            NSLog(@"%d",[weakrequest responseStatusCode]);
-            
-            if ([weakrequest responseStatusCode] == 200) {
-                button.user.isFollow = NO;
-                button.followType = @"0";
+        if ([button.followType isEqualToString:@"0"]) {
+            button.user.isFollow = YES;
+            button.followType = @"1";
+            [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:button.user];
+            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_User_Follow]]];
+            [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:button.user.user_id forKey:@"_id"] Method:PostMethod auth:YES];
+            __weak ASIHTTPRequest *weakrequest = requestForm;
+            [requestForm setCompletionBlock :^{
+                NSLog(@"%@",[weakrequest responseString]);
+                NSLog(@"%d",[weakrequest responseStatusCode]);
                 
-                [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:button.user];
-            }
-            else{
-                //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-            }
-        }];
-        [requestForm setFailedBlock:^{
-            NSLog(@"%@",[weakrequest error]);
-            NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-            [userInfo checkLoginWithVC:self];
-        }];
-        [requestForm startAsynchronous];
+                if ([weakrequest responseStatusCode] == 200) {
+                   
+                }
+                else{
+                    //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+                }
+            }];
+            [requestForm setFailedBlock:^{
+                NSLog(@"%@",[weakrequest error]);
+
+            }];
+            [requestForm startAsynchronous];
+            
+        }
+        else{
+            button.user.isFollow = NO;
+            button.followType = @"0";
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:button.user];
+            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_user_Unfollow]]];
+            [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:button.user.user_id forKey:@"_id"] Method:PostMethod auth:YES];
+            __weak ASIHTTPRequest *weakrequest = requestForm;
+            [requestForm setCompletionBlock :^{
+                NSLog(@"%@",[weakrequest responseString]);
+                NSLog(@"%d",[weakrequest responseStatusCode]);
+                
+                if ([weakrequest responseStatusCode] == 200) {
+                   
+                }
+                else{
+                    //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+                }
+            }];
+            [requestForm setFailedBlock:^{
+                NSLog(@"%@",[weakrequest error]);
+            }];
+            [requestForm startAsynchronous];
+        }
     }
+    
 }
 @end
