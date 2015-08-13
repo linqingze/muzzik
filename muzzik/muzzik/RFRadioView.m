@@ -317,7 +317,8 @@
                 NSLog(@"%@",[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,_playMuzzik.MuzzikUser.avatar]);
                 [headerImage setUserInteractionEnabled:YES];
                 headerImage.user = _playMuzzik.MuzzikUser;
-                [headerImage sd_setBackgroundImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,_playMuzzik.MuzzikUser.avatar]]  forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder]];
+                [headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,_playMuzzik.MuzzikUser.avatar,Image_Size_Small]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder] options:SDWebImageRetryFailed ];
+                
             }else{
                 [attentionButton setHidden:YES];
                 
@@ -327,7 +328,7 @@
                     MuzzikUser *muser = [MuzzikUser new];
                     muser.user_id = user.uid;
                     headerImage.user = muser;
-                    [headerImage sd_setBackgroundImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,user.avatar]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder]];
+                    [headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,user.avatar,Image_Size_Small]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder] options:SDWebImageRetryFailed ];
                     nickLabel.text = user.name;
                 }else{
                     [attentionButton setHidden:YES];
@@ -889,13 +890,13 @@
                 NSLog(@"%@",[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,_playMuzzik.MuzzikUser.avatar]);
                 [headerImage setUserInteractionEnabled:YES];
                 headerImage.user = _playMuzzik.MuzzikUser;
-                [headerImage sd_setBackgroundImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,_playMuzzik.MuzzikUser.avatar]]  forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder]];
+                [headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,_playMuzzik.MuzzikUser.avatar,Image_Size_Small]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder] options:SDWebImageRetryFailed ];
             }else{
                 [attentionButton setHidden:YES];
                 [headerImage setUserInteractionEnabled:NO];
                 userInfo *user = [userInfo shareClass];
                 if ([user.token length]>0) {
-                    [headerImage sd_setBackgroundImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,user.avatar]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder]];
+                    [headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,user.avatar,Image_Size_Small]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder] options:SDWebImageRetryFailed ];
                     nickLabel.text = user.name;
                 }else{
                     [attentionButton setHidden:YES];

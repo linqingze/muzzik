@@ -259,27 +259,68 @@
     NSAttributedString * attr= [[NSAttributedString alloc] initWithString:@"拖动歌词选取你喜欢的话\n并移动到合适的位置" attributes:attributes];
     tipsLabel.attributedText = attr;
     shareChannelView = [[UIView alloc] initWithFrame:CGRectMake(-SCREEN_WIDTH, SCREEN_WIDTH+35, SCREEN_WIDTH, 60)];
-    weiboShare = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-45, 0, 90, 60)];
-    weChatshare = [[UIButton alloc] initWithFrame:CGRectMake(16, 0, 90, 60)];
-    QQZoneShare = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-106, 0, 90, 60)];
     
-    [weiboShare setImage:[UIImage imageNamed:@"shareunselectedweibo"] forState:UIControlStateNormal];
-    [weChatshare setImage:[UIImage imageNamed:@"sharefriendcircle"] forState:UIControlStateNormal];
-    [QQZoneShare setImage:[UIImage imageNamed:@"shareunselectedqzone"] forState:UIControlStateNormal];
-    
-    [QQZoneShare addTarget:self action:@selector(setChannelShare:) forControlEvents:UIControlEventTouchUpInside];
-    [weChatshare addTarget:self action:@selector(setChannelShare:) forControlEvents:UIControlEventTouchUpInside];
-    [weiboShare addTarget:self action:@selector(setChannelShare:) forControlEvents:UIControlEventTouchUpInside];
     userInfo *user = [userInfo shareClass];
-    if (!user.QQInstalled) {
-        [QQZoneShare setEnabled:NO];
+    if (user.WeChatInstalled && user.QQInstalled) {
+        isShareToWeiChat = YES;
+        weiboShare = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-45, 0, 90, 60)];
+        weChatshare = [[UIButton alloc] initWithFrame:CGRectMake(16, 0, 90, 60)];
+        QQZoneShare = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-106, 0, 90, 60)];
+        
+        [weiboShare setImage:[UIImage imageNamed:@"shareunselectedweibo"] forState:UIControlStateNormal];
+        [weChatshare setImage:[UIImage imageNamed:@"sharefriendcircle"] forState:UIControlStateNormal];
+        [QQZoneShare setImage:[UIImage imageNamed:@"shareunselectedqzone"] forState:UIControlStateNormal];
+        
+        [QQZoneShare addTarget:self action:@selector(setChannelShare:) forControlEvents:UIControlEventTouchUpInside];
+        [weChatshare addTarget:self action:@selector(setChannelShare:) forControlEvents:UIControlEventTouchUpInside];
+        [weiboShare addTarget:self action:@selector(setChannelShare:) forControlEvents:UIControlEventTouchUpInside];
+        
+        [shareChannelView addSubview:QQZoneShare];
+        [shareChannelView addSubview:weiboShare];
+        [shareChannelView addSubview:weChatshare];
+        
     }
-    if (!user.WeChatInstalled) {
-        [weChatshare setEnabled:NO];
+    else if(user.WeChatInstalled || user.QQInstalled){
+        if (user.WeChatInstalled) {
+            isShareToWeiChat = YES;
+            weiboShare = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-45, 0, 90, 60)];
+            weChatshare = [[UIButton alloc] initWithFrame:CGRectMake(16, 0, 90, 60)];
+            
+            [weiboShare setImage:[UIImage imageNamed:@"shareunselectedweibo"] forState:UIControlStateNormal];
+            [weChatshare setImage:[UIImage imageNamed:@"sharefriendcircle"] forState:UIControlStateNormal];
+            
+            [weChatshare addTarget:self action:@selector(setChannelShare:) forControlEvents:UIControlEventTouchUpInside];
+            [weiboShare addTarget:self action:@selector(setChannelShare:) forControlEvents:UIControlEventTouchUpInside];
+            
+            [shareChannelView addSubview:weiboShare];
+            [shareChannelView addSubview:weChatshare];
+            
+        }else{
+            isShareToWeiBo = YES;
+            weiboShare = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-45, 0, 90, 60)];
+            QQZoneShare = [[UIButton alloc] initWithFrame:CGRectMake(16, 0, 90, 60)];
+            
+            [weiboShare setImage:[UIImage imageNamed:@"shareunselectedweibo"] forState:UIControlStateNormal];
+            [QQZoneShare setImage:[UIImage imageNamed:@"shareunselectedqzone"] forState:UIControlStateNormal];
+            
+            [QQZoneShare addTarget:self action:@selector(setChannelShare:) forControlEvents:UIControlEventTouchUpInside];
+            [weiboShare addTarget:self action:@selector(setChannelShare:) forControlEvents:UIControlEventTouchUpInside];
+            [shareChannelView addSubview:QQZoneShare];
+            [shareChannelView addSubview:weiboShare];
+            
+        }
     }
-    [shareChannelView addSubview:QQZoneShare];
-    [shareChannelView addSubview:weiboShare];
-    [shareChannelView addSubview:weChatshare];
+    else{
+        isShareToWeiBo = YES;
+        weiboShare = [[UIButton alloc] initWithFrame:CGRectMake(16, 0, 90, 60)];
+        [weiboShare setImage:[UIImage imageNamed:@"shareunselectedweibo"] forState:UIControlStateNormal];
+        [weiboShare addTarget:self action:@selector(setChannelShare:) forControlEvents:UIControlEventTouchUpInside];
+        [shareChannelView addSubview:weiboShare];
+
+    }
+
+    
+    
     NoLyricTips = [[UILabel alloc] initWithFrame:CGRectMake(20, 130, SCREEN_WIDTH-40, 20)];
     [NoLyricTips setTextColor:shareColor];
     NoLyricTips.textAlignment = NSTextAlignmentCenter;
@@ -398,7 +439,7 @@
     }else{
         TableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TableViewCell" forIndexPath:indexPath];
         if (tableView == lyricTablenview) {
-            [cell.label setFrame:CGRectMake(26, 10, SCREEN_WIDTH-52, 40)];
+            [cell.label setFrame:CGRectMake(25, 10, SCREEN_WIDTH-50, 40)];
             cell.label.text = [[lyricArray[indexPath.row] allObjects][0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet ]];
         }else{
             cell.label.text = famousArray[indexPath.row];
@@ -408,7 +449,7 @@
         }else{
             cell.label.textColor = [UIColor blackColor];
         }
-        UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(26, 10, SCREEN_WIDTH-52, 80)];
+        UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(25, 10, SCREEN_WIDTH-50, 80)];
         tempLabel.font = [UIFont fontWithName:Font_default_share size:19];
         tempLabel.text = cell.label.text;
         tempLabel.numberOfLines = 0;
@@ -423,7 +464,7 @@
     if (tableView == fontTableView) {
         return 50;
     }else if(tableView == lyricTablenview){
-        UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(26, 0, SCREEN_WIDTH-52, 50)];
+        UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(25, 0, SCREEN_WIDTH-50, 50)];
         tempLabel.font = [UIFont fontWithName:Font_default_share size:19];
         
         tempLabel.numberOfLines = 0;
@@ -433,7 +474,7 @@
         int textHeight = [MuzzikItem heightForLabel:tempLabel WithText:tempLabel.text];
         return textHeight+25;
     }else{
-        UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(26, 0, SCREEN_WIDTH-52, 50)];
+        UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(25, 0, SCREEN_WIDTH-50, 50)];
         tempLabel.font = [UIFont fontWithName:Font_default_share size:19];
         tempLabel.numberOfLines = 0;
         if ([famousArray count]>0) {
@@ -465,7 +506,7 @@
             if ([lyricArray count]>1) {
                 TableViewCell *cell = (TableViewCell*)[tableView cellForRowAtIndexPath:indexPath];
                 CGPoint point = [cell.superview convertPoint:cell.frame.origin toView:Scroll];
-                RJTextView *textView = [[RJTextView alloc] initWithFrame:CGRectMake(cell.label.frame.origin.x-25, point.y-7.5, cell.label.frame.size.width+50, cell.label.frame.size.height*3-4)
+                RJTextView *textView = [[RJTextView alloc] initWithFrame:CGRectMake(cell.label.frame.origin.x-22, point.y-7.5, cell.label.frame.size.width+44, cell.label.frame.size.height*3-4)
                                                              defaultText:cell.label.text
                                                                     font:[UIFont fontWithName:Font_default_share size:16]
                                                                    color:shareColor
@@ -482,7 +523,7 @@
         }else{
             TableViewCell *cell = (TableViewCell*)[tableView cellForRowAtIndexPath:indexPath];
             CGPoint point = [cell.superview convertPoint:cell.frame.origin toView:Scroll];
-            RJTextView *textView = [[RJTextView alloc] initWithFrame:CGRectMake(cell.label.frame.origin.x-25, point.y-7.5, cell.label.frame.size.width+50, cell.label.frame.size.height*3-4)
+            RJTextView *textView = [[RJTextView alloc] initWithFrame:CGRectMake(cell.label.frame.origin.x-22, point.y-7.5, cell.label.frame.size.width+44, cell.label.frame.size.height*3-4)
                                                          defaultText:cell.label.text
                                                                 font:[UIFont fontWithName:Font_default_share size:16]
                                                                color:shareColor

@@ -21,7 +21,7 @@
 }
 
 -(void)setup{
-    self.label = [[UILabel alloc] initWithFrame:CGRectMake(20, 10, SCREEN_WIDTH-40, 30)];
+    self.label = [[UILabel alloc] initWithFrame:CGRectMake(25, 10, SCREEN_WIDTH-50, 30)];
     self.label.numberOfLines = 0;
     self.label.lineBreakMode = NSLineBreakByWordWrapping;
     self.label.font = [UIFont fontWithName:Font_default_share size:19];

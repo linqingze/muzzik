@@ -10,4 +10,5 @@
 
 @interface songDetailVCViewController : AMScrollingNavbarViewController
 @property (nonatomic,retain) muzzik *detailMuzzik;
+@property(nonatomic) musicPlayer *musicplayer;
 @end

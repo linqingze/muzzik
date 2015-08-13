@@ -26,6 +26,8 @@
 #import "PhotoImageView.h"
 
 @interface DialogVC ()<UITableViewDataSource,UITableViewDelegate,TTTAttributedLabelDelegate,HPGrowingTextViewDelegate,CellDelegate,PhotoImageViewDelegate,UIActionSheetDelegate>{
+    NSMutableDictionary *RefreshDic;
+    
     BOOL isforRepost;
     UITableView *muzzikTableView;
     UIView *headView;
@@ -135,7 +137,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    
+    RefreshDic = [NSMutableDictionary dictionary];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceMuzzikUpdate:) name:String_MuzzikDataSource_update object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceUserUpdate:) name:String_UserDataSource_update object:nil];
@@ -399,10 +401,16 @@
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     muzzik *tempMuzzik = commentArray[indexPath.row];
     CommentMuzzikCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CommentMuzzikCell" forIndexPath:indexPath];
-    [cell.userImage sd_setBackgroundImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,tempMuzzik.MuzzikUser.avatar]] forState:UIControlStateNormal completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-        [UIView animateWithDuration:0.5 animations:^{
-            [cell.userImage setAlpha:1];
-        }];
+    [cell.userImage sd_setBackgroundImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,tempMuzzik.MuzzikUser.avatar,Image_Size_Small]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+        if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
+            [cell.userImage setAlpha:0];
+            [RefreshDic setObject:indexPath forKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
+            [UIView animateWithDuration:0.5 animations:^{
+                [cell.userImage setAlpha:1];
+            }];
+        }
+        
+        
     }];
     
     cell.delegate = self;
@@ -1872,7 +1880,11 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         self.localmuzzik.MuzzikUser.name = [proDic objectForKey:@"name"];
         commentToMuzzik.MuzzikUser.name =[proDic objectForKey:@"name"];
         comnentTextView.placeholder = [NSString stringWithFormat:@"评论 %@",[proDic objectForKey:@"name"]];
-        [_userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,[proDic objectForKey:@"avatar"]]] forState:UIControlStateNormal];
+        [_userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,[proDic objectForKey:@"avatar"],Image_Size_Small]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            [UIView animateWithDuration:0.5 animations:^{
+                [_userImage setAlpha:1];
+            }];
+        }];
         _userName.text = [proDic objectForKey:@"name"];
         
         if (self.localmuzzik.isprivate) {
@@ -1884,11 +1896,12 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         
         NSArray *dicKeys = [proDic allKeys];
         if ([dicKeys containsObject:@"avatar"]) {
-            [_headimage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,[proDic objectForKey:@"avatar"]]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            [_headimage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,[proDic objectForKey:@"avatar"],Image_Size_Big]] placeholderImage:[UIImage imageNamed:Image_placeholdImage] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                 [UIView animateWithDuration:0.5 animations:^{
                     [_headimage setAlpha:1];
                     [_coverImage setAlpha:1];
                 }];
+                
                 
             }];
         }
@@ -2057,7 +2070,11 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
             UIButton *cardHeader = [[UIButton alloc] initWithFrame:CGRectMake(15, 15, 67, 67)];
             cardHeader.layer.cornerRadius = 33.5;
             cardHeader.clipsToBounds = YES;
-            [cardHeader sd_setBackgroundImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,[proDic objectForKey:@"avatar"]]] forState:UIControlStateNormal];
+            [cardHeader sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,[proDic objectForKey:@"avatar"],Image_Size_Small]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                [UIView animateWithDuration:0.5 animations:^{
+                    [cardHeader setAlpha:1];
+                }];
+            }];
             
             [cardHeader addTarget:self action:@selector(goToUser) forControlEvents:UIControlEventTouchUpInside];
             [cardView addSubview:cardHeader];
@@ -2223,8 +2240,13 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
                     _poImage.delegate = self;
                     _poImage.layer.cornerRadius = 3;
                     _poImage.clipsToBounds = YES;
-                    [_poImage  sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/600/h/600",BaseURL_image,self.localmuzzik.image]]];
-                    [_muzzikView addSubview:_poImage];
+                    [_poImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,self.localmuzzik.image,Image_Size_Big]] placeholderImage:[UIImage imageNamed:Image_placeholdImage] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                        [UIView animateWithDuration:0.5 animations:^{
+                            [_poImage setAlpha:1];
+                        }];
+                        
+                        
+                    }];
                     
                     _reposts = [[UIButton alloc] initWithFrame:CGRectMake((int)((SCREEN_WIDTH-32)/4)+16, CGRectGetMaxY(_progress.frame)+SCREEN_WIDTH+28, (int)((SCREEN_WIDTH-32)/4), 40)];
                     

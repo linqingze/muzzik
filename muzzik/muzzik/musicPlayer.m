@@ -162,7 +162,7 @@ static NSMutableArray *playList;
             [dict setObject:[NSNumber numberWithDouble:[AudioPlayer shareClass].progress] forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
             if ([_localMuzzik.image length]>0) {
                 UIImageView *imageview = [[UIImageView alloc] init];
-                [imageview sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/600/h/600",BaseURL_image,_localMuzzik.image]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                [imageview sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,_localMuzzik.image,Image_Size_Big]] placeholderImage:nil options:SDWebImageRetryFailed  completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                     [dict setObject:[[MPMediaItemArtwork alloc] initWithImage:image] forKey:MPMediaItemPropertyArtwork];
                     [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:dict];
                 }];

@@ -214,4 +214,9 @@
 #define Constant_userInfo_move      @"move"
 #define Constant_userInfo_own       @"own"
 #define Constant_userInfo_follow    @"follow"
+
+
+
+#define Image_Size_Small            @"?imageView2/1/w/100/h/100"
+#define Image_Size_Big            @"?imageView2/1/w/500/h/500"
 #endif

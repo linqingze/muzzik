@@ -18,6 +18,7 @@
     NSMutableArray *topicArray;
     int page;
     UIButton *newButton;
+    NSMutableDictionary *RefreshDic;
 }
 
 @end
@@ -26,6 +27,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    RefreshDic = [NSMutableDictionary dictionary];
     page = 1;
     [self initNagationBar:@"话题" leftBtn:Constant_backImage rightBtn:0];
     topicTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
@@ -209,10 +211,17 @@
     topicRankCell *cell = [tableView dequeueReusableCellWithIdentifier:@"topicRankCell" forIndexPath:indexPath];
     TopicModel *tempTopic = topicArray[indexPath.row];
     [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-    [cell.userHead sd_setBackgroundImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempTopic.lastPoster.avatar]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-        [UIView animateWithDuration:0.5 animations:^{
-            [cell.userHead setAlpha:1];
-        }];
+    [cell.userHead sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,tempTopic.lastPoster.avatar,Image_Size_Small]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+        if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
+            [cell.userHead setAlpha:0];
+            [RefreshDic setObject:indexPath forKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
+            [UIView animateWithDuration:0.5 animations:^{
+                [cell.userHead setAlpha:1];
+            }];
+        }
+        
+        
+        
     }];
     cell.delegate = self;
     cell.topicModel = tempTopic;

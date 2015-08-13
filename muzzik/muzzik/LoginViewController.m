@@ -194,37 +194,76 @@
     [lineView5 setBackgroundColor:[UIColor colorWithHexString:@"a8acbb"]];
     [lineView5 setAlpha:0.3];
     [self.view addSubview:lineView5];
-    
-    localPosition = localPosition + [spaceArray[i++] floatValue]+12;
-    UIButton *QQButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-16, localPosition, 32, 32)];
-    [QQButton setImage:[UIImage imageNamed:@"LoginqqImage"] forState:UIControlStateNormal];
-    [QQButton addTarget:self action:@selector(QQlogin) forControlEvents:UIControlEventTouchUpInside];
-    QQButton.layer.cornerRadius = 3;
-    QQButton.clipsToBounds = YES;
-    [self.view addSubview:QQButton];
-
-    
-    UIButton *WeiChatButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-78, localPosition, 32, 32)];
-    [WeiChatButton setImage:[UIImage imageNamed:@"LoginwechatImage"] forState:UIControlStateNormal];
-    [WeiChatButton addTarget:self action:@selector(WeiChatlogin) forControlEvents:UIControlEventTouchUpInside];
-    WeiChatButton.layer.cornerRadius = 3;
-    WeiChatButton.clipsToBounds = YES;
-    [self.view addSubview:WeiChatButton];
-
-    UIButton *weiboButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2+46, localPosition, 32, 32)];
-    [weiboButton setImage:[UIImage imageNamed:@"LoginweiboImage"] forState:UIControlStateNormal];
-    [weiboButton addTarget:self action:@selector(weibologin) forControlEvents:UIControlEventTouchUpInside];
-    weiboButton.layer.cornerRadius = 3;
-    weiboButton.clipsToBounds = YES;
-    [self.view addSubview:weiboButton];
-    userInfo *user  = [userInfo shareClass];
+    userInfo *user = [userInfo shareClass];
     user.isSwitchUser = YES;
-    if (!user.QQInstalled) {
-        [QQButton setEnabled:NO];
+    localPosition = localPosition + [spaceArray[i++] floatValue]+12;
+    if (user.QQInstalled &&user.WeChatInstalled) {
+        
+        UIButton *QQButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-16, localPosition, 32, 32)];
+        [QQButton setImage:[UIImage imageNamed:@"LoginqqImage"] forState:UIControlStateNormal];
+        [QQButton addTarget:self action:@selector(QQlogin) forControlEvents:UIControlEventTouchUpInside];
+        QQButton.layer.cornerRadius = 3;
+        QQButton.clipsToBounds = YES;
+        [self.view addSubview:QQButton];
+        
+        UIButton *WeiChatButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-78, localPosition, 32, 32)];
+        [WeiChatButton setImage:[UIImage imageNamed:@"LoginwechatImage"] forState:UIControlStateNormal];
+        [WeiChatButton addTarget:self action:@selector(WeiChatlogin) forControlEvents:UIControlEventTouchUpInside];
+        WeiChatButton.layer.cornerRadius = 3;
+        WeiChatButton.clipsToBounds = YES;
+        [self.view addSubview:WeiChatButton];
+        
+        UIButton *weiboButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2+46, localPosition, 32, 32)];
+        [weiboButton setImage:[UIImage imageNamed:@"LoginweiboImage"] forState:UIControlStateNormal];
+        [weiboButton addTarget:self action:@selector(weibologin) forControlEvents:UIControlEventTouchUpInside];
+        weiboButton.layer.cornerRadius = 3;
+        weiboButton.clipsToBounds = YES;
+        [self.view addSubview:weiboButton];
+        
+        
+    }else if(user.QQInstalled || user.WeChatInstalled){
+        if (user.WeChatInstalled) {
+            UIButton *WeiChatButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-47, localPosition, 32, 32)];
+            [WeiChatButton setImage:[UIImage imageNamed:@"LoginwechatImage"] forState:UIControlStateNormal];
+            [WeiChatButton addTarget:self action:@selector(WeiChatlogin) forControlEvents:UIControlEventTouchUpInside];
+            WeiChatButton.layer.cornerRadius = 3;
+            WeiChatButton.clipsToBounds = YES;
+            [self.view addSubview:WeiChatButton];
+            
+            UIButton *weiboButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2+15, localPosition, 32, 32)];
+            [weiboButton setImage:[UIImage imageNamed:@"LoginweiboImage"] forState:UIControlStateNormal];
+            [weiboButton addTarget:self action:@selector(weibologin) forControlEvents:UIControlEventTouchUpInside];
+            weiboButton.layer.cornerRadius = 3;
+            weiboButton.clipsToBounds = YES;
+            [self.view addSubview:weiboButton];
+        }else{
+            UIButton *QQButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-47, localPosition, 32, 32)];
+            [QQButton setImage:[UIImage imageNamed:@"LoginqqImage"] forState:UIControlStateNormal];
+            [QQButton addTarget:self action:@selector(QQlogin) forControlEvents:UIControlEventTouchUpInside];
+            QQButton.layer.cornerRadius = 3;
+            QQButton.clipsToBounds = YES;
+            [self.view addSubview:QQButton];
+
+            
+            UIButton *weiboButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2+15, localPosition, 32, 32)];
+            [weiboButton setImage:[UIImage imageNamed:@"LoginweiboImage"] forState:UIControlStateNormal];
+            [weiboButton addTarget:self action:@selector(weibologin) forControlEvents:UIControlEventTouchUpInside];
+            weiboButton.layer.cornerRadius = 3;
+            weiboButton.clipsToBounds = YES;
+            [self.view addSubview:weiboButton];
+        }
+    }else{
+        
+        UIButton *weiboButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-16, localPosition, 32, 32)];
+        [weiboButton setImage:[UIImage imageNamed:@"LoginweiboImage"] forState:UIControlStateNormal];
+        [weiboButton addTarget:self action:@selector(weibologin) forControlEvents:UIControlEventTouchUpInside];
+        weiboButton.layer.cornerRadius = 3;
+        weiboButton.clipsToBounds = YES;
+        [self.view addSubview:weiboButton];
     }
-    if (!user.WeChatInstalled) {
-        [WeiChatButton setEnabled:NO];
-    }
+
+    
+    
     
     
 }

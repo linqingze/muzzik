@@ -18,6 +18,7 @@
     UITableView *notifyTabelView;
     NSMutableArray *notifyArray;
     int page;
+    NSMutableDictionary *RefreshDic;
     
 }
 
@@ -28,6 +29,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     page =1;
+    RefreshDic = [NSMutableDictionary dictionary];
     [[MuzzikObject shareClass].notifyBUtton setHidden:YES];
     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteMuzzik:) name:String_Muzzik_Delete object:nil];
@@ -194,10 +196,16 @@
         }else{
             [cell.preImage setImage:[UIImage imageNamed:Image_notifollowImage]];
         }
-        [cell.headImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempNotify.user.avatar]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-            [UIView animateWithDuration:0.5 animations:^{
-                [cell.headImage setAlpha:1];
-            }];
+        [cell.headImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,tempNotify.user.avatar,Image_Size_Small]] placeholderImage:[UIImage imageNamed:Image_user_placeHolder] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
+                [RefreshDic setObject:indexPath forKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
+                [cell.headImage setAlpha:0];
+                [UIView animateWithDuration:0.5 animations:^{
+                    [cell.headImage setAlpha:1];
+                }];
+            }
+            
+            
         }];
         cell.user_id = tempNotify.user.user_id;
         cell.nameLabel.attributedText = [self creatTextByName:tempNotify.user.name Date:tempNotify.date];
@@ -233,10 +241,16 @@
             }
         }
 
-        [cell.headImage sd_setBackgroundImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempNotify.user.avatar]] forState:UIControlStateNormal completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-            [UIView animateWithDuration:0.5 animations:^{
-                [cell.headImage setAlpha:1];
-            }];
+        [cell.headImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,tempNotify.user.avatar,Image_Size_Small]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
+                [RefreshDic setObject:indexPath forKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
+                [cell.headImage setAlpha:0];
+                [UIView animateWithDuration:0.5 animations:^{
+                    [cell.headImage setAlpha:1];
+                }];
+            }
+            
+            
         }];
         cell.user_id = tempNotify.user.user_id;
         cell.nameLabel.attributedText = [self creatTextByName:tempNotify.user.name Date:tempNotify.date];

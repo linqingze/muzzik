@@ -243,8 +243,12 @@
     if (_profileDic) {
         NSArray *dicKeys = [_profileDic allKeys];
         if ([dicKeys containsObject:@"avatar"]) {
-            [_headimage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,[_profileDic objectForKey:@"avatar"]]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                [_headimage setAlpha:1];
+            [_headimage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,[_profileDic objectForKey:@"avatar"],Image_Size_Big]] placeholderImage:[UIImage imageNamed:Image_placeholdImage] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                [UIView animateWithDuration:0.5 animations:^{
+                    [_headimage setAlpha:1];
+                }];
+                
+                
             }];
         }
         if ([dicKeys containsObject:@"name"]) {

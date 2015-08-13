@@ -39,6 +39,7 @@
     int numberOfProducts;
     BOOL needsLoad;
     NSMutableDictionary *RefreshDic;
+    NSMutableDictionary *ReFreshPoImageDic;
     UITableView *MytableView;
     BOOL isPlaying;
     UIButton *newButton;
@@ -91,7 +92,7 @@
     [self SettingShareView];
     [self followScrollView:MytableView];
     RefreshDic = [NSMutableDictionary dictionary];
-
+    ReFreshPoImageDic = [NSMutableDictionary dictionary];
     newButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-75, SCREEN_HEIGHT-139, 60, 60)];
     newButton.layer.cornerRadius = 28;
     newButton.clipsToBounds = YES;
@@ -445,7 +446,8 @@
 {
     Globle *glob = [Globle shareGloble];
     muzzik *tempMuzzik = [self.muzziks objectAtIndex:indexPath.row];
-    if ([tempMuzzik.type isEqualToString:@"repost"] || [tempMuzzik.type isEqualToString:@"normal"] || [tempMuzzik.type isEqualToString:@"muzzikCard"]) {
+    if ([tempMuzzik.type isEqualToString:@"repost"] || [tempMuzzik.type isEqualToString:@"normal"] || [tempMuzzik.type isEqualToString:@"muzzikCard"])
+    {
         if (![tempMuzzik.image isKindOfClass:[NSNull class]] && [tempMuzzik.image length] == 0) {
             if ([tempMuzzik.type isEqualToString:@"repost"] ){
                 NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
@@ -464,16 +466,19 @@
                     [cell.privateImage setHidden:YES];
                     [cell.userName setFrame:CGRectMake(80, 55, SCREEN_WIDTH-120, 20)];
                 }
-                if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
-                    [cell.userImage setAlpha:0];
-                    [RefreshDic setObject:indexPath forKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
-                }
-                [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,tempMuzzik.MuzzikUser.avatar]] forState:UIControlStateNormal completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                    [UIView animateWithDuration:0.5 animations:^{
-                        [cell.userImage setAlpha:1];
-                    }];
+                
+                [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,tempMuzzik.MuzzikUser.avatar,Image_Size_Small]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                    if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
+                        [cell.userImage setAlpha:0];
+                        [RefreshDic setObject:indexPath forKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
+                        [UIView animateWithDuration:0.5 animations:^{
+                            [cell.userImage setAlpha:1];
+                        }];
+                    }
+                    
                     
                 }];
+                
                 
                 cell.userName.text = tempMuzzik.MuzzikUser.name;
                 [cell.repostImage setHidden:NO];
@@ -532,14 +537,15 @@
                 }else{
                     cell.isPlaying = NO;
                 }
-                if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
-                    [cell.userImage setAlpha:0];
-                    [RefreshDic setObject:indexPath forKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
-                }
-                [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,tempMuzzik.MuzzikUser.avatar]] forState:UIControlStateNormal completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                    [UIView animateWithDuration:0.5 animations:^{
-                        [cell.userImage setAlpha:1];
-                    }];
+                [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,tempMuzzik.MuzzikUser.avatar,Image_Size_Small]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                    if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
+                        [cell.userImage setAlpha:0];
+                        [RefreshDic setObject:indexPath forKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
+                        [UIView animateWithDuration:0.5 animations:^{
+                            [cell.userImage setAlpha:1];
+                        }];
+                    }
+                    
                     
                 }];
                 
@@ -610,17 +616,18 @@
                     cell.isPlaying = NO;
                 }
                 cell.delegate = self;
-                if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
-                    [cell.userImage setAlpha:0];
-                    [RefreshDic setObject:indexPath forKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
-                }
                 cell.cardTitle.text = tempMuzzik.title;
                 cell.userName.text = tempMuzzik.MuzzikUser.name;
                 cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.date];
-                [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,tempMuzzik.MuzzikUser.avatar]] forState:UIControlStateNormal completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                    [UIView animateWithDuration:0.5 animations:^{
-                        [cell.userImage setAlpha:1];
-                    }];
+                [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,tempMuzzik.MuzzikUser.avatar,Image_Size_Small]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                    if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
+                        [cell.userImage setAlpha:0];
+                        [RefreshDic setObject:indexPath forKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
+                        [UIView animateWithDuration:0.5 animations:^{
+                            [cell.userImage setAlpha:1];
+                        }];
+                    }
+                    
                     
                 }];
                 cell.muzzikMessage.delegate = self;
@@ -661,21 +668,27 @@
                     [cell.privateImage setHidden:YES];
                     [cell.userName setFrame:CGRectMake(80, 55, SCREEN_WIDTH-120, 20)];
                 }
-                if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
-                    [cell.userImage setAlpha:0];
-                    [cell.poImage setAlpha:0];
-                    [RefreshDic setObject:indexPath forKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
-                }
-                [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,tempMuzzik.MuzzikUser.avatar]] forState:UIControlStateNormal completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                    [UIView animateWithDuration:0.5 animations:^{
-                        [cell.userImage setAlpha:1];
-                    }];
+                [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,tempMuzzik.MuzzikUser.avatar,Image_Size_Small]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                    if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
+                        [cell.userImage setAlpha:0];
+                        [RefreshDic setObject:indexPath forKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
+                        [UIView animateWithDuration:0.5 animations:^{
+                            [cell.userImage setAlpha:1];
+                        }];
+                    }
+                    
                     
                 }];
-                [cell.poImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/600/h/600",BaseURL_image,tempMuzzik.image]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                    [UIView animateWithDuration:0.5 animations:^{
-                        [cell.poImage setAlpha:1];
-                    }];
+                
+                [cell.poImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,tempMuzzik.image,Image_Size_Big]] placeholderImage:[UIImage imageNamed:Image_placeholdImage] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                    if (![[ReFreshPoImageDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
+                        [cell.poImage setAlpha:0];
+                        [ReFreshPoImageDic setObject:indexPath forKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
+                        [UIView animateWithDuration:0.5 animations:^{
+                            [cell.poImage setAlpha:1];
+                        }];
+                    }
+                    
                     
                 }];
                 cell.userName.text = tempMuzzik.MuzzikUser.name;
@@ -735,23 +748,28 @@
                 }else{
                     cell.isPlaying = NO;
                 }
-                if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
-                    [cell.userImage setAlpha:0];
-                    [cell.poImage setAlpha:0];
-                    [RefreshDic setObject:indexPath forKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
-                }
-                [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,tempMuzzik.MuzzikUser.avatar]] forState:UIControlStateNormal completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                    [UIView animateWithDuration:0.5 animations:^{
-                        [cell.userImage setAlpha:1];
-                    }];
+                [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,tempMuzzik.MuzzikUser.avatar,Image_Size_Small]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                    if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
+                        [cell.userImage setAlpha:0];
+                        [RefreshDic setObject:indexPath forKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
+                        [UIView animateWithDuration:0.5 animations:^{
+                            [cell.userImage setAlpha:1];
+                        }];
+                    }
+                    
                     
                 }];
                 
-                //[cell.poImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,tempMuzzik.image]]];
-                [cell.poImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/600/h/600",BaseURL_image,tempMuzzik.image]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                    [UIView animateWithDuration:0.5 animations:^{
-                        [cell.poImage setAlpha:1];
-                    }];
+                [cell.poImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,tempMuzzik.image,Image_Size_Big]] placeholderImage:[UIImage imageNamed:Image_placeholdImage] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                    if (![[ReFreshPoImageDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
+                        [cell.poImage setAlpha:0];
+                        [ReFreshPoImageDic setObject:indexPath forKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
+                        [UIView animateWithDuration:0.5 animations:^{
+                            [cell.poImage setAlpha:1];
+                        }];
+                    }
+                    
+                    
                 }];
                 cell.userName.text = tempMuzzik.MuzzikUser.name;
                 if (tempMuzzik.isprivate ) {
@@ -819,24 +837,31 @@
                     cell.isPlaying = NO;
                 }
                 cell.delegate = self;
-                if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
-                    [cell.userImage setAlpha:0];
-                    [cell.muzzikCardImage setAlpha:0];
-                    [RefreshDic setObject:indexPath forKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
-                }
                 cell.cardTitle.text = tempMuzzik.title;
                 cell.userName.text = tempMuzzik.MuzzikUser.name;
                 cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.date];
-                [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,tempMuzzik.MuzzikUser.avatar]] forState:UIControlStateNormal completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                    [UIView animateWithDuration:0.5 animations:^{
-                        [cell.userImage setAlpha:1];
-                    }];
+                
+                [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,tempMuzzik.MuzzikUser.avatar,Image_Size_Small]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                    if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
+                        [cell.userImage setAlpha:0];
+                        [RefreshDic setObject:indexPath forKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
+                        [UIView animateWithDuration:0.5 animations:^{
+                            [cell.userImage setAlpha:1];
+                        }];
+                    }
+                    
                     
                 }];
-                [cell.muzzikCardImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/600/h/600",BaseURL_image,tempMuzzik.image]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                    [UIView animateWithDuration:0.5 animations:^{
-                        [cell.muzzikCardImage setAlpha:1];
-                    }];
+                
+                [cell.muzzikCardImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,tempMuzzik.image,Image_Size_Big]] placeholderImage:[UIImage imageNamed:Image_placeholdImage] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                    if (![[ReFreshPoImageDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
+                        [cell.muzzikCardImage setAlpha:0];
+                        [ReFreshPoImageDic setObject:indexPath forKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
+                        [UIView animateWithDuration:0.5 animations:^{
+                            [cell.muzzikCardImage setAlpha:1];
+                        }];
+                    }
+                    
                     
                 }];
                 [cell colorViewWithColorString:[NSString stringWithFormat:@"%@",tempMuzzik.color]];
@@ -864,28 +889,6 @@
             
         }
         
-    }
-    else if ([tempMuzzik.type isEqualToString:@"musicCard"] ){
-        MuzzikSongCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MuzzikSongCell" forIndexPath:indexPath];
-        cell.cardTitle.text = tempMuzzik.title;
-        cell.musicArtist.text = tempMuzzik.music.artist;
-        cell.musicName.text = tempMuzzik.music.name;
-        cell.songModel = tempMuzzik;
-        cell.delegate = self;
-        if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.localMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
-            [cell.playButton setImage:[UIImage imageNamed:Image_stoporangeImage] forState:UIControlStateNormal];
-        }else{
-            [cell.playButton setImage:[UIImage imageNamed:Image_playgreyImage] forState:UIControlStateNormal];
-        }
-        return cell;
-    }
-    else if([tempMuzzik.type isEqualToString:@"topicCard"]){
-        MuzzikTopic *cell = [tableView dequeueReusableCellWithIdentifier:@"MuzzikTopic" forIndexPath:indexPath];
-        cell.cardTitle.text = tempMuzzik.title;
-        cell.TopicLabel.text = [NSString stringWithFormat:@"#%@#",[tempMuzzik.topics[0] objectForKey:@"name"]];
-        cell.songModel = tempMuzzik;
-        cell.delegate = self;
-        return cell;
     }
     else {
         UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
@@ -1132,7 +1135,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     __weak ASIHTTPRequest *weakrequest = request;
     [request setCompletionBlock :^{
         //    NSLog(@"%@",weakrequest.originalURL);
-        
+        [self.muzziks removeAllObjects];
         NSData *data = [weakrequest responseData];
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         if (dic) {

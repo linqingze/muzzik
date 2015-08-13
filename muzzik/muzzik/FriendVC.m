@@ -12,6 +12,7 @@
 #import "UIImageView+WebCache.h"
 #import "AtFriendSearchVC.h"
 @interface FriendVC ()<UITableViewDataSource,UITableViewDelegate,BATableViewDelegate>{
+    NSMutableDictionary *RefreshDic;
     BATableView *MytableView;
     NSMutableArray *recentContactArray;
     NSMutableArray *friendArray;
@@ -31,6 +32,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    RefreshDic = [NSMutableDictionary dictionary];
     Fdictionary = [NSMutableDictionary dictionary];
     [self initNagationBar:@" @ 好友" leftBtn:Constant_backImage rightBtn:4];
     friendArray = [NSMutableArray array];
@@ -159,9 +161,16 @@
     }
     MuzzikUser *muzzikuser =[ friendArray[indexPath.section][indexPath.row] objectForKey:@"user"];
     [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-    [cell.headerImage setAlpha:0];
-    [cell.headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?imageView2/1/w/100/h/100",BaseURL_image,muzzikuser.avatar]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-        [cell.headerImage setAlpha:1];
+    [cell.headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,muzzikuser.avatar,Image_Size_Small]] placeholderImage:[UIImage imageNamed:Image_user_placeHolder] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+        if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
+            [RefreshDic setObject:indexPath forKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
+            [cell.headerImage setAlpha:0];
+            [UIView animateWithDuration:0.5 animations:^{
+                [cell.headerImage setAlpha:1];
+            }];
+        }
+        
+        
     }];
     cell.label.text = muzzikuser.name;
     BOOL isSelected = NO;
