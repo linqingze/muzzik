@@ -842,6 +842,13 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 }
 -(void)payAttention{
     if ([[_profileDic objectForKey:@"isFollow"] boolValue]) {
+        [_profileDic setValue:[NSNumber numberWithBool:NO] forKey:@"isFollow"];
+        MuzzikUser *attentionuser = [MuzzikUser new];
+        attentionuser.user_id = [_profileDic objectForKey:@"_id"];
+        attentionuser.isFans = [[_profileDic objectForKey:@"isFans"] boolValue];
+        attentionuser.isFollow = [[_profileDic objectForKey:@"isFollow"] boolValue];
+        [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
+        
         ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_user_Unfollow]]];
         [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:self.uid forKey:@"_id"] Method:PostMethod auth:YES];
         __weak ASIHTTPRequest *weakrequest = requestForm;
@@ -850,24 +857,23 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
             NSLog(@"%d",[weakrequest responseStatusCode]);
             
             if ([weakrequest responseStatusCode] == 200) {
-                [_profileDic setValue:[NSNumber numberWithBool:NO] forKey:@"isFollow"];
-                MuzzikUser *attentionuser = [MuzzikUser new];
-                attentionuser.user_id = [_profileDic objectForKey:@"_id"];
-                attentionuser.isFans = [[_profileDic objectForKey:@"isFans"] boolValue];
-                attentionuser.isFollow = [[_profileDic objectForKey:@"isFollow"] boolValue];
-                [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
+
             }
             else{
                 //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
             }
         }];
         [requestForm setFailedBlock:^{
-            NSLog(@"%@",[weakrequest error]);
-            NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-            [userInfo checkLoginWithVC:self];
         }];
         [requestForm startAsynchronous];
     }else{
+        [_profileDic setValue:[NSNumber numberWithBool:YES] forKey:@"isFollow"];
+        MuzzikUser *attentionuser = [MuzzikUser new];
+        attentionuser.user_id = [_profileDic objectForKey:@"_id"];
+        attentionuser.isFans = [[_profileDic objectForKey:@"isFans"] boolValue];
+        attentionuser.isFollow = [[_profileDic objectForKey:@"isFollow"] boolValue];
+        [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
+        
         ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_User_Follow]]];
         [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:self.uid forKey:@"_id"] Method:PostMethod auth:YES];
         __weak ASIHTTPRequest *weakrequest = requestForm;
@@ -876,21 +882,13 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
             NSLog(@"%d",[weakrequest responseStatusCode]);
             
             if ([weakrequest responseStatusCode] == 200) {
-                [_profileDic setValue:[NSNumber numberWithBool:YES] forKey:@"isFollow"];
-                MuzzikUser *attentionuser = [MuzzikUser new];
-                attentionuser.user_id = [_profileDic objectForKey:@"_id"];
-                attentionuser.isFans = [[_profileDic objectForKey:@"isFans"] boolValue];
-                attentionuser.isFollow = [[_profileDic objectForKey:@"isFollow"] boolValue];
-                [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
+
             }
             else{
                 //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
             }
         }];
         [requestForm setFailedBlock:^{
-            NSLog(@"%@",[weakrequest error]);
-            NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-            [userInfo checkLoginWithVC:self];
         }];
         [requestForm startAsynchronous];
     }
@@ -1039,10 +1037,10 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         _attentionButton.frame = d;
     }
     if (yOffset>SCREEN_WIDTH) {
-        [_messageView setFrame:CGRectMake(16, 0, SCREEN_WIDTH-32, 55)];
+        [_messageView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 55)];
         [self.view addSubview:_messageView];
     }else{
-        [_messageView  setFrame:CGRectMake(16, SCREEN_WIDTH, SCREEN_WIDTH-32, 55)];
+        [_messageView  setFrame:CGRectMake(0, SCREEN_WIDTH, SCREEN_WIDTH, 55)];
         [_headView addSubview:_messageView];
     }
 }
@@ -1170,15 +1168,17 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     _schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(35, 0, SCREEN_WIDTH/2-50, 20)];
     _descriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, SCREEN_WIDTH/2, SCREEN_WIDTH-32,0)];
     
-    _messageView = [[UIView alloc] initWithFrame:CGRectMake(16, SCREEN_WIDTH, SCREEN_WIDTH-32, 55)];
+    _messageView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN_WIDTH, SCREEN_WIDTH, 55)];
+    int width_of_View = (CGRectGetWidth(_messageView.frame)-32)/4;
+    
     [_messageView setBackgroundColor:[UIColor whiteColor]];
-    UIView *muzzikView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(_messageView.frame)/4, CGRectGetHeight(_messageView.frame))];
-    UILabel *messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 25, CGRectGetWidth(_messageView.frame)/4, 20)];
+    UIView *muzzikView = [[UIView alloc] initWithFrame:CGRectMake(16, 0, width_of_View, CGRectGetHeight(_messageView.frame))];
+    UILabel *messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 25, width_of_View, 20)];
     messageLabel.font = [UIFont systemFontOfSize:11];
     messageLabel.textColor = Color_Additional_5;
     messageLabel.text = @"信息";
     messageLabel.textAlignment = NSTextAlignmentCenter;
-    _muzzikCount = [[UILabel alloc] initWithFrame:CGRectMake(0, 5, (int)CGRectGetWidth(_messageView.frame)/4, 25)];
+    _muzzikCount = [[UILabel alloc] initWithFrame:CGRectMake(0, 5, width_of_View, 25)];
     [_muzzikCount setFont:[UIFont fontWithName:Font_Next_DemiBold size:15]];
     _muzzikCount.textAlignment = NSTextAlignmentCenter;
     _muzzikCount.textColor = Color_Text_2;
@@ -1187,13 +1187,13 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     
     [_messageView addSubview:muzzikView];
     
-    UIView *followView = [[UIView alloc] initWithFrame:CGRectMake((int)CGRectGetWidth(_messageView.frame)/4, 0, CGRectGetWidth(_messageView.frame)/4, CGRectGetHeight(_messageView.frame))];
-    UILabel *followLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 25, CGRectGetWidth(_messageView.frame)/4, 20)];
+    UIView *followView = [[UIView alloc] initWithFrame:CGRectMake(width_of_View+16, 0, width_of_View, CGRectGetHeight(_messageView.frame))];
+    UILabel *followLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 25, width_of_View, 20)];
     followLabel.font = [UIFont systemFontOfSize:11];
     followLabel.textColor = Color_Additional_5;
     followLabel.text = @"关注";
     followLabel.textAlignment = NSTextAlignmentCenter;
-    _followCount = [[UILabel alloc] initWithFrame:CGRectMake(0, 5, CGRectGetWidth(_messageView.frame)/4, 25)];
+    _followCount = [[UILabel alloc] initWithFrame:CGRectMake(0, 5,width_of_View, 25)];
     [_followCount setFont:[UIFont fontWithName:Font_Next_DemiBold size:15]];
     _followCount.textAlignment = NSTextAlignmentCenter;
     _followCount.textColor = Color_Text_2;
@@ -1202,13 +1202,13 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     
     [_messageView addSubview:followView];
     [followView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showFollow)]];
-    UIView *fansView = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetWidth(_messageView.frame)/2, 0, CGRectGetWidth(_messageView.frame)/4, CGRectGetHeight(_messageView.frame))];
-    UILabel *fansLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 25, CGRectGetWidth(_messageView.frame)/4, 20)];
+    UIView *fansView = [[UIView alloc] initWithFrame:CGRectMake(width_of_View*2+16, 0, width_of_View, CGRectGetHeight(_messageView.frame))];
+    UILabel *fansLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 25, width_of_View, 20)];
     fansLabel.font = [UIFont systemFontOfSize:11];
     fansLabel.textColor = Color_Additional_5;
     fansLabel.text = @"粉丝";
     fansLabel.textAlignment = NSTextAlignmentCenter;
-    _fansCount = [[UILabel alloc] initWithFrame:CGRectMake(0, 5, CGRectGetWidth(_messageView.frame)/4, 25)];
+    _fansCount = [[UILabel alloc] initWithFrame:CGRectMake(0, 5, width_of_View, 25)];
     [_fansCount setFont:[UIFont fontWithName:Font_Next_DemiBold size:15]];
     _fansCount.textAlignment = NSTextAlignmentCenter;
     _fansCount.textColor = Color_Text_2;
@@ -1217,13 +1217,13 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     [fansView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showFans)]];
     [_messageView addSubview:fansView];
     
-    UIView *songView = [[UIView alloc] initWithFrame:CGRectMake((int)CGRectGetWidth(_messageView.frame)*3/4, 0, CGRectGetWidth(_messageView.frame)/4, CGRectGetHeight(_messageView.frame))];
-    UILabel *songLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 25, CGRectGetWidth(_messageView.frame)/4, 20)];
+    UIView *songView = [[UIView alloc] initWithFrame:CGRectMake(width_of_View * 3 + 16, 0, width_of_View, CGRectGetHeight(_messageView.frame))];
+    UILabel *songLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 25,width_of_View, 20)];
     songLabel.font = [UIFont systemFontOfSize:11];
     songLabel.textColor = Color_Additional_5;
     songLabel.text = @"歌单";
     songLabel.textAlignment = NSTextAlignmentCenter;
-    _songCount = [[UILabel alloc] initWithFrame:CGRectMake(0, 5, CGRectGetWidth(_messageView.frame)/4, 25)];
+    _songCount = [[UILabel alloc] initWithFrame:CGRectMake(0, 5, width_of_View, 25)];
     [_songCount setFont:[UIFont fontWithName:Font_Next_DemiBold size:15]];
     _songCount.textAlignment = NSTextAlignmentCenter;
     _songCount.textColor = Color_Text_2;
@@ -1232,22 +1232,22 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     [songView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showSong)]];
     [_messageView addSubview:songView];
     [_headView addSubview:_messageView];
-    UIView *linview = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetWidth(_messageView.frame)/4, 16, 1, 22)];
+    UIView *linview = [[UIView alloc] initWithFrame:CGRectMake(16+width_of_View, 16, 1, 22)];
     [linview setBackgroundColor:Color_line_1];
     [_messageView addSubview:linview];
     
-    UIView *linview2 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetWidth(_messageView.frame)/2, 16, 1, 22)];
+    UIView *linview2 = [[UIView alloc] initWithFrame:CGRectMake(16+width_of_View*2, 16, 1, 22)];
     [linview2 setBackgroundColor:Color_line_1];
     [_messageView addSubview:linview2];
     
-    UIView *linview3 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetWidth(_messageView.frame)*3/4, 16, 1, 22)];
+    UIView *linview3 = [[UIView alloc] initWithFrame:CGRectMake(16+width_of_View*3, 16, 1, 22)];
     [linview3 setBackgroundColor:Color_line_1];
     [_messageView addSubview:linview3];
-    UIView *lineWidth = [[UIView alloc] initWithFrame:CGRectMake(0, 53, CGRectGetWidth(_messageView.frame), 2)];
+    UIView *lineWidth = [[UIView alloc] initWithFrame:CGRectMake(16, 53,width_of_View*4, 2)];
     [lineWidth setBackgroundColor:Color_line_1];
     [_messageView addSubview:lineWidth];
     
-    UIView *lineRed = [[UIView alloc] initWithFrame:CGRectMake(0, 53, CGRectGetWidth(_messageView.frame)/4, 2)];
+    UIView *lineRed = [[UIView alloc] initWithFrame:CGRectMake(16, 53, width_of_View, 2)];
     [lineRed setBackgroundColor:Color_Active_Button_1];
     [_messageView addSubview:lineRed];
 }

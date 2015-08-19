@@ -9,12 +9,14 @@
 #import "ChooseMusicVC.h"
 #import "SongTableViewController.h"
 #import "SearchLibraryMusicVC.h"
+#import "LocalMusicTableViewController.h"
 @interface ChooseMusicVC () <UISearchBarDelegate,SUNSlideSwitchViewDelegate>{
     UIView *searchView;
     UIButton *cancelButton;
     SUNSlideSwitchView *sliderView;
     SearchLibraryMusicVC *searchVC;
     SongTableViewController *svc;
+    LocalMusicTableViewController *localVC;
 }
 
 @end
@@ -82,6 +84,11 @@
     svc = [[SongTableViewController alloc] init];
     svc.keeper = self;
     svc.title = @"喜欢";
+
+    localVC = [[LocalMusicTableViewController alloc] init];
+    localVC.keeper = self;
+    localVC.title = @"本地匹配";
+    
     [sliderView buildUI];
 }
 
@@ -108,7 +115,7 @@
 #pragma mark - datasource delegate
 - (NSUInteger)numberOfTab:(SUNSlideSwitchView *)view
 {
-    return 2;
+    return 3;
 }
 
 
@@ -120,7 +127,7 @@
     } else if (number == 1) {
         return svc;
     }else {
-        return nil;
+        return localVC;
     }
 }
 - (void)slideSwitchView:(SUNSlideSwitchView *)view didselectTab:(NSUInteger)number
@@ -131,6 +138,8 @@
     else if (number == 1) {
         [svc viewDidCurrentView];
     }
+    else if(number == 2)
+            [localVC viewDidCurrentView];
 }
 
 -(void)rightBtnAction:(UIButton *)sender{

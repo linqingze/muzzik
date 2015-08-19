@@ -201,13 +201,14 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    Globle *glob = [Globle shareGloble];
     MusicCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MusicCell" forIndexPath:indexPath];
     muzzik *localMuzzik = isSearch ?self.searchArray[indexPath.row]:self.movedMusicArray[indexPath.row];
     cell.songName.text = localMuzzik.music.name;
     cell.Artist.text = localMuzzik.music.artist;
     cell.index = indexPath.row;
     cell.songVC = self;
-    if ([[musicPlayer shareClass].localMuzzik.music.key isEqualToString:localMuzzik.music.key]) {
+    if ([[musicPlayer shareClass].localMuzzik.music.key isEqualToString:localMuzzik.music.key]&&!glob.isPause && glob.isPlaying) {
         [cell.playButton setImage:[UIImage imageNamed:@"stopImage_new"] forState:UIControlStateNormal];
     }else{
         [cell.playButton setImage:[UIImage imageNamed:@"playImage_new"] forState:UIControlStateNormal];

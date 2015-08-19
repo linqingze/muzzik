@@ -182,13 +182,15 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    Globle *glob = [Globle shareGloble];
     SearchMusicCell *cell = [tableView dequeueReusableCellWithIdentifier:@"SearchMusicCell" forIndexPath:indexPath];
      muzzik *localMuzzik = isSearch ?self.searchArray[indexPath.row]:self.movedMusicArray[indexPath.row];
     cell.songName.text = localMuzzik.music.name;
     cell.Artist.text = localMuzzik.music.artist;
     cell.index = indexPath.row;
-    cell.songVC = self;
-    if ([[musicPlayer shareClass].localMuzzik.music.key isEqualToString:localMuzzik.music.key]) {
+    cell.songMuzzik = localMuzzik;
+    cell.delegate = self;
+    if ([[musicPlayer shareClass].localMuzzik.music.key isEqualToString:localMuzzik.music.key]&&!glob.isPause && glob.isPlaying) {
         [cell.playButton setImage:[UIImage imageNamed:@"stopImage_new"] forState:UIControlStateNormal];
     }else{
         [cell.playButton setImage:[UIImage imageNamed:@"playImage_new"] forState:UIControlStateNormal];
@@ -225,9 +227,7 @@
         }
     }
 }
-
--(void)playMuzzikWithIndex:(NSInteger)index{
-    
+-(void)playSongWithSongModel:(muzzik *)songModel{
     MuzzikRequestCenter *center = [MuzzikRequestCenter shareClass];
     center.subUrlString = URL_Music_Search;
     if ([_searchText length]>0) {
@@ -246,14 +246,12 @@
     musicPlayer *player = [musicPlayer shareClass];
     player.listType = TempList;
     player.MusicArray = [[self.searchArray count]>0 ?self.searchArray:self.movedMusicArray mutableCopy];
-    player.index = index;
-    [player playSongWithSongModel:isSearch ?self.searchArray[index]:self.movedMusicArray[index] Title:isSearch ? [NSString stringWithFormat:@"搜索 %@ 的歌曲",_searchText]:@"曲库歌曲"];
+    [player playSongWithSongModel:songModel Title:isSearch ? [NSString stringWithFormat:@"搜索 %@ 的歌曲",_searchText]:@"曲库歌曲"];
     if (isSearch) {
         [MuzzikItem SetUserInfoWithMuzziks:self.searchArray title:Constant_userInfo_temp description:[NSString stringWithFormat:@"搜索 %@ 的歌曲",_searchText]];
     }else{
         [MuzzikItem SetUserInfoWithMuzziks:self.movedMusicArray title:Constant_userInfo_temp description:@"曲库歌曲"];
     }
-    
 }
 
 -(void)updateDataSource:(NSString *)searchText{

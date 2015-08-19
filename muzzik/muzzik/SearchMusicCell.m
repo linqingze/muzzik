@@ -43,7 +43,7 @@
 
 -(void)playAction{
     NSLog(@"play");
-    [self.songVC playMuzzikWithIndex:self.index];
+    [self.delegate playSongWithSongModel:self.songMuzzik];
 }
 
 @end

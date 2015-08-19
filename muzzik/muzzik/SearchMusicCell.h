@@ -13,5 +13,6 @@
 @property (nonatomic,retain) UILabel *Artist;
 @property (nonatomic,retain) UIButton *playButton;
 @property (nonatomic,assign) NSInteger index;
-@property (nonatomic,weak) SearchLibraryMusicVC *songVC;
+@property (nonatomic,weak) id<CellDelegate> delegate;
+@property (nonatomic,retain) muzzik *songMuzzik;
 @end

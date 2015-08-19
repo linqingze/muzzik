@@ -158,6 +158,7 @@
 		F26206731B56181F0023CDF5 /* libMobClickLibrary.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F26206701B56181F0023CDF5 /* libMobClickLibrary.a */; };
 		F2641F201AD988CC003BECDD /* registerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2641F1F1AD988CC003BECDD /* registerVC.m */; };
 		F2641F231AD9A652003BECDD /* NSString+MD5.m in Sources */ = {isa = PBXBuildFile; fileRef = F2641F221AD9A652003BECDD /* NSString+MD5.m */; };
+		F27EBBA01B7D065600A5A599 /* LocalMusicTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F27EBB9F1B7D065600A5A599 /* LocalMusicTableViewController.m */; };
 		F288A4CA1B0DC7EF00B89860 /* topicRankCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F288A4C91B0DC7EF00B89860 /* topicRankCell.m */; };
 		F288A4CD1B0DC81900B89860 /* TopRankVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F288A4CC1B0DC81900B89860 /* TopRankVC.m */; };
 		F288A4D11B0E50D700B89860 /* KxMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = F288A4D01B0E50D700B89860 /* KxMenu.m */; };
@@ -573,6 +574,8 @@
 		F2641F1F1AD988CC003BECDD /* registerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = registerVC.m; sourceTree = "<group>"; };
 		F2641F211AD9A652003BECDD /* NSString+MD5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+MD5.h"; sourceTree = "<group>"; };
 		F2641F221AD9A652003BECDD /* NSString+MD5.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+MD5.m"; sourceTree = "<group>"; };
+		F27EBB9E1B7D065600A5A599 /* LocalMusicTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalMusicTableViewController.h; sourceTree = "<group>"; };
+		F27EBB9F1B7D065600A5A599 /* LocalMusicTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalMusicTableViewController.m; sourceTree = "<group>"; };
 		F288A4C81B0DC7EF00B89860 /* topicRankCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = topicRankCell.h; sourceTree = "<group>"; };
 		F288A4C91B0DC7EF00B89860 /* topicRankCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = topicRankCell.m; sourceTree = "<group>"; };
 		F288A4CB1B0DC81900B89860 /* TopRankVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopRankVC.h; sourceTree = "<group>"; };
@@ -1492,6 +1495,8 @@
 				F2A62EE41AE94FDE00FAAA01 /* SongTableViewController.m */,
 				F29A17001AEA98B600200EAE /* SearchLibraryMusicVC.h */,
 				F29A17011AEA98B600200EAE /* SearchLibraryMusicVC.m */,
+				F27EBB9E1B7D065600A5A599 /* LocalMusicTableViewController.h */,
+				F27EBB9F1B7D065600A5A599 /* LocalMusicTableViewController.m */,
 				F2A62EE61AE956A700FAAA01 /* MusicCell.h */,
 				F2A62EE71AE956A700FAAA01 /* MusicCell.m */,
 				F2F7EE0B1AED333C00265596 /* SearchMusicCell.h */,
@@ -1874,6 +1879,7 @@
 				F2EF736E1B4C5CDB00E3A33A /* repostVC.m in Sources */,
 				E16716251AAD77830068AE98 /* userInfo.m in Sources */,
 				F2AD9F7F1B5F9D180039FBC4 /* SUNSlideSwitchView.m in Sources */,
+				F27EBBA01B7D065600A5A599 /* LocalMusicTableViewController.m in Sources */,
 				E112468E1AAAB2CD0014D461 /* muzzikTrendController.m in Sources */,
 				E1FA12E81AB18252005EDA1D /* FSXMLHttpRequest.m in Sources */,
 				E1FA13401AB1911D005EDA1D /* audio_queue.cpp in Sources */,

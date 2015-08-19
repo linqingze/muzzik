@@ -31,6 +31,7 @@
 @property (nonatomic,retain) id poController;
 @property (nonatomic,assign) BOOL isSwitchUser;
 @property (nonatomic,assign) int loginType;
+@property (nonatomic,assign) BOOL hideLyric;
 +(userInfo *) shareClass;
 +(void)checkLoginWithVC:(UIViewController *)vc;
 @end

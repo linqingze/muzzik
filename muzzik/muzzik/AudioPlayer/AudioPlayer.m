@@ -2281,5 +2281,7 @@ static void AudioQueueIsRunningCallbackProc(void* userData, AudioQueueRef audioQ
     
     return levelMeterState[channelNumber].mAveragePower;
 }
-
+-(NSData *)getFinishedData{
+    return [[NSData alloc] initWithBytes:readBuffer length:readBufferSize];
+}
 @end

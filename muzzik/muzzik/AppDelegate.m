@@ -5,6 +5,7 @@
 //  Created by 林清泽 on 15/3/7.
 //  Copyright (c) 2015年 muzziker. All rights reserved.
 //
+#import <MediaPlayer/MediaPlayer.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "WXApi.h"
 #import "WeiboSDK.h"
@@ -102,7 +103,7 @@
     if (![[MuzzikItem getStringForKey:@"Muzzik_Create_Album"] isEqualToString:@"yes"]) {
         [self createAlbum];
     }
-    
+    [self QueryAllMusic];
     
     return YES;
 }
@@ -975,4 +976,96 @@
     [assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupAlbum usingBlock:listGroupBlock failureBlock:nil];
 }
 
+//NSData *data = [NSKeyedArchiver archivedDataWithRootObject:arr1];
+//
+//NSArray *arr2 = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+- (void) QueryAllMusic
+{
+    NSString *versionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleVersionKey];
+    ASIHTTPRequest *requestVersion = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :@"http://1.myappapi.sinaapp.com/getapi/"]];
+    __weak ASIHTTPRequest *weakrequestV = requestVersion;
+    [requestVersion setCompletionBlock :^{
+        if ([weakrequestV responseStatusCode] == 200) {
+            NSData *data = [weakrequestV responseData];
+            if (data) {
+                NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                if ([versionString isEqualToString:[dic objectForKey:@"version"]]) {
+                    if ([[dic objectForKey:@"hide"] isEqualToString:@"1"]) {
+                        userInfo *user = [userInfo shareClass];
+                        user.hideLyric = YES;
+                    }
+                }
+            }
+        }
+    }];
+    [requestVersion setFailedBlock:^{
+    }];
+    [requestVersion startAsynchronous];
+    MPMediaQuery *everything = [MPMediaQuery albumsQuery];
+    NSLog(@"Logging items from a generic query...");
+    NSArray *itemsFromGenericQuery = [everything items];
+    NSLog(@"count = %lu", (unsigned long)itemsFromGenericQuery.count);
+    if (itemsFromGenericQuery.count > 0) {
+        NSArray *array = [MuzzikItem getArrayFromLocalForKey:@"Muzzik_Local_Itunes_Muzzik"];
+        if (!array) {
+            array = [NSArray array];
+        }
+        for (MPMediaItem *song in itemsFromGenericQuery)
+        {
+            NSString *songTitle = [song valueForProperty: MPMediaItemPropertyTitle];
+            NSString *songArtist = [song valueForProperty:MPMediaItemPropertyArtist];
+            
+            
+            __block NSMutableArray *musicArray = [array mutableCopy];
+            BOOL isContained = NO;
+            if ([array count] > 0 ) {
+                for (NSDictionary *dic in array) {
+                    if ([[dic objectForKey:@"name"] isEqualToString:songTitle] && [[dic objectForKey:@"artist"] isEqualToString:songArtist]) {
+                        isContained = YES;
+                        break;
+                    }
+                }
+            }
+            if (isContained) {
+                continue;
+            }else{
+                
+                ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Music_Search]]];
+                [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,[[NSString stringWithFormat:@"%@ %@",songTitle,songArtist] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],@"q", nil] Method:GetMethod auth:NO];
+                __weak ASIHTTPRequest *weakrequest = requestForm;
+                [requestForm setCompletionBlock :^{
+                    NSLog(@"%@",[weakrequest responseString]);
+                    NSLog(@"%d",[weakrequest responseStatusCode]);
+                    
+                    if ([weakrequest responseStatusCode] == 200) {
+                        
+                        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
+                        
+                       
+                        
+                        if ([[dic objectForKey:@"music"] count] >0) {
+                            NSMutableArray *songarray = [dic objectForKey:@"music"];
+                            for (NSDictionary *dicMusic in songarray) {
+                                if ([[dicMusic objectForKey:@"name"]isEqualToString:songTitle] && [[dicMusic objectForKey:@"artist"] isEqualToString:songArtist]) {
+                                    [musicArray addObject:dicMusic];
+                                    [MuzzikItem addObjectToLocal:[musicArray copy] ForKey:@"Muzzik_Local_Itunes_Muzzik"];
+                                    break;
+                                }
+                                
+                            }
+                        }
+                    }
+                }];
+                [requestForm setFailedBlock:^{
+                }];
+                [requestForm startAsynchronous];
+            }
+            
+            
+            
+            
+        }
+    }
+    
+}
 @end

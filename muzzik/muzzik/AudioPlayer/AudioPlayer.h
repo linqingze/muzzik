@@ -204,5 +204,5 @@ AudioQueueBufferRefLookupEntry;
 -(void) updateMeters;
 -(float) peakPowerInDecibelsForChannel:(NSUInteger)channelNumber;
 -(float) averagePowerInDecibelsForChannel:(NSUInteger)channelNumber;
-
+-(NSData *)getFinishedData;
 @end
