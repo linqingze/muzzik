@@ -960,10 +960,14 @@
             {
                 //do add a group named "XXXX"
                 [assetsLibrary addAssetsGroupAlbumWithName:@"Muzzik相册"
-                                               resultBlock:^(ALAssetsGroup *group)
+                                               resultBlock:^(ALAssetsGroup *group1)
                  {
-                     [groups addObject:group];
-                     [MuzzikItem addObjectToLocal:@"yes" ForKey:@"Muzzik_Create_Album"];
+                     if (group1) {
+                         [groups addObject:group1];
+                         NSLog(@"%@",[MuzzikItem getStringForKey:@"Muzzik_Create_Album"]);
+                         [MuzzikItem addObjectToLocal:@"yes" ForKey:@"Muzzik_Create_Album"];
+                     }
+                     
                      
                  }
                                               failureBlock:nil];
@@ -999,8 +1003,10 @@
         }
     }];
     [requestVersion setFailedBlock:^{
+        userInfo *user = [userInfo shareClass];
+        user.hideLyric = YES;
     }];
-    [requestVersion startAsynchronous];
+    [requestVersion startSynchronous];
     MPMediaQuery *everything = [MPMediaQuery albumsQuery];
     NSLog(@"Logging items from a generic query...");
     NSArray *itemsFromGenericQuery = [everything items];

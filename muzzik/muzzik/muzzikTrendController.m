@@ -466,7 +466,7 @@
                     [cell.privateImage setHidden:YES];
                     [cell.userName setFrame:CGRectMake(80, 55, SCREEN_WIDTH-120, 20)];
                 }
-                
+                [cell.userImage setAlpha:1];
                 [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,tempMuzzik.MuzzikUser.avatar,Image_Size_Small]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                     if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
                         [cell.userImage setAlpha:0];

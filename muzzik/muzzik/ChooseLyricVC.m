@@ -104,30 +104,32 @@
     
     [self.view addSubview:headImage];
     Scroll = [[UIScrollView alloc] initWithFrame:headImage.frame];
-    [Scroll setContentSize:CGSizeMake(SCREEN_WIDTH*3, SCREEN_WIDTH)];
+    userInfo *user = [userInfo shareClass];
+    
+    
     [self.view addSubview:Scroll];
     shareWhiteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
     [shareWhiteView setBackgroundColor:[UIColor whiteColor]];
-    lyricView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
-    [Scroll addSubview:lyricView];
+    lyricView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
+    
     [lyricView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideControl)]];
     Scroll.delegate = self;
     Scroll.pagingEnabled = YES;
     [Scroll setShowsHorizontalScrollIndicator:NO];
-    lyricTablenview = [[UITableView alloc] initWithFrame:CGRectMake(0, 25, SCREEN_WIDTH, SCREEN_WIDTH-50)];
+    lyricTablenview = [[UITableView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH, 25, SCREEN_WIDTH, SCREEN_WIDTH-50)];
     lyricTablenview.delegate = self;
     lyricTablenview.dataSource = self;
-    [Scroll addSubview:lyricTablenview];
+   
     [lyricTablenview setBackgroundColor:[UIColor clearColor]];
     lyricTablenview.backgroundView  = nil;
     [lyricTablenview registerClass:[TableViewCell class] forCellReuseIdentifier:@"TableViewCell"];
     lyricTablenview.separatorStyle = UITableViewCellSeparatorStyleNone;
     
     
-    famousView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
+    famousView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
     [Scroll addSubview:famousView];
     [famousView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideControl)]];
-    famousTableview = [[UITableView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH, 25, SCREEN_WIDTH, SCREEN_WIDTH-50)];
+    famousTableview = [[UITableView alloc] initWithFrame:CGRectMake(0, 25, SCREEN_WIDTH, SCREEN_WIDTH-50)];
     famousTableview.delegate = self;
     famousTableview.dataSource = self;
     [Scroll addSubview:famousTableview];
@@ -164,7 +166,7 @@
     [PageControl setCoreNormalColor:Color_line_1];
     [PageControl setDiameter:8];
     [PageControl setGapWidth:5];
-    [PageControl setNumberOfPages:3];
+    
     [controlView addSubview:PageControl];
     
     ImageButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-73, 0, 30, 30)];
@@ -256,11 +258,10 @@
     paragraphStyle.alignment = NSTextAlignmentCenter;
     paragraphStyle.lineSpacing = 3;
     attributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:15], NSParagraphStyleAttributeName:paragraphStyle,NSForegroundColorAttributeName:Color_Additional_5};
-    NSAttributedString * attr= [[NSAttributedString alloc] initWithString:@"拖动歌词选取你喜欢的话\n并移动到合适的位置" attributes:attributes];
+    NSAttributedString * attr= [[NSAttributedString alloc] initWithString:@"拖动短句选取你喜欢的话\n并移动到合适的位置" attributes:attributes];
     tipsLabel.attributedText = attr;
     shareChannelView = [[UIView alloc] initWithFrame:CGRectMake(-SCREEN_WIDTH, SCREEN_WIDTH+35, SCREEN_WIDTH, 60)];
     
-    userInfo *user = [userInfo shareClass];
     if (user.WeChatInstalled && user.QQInstalled) {
         isShareToWeiChat = YES;
         weiboShare = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-45, 0, 90, 60)];
@@ -300,7 +301,7 @@
             weiboShare = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-45, 0, 90, 60)];
             QQZoneShare = [[UIButton alloc] initWithFrame:CGRectMake(16, 0, 90, 60)];
             
-            [weiboShare setImage:[UIImage imageNamed:@"shareunselectedweibo"] forState:UIControlStateNormal];
+            [weiboShare setImage:[UIImage imageNamed:@"shareweibo"] forState:UIControlStateNormal];
             [QQZoneShare setImage:[UIImage imageNamed:@"shareunselectedqzone"] forState:UIControlStateNormal];
             
             [QQZoneShare addTarget:self action:@selector(setChannelShare:) forControlEvents:UIControlEventTouchUpInside];
@@ -313,7 +314,7 @@
     else{
         isShareToWeiBo = YES;
         weiboShare = [[UIButton alloc] initWithFrame:CGRectMake(16, 0, 90, 60)];
-        [weiboShare setImage:[UIImage imageNamed:@"shareunselectedweibo"] forState:UIControlStateNormal];
+        [weiboShare setImage:[UIImage imageNamed:@"shareweibo"] forState:UIControlStateNormal];
         [weiboShare addTarget:self action:@selector(setChannelShare:) forControlEvents:UIControlEventTouchUpInside];
         [shareChannelView addSubview:weiboShare];
 
@@ -321,18 +322,29 @@
 
     
     
-    NoLyricTips = [[UILabel alloc] initWithFrame:CGRectMake(20, 130, SCREEN_WIDTH-40, 20)];
+    NoLyricTips = [[UILabel alloc] initWithFrame:CGRectMake(SCREEN_WIDTH + 20, 130, SCREEN_WIDTH-40, 20)];
     [NoLyricTips setTextColor:shareColor];
     NoLyricTips.textAlignment = NSTextAlignmentCenter;
     [NoLyricTips setFont:[UIFont fontWithName:Font_default_share size:15]];
     if ([mobject.GeiLyricType isEqualToString:@"loading"]) {
         [NoLyricTips setText:@"歌词加载Ing..."];
-        [Scroll addSubview:NoLyricTips];
     }else if([mobject.GeiLyricType isEqualToString:@"error"]){
         
         [NoLyricTips setText:@"暂无歌词"];
-        [Scroll addSubview:NoLyricTips];
+        
     }
+    if (!user.hideLyric) {
+        [Scroll setContentSize:CGSizeMake(SCREEN_WIDTH*3, SCREEN_WIDTH)];
+        [Scroll addSubview:lyricView];
+        [Scroll addSubview:lyricTablenview];
+        [Scroll addSubview:NoLyricTips];
+        [PageControl setNumberOfPages:3];
+    }else{
+        [Scroll setContentSize:CGSizeMake(SCREEN_WIDTH*2, SCREEN_WIDTH)];
+        [PageControl setNumberOfPages:2];
+        [editView setFrame:CGRectMake(SCREEN_WIDTH, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
+    }
+   
 
 }
 -(void)setChannelShare:(id)sender{
@@ -582,20 +594,8 @@
         int index = fabs(sView.contentOffset.x) / sView.frame.size.width;
         //NSLog(@"%d",index);
         [PageControl setCurrentPage:index];
+        userInfo *user = [userInfo shareClass];
         if (index == 0) {
-            NSDictionary *attributes;
-            NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
-            paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
-            paragraphStyle.alignment = NSTextAlignmentCenter;
-            paragraphStyle.lineSpacing = 3;
-            attributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:15], NSParagraphStyleAttributeName:paragraphStyle,NSForegroundColorAttributeName:Color_Additional_5};
-            NSAttributedString * attr= [[NSAttributedString alloc] initWithString:@"拖动歌词选取你喜欢的话\n并移动到合适的位置" attributes:attributes];
-            tipsLabel.attributedText = attr;
-            
-            
-            
-            shareLabel = lyricTextView;
-        }else if(index == 1){
             NSDictionary *attributes;
             NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
             paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
@@ -605,7 +605,34 @@
             NSAttributedString * attr= [[NSAttributedString alloc] initWithString:@"拖动短句选取你喜欢的话\n并移动到合适的位置" attributes:attributes];
             tipsLabel.attributedText = attr;
             
+            
+            
             shareLabel = famousTextView;
+        }else if(index == 1){
+            NSDictionary *attributes;
+            NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
+            paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
+            paragraphStyle.alignment = NSTextAlignmentCenter;
+            paragraphStyle.lineSpacing = 3;
+            
+            attributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:15], NSParagraphStyleAttributeName:paragraphStyle,NSForegroundColorAttributeName:Color_Additional_5};
+            if (!user.hideLyric) {
+                NSAttributedString * attr= [[NSAttributedString alloc] initWithString:@"拖动歌词选取你喜欢的话\n并移动到合适的位置" attributes:attributes];
+                tipsLabel.attributedText = attr;
+                shareLabel = lyricTextView;
+            }else{
+                NSAttributedString * attr= [[NSAttributedString alloc] initWithString:@"添加一句话\n并且移动到合适位置" attributes:attributes];
+                tipsLabel.attributedText = attr;
+                shareLabel = editTextView;
+                if (editTextView.textView.text.length >0) {
+                    shareLabel = editTextView;
+                }else{
+                    shareLabel = nil;
+                }
+            }
+            
+            
+            
         }else if(index == 2){
             NSDictionary *attributes;
             NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
@@ -933,26 +960,27 @@
                                         UIGraphicsEndImageContext();
                                         if (isShareToWeiChat) {
                                             [app sendImageContent:timage];
-                                            [self saveToAlbumWithMetadata:nil imageData:UIImagePNGRepresentation(timage) customAlbumName:@"Muzzik相册" completionBlock:^
-                                             {
-                                                 //这里可以创建添加成功的方法
-                                                 // [MuzzikItem showNotifyOnView:self.navigationController.view text:@"保存成功"];
-                                             }
-                                                             failureBlock:^(NSError *error)
-                                             {
-                                                 //处理添加失败的方法显示alert让它回到主线程执行，不然那个框框死活不肯弹出来
-                                                 dispatch_async(dispatch_get_main_queue(), ^{
-                                                     
-                                                     //添加失败一般是由用户不允许应用访问相册造成的，这边可以取出这种情况加以判断一下
-                                                     if([error.localizedDescription rangeOfString:@"User denied access"].location != NSNotFound ||[error.localizedDescription rangeOfString:@"用户拒绝访问"].location!=NSNotFound){
-                                                         
-                                                         UIAlertView *alert=[[UIAlertView alloc]initWithTitle:error.localizedDescription message:error.localizedFailureReason delegate:nil cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles: nil];
-                                                         
-                                                         [alert show];
-                                                         
-                                                     }
-                                                 });
-                                             }];
+                                            //保存图片
+//                                            [self saveToAlbumWithMetadata:nil imageData:UIImagePNGRepresentation(timage) customAlbumName:@"Muzzik相册" completionBlock:^
+//                                             {
+//                                                 //这里可以创建添加成功的方法
+//                                                 // [MuzzikItem showNotifyOnView:self.navigationController.view text:@"保存成功"];
+//                                             }
+//                                                             failureBlock:^(NSError *error)
+//                                             {
+//                                                 //处理添加失败的方法显示alert让它回到主线程执行，不然那个框框死活不肯弹出来
+//                                                 dispatch_async(dispatch_get_main_queue(), ^{
+//                                                     
+//                                                     //添加失败一般是由用户不允许应用访问相册造成的，这边可以取出这种情况加以判断一下
+//                                                     if([error.localizedDescription rangeOfString:@"User denied access"].location != NSNotFound ||[error.localizedDescription rangeOfString:@"用户拒绝访问"].location!=NSNotFound){
+//                                                         
+//                                                         UIAlertView *alert=[[UIAlertView alloc]initWithTitle:error.localizedDescription message:error.localizedFailureReason delegate:nil cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles: nil];
+//                                                         
+//                                                         [alert show];
+//                                                         
+//                                                     }
+//                                                 });
+//                                             }];
                                         }
                                         else if(isShareToWeiBo){
                                             WBMessageObject *message = [WBMessageObject message];
@@ -985,27 +1013,27 @@
                                             }];
                                             [requestShare startAsynchronous];
                                             
-                                            
-                                            [self saveToAlbumWithMetadata:nil imageData:UIImagePNGRepresentation(timage) customAlbumName:@"Muzzik相册" completionBlock:^
-                                             {
-                                                 //这里可以创建添加成功的方法
-                                                 // [MuzzikItem showNotifyOnView:self.navigationController.view text:@"保存成功"];
-                                             }
-                                                             failureBlock:^(NSError *error)
-                                             {
-                                                 //处理添加失败的方法显示alert让它回到主线程执行，不然那个框框死活不肯弹出来
-                                                 dispatch_async(dispatch_get_main_queue(), ^{
-                                                     
-                                                     //添加失败一般是由用户不允许应用访问相册造成的，这边可以取出这种情况加以判断一下
-                                                     if([error.localizedDescription rangeOfString:@"User denied access"].location != NSNotFound ||[error.localizedDescription rangeOfString:@"用户拒绝访问"].location!=NSNotFound){
-                                                         
-                                                         UIAlertView *alert=[[UIAlertView alloc]initWithTitle:error.localizedDescription message:error.localizedFailureReason delegate:nil cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles: nil];
-                                                         
-                                                         [alert show];
-                                                         
-                                                     }
-                                                 });
-                                             }];
+                                            //保存图片
+//                                            [self saveToAlbumWithMetadata:nil imageData:UIImagePNGRepresentation(timage) customAlbumName:@"Muzzik相册" completionBlock:^
+//                                             {
+//                                                 //这里可以创建添加成功的方法
+//                                                 // [MuzzikItem showNotifyOnView:self.navigationController.view text:@"保存成功"];
+//                                             }
+//                                                             failureBlock:^(NSError *error)
+//                                             {
+//                                                 //处理添加失败的方法显示alert让它回到主线程执行，不然那个框框死活不肯弹出来
+//                                                 dispatch_async(dispatch_get_main_queue(), ^{
+//                                                     
+//                                                     //添加失败一般是由用户不允许应用访问相册造成的，这边可以取出这种情况加以判断一下
+//                                                     if([error.localizedDescription rangeOfString:@"User denied access"].location != NSNotFound ||[error.localizedDescription rangeOfString:@"用户拒绝访问"].location!=NSNotFound){
+//                                                         
+//                                                         UIAlertView *alert=[[UIAlertView alloc]initWithTitle:error.localizedDescription message:error.localizedFailureReason delegate:nil cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles: nil];
+//                                                         
+//                                                         [alert show];
+//                                                         
+//                                                     }
+//                                                 });
+//                                             }];
                                         }
                                     }
                                     else if (isShareToQQ){
@@ -1154,13 +1182,24 @@
             for (UIView *view in [shareWhiteView subviews]) {
                 [view removeFromSuperview];
             }
-            if (PageControl.currentPage == 0) {
-                [lyricView addSubview:shareLabel];
-            }else if (PageControl.currentPage == 1){
-                [famousView addSubview:shareLabel];
+            userInfo *user = [userInfo shareClass];
+            if (!user.hideLyric) {
+                if (PageControl.currentPage == 0) {
+                     [famousView addSubview:shareLabel];
+                    
+                }else if (PageControl.currentPage == 1){
+                   [lyricView addSubview:shareLabel];
+                }else{
+                    [editView addSubview:shareLabel];
+                }
             }else{
-                [editView addSubview:shareLabel];
+                if (PageControl.currentPage == 0) {
+                    [famousView addSubview:shareLabel];
+                }else if (PageControl.currentPage == 1){
+                    [editView addSubview:shareLabel];
+                }
             }
+            
             [shareLabel showTextViewBox];
         }];
     }
@@ -1416,64 +1455,64 @@
     
     [lyricTablenview reloadData];
 }
-- (void)saveToAlbumWithMetadata:(NSDictionary *)metadata
-                      imageData:(NSData *)imageData
-                customAlbumName:(NSString *)customAlbumName
-                completionBlock:(void (^)(void))completionBlock
-                   failureBlock:(void (^)(NSError *error))failureBlock
-{
-    
-    ALAssetsLibrary *assetsLibrary = [[ALAssetsLibrary alloc] init];
-    void (^AddAsset)(ALAssetsLibrary *, NSURL *) = ^(ALAssetsLibrary *assetsLibrary, NSURL *assetURL) {
-        [assetsLibrary assetForURL:assetURL resultBlock:^(ALAsset *asset) {
-            [assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupAll usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
-                
-                if ([[group valueForProperty:ALAssetsGroupPropertyName] isEqualToString:customAlbumName]) {
-                    [group addAsset:asset];
-                    if (completionBlock) {
-                        completionBlock();
-                    }
-                }
-            } failureBlock:^(NSError *error) {
-                if (failureBlock) {
-                    failureBlock(error);
-                }
-            }];
-        } failureBlock:^(NSError *error) {
-            if (failureBlock) {
-                failureBlock(error);
-            }
-        }];
-    };
-    __weak ALAssetsLibrary *weakassetsLibrary = assetsLibrary;
-    [assetsLibrary writeImageDataToSavedPhotosAlbum:imageData metadata:metadata completionBlock:^(NSURL *assetURL, NSError *error) {
-        if (customAlbumName) {
-            [assetsLibrary addAssetsGroupAlbumWithName:customAlbumName resultBlock:^(ALAssetsGroup *group) {
-                if (group) {
-                    [weakassetsLibrary assetForURL:assetURL resultBlock:^(ALAsset *asset) {
-                        [group addAsset:asset];
-                        if (completionBlock) {
-                            completionBlock();
-                            
-                        }
-                    } failureBlock:^(NSError *error) {
-                        if (failureBlock) {
-                            failureBlock(error);
-                        }
-                    }];
-                } else {
-                    AddAsset(weakassetsLibrary, assetURL);
-                }
-            } failureBlock:^(NSError *error) {
-                AddAsset(weakassetsLibrary, assetURL);
-            }];
-        } else {
-            if (completionBlock) {
-                completionBlock();
-            }
-        }
-    }];
-}
+//- (void)saveToAlbumWithMetadata:(NSDictionary *)metadata
+//                      imageData:(NSData *)imageData
+//                customAlbumName:(NSString *)customAlbumName
+//                completionBlock:(void (^)(void))completionBlock
+//                   failureBlock:(void (^)(NSError *error))failureBlock
+//{
+//    
+//    ALAssetsLibrary *assetsLibrary = [[ALAssetsLibrary alloc] init];
+//    void (^AddAsset)(ALAssetsLibrary *, NSURL *) = ^(ALAssetsLibrary *assetsLibrary, NSURL *assetURL) {
+//        [assetsLibrary assetForURL:assetURL resultBlock:^(ALAsset *asset) {
+//            [assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupAll usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
+//                
+//                if ([[group valueForProperty:ALAssetsGroupPropertyName] isEqualToString:customAlbumName]) {
+//                    [group addAsset:asset];
+//                    if (completionBlock) {
+//                        completionBlock();
+//                    }
+//                }
+//            } failureBlock:^(NSError *error) {
+//                if (failureBlock) {
+//                    failureBlock(error);
+//                }
+//            }];
+//        } failureBlock:^(NSError *error) {
+//            if (failureBlock) {
+//                failureBlock(error);
+//            }
+//        }];
+//    };
+//    __weak ALAssetsLibrary *weakassetsLibrary = assetsLibrary;
+//    [assetsLibrary writeImageDataToSavedPhotosAlbum:imageData metadata:metadata completionBlock:^(NSURL *assetURL, NSError *error) {
+//        if (customAlbumName) {
+//            [assetsLibrary addAssetsGroupAlbumWithName:customAlbumName resultBlock:^(ALAssetsGroup *group) {
+//                if (group) {
+//                    [weakassetsLibrary assetForURL:assetURL resultBlock:^(ALAsset *asset) {
+//                        [group addAsset:asset];
+//                        if (completionBlock) {
+//                            completionBlock();
+//                            
+//                        }
+//                    } failureBlock:^(NSError *error) {
+//                        if (failureBlock) {
+//                            failureBlock(error);
+//                        }
+//                    }];
+//                } else {
+//                    AddAsset(weakassetsLibrary, assetURL);
+//                }
+//            } failureBlock:^(NSError *error) {
+//                AddAsset(weakassetsLibrary, assetURL);
+//            }];
+//        } else {
+//            if (completionBlock) {
+//                completionBlock();
+//            }
+//        }
+//    }];
+//}
 
 
 @end

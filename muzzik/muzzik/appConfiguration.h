@@ -4,7 +4,7 @@
 //
 //  Created by 林清泽 on 15/3/3.
 //  Copyright (c) 2015年 muzziker. All rights reserved.
-//
+//http://117.121.26.174:8000/api/notify?token=o8SAVQenhKzgD3R5gHxIzl3ahCHPWKY6rJvIT9aMnk0~&type=participate_topic
 
 #ifndef muzzik_appConfiguration_h
 #define muzzik_appConfiguration_h

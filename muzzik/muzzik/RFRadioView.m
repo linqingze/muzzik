@@ -126,15 +126,28 @@
         [pagecontrol setCoreNormalColor:Color_Theme_3];
         [pagecontrol setDiameter:7];
         [pagecontrol setGapWidth:4];
-        [self.playView addSubview:pagecontrol];
+        userInfo *user = [userInfo shareClass];
+        if (!user.hideLyric) {
+            [self.playView addSubview:pagecontrol];
+        }
+        
         //[pagecontrol setBackgroundColor:[UIColor whiteColor]];
         pagecontrol.numberOfPages = 2;
         Scroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 113, SCREEN_WIDTH, 100)];
         Scroll.delegate = self;
         [Scroll setPagingEnabled:YES];
-        [Scroll setContentSize:CGSizeMake(SCREEN_WIDTH*2, 100)];
+        if (!user.hideLyric) {
+            [Scroll setContentSize:CGSizeMake(SCREEN_WIDTH*2, 100)];
+        }else{
+            [Scroll setContentSize:CGSizeMake(SCREEN_WIDTH, 100)];
+        }
+        
         [self.playView addSubview:Scroll];
-        messageView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH, 0, SCREEN_WIDTH, 100)];
+        if (!user.hideLyric) {
+            messageView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH, 0, SCREEN_WIDTH, 100)];
+        }else{
+            messageView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 100)];
+        }
         [messageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(seeDetail)]];
         message =[[UILabel alloc ] initWithFrame:CGRectMake(15, 10, SCREEN_WIDTH-30, 80)];
         message.numberOfLines = 0;
@@ -145,19 +158,18 @@
         lyricTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 100)];
         [lyricTableView setBackgroundColor:Color_NavigationBar];
         [lyricTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-        [Scroll addSubview:lyricTableView];
         lyricTipsLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 35, SCREEN_WIDTH-100, 20)];
         [lyricTipsLabel setFont:[UIFont systemFontOfSize:12]];
         [lyricTipsLabel setTextColor:[UIColor whiteColor]];
         lyricTipsLabel.textAlignment = NSTextAlignmentCenter;
         [lyricTipsLabel setAlpha:0];
-        [Scroll addSubview:lyricTipsLabel];
         lyricTableView.delegate = self;
         lyricTableView.dataSource = self;
+        if (!user.hideLyric) {
+            [Scroll addSubview:lyricTableView];
+            [Scroll addSubview:lyricTipsLabel];
+        }
 
-        
-        
-        
         _progress = [[UISlider alloc] initWithFrame:CGRectMake(15, 213, SCREEN_WIDTH-70, 20)];
         _progress.continuous = NO;
         [_progress setMinimumValue:0.0];

@@ -302,7 +302,7 @@
         NSData *data = [weakrequest responseData];
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         if (dic) {
-            
+            [MuzzikItem addObjectToLocal:data ForKey:Constant_Data_Square];
             muzzik *muzzikToy = [muzzik new];
             NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
             if ([array count]>0) {
