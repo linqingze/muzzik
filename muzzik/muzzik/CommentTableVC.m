@@ -321,7 +321,7 @@
     if ([commentArray[indexPath.row] isKindOfClass:[muzzik class]]) {
         muzzik *tempMuzzik = commentArray[indexPath.row];
         DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
-        detail.localmuzzik = tempMuzzik;
+        detail.muzzik_id = tempMuzzik.muzzik_id;
         [self.keeper.navigationController pushViewController:detail animated:YES];
     }
     

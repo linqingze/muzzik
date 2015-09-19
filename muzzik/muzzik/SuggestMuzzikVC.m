@@ -16,7 +16,6 @@
 #import <TencentOpenAPI/TencentOAuth.h>
 #import "TopicDetail.h"
 @interface SuggestMuzzikVC ()<UICollectionViewDataSource,UICollectionViewDelegate,CellDelegate,TTTAttributedLabelDelegate>{
-    NSMutableArray *suggestMuzzik;
     StyledPageControl *pagecontrol;
     NSMutableDictionary *RefreshDic;
     //shareView
@@ -68,59 +67,58 @@
     _suggestCollectionView.pagingEnabled = YES;
     [self.view addSubview:_suggestCollectionView];
     [self followScrollView:_suggestCollectionView];
-    
-    
-    [self loadDataMessage];
+  
+//    [self loadDataMessage];
    
     [self SettingShareView];
     // Do any additional setup after loading the view.
 }
 
--(void)loadDataMessage{
-    if ([MuzzikItem getDataFromLocalKey: Constant_Data_Suggest] ) {
-        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[MuzzikItem getDataFromLocalKey: Constant_Data_Suggest] options:NSJSONReadingMutableContainers error:nil];
-        if (dic&&[[dic objectForKey:@"muzziks"]count]>0) {
-            suggestMuzzik =  [[muzzik new] makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
-            [MuzzikItem SetUserInfoWithMuzziks:suggestMuzzik title:Constant_userInfo_suggest description:[NSString stringWithFormat:@"推荐列表"]];
-            [_suggestCollectionView reloadData];
-        }
-    }
-    userInfo *user = [userInfo shareClass];
-    if (user.checkSuggest) {
-        suggestMuzzik = [[user.playList objectForKey:Constant_userInfo_suggest] objectForKey:UserInfo_muzziks];
-        [_suggestCollectionView reloadData];
-    }else{
-        ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/suggest",BaseURL]]];
-        [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:@"10",Parameter_Limit,[NSNumber numberWithBool:YES],@"image", nil] Method:GetMethod auth:YES];
-        __weak ASIHTTPRequest *weakrequest = request;
-        [request setCompletionBlock :^{
-            //    NSLog(@"%@",weakrequest.originalURL);
-            NSLog(@"%@",[weakrequest responseString]);
-            NSData *data = [weakrequest responseData];
-            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-            if (dic&&[[dic objectForKey:@"muzziks"]count]>0) {
-                suggestMuzzik =  [[muzzik new] makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
-                [MuzzikItem SetUserInfoWithMuzziks:suggestMuzzik title:Constant_userInfo_suggest description:[NSString stringWithFormat:@"推荐列表"]];
-                [_suggestCollectionView reloadData];
-            }
-        }];
-        [request setFailedBlock:^{
-            if (![[weakrequest responseString] length]>0) {
-                [self networkErrorShow];
-            }
-            
-        }];
-        [request startAsynchronous];
-    }
-}
--(void)reloadDataSource{
-    [super reloadDataSource];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self loadDataMessage];
-    });
-    
-    
-}
+//-(void)loadDataMessage{
+//    if ([MuzzikItem getDataFromLocalKey: Constant_Data_Suggest] ) {
+//        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[MuzzikItem getDataFromLocalKey: Constant_Data_Suggest] options:NSJSONReadingMutableContainers error:nil];
+//        if (dic&&[[dic objectForKey:@"muzziks"]count]>0) {
+//            suggestMuzzik =  [[muzzik new] makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+//            [MuzzikItem SetUserInfoWithMuzziks:suggestMuzzik title:Constant_userInfo_suggest description:[NSString stringWithFormat:@"推荐列表"]];
+//            [_suggestCollectionView reloadData];
+//        }
+//    }
+//    userInfo *user = [userInfo shareClass];
+//    if (user.checkSuggest) {
+//        suggestMuzzik = [[user.playList objectForKey:Constant_userInfo_suggest] objectForKey:UserInfo_muzziks];
+//        [_suggestCollectionView reloadData];
+//    }else{
+//        ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/suggest",BaseURL]]];
+//        [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:@"10",Parameter_Limit,[NSNumber numberWithBool:YES],@"image", nil] Method:GetMethod auth:YES];
+//        __weak ASIHTTPRequest *weakrequest = request;
+//        [request setCompletionBlock :^{
+//            //    NSLog(@"%@",weakrequest.originalURL);
+//            NSLog(@"%@",[weakrequest responseString]);
+//            NSData *data = [weakrequest responseData];
+//            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+//            if (dic&&[[dic objectForKey:@"muzziks"]count]>0) {
+//                suggestMuzzik =  [[muzzik new] makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+//                [MuzzikItem SetUserInfoWithMuzziks:suggestMuzzik title:Constant_userInfo_suggest description:[NSString stringWithFormat:@"推荐列表"]];
+//                [_suggestCollectionView reloadData];
+//            }
+//        }];
+//        [request setFailedBlock:^{
+//            if (![[weakrequest responseString] length]>0) {
+//                [self networkErrorShow];
+//            }
+//            
+//        }];
+//        [request startAsynchronous];
+//    }
+//}
+//-(void)reloadDataSource{
+//    [super reloadDataSource];
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        [self loadDataMessage];
+//    });
+//    
+//    
+//}
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     
     return 1;
@@ -128,7 +126,7 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    return suggestMuzzik.count>10 ? 10:suggestMuzzik.count;
+    return self.suggestArray.count>10 ? 10:self.suggestArray.count;
 }
 
 -( CGSize )collectionView:( UICollectionView *)collectionView layout:( UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:( NSIndexPath *)indexPath
@@ -142,14 +140,14 @@
 }
 -(void)clickOnCell:(muzzik *)tempMuzzik{
     DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
-    detail.localmuzzik = tempMuzzik;
+    detail.muzzik_id = tempMuzzik.muzzik_id;
     [self.navigationController pushViewController:detail animated:YES];
 }
 -(void)deleteMuzzik:(NSNotification *)notify{
     muzzik *localMzzik = notify.object;
-    for (muzzik *tempMuzzik in suggestMuzzik) {
+    for (muzzik *tempMuzzik in self.suggestArray) {
         if ([tempMuzzik.muzzik_id isEqualToString:localMzzik.muzzik_id]) {
-            [suggestMuzzik removeObject:localMzzik];
+            [self.suggestArray removeObject:localMzzik];
             [_suggestCollectionView reloadData];
             break;
         }
@@ -158,7 +156,7 @@
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    muzzik *tempMuzzik = [suggestMuzzik objectAtIndex:indexPath.row];
+    muzzik *tempMuzzik = [self.suggestArray objectAtIndex:indexPath.row];
     suggestCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"suggestCollectionCell" forIndexPath:indexPath];
     [cell.muzzikImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,tempMuzzik.image,Image_Size_Big]] placeholderImage:[UIImage imageNamed:Image_placeholdImage] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
         if (![[ReFreshPoImageDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
@@ -290,7 +288,7 @@
 -(void) commentAtMuzzik:(muzzik *)localMuzzik{
     muzzik *tempMuzzik = localMuzzik;
     DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
-    detail.localmuzzik = tempMuzzik;
+    detail.muzzik_id = tempMuzzik.muzzik_id;
     detail.showType = Constant_Comment;
     [self.navigationController pushViewController:detail animated:YES];
 }
@@ -299,7 +297,7 @@
     userInfo *user = [userInfo shareClass];
     if ([user.token length]>0) {
         tempMuzzik.ismoved = !tempMuzzik.ismoved;
-        [_suggestCollectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:[suggestMuzzik indexOfObject:tempMuzzik] inSection:0]]];
+        [_suggestCollectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:[self.suggestArray indexOfObject:tempMuzzik] inSection:0]]];
         ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/%@/moved",BaseURL,tempMuzzik.muzzik_id]]];
         [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:tempMuzzik.ismoved] forKey:@"ismoved"] Method:PostMethod auth:YES];
         __weak ASIHTTPRequest *weakrequest = requestForm;
@@ -536,7 +534,7 @@
     message.text =[NSString stringWithFormat:@"一起来用Muzzik吧 %@%@",URL_Muzzik_SharePage,shareMuzzik.muzzik_id];
     
     WBImageObject *image = [WBImageObject object];
-    image.imageData = UIImageJPEGRepresentation([MuzzikItem convertViewToImage:[_suggestCollectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:[suggestMuzzik indexOfObject:shareMuzzik] inSection:0]]], 1.0);
+    image.imageData = UIImageJPEGRepresentation([MuzzikItem convertViewToImage:[_suggestCollectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:[self.suggestArray indexOfObject:shareMuzzik] inSection:0]]], 1.0);
     message.imageObject = image;
     return message;
 }
@@ -653,14 +651,14 @@
     MuzzikRequestCenter *center = [MuzzikRequestCenter shareClass];
     center.singleMusic = YES;
     [musicPlayer shareClass].listType = suggestList;
-    [musicPlayer shareClass].MusicArray = suggestMuzzik;
+    [musicPlayer shareClass].MusicArray = self.suggestArray;
     [[musicPlayer shareClass] playSongWithSongModel:songModel Title:@"推荐列表"];
-    [MuzzikItem SetUserInfoWithMuzziks:suggestMuzzik title:Constant_userInfo_suggest description:[NSString stringWithFormat:@"推荐列表"]];
+    [MuzzikItem SetUserInfoWithMuzziks:self.suggestArray title:Constant_userInfo_suggest description:[NSString stringWithFormat:@"推荐列表"]];
 }
 
 -(void)dataSourceMuzzikUpdate:(NSNotification *)notify{
     muzzik *tempMuzzik = (muzzik *)notify.object;
-    if ([MuzzikItem checkMutableArray:suggestMuzzik isContainMuzzik:tempMuzzik]) {
+    if ([MuzzikItem checkMutableArray:self.suggestArray isContainMuzzik:tempMuzzik]) {
         [_suggestCollectionView reloadData];
     }
     

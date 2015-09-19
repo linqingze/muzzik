@@ -74,6 +74,7 @@
     IBActionSheet *commentDeleteSheet;
     IBActionSheet *alertSheet;
 }
+@property (nonatomic,retain) muzzik *localmuzzik;
 @property (nonatomic,retain) NSMutableDictionary *profileDic;
 @property(nonatomic,retain)UIImageView *headimage;
 @property(nonatomic,retain)UIButton *attentionButton;
@@ -137,7 +138,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     RefreshDic = [NSMutableDictionary dictionary];
-    
+    self.localmuzzik = [muzzik new];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceMuzzikUpdate:) name:String_MuzzikDataSource_update object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceUserUpdate:) name:String_UserDataSource_update object:nil];
@@ -235,18 +236,7 @@
     [_timeStamp setFont:[UIFont fontWithName:Font_Next_medium size:9]];
     _timeStamp.textAlignment = NSTextAlignmentRight;
     
-    if ([self.localmuzzik.type isEqualToString:@"repost"]) {
-        _repostImage = [[UIImageView alloc] initWithFrame:CGRectMake(66, 36, 8, 8)];
-        [_muzzikView addSubview:_repostImage];
-        _repostUserName = [[UILabel alloc] initWithFrame:CGRectMake(80, 36, 150, 10)];
-        [_repostUserName setTextColor:Color_Additional_5];
-        [_repostUserName setFont:[UIFont fontWithName:Font_Next_DemiBold size:8]];
-        _repostUserName.text = self.localmuzzik.reposter.name;
-        [_muzzikView addSubview:_repostUserName];
-        _timeStamp.text = [MuzzikItem transtromTime:self.localmuzzik.repostDate];
-    }else{
-        _timeStamp.text = [MuzzikItem transtromTime:self.localmuzzik.date];
-    }
+
     
     
     [_muzzikView addSubview:_timeStamp];
@@ -330,7 +320,7 @@
 }
 
 -(void) loadComment{
-    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/%@/comments",BaseURL,self.localmuzzik.muzzik_id]]];
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/%@/comments",BaseURL,self.muzzik_id]]];
     [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit, nil] Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakre = request;
     [request setCompletionBlock :^{
@@ -590,7 +580,7 @@
                 mobject.lyricArray = nil;
                 [comnentTextView performSelector:@selector(resignFirstResponder) withObject:nil afterDelay:0.3];
                 
-                ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/%@/comments",BaseURL,self.localmuzzik.muzzik_id]]];
+                ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/%@/comments",BaseURL,self.muzzik_id]]];
                 [request addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
                 __weak ASIHTTPRequest *weakre = request;
                 [request setCompletionBlock :^{
@@ -2157,7 +2147,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 }
 -(void)loadMuzzikView{
     
-    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/%@",BaseURL,self.localmuzzik.muzzik_id]]];
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/%@",BaseURL,self.muzzik_id]]];
     [request addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = request;
     [request setCompletionBlock :^{
@@ -2186,14 +2176,14 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         self.localmuzzik.repostID = [dic objectForKey:@"repostID"];
         self.localmuzzik.title = [dic objectForKey:@"title"];
         self.localmuzzik.repostDate = [dic objectForKey:@"repostDate"];
-        
+        self.localmuzzik.MuzzikUser = [MuzzikUser new];
         self.localmuzzik.MuzzikUser.avatar = [[dic objectForKey:@"user"] objectForKey:@"avatar"];
         self.localmuzzik.MuzzikUser.user_id = [[dic objectForKey:@"user"] objectForKey:@"_id"];
         self.localmuzzik.MuzzikUser.gender = [[dic objectForKey:@"user"] objectForKey:@"gender"];
         self.localmuzzik.MuzzikUser.name = [[dic objectForKey:@"user"] objectForKey:@"name"];
         self.localmuzzik.MuzzikUser.isFollow =[[[dic objectForKey:@"user"] objectForKey:@"isFollow"] boolValue];;
         self.localmuzzik.MuzzikUser.isFans =[[[dic objectForKey:@"user"] objectForKey:@"isFans"] boolValue];
-        
+        self.localmuzzik.music = [music new];
         self.localmuzzik.music.music_id = [[dic objectForKey:@"music"] objectForKey:@"_id"];
         self.localmuzzik.music.artist = [[dic objectForKey:@"music"] objectForKey:@"artist"];
         //NSLog(@"%@",[[dic objectForKey:@"music"] objectForKey:@"artist"]);
@@ -2211,6 +2201,19 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         if ([self.localmuzzik.replystring length]>0) {
             [self initNagationBar:@"详情" leftBtn:Constant_backImage rightBtn:10];
         }
+        if ([self.localmuzzik.type isEqualToString:@"repost"]) {
+            _repostImage = [[UIImageView alloc] initWithFrame:CGRectMake(66, 36, 8, 8)];
+            [_muzzikView addSubview:_repostImage];
+            _repostUserName = [[UILabel alloc] initWithFrame:CGRectMake(80, 36, 150, 10)];
+            [_repostUserName setTextColor:Color_Additional_5];
+            [_repostUserName setFont:[UIFont fontWithName:Font_Next_DemiBold size:8]];
+            _repostUserName.text = self.localmuzzik.reposter.name;
+            [_muzzikView addSubview:_repostUserName];
+            _timeStamp.text = [MuzzikItem transtromTime:self.localmuzzik.repostDate];
+        }else{
+            _timeStamp.text = [MuzzikItem transtromTime:self.localmuzzik.date];
+        }
+        
         ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@",BaseURL,self.localmuzzik.MuzzikUser.user_id]]];
         [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
         __weak ASIHTTPRequest *weakreq = requestForm;

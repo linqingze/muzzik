@@ -55,7 +55,7 @@
 + (void)addPictureAddressToLocal:(NSString *) address Key:(NSString *)key;
 
 +(void)getLyricByMusic:(music *)localMusic;
-
++(BOOL) saveMusicData:(NSData *)data MusicKey:(NSString *)key;
 + (BOOL) saveImageToCacheDir:(NSString *)directoryPath Image:(UIImage *)image imageName:(NSString *)imageName ImageType:(NSString *)imageType;
 +(NSData*) loadImageData:(NSString *)directoryPath Name:(NSString *)imageName;
 //加下划线
@@ -65,6 +65,7 @@
 
 +(UIImage*)convertViewToImage:(UIView*)v;
 + (NSString *)transtromTime:(NSString *)time;
++(NSString *)transtromTimeWithNum:(double)num;
 
 +(void) showNotifyOnView:(UIView *)view text:(NSString *)text;
 +(void) showNotifyOnViewUpon:(UIView *)view text:(NSString *)text;

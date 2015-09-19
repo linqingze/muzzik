@@ -102,7 +102,7 @@
     
     
     //topic
-    topicView = [[UIView alloc] initWithFrame:CGRectMake(8, 76, SCREEN_WIDTH-16, 234)];
+    topicView = [[UIView alloc] initWithFrame:CGRectMake(8, 319+(NSInteger)(SCREEN_WIDTH*5/3), SCREEN_WIDTH-16, 234)];
     [topicView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapForMoreTopic)]];
     [topicView setBackgroundColor:Color_line_2];
     topicView.layer.cornerRadius =3;
@@ -121,7 +121,7 @@
     
     [self loadTopics];
     //user
-    userView = [[UIView alloc] initWithFrame:CGRectMake(8, 330, SCREEN_WIDTH-16, (int)(58+SCREEN_WIDTH*2/3))];
+    userView = [[UIView alloc] initWithFrame:CGRectMake(8, 76, SCREEN_WIDTH-16, (NSInteger)(58+SCREEN_WIDTH*2/3))];
     [userView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapForMoreUser)]];
     [userView setBackgroundColor:Color_line_2];
     userView.layer.cornerRadius =3;
@@ -137,7 +137,7 @@
     [userView addSubview:userNext];
     [self loadUser];
     //Muzzik
-    MainMuzzikView = [[UIView alloc] initWithFrame:CGRectMake(0, (int)(408+SCREEN_WIDTH*2/3), SCREEN_WIDTH, 145+SCREEN_WIDTH)];
+    MainMuzzikView = [[UIView alloc] initWithFrame:CGRectMake(0, (NSInteger)(154+SCREEN_WIDTH*2/3), SCREEN_WIDTH, 145+SCREEN_WIDTH)];
     [MainMuzzikView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(SeeMoreSuggestMuzzik)]];
     [mainScroll addSubview: MainMuzzikView];
     muzzikImage = [[UIImageView alloc] initWithFrame:CGRectMake(5, 40, SCREEN_WIDTH-10, SCREEN_WIDTH-10)];
@@ -160,26 +160,17 @@
     
 }
 -(void)refreshHeader{
-    if (!loadedMuzzik) {
-         [self loadMuzzik];
-    }
-    if (!loadedSquare) {
-        [self loadFeeds];
-    }
-    if (!loadedTopic) {
-        [self loadTopics];
-    }
-    if (!loadedUser) {
-        [self loadUser];
-    }
-    
-    
+    [self loadFeeds];
+     [self loadUser];
+     [self loadMuzzik];
+     [self loadTopics];
+
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 
         [mainScroll headerEndRefreshing];
-        if (loadedUser && loadedTopic && loadedSquare && loadedMuzzik) {
-            [mainScroll removeHeader];
-        }
+//        if (loadedUser && loadedTopic && loadedSquare && loadedMuzzik) {
+//            [mainScroll removeHeader];
+//        }
     });
 }
 
@@ -194,17 +185,19 @@
     [self.parentRoot.pagecontrol setCurrentPage:1];
     if ([[userInfo shareClass].token length]>0) {
         [mainScroll addSubview:attentionView];
-        topicView.frame = CGRectMake(8, 76, SCREEN_WIDTH-16, 234);
-        userView.frame = CGRectMake(8, 330, SCREEN_WIDTH-16, (int)(58+SCREEN_WIDTH*2/3));
-        MainMuzzikView.frame = CGRectMake(0, (int)(408+SCREEN_WIDTH*2/3), SCREEN_WIDTH-16, MainMuzzikView.frame.size.height);
-        [mainScroll setContentSize:CGSizeMake(SCREEN_WIDTH, MainMuzzikView.frame.origin.y+MainMuzzikView.frame.size.height+20)];
+        
+        userView.frame = CGRectMake(8, 76, SCREEN_WIDTH-16, (NSInteger)(58+SCREEN_WIDTH*2/3));
+        MainMuzzikView.frame = CGRectMake(0, (NSInteger)(154+SCREEN_WIDTH*2/3), SCREEN_WIDTH-16, MainMuzzikView.frame.size.height);
+        topicView.frame = CGRectMake(8, 174+(NSInteger)(SCREEN_WIDTH*2/3+MainMuzzikView.frame.size.height), SCREEN_WIDTH-16, 234);
+        [mainScroll setContentSize:CGSizeMake(SCREEN_WIDTH, topicView.frame.origin.y+topicView.frame.size.height+20)];
         [self loadFeeds];
     }else{
         [attentionView removeFromSuperview];
-        topicView.frame = CGRectMake(8, 16, SCREEN_WIDTH-16, 234);
-        userView.frame = CGRectMake(8, 270, SCREEN_WIDTH-16, (int)(58+SCREEN_WIDTH*2/3));
-        MainMuzzikView.frame = CGRectMake(0, (int)(348+SCREEN_WIDTH*2/3), SCREEN_WIDTH-16, MainMuzzikView.frame.size.height);
-        [mainScroll setContentSize:CGSizeMake(SCREEN_WIDTH, MainMuzzikView.frame.origin.y+MainMuzzikView.frame.size.height+20)];
+        
+        userView.frame = CGRectMake(8, 16, SCREEN_WIDTH-16, (NSInteger)(58+SCREEN_WIDTH*2/3));
+        MainMuzzikView.frame = CGRectMake(0, (NSInteger)(94+SCREEN_WIDTH*2/3), SCREEN_WIDTH-16, MainMuzzikView.frame.size.height);
+        topicView.frame = CGRectMake(8, 114+(NSInteger)(SCREEN_WIDTH*2/3+MainMuzzikView.frame.size.height), SCREEN_WIDTH-16, 234);
+        [mainScroll setContentSize:CGSizeMake(SCREEN_WIDTH, topicView.frame.origin.y+topicView.frame.size.height+20)];
         
     }
     if ([localMuzzik.muzzik_id isEqualToString:trendMuzzik.muzzik_id]) {
@@ -641,7 +634,8 @@
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[MuzzikItem getDataFromLocalKey: Constant_Data_Suggest] options:NSJSONReadingMutableContainers error:nil];
         if (dic&&[[dic objectForKey:@"muzziks"]count]>0) {
             suggestArray = [[muzzik new] makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"] ] ;
-            suggestMuzzik = suggestArray[0];
+            suggestMuzzik = [suggestArray firstObject];
+
             if ([[dic allKeys] containsObject:@"data"] && [[[dic objectForKey:@"data"] allKeys] containsObject:@"title"] && [[[dic objectForKey:@"data"] objectForKey:@"title"] length] >0) {
                 muzzikLabel.text = [[dic objectForKey:@"data"] objectForKey:@"title"];
             }
@@ -654,9 +648,11 @@
         if ([user.suggestTitle length]>0) {
             muzzikLabel.text = user.suggestTitle;
         }
-        loadedMuzzik = YES;
+        
         suggestArray = [[user.playList objectForKey:Constant_userInfo_suggest] objectForKey:UserInfo_muzziks];
-        suggestMuzzik = suggestArray[0];
+        suggestMuzzik = suggestArray[arc4random()%[suggestArray count]];
+        [suggestArray removeObject:suggestMuzzik];
+        [suggestArray insertObject:suggestMuzzik atIndex:0];
         [self suggestViewLayout];
     }else{
         ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/suggest",BaseURL]]];
@@ -676,7 +672,9 @@
                     muzzikLabel.text = @"本期推荐";
                 }
                 suggestArray =  [[muzzik new] makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"] ];
-                suggestMuzzik = suggestArray[0];
+                suggestMuzzik = suggestArray[arc4random()%[suggestArray count]];
+                [suggestArray removeObject:suggestMuzzik];
+                [suggestArray insertObject:suggestMuzzik atIndex:0];
                 [self suggestViewLayout];
             }
         }];
@@ -814,12 +812,23 @@
     [musicArtist setTextColor:color];
     [musicName setTextColor:color];
     muzzikView.frame = CGRectMake(8, 0, SCREEN_WIDTH-16, 145+SCREEN_WIDTH+label.frame.size.height);
+
     if ([[userInfo shareClass].token length]>0) {
-        MainMuzzikView.frame = CGRectMake(0, (int)(408+SCREEN_WIDTH*2/3), SCREEN_WIDTH-16, (int)(145+SCREEN_WIDTH+label.frame.size.height));
-        [mainScroll setContentSize:CGSizeMake(SCREEN_WIDTH, 573+SCREEN_WIDTH*5/3.0+label.frame.size.height)];
+        [mainScroll addSubview:attentionView];
+          MainMuzzikView.frame = CGRectMake(0, (NSInteger)(408+SCREEN_WIDTH*2/3), SCREEN_WIDTH-16, (NSInteger)(145+SCREEN_WIDTH+label.frame.size.height));
+        userView.frame = CGRectMake(8, 76, SCREEN_WIDTH-16, (NSInteger)(58+SCREEN_WIDTH*2/3));
+        MainMuzzikView.frame = CGRectMake(0, (NSInteger)(154+SCREEN_WIDTH*2/3), SCREEN_WIDTH-16, MainMuzzikView.frame.size.height);
+        topicView.frame = CGRectMake(8, 174+(NSInteger)(SCREEN_WIDTH*2/3+MainMuzzikView.frame.size.height), SCREEN_WIDTH-16, 234);
+        [mainScroll setContentSize:CGSizeMake(SCREEN_WIDTH, topicView.frame.origin.y+topicView.frame.size.height+20)];
+        [self loadFeeds];
     }else{
-        MainMuzzikView.frame = CGRectMake(0, (int)(348+SCREEN_WIDTH*2/3), SCREEN_WIDTH-16, (int)(145+SCREEN_WIDTH+label.frame.size.height));
-        [mainScroll setContentSize:CGSizeMake(SCREEN_WIDTH, 513+SCREEN_WIDTH*5/3.0+label.frame.size.height)];
+        [attentionView removeFromSuperview];
+        MainMuzzikView.frame = CGRectMake(0, (NSInteger)(348+SCREEN_WIDTH*2/3), SCREEN_WIDTH-16, (NSInteger)(145+SCREEN_WIDTH+label.frame.size.height));
+        userView.frame = CGRectMake(8, 16, SCREEN_WIDTH-16, (NSInteger)(58+SCREEN_WIDTH*2/3));
+        MainMuzzikView.frame = CGRectMake(0, (NSInteger)(94+SCREEN_WIDTH*2/3), SCREEN_WIDTH-16, MainMuzzikView.frame.size.height);
+        topicView.frame = CGRectMake(8, 114+(NSInteger)(SCREEN_WIDTH*2/3+MainMuzzikView.frame.size.height), SCREEN_WIDTH-16, 234);
+        [mainScroll setContentSize:CGSizeMake(SCREEN_WIDTH, topicView.frame.origin.y+topicView.frame.size.height+20)];
+        
     }
 
 }
@@ -833,6 +842,7 @@
 -(void)SeeMoreSuggestMuzzik{
     SuggestMuzzikVC *suggsetvc = [[SuggestMuzzikVC alloc]init];
     suggsetvc.viewTittle = muzzikLabel.text;
+    suggsetvc.suggestArray = suggestArray;
     [self.navigationController pushViewController:suggsetvc animated:YES];
 }
 -(void)goToUser{

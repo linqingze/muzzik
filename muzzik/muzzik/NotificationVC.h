@@ -10,4 +10,6 @@
 #import "AMScrollingNavbarViewController.h"
 @interface NotificationVC : AMScrollingNavbarViewController
 -(void)loadDataMessage;
+@property (nonatomic,assign) NSInteger notifyType;
+@property (nonatomic,assign) NSInteger numOfNewNotification;
 @end

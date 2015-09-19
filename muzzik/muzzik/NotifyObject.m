@@ -80,7 +80,7 @@
         notify.user = newUser;
         notify.notify_id = [dic objectForKey:@"_id"];
         notify.type = [dic objectForKey:@"type"];
-        notify.date = [dic objectForKey:@"date"];
+        notify.date = [[dic objectForKey:@"date"] doubleValue];
         notify.owner = [dic objectForKey:@"owner"];
         notify.readed = [[dic objectForKey:@"readed"] boolValue];
         notify.saw = [[dic objectForKey: @"saw"] boolValue];

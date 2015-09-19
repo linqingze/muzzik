@@ -30,8 +30,21 @@
 @property (nonatomic,copy) NSString *suggestTitle;
 @property (nonatomic,retain) id poController;
 @property (nonatomic,assign) BOOL isSwitchUser;
-@property (nonatomic,assign) int loginType;
+@property (nonatomic,assign) NSInteger loginType;
 @property (nonatomic,assign) BOOL hideLyric;
+@property (nonatomic,assign) NSInteger notificationNumTotal;
+@property (nonatomic,assign) NSInteger notificationNumReply;
+@property (nonatomic,assign) BOOL notificationNumReplyNew;
+@property (nonatomic,assign) NSInteger notificationNumMetion;
+@property (nonatomic,assign) BOOL notificationNumMetionNew;
+@property (nonatomic,assign) NSInteger notificationNumFollow;
+@property (nonatomic,assign) BOOL notificationNumFollowNew;
+@property (nonatomic,assign) NSInteger notificationNumMoved;
+@property (nonatomic,assign) BOOL notificationNumMovedNew;
+@property (nonatomic,assign) NSInteger notificationNumRepost;
+@property (nonatomic,assign) BOOL notificationNumRepostNew;
+@property (nonatomic,assign) NSInteger notificationNumParticipationTopic;
+@property (nonatomic,assign) BOOL notificationNumParticipationTopicNew;
 +(userInfo *) shareClass;
 +(void)checkLoginWithVC:(UIViewController *)vc;
 @end

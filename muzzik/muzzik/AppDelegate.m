@@ -19,15 +19,18 @@
 #import "RootViewController.h"
 #import "settingSystemVC.h"
 #import "UIImageView+WebCache.m"
-#import "NotificationVC.h"
-#import "UIImageView+WebCache.h"
-@interface AppDelegate ()
+#import "NotificationCenterViewController.h"
+#import "DetaiMuzzikVC.h"
+@interface AppDelegate (){
+    BOOL isLaunched;
+}
 
 @end
 
 @implementation AppDelegate
 - (void)registerRemoteNotification
 {
+    
 #ifdef __IPHONE_8_0
     if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
         
@@ -44,7 +47,8 @@
 #endif
 }
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    
+    isLaunched = YES;
+    userInfo *user = [userInfo shareClass];
     [WXApi registerApp:ID_WeiChat_APP];
     [WeiboSDK enableDebugMode:NO];
     [WeiboSDK registerApp:Key_WeiBo];
@@ -52,7 +56,6 @@
     [MobClick startWithAppkey:UMAPPKEY reportPolicy:BATCH channelId:@"App Store"];
 //    NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
 //    [MobClick setAppVersion:version];
-     userInfo *user = [userInfo shareClass];
     NSDictionary * dic = [MuzzikItem messageFromLocal];
     if (dic) {
        
@@ -73,15 +76,9 @@
     
     [self registerRemoteNotification];
     [self checkChannel];
-    NSDictionary* message = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
-    if (message) {
-        NSString *payloadMsg = [message objectForKey:@"payload"];
-        NSString *record = [NSString stringWithFormat:@"[APN]%@, %@", [NSDate date], payloadMsg];
-        NSLog(@"%@%@      didFinishLaunchingWithOptions",payloadMsg,record);
-    }
+
     
-    [[UIApplication sharedApplication] cancelAllLocalNotifications];
-    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+    
     
     
     
@@ -104,10 +101,26 @@
         [self createAlbum];
     }
     [self QueryAllMusic];
-    
+    NSDictionary* message = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+    if (message) {
+//        [MuzzikItem addObjectToLocal:message ForKey:@"launch_APP"];
+        NSString *payloadMsg = [message objectForKey:@"payload"];
+        NSRange range = [payloadMsg rangeOfString:@"muzzik_id"];
+        if (range.location != NSNotFound) {
+            DetaiMuzzikVC *detailvc = [[DetaiMuzzikVC alloc] init];
+            
+            detailvc.muzzik_id = [payloadMsg substringWithRange:NSMakeRange(range.length, payloadMsg.length-range.length)];
+            [nac pushViewController:detailvc animated:YES];
+        }else{
+            NotificationCenterViewController *notifyVC = [[NotificationCenterViewController alloc] init];
+            [nac pushViewController:notifyVC animated:YES];
+        }
+
+        [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+    }
     return YES;
 }
-
+#pragma -mark 个推后台推送，消息处理
 -(void)GexinSdkDidReceivePayload:(NSString *)payloadId fromApplication:(NSString *)appId{
     _payloadId =payloadId;
     NSData *data = [_gexinPusher retrivePayloadById:payloadId];
@@ -234,59 +247,98 @@
 
 
 
--(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
-    [[UIApplication sharedApplication] cancelAllLocalNotifications];
+-(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfoDic fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
+
     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     
-    // [4-EXT]:处理APN
-    
-    if ([[userInfo allKeys] containsObject:@"aps"] && [[[userInfo objectForKey:@"aps"] allKeys] containsObject:@"alert"] && [[userInfo objectForKey:@"aps"] objectForKey:@"alert"] && [[[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] allKeys] containsObject:@"body"]) {
+    Globle *glob = [Globle shareGloble];
+    if (!glob.isApplicationEnterBackground && isLaunched) {
         
-        NSDictionary *aps = [userInfo objectForKey:@"aps"];
+        AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
         
-        NSString *record = [NSString stringWithFormat:@"[APN]%@, %@", [NSDate date], aps];
-        NSLog(@"%@       didReceiveRemoteNotification",record);
-        NSString *Message = [[aps objectForKey:@"alert" ] objectForKey:@"body"];
-        NSArray *array = [Message componentsSeparatedByString:@" "];
-        if ([array count]>1 ) {
-            NSString *alter = [array objectAtIndex:1];
-            if ([alter isEqualToString:@"评论了你"]) {
-                [MuzzikItem showNewNotifyByText:Message];
-            }else if([alter isEqualToString:@"提到了你"]){
-                [MuzzikItem showNewNotifyByText:Message];
-            }
-        }
+//        
+//        if ([self checkMute]) {
+//            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+//        }else{
+//            AudioServicesPlaySystemSound(1301);
+//        }
+        
+        
     }
-    
+    // [4-EXT]:处理APN
     UINavigationController *nac = (UINavigationController *)self.window.rootViewController;
-    for (UIViewController *vc in nac.viewControllers) {
-        if ([vc isKindOfClass:[RootViewController class]]){
-            RootViewController *root = (RootViewController *)vc;
-            NSLog(@"launch:   %d",root.isLaunched);
-            if ((root.isLaunched &&![Globle shareGloble].isApplicationEnterBackground) ||[[nac.viewControllers lastObject] isKindOfClass:[NotificationVC class]]) {
-                [root getMessage];
+    if (glob.isApplicationEnterBackground && [[userInfoDic allKeys] containsObject:@"payload"] && [[userInfoDic objectForKey:@"payload"] rangeOfString:@"muzzik_id"].location!= NSNotFound) {
+        DetaiMuzzikVC *detailvc = [[DetaiMuzzikVC alloc] init];
+        NSRange range = [[userInfoDic objectForKey:@"payload"] rangeOfString:@"muzzik_id"];
+        detailvc.muzzik_id = [[userInfoDic objectForKey:@"payload"] substringWithRange:NSMakeRange(range.length, [[userInfoDic objectForKey:@"payload"] length]-range.length)];
+        [nac pushViewController:detailvc animated:YES];
+    }else{
+        if (!glob.isApplicationEnterBackground && isLaunched) {
+            if ([[nac.viewControllers lastObject] isKindOfClass:[NotificationCenterViewController class]]) {
+                NotificationCenterViewController *notifyVC = (NotificationCenterViewController *)[nac.viewControllers lastObject];
+                [notifyVC checkNewNotification];
+                //            [[UIApplication sharedApplication] cancelAllLocalNotifications];
+                [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
             }else{
-                BOOL InNotify= NO;
-                for (UIViewController *vc in nac.viewControllers) {
-                    if ([vc isKindOfClass:[NotificationVC class]]) {
-                        [nac popToViewController:vc animated:YES];
-                        InNotify = YES;
-                        break;
+                if ([[userInfoDic allKeys] containsObject:@"aps"] && [[[userInfoDic objectForKey:@"aps"] allKeys] containsObject:@"alert"] && [[userInfoDic objectForKey:@"aps"] objectForKey:@"alert"] && [[[[userInfoDic objectForKey:@"aps"] objectForKey:@"alert"] allKeys] containsObject:@"body"]) {
+                    for (UIViewController *vc in nac.viewControllers) {
+                        if ([vc isKindOfClass:[RootViewController class]]) {
+                            RootViewController *rootvc = (RootViewController*)vc;
+                            [rootvc getMessage];
+                        }
+                    }
+                    NSDictionary *aps = [userInfoDic objectForKey:@"aps"];
+                    
+                    NSString *record = [NSString stringWithFormat:@"[APN]%@, %@", [NSDate date], aps];
+                    NSLog(@"%@       didReceiveRemoteNotification",record);
+                    NSString *Message = [[aps objectForKey:@"alert" ] objectForKey:@"body"];
+                    NSArray *array = [Message componentsSeparatedByString:@" "];
+                    if ([array count]>1 ) {
+                        NSString *alter = [array objectAtIndex:1];
+                        if ([alter isEqualToString:@"评论了你"]) {
+                            [MuzzikItem showNewNotifyByText:Message];
+                        }else if([alter isEqualToString:@"提到了你"]){
+                            [MuzzikItem showNewNotifyByText:Message];
+                        }
+                        
+                        //
+                        //            if ([alter isEqualToString:@"评论了你"]) {
+                        //                [MuzzikItem showNewNotifyByText:Message];
+                        //            }else if([alter isEqualToString:@"提到了你"]){
+                        //                [MuzzikItem showNewNotifyByText:Message];
+                        //            }else if([alter isEqualToString:@"喜欢了你的"]){
+                        //                [MuzzikItem showNewNotifyByText:Message];
+                        //            }else if([alter isEqualToString:@"转发了你的"]){
+                        //                [MuzzikItem showNewNotifyByText:Message];
+                        //            }else if([alter isEqualToString:@"参与了你发起的话题"]){
+                        //                [MuzzikItem showNewNotifyByText:Message];
+                        //            }else {
+                        //                //处理关注，微博好友等
+                        //                [MuzzikItem showNewNotifyByText:Message];
+                        //            }
                     }
                 }
-                if (!InNotify) {
-                    UINavigationController *nac = (UINavigationController *)self.window.rootViewController;
-                    NotificationVC *notifyvc = [[NotificationVC alloc] init];
-                    [nac pushViewController:notifyvc animated:YES];
-                }
+                
+                
                 
             }
             
+        }else{
+            //[[UIApplication sharedApplication] cancelAllLocalNotifications];
+            [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+            if ([[nac.viewControllers lastObject] isKindOfClass:[NotificationCenterViewController class]]) {
+                NotificationCenterViewController *notifyVC = (NotificationCenterViewController *)[nac.viewControllers lastObject];
+                [notifyVC checkNewNotification];
+                
+            }else{
+                NotificationCenterViewController *notifyVC = [[NotificationCenterViewController alloc] init];
+                [nac pushViewController:notifyVC animated:YES];
+            }
+            
         }
-    }
 
- 
-    
+    }
+        isLaunched = YES;
     completionHandler(UIBackgroundFetchResultNewData);
 
 }
@@ -326,7 +378,7 @@
     
     // 处理推送消息
     
-    [[UIApplication sharedApplication] cancelAllLocalNotifications];
+   // [[UIApplication sharedApplication] cancelAllLocalNotifications];
     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     
     // [4-EXT]:处理APN
@@ -351,8 +403,7 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-    [[UIApplication sharedApplication] cancelAllLocalNotifications];
-    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+    
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_New_notify_Now]]];
     [request addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = request;
@@ -512,16 +563,17 @@
     }
     else if ([response isKindOfClass:WBAuthorizeResponse.class])
     {
-
+        userInfo *user = [userInfo shareClass];
         self.wbtoken = [(WBAuthorizeResponse *)response accessToken];
         self.wbCurrentUserID = [(WBAuthorizeResponse *)response userID];
-        AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
-        userInfo *user = [userInfo shareClass];
-        [manager GET:[NSString stringWithFormat:@"%@%@%@",BaseURL,URL_WeiBo_AUTH,[(WBAuthorizeResponse *)response accessToken]] parameters:nil success:^(AFHTTPRequestOperation * operation, id responseObject) {
-            
-            NSLog(@"JSON: %@", responseObject);
-            NSDictionary *fileDic = [NSDictionary dictionaryWithObjectsAndKeys:[responseObject objectForKey:@"_id"],@"_id",[responseObject objectForKey:@"token"],@"token",[responseObject objectForKey:@"gender"],@"gender",[responseObject objectForKey:@"avatar"],@"avatar",[responseObject objectForKey:@"name"],@"name", nil];
-            [MuzzikItem addMessageToLocal:fileDic];
+        ASIHTTPRequest *requestsquare = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@%@",BaseURL,URL_WeiBo_AUTH,[(WBAuthorizeResponse *)response accessToken]]]];
+        [requestsquare addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:@"20" forKey:Parameter_Limit] Method:GetMethod auth:YES];
+        __weak ASIHTTPRequest *weakrequestsquare = requestsquare;
+        [requestsquare setCompletionBlock :^{
+            //    NSLog(@"%@",weakrequest.originalURL);
+            NSData *data = [weakrequestsquare responseData];
+            NSDictionary *responseObject = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+            [MuzzikItem addMessageToLocal:responseObject];
             if ([[responseObject allKeys] containsObject:@"token"]) {
                 user.token = [responseObject objectForKey:@"token"];
             }
@@ -543,15 +595,16 @@
             if ([[responseObject allKeys] containsObject:@"token"]) {
                 user.token = [responseObject objectForKey:@"token"];
             }
-            
-            AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
-            [manager POST:[NSString stringWithFormat:@"%@%@",BaseURL,URL_Set_Notify] parameters:[NSDictionary dictionaryWithObjectsAndKeys:user.deviceToken,@"deviceToken",@"APN",@"type", nil] success:^(AFHTTPRequestOperation * operation, id responseObject) {
-                NSLog(@"JSON: %@", responseObject);
-                
-            } failure:^(AFHTTPRequestOperation *operation, NSError * error) {
-                NSLog(@"op: %@    error:%@",operation,error);
-                
+            ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Set_Notify]]];
+            [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:user.deviceToken,@"deviceToken",@"APN",@"type", nil] Method:PostMethod auth:YES];
+            __weak ASIHTTPRequest *weakrequest = request;
+            [request setCompletionBlock :^{
+                NSLog(@"JSON: %@", [weakrequest responseString]);
             }];
+             [request setFailedBlock:^{
+                 
+             }];
+            [request startAsynchronous];
             UINavigationController *nac = (UINavigationController *)self.window.rootViewController;
             for (UIViewController *vc in nac.viewControllers) {
                 if ([vc isKindOfClass:[settingSystemVC class]]) {
@@ -561,11 +614,13 @@
                 }
             }
             [nac popViewControllerAnimated:YES];
-        } failure:^(AFHTTPRequestOperation *operation, NSError * error) {
-            NSLog(@"op: %@    error:%@",operation,error);
+            
             
         }];
-        
+        [requestsquare setFailedBlock:^{
+            NSLog(@"%@,%@",[weakrequestsquare error],[weakrequestsquare responseString]);
+        }];
+        [requestsquare startAsynchronous];
     }
 }
 
@@ -612,14 +667,14 @@
     else if([resp isKindOfClass:[SendAuthResp class]])
     {
         SendAuthResp *temp = (SendAuthResp*)resp;
-        
-        AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
         userInfo *user = [userInfo shareClass];
-        [manager GET:[NSString stringWithFormat:@"%@%@",BaseURL,URL_WeiChat_AUTH] parameters:[NSDictionary dictionaryWithObjectsAndKeys:@"json",@"result",temp.code,@"code", nil] success:^(AFHTTPRequestOperation * operation, id responseObject) {
-            
-            NSLog(@"JSON: %@", responseObject);
-            NSDictionary *fileDic = [NSDictionary dictionaryWithObjectsAndKeys:[responseObject objectForKey:@"_id"],@"_id",[responseObject objectForKey:@"token"],@"token",[responseObject objectForKey:@"gender"],@"gender",[responseObject objectForKey:@"avatar"],@"avatar",[responseObject objectForKey:@"name"],@"name", nil];
-            [MuzzikItem addMessageToLocal:fileDic];
+        ASIHTTPRequest *requestsquare = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_WeiChat_AUTH]]];
+        [requestsquare addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:@"json",@"result",temp.code,@"code", nil] Method:GetMethod auth:YES];
+        __weak ASIHTTPRequest *weakrequestsquare = requestsquare;
+        [requestsquare setCompletionBlock :^{
+            NSData *data = [weakrequestsquare responseData];
+            NSDictionary *responseObject = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+            [MuzzikItem addMessageToLocal:responseObject];
             if ([[responseObject allKeys] containsObject:@"token"]) {
                 user.token = [responseObject objectForKey:@"token"];
             }
@@ -642,14 +697,16 @@
                 user.token = [responseObject objectForKey:@"token"];
             }
             if ([user.token length]>0) {
-                AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
-                [manager POST:[NSString stringWithFormat:@"%@%@",BaseURL,URL_Set_Notify] parameters:[NSDictionary dictionaryWithObjectsAndKeys:user.deviceToken,@"deviceToken",@"APN",@"type", nil] success:^(AFHTTPRequestOperation * operation, id responseObject) {
-                    NSLog(@"JSON: %@", responseObject);
-                    
-                } failure:^(AFHTTPRequestOperation *operation, NSError * error) {
-                    NSLog(@"op: %@    error:%@",operation,error);
+                ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Set_Notify]]];
+                [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:user.deviceToken,@"deviceToken",@"APN",@"type", nil] Method:PostMethod auth:YES];
+                __weak ASIHTTPRequest *weakrequest = request;
+                [request setCompletionBlock :^{
+                    NSLog(@"JSON: %@", [weakrequest responseString]);
+                }];
+                [request setFailedBlock:^{
                     
                 }];
+                [request startAsynchronous];
                 UINavigationController *nac = (UINavigationController *)self.window.rootViewController;
                 for (UIViewController *vc in nac.viewControllers) {
                     if ([vc isKindOfClass:[settingSystemVC class]]) {
@@ -660,13 +717,12 @@
                 }
                 [nac popViewControllerAnimated:YES];
             }
-            
-            
-            
-        } failure:^(AFHTTPRequestOperation *operation, NSError * error) {
-            NSLog(@"op: %@    error:%@",operation,error);
+        }];
+        [requestsquare setFailedBlock:^{
             
         }];
+        [requestsquare startAsynchronous];
+        
     }
     else if ([resp isKindOfClass:[AddCardToWXCardPackageResp class]])
     {
@@ -1074,4 +1130,17 @@
     }
     
 }
+
+//-(BOOL)checkMute{
+//    CFStringRef state;
+//    UInt32 propertySize = sizeof(CFStringRef);
+//    AudioSessionGetProperty(kAudioSessionProperty_AudioRoute, &propertySize, &state);
+//    
+//    if(CFStringGetLength(state) == 0) {
+//        return YES;
+//    }
+//    else {
+//        return NO;
+//    }
+//}
 @end

@@ -219,9 +219,16 @@
 #define Constant_Data_Suggest           @"Persistence_Suggest_data"
 #define Constant_Data_topic             @"Persistence_user_topic"
 #define Constant_Data_User_Vip          @"Persistence_user_vip"
+#define Notification_Number_Dictionary  @"Notification_Number_Dictionary"
 
 
 
+#define Notification_comment            1
+#define Notification_at                 2
+#define Notification_follow             3
+#define Notification_moved              4
+#define Notification_repost             5
+#define Notification_participation      6
 
 #define Constant_Comment            @"Coment"
 #define Constant_showComment        @"showComment"

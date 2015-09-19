@@ -22,7 +22,8 @@
 -(void)setup{
     [self setSelectionStyle:UITableViewCellSelectionStyleNone];
     self.preImage = [[UIImageView alloc] initWithFrame:CGRectMake(8, 31, 10, 10)];
-    [self addSubview:self.preImage];
+    //类型标志图标
+    //[self addSubview:self.preImage];
     _headImage = [[UIButton alloc] initWithFrame:CGRectMake(23, 16, 40, 40)];
     _headImage.layer.cornerRadius = 20;
     _headImage.clipsToBounds = YES;

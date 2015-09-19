@@ -12,11 +12,11 @@
 #import "searchViewController.h"
 #import "UserHomePage.h"
 #import "settingSystemVC.h"
-#import "NotificationVC.h"
 #import "KxMenu.h"
 #import "AFViewShaker.h"
 #import "DraftBoxVC.h"
 #import "FeedViewController.h"
+#import "NotificationCenterViewController.h"
 @interface RootViewController ()<UIPageViewControllerDelegate,UIPageViewControllerDataSource,UIScrollViewDelegate>{
     NSArray *pageControllers;
     UIView *nacView;
@@ -25,7 +25,6 @@
     UserHomePage *userHome;
     FeedViewController *feedvc;
     UIButton *notifyButton;
-    UIImageView *notifyImage;
     UIImageView *coverImageView;
     NSTimer *timer;
     int timeCount;
@@ -62,20 +61,10 @@
     [notifyButton setImage:[UIImage imageNamed:Image_Notify_clockButton] forState:UIControlStateNormal];
     [notifyButton addTarget:self action:@selector(seeNotify) forControlEvents:UIControlEventTouchUpInside];
     [nacView addSubview:notifyButton];
-    if ([[userInfo shareClass].token length]>0) {
-        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@%@",BaseURL,URL_New_Notify]]];
-        [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
-        __weak ASIHTTPRequest *weakrequest = requestForm;
-        [requestForm setCompletionBlock :^{
-            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
-            if ([[dic objectForKey:@"result"] longValue]>0) {
-                [notifyImage setHidden:NO];
-            }
-        }];
-        [requestForm setFailedBlock:^{
-            // [SVProgressHUD showErrorWithStatus:@"network error"];
-        }];
-        [requestForm startAsynchronous];
+    if ([[userInfo shareClass].token length] == 0) {
+        [notifyButton setHidden:YES];
+    }else{
+        [notifyButton setHidden:NO];
     }
     
     
@@ -196,6 +185,8 @@
     }
 }
 - (void)addCoverVCToWindow {
+    userInfo *user = [userInfo shareClass];
+    
     AppDelegate *app = (AppDelegate*)[UIApplication sharedApplication].delegate;
     
     coverImageView = [[UIImageView alloc] initWithFrame:self.navigationController.view.bounds];
@@ -410,7 +401,7 @@
 }
 -(void)seeNotify{
     [notifyButton setImage:[UIImage imageNamed:Image_Notify_clockButton] forState:UIControlStateNormal];
-    NotificationVC *notifyvc = [[NotificationVC alloc] init];
+    NotificationCenterViewController *notifyvc = [[NotificationCenterViewController alloc] init];
     [self.navigationController pushViewController:notifyvc animated:YES];
 }
 

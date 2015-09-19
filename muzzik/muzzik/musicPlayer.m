@@ -82,18 +82,17 @@ static NSMutableArray *playList;
     }
     
     globle = [Globle shareGloble];
-    _radioView.musicUrl = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_audio,playMuzzik.music.key]];
-//    if ([MuzzikItem isLocalMusicContainKey:playMuzzik.music.key]) {
-//        NSString *path = [[[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:@"music"] stringByAppendingPathComponent:playMuzzik.music.key];
-//        _radioView.musicUrl = [NSURL URLWithString:[NSString stringWithFormat:@"file://%@",path]];
-//    }
-//    else{
-//        //wifi条件下缓存
-//        _radioView.musicUrl = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_audio,playMuzzik.music.key]];
-//        if ([[Reachability reachabilityForLocalWiFi] currentReachabilityStatus] == kReachableViaWiFi) {
-//            [self downLoadFileWithModel:_localMuzzik];
-//        }
-//    }
+    if ([MuzzikItem isLocalMusicContainKey:playMuzzik.music.key]) {
+        NSString *path = [[[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:MUSIC_FileName] stringByAppendingPathComponent:playMuzzik.music.key];
+        _radioView.musicUrl = [NSURL URLWithString:[NSString stringWithFormat:@"file://%@",path]];
+    }
+    else{
+        //wifi条件下缓存
+        _radioView.musicUrl = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_audio,playMuzzik.music.key]];
+        if ([[Reachability reachabilityForLocalWiFi] currentReachabilityStatus] == kReachableViaWiFi) {
+            [self downLoadFileWithModel:_localMuzzik];
+        }
+    }
      _radioView.playMuzzik = playMuzzik;
      globle.isPlaying = YES;
      self.localMuzzik = playMuzzik;
@@ -297,7 +296,7 @@ static NSMutableArray *playList;
     
     //初始化Documents路径
     NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
-    NSString *folderPath = [path stringByAppendingPathComponent:@"music"];
+    NSString *folderPath = [path stringByAppendingPathComponent:MUSIC_FileName];
     //创建文件管理器
     NSFileManager *fileManager = [NSFileManager defaultManager];
     //判断temp文件夹是否存在

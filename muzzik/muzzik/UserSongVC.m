@@ -239,7 +239,7 @@
     if ([self.muzziks[indexPath.row] isKindOfClass:[muzzik class]]) {
         muzzik *tempMuzzik = self.muzziks[indexPath.row];
         DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
-        detail.localmuzzik = tempMuzzik;
+        detail.muzzik_id = tempMuzzik.muzzik_id;
         [self.navigationController pushViewController:detail animated:YES];
     }
 }

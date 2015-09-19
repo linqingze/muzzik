@@ -123,12 +123,16 @@
 #define Constant_String_PlayMode_Cycle 1
 #define Constant_String_PlayMode_Single 2
 #define Constant_String_PlayMode_Random 3
-#define Font_Next_Regular        @"AvenirNext-Regular"
-#define Font_Next_medium         @"AvenirNext-Medium"
-#define Font_Next_Bold           @"AvenirNext-Bold"
-#define Font_Next_DemiBold           @"AvenirNext-DemiBold"
-#define Font_Next_UltraLight     @"AvenirNext-UltraLight"
-#define Font_default_share      @"HYQuanTangShiF"
+
+#pragma mark Font
+#define HeiTiSC_Medium                      @"STHeitiTC-Medium"
+
+#define Font_Next_Regular                   @"AvenirNext-Regular"
+#define Font_Next_medium                    @"AvenirNext-Medium"
+#define Font_Next_Bold                      @"AvenirNext-Bold"
+#define Font_Next_DemiBold                  @"AvenirNext-DemiBold"
+#define Font_Next_UltraLight                @"AvenirNext-UltraLight"
+#define Font_default_share                  @"HYQuanTangShiF"
 #define DocumentsPath [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"]
 
 // 909997353
@@ -215,7 +219,7 @@
 #define Constant_userInfo_own       @"own"
 #define Constant_userInfo_follow    @"follow"
 
-
+#define MUSIC_FileName              @"muzzik_musicFileForSaving"
 
 #define Image_Size_Small            @"?imageView2/1/w/100/h/100"
 #define Image_Size_Big            @"?imageView2/1/w/500/h/500"

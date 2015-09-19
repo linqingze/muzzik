@@ -714,6 +714,28 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     }
     return isSaved;
 }
++(BOOL) saveMusicData:(NSData *)data MusicKey:(NSString *)key
+{
+    NSString *cachePath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
+    
+    NSString *imageDir = [cachePath stringByAppendingPathComponent:MUSIC_FileName];
+    BOOL isDir = NO;
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    BOOL existed = [fileManager fileExistsAtPath:imageDir isDirectory:&isDir];
+    bool isCreated = false;
+    if ( !(isDir == YES && existed == YES) )
+    {
+        isCreated = [fileManager createDirectoryAtPath:imageDir withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    bool isSaved = false;
+    if ( isDir == YES && existed == YES )
+    {
+      //  isSaved = [data writeToFile:[imageDir stringByAppendingPathComponent:key] atomically:YES];
+    }
+    NSArray *array = [[NSArray alloc] initWithArray:[fileManager contentsOfDirectoryAtPath:imageDir error:nil]];
+    NSLog(@"MusicFile:%@",array);
+    return isSaved;
+}
 
 // load Image from caches dir to imageview
 +(NSData*) loadImageData:(NSString *)directoryPath Name:(NSString *)imageName
@@ -1212,6 +1234,35 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     }else {
         return @"N天前";
     }
+}
++(NSString *)transtromTimeWithNum:(double)num{
+    NSDate *date = [[NSDate alloc] initWithTimeIntervalSince1970:num];
+    NSTimeInterval interval = fabs([date timeIntervalSinceNow]);
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"HH:mm"];
+    NSDate *now = [NSDate date];
+    NSString *nowString = [formatter stringFromDate:now];
+    NSString *timeString = [formatter stringFromDate:date];
+    BOOL result = [nowString compare:timeString] == NSOrderedAscending;
+    if (interval<24*60*60 && !result) {
+        return timeString;
+    }else if((interval<24*60*60 && result) ||(interval<2*24*60*60 && !result)){ //一天之外
+        return @"昨天";
+    }else if((interval<2*24*60*60 && result) ||(interval<3*24*60*60 && !result)){ //一天之外
+        return @"2天前";
+    }else if((interval<3*24*60*60 && result) ||(interval<4*24*60*60 && !result)){ //一天之外
+        return @"3天前";
+    }else if((interval<4*24*60*60 && result) ||(interval<5*24*60*60 && !result)){ //一天之外
+        return @"4天前";
+    }else if((interval<5*24*60*60 && result) ||(interval<6*24*60*60 && !result)){ //一天之外
+        return @"5天前";
+    }else if((interval<6*24*60*60 && result) ||(interval<7*24*60*60 && !result)){ //一天之外
+        return @"6天前";
+    }else {
+        return @"N天前";
+    }
+    
+    return @"";
 }
 +(BOOL) checkMutableArray:(NSMutableArray*) array isContainMuzzik:(muzzik *)localMuzzik{
     for (muzzik *tempMuzzik in array) {

@@ -1475,6 +1475,8 @@
 -(void) audioPlayer:(AudioPlayer*)Player didFinishBufferingSourceWithQueueItemId:(NSObject*)queueItemId
 {
     [self updateControls];
+   // [MuzzikItem saveMusicData:[Player getFinishedData] MusicKey:self.playMuzzik.music.key];
+    
    // NSLog(@"%@",[Player getFinishedData]);
 }
 
@@ -1566,15 +1568,15 @@
             UIViewController *vc  = [nac.viewControllers lastObject];
             if ([vc isKindOfClass:[ DetaiMuzzikVC class]]) {
                 DetaiMuzzikVC *detail = (DetaiMuzzikVC *)vc;
-                if (![detail.localmuzzik.muzzik_id isEqualToString:self.playMuzzik.muzzik_id]) {
+                if (![detail.muzzik_id isEqualToString:self.playMuzzik.muzzik_id]) {
                     DetaiMuzzikVC *godetail = [[DetaiMuzzikVC alloc] init];
-                    godetail.localmuzzik = self.playMuzzik;
+                    godetail.muzzik_id = self.playMuzzik.muzzik_id;
                     
                     [nac pushViewController:godetail animated:YES];
                 }
             }else{
                 DetaiMuzzikVC *godetail = [[DetaiMuzzikVC alloc] init];
-                godetail.localmuzzik = self.playMuzzik;
+                godetail.muzzik_id = self.playMuzzik.muzzik_id;
                 
                 [nac pushViewController:godetail animated:YES];
             }
