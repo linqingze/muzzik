@@ -65,18 +65,10 @@
         
         
         MuzzikUser *newUser = [MuzzikUser new];
-        
-        newUser.descrip = [[dic objectForKey:@"user" ] objectForKey:@"description"];
         newUser.user_id =  [[dic objectForKey:@"user" ]  objectForKey:Parameter_Id];
         newUser.avatar =  [[dic objectForKey:@"user" ]  objectForKey:Parameter_avatar];
-        newUser.gender =  [[dic objectForKey:@"user" ]  objectForKey:Parameter_Gender];
         newUser.name =  [[dic objectForKey:@"user" ]  objectForKey:Parameter_name];
-        if ([ [[dic objectForKey:@"user" ]  allKeys] containsObject:@"isFollow"]) {
-            newUser.isFollow = [ [[dic objectForKey:@"user" ]  objectForKey:@"isFollow"] boolValue];
-        }
-        if ([ [[dic objectForKey:@"user" ]  allKeys] containsObject:@"isFans"]) {
-            newUser.isFans = [ [[dic objectForKey:@"user" ]  objectForKey:@"isFans"] boolValue];
-        }
+
         notify.user = newUser;
         notify.notify_id = [dic objectForKey:@"_id"];
         notify.type = [dic objectForKey:@"type"];

@@ -17,9 +17,13 @@
 @interface NotificationVC ()<UITableViewDataSource,UITableViewDelegate,CellDelegate>{
     UITableView *notifyTabelView;
     NSMutableArray *notifyArray;
-    int page;
     NSMutableDictionary *RefreshDic;
     NSString *errorStatus;
+    NSData *redisData;
+    NSString *requestDtring;
+    NSDictionary *requestDic;
+    NSString *lastId;
+    UIView *footView;
 }
 
 @end
@@ -28,7 +32,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    page =1;
     RefreshDic = [NSMutableDictionary dictionary];
     [[MuzzikObject shareClass].notifyBUtton setHidden:YES];
     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
@@ -43,60 +46,111 @@
     
     [notifyTabelView registerClass:[NotifyFollowCell class] forCellReuseIdentifier:@"NotifyFollowCell"];
     [notifyTabelView registerClass:[NotifyMuzzikCell class] forCellReuseIdentifier:@"NotifyMuzzikCell"];
-     [notifyTabelView addFooterWithTarget:self action:@selector(refreshFooter)];
+    footView  = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 80)];
+    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-50, 20, 100, 30)];
+    [button setBackgroundColor:Color_line_2];
+    [button setTitleColor:Color_Text_1 forState:UIControlStateNormal];
+    [button setTitle:@"加载更多" forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(getHistoryNotification) forControlEvents:UIControlEventTouchUpInside];
+    [footView addSubview:button];
     
-    [notifyTabelView addHeaderWithTarget:self action:@selector(refreshHeader)];
-    [notifyTabelView addFooterWithTarget:self action:@selector(refreshFooter)];
+
     [self loadDataMessage];
+}
+-(void)getHistoryNotification{
+    userInfo *user = [userInfo shareClass];
+    
+    if (self.notifyType == Notification_comment) {
+        
+        requestDic = [NSDictionary dictionaryWithObjectsAndKeys:lastId,Parameter_from,@"comment",@"type",user.token,@"token", nil];
+    }else if (self.notifyType == Notification_at) {
+        
+        requestDic = [NSDictionary dictionaryWithObjectsAndKeys:lastId,Parameter_from,@"at",@"type",user.token,@"token", nil];
+    }else if (self.notifyType == Notification_moved) {
+        
+        requestDic = [NSDictionary dictionaryWithObjectsAndKeys:lastId,Parameter_from,@"moved",@"type",user.token,@"token", nil];
+    }else if (self.notifyType == Notification_follow) {
+        
+        requestDic = [NSDictionary dictionaryWithObjectsAndKeys:lastId,Parameter_from,@"follow",@"type",user.token,@"token", nil];
+    }else if (self.notifyType == Notification_repost) {
+        
+        requestDic = [NSDictionary dictionaryWithObjectsAndKeys:lastId,Parameter_from,@"repost",@"type",user.token,@"token", nil];
+    }else if (self.notifyType == Notification_participation) {
+        requestDic = [NSDictionary dictionaryWithObjectsAndKeys:lastId,Parameter_from,@"participate_topic",@"type",user.token,@"token", nil];
+    }
+    
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"http://117.121.26.174:8000/api/notify"]]];
+    [request addBodyDataSourceWithJsonByDic:requestDic Method:GetMethod auth:YES];
+    __weak ASIHTTPRequest *weakrequest = request;
+    [request setCompletionBlock :^{
+        //    NSLog(@"%@",weakrequest.originalURL);
+        NSLog(@"%@",[weakrequest responseString]);
+        NSData *data = [weakrequest responseData];
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+        if (dic) {
+           
+            [notifyArray addObjectsFromArray:[[NotifyObject new] makeMuzziksByNotifyArray:[dic objectForKey:@"notifies"]]];
+            NotifyObject *notifyobj = [notifyArray lastObject];
+            lastId = notifyobj.notify_id;
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [notifyTabelView footerEndRefreshing];
+                [notifyTabelView reloadData];
+                
+                if ([[dic objectForKey:@"notifies"] count] == 0 ) {
+                    [notifyTabelView removeFooter];
+                }else{
+                    [notifyTabelView addFooterWithTarget:self action:@selector(refreshFooter)];
+                }
+                [notifyTabelView setTableFooterView:nil];
+            });
+        }
+    }];
+    [request setFailedBlock:^{
+        if (![[weakrequest responseString] length]>0) {
+            errorStatus = @"history";
+            [self networkErrorShow];
+        }
+        NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
+        
+        
+        
+    }];
+    [request startAsynchronous];
 }
 -(void)loadDataMessage{
      userInfo *user = [userInfo shareClass];
     if (self.numOfNewNotification == 0) {
         if ([user.token length]>0) {
-            NSData *redisData;
             if (self.notifyType == Notification_comment) {
                 redisData = [MuzzikItem getDataFromLocalKey:[NSString stringWithFormat:@"user_Notify_comment%@",user.uid]];
+                requestDic = [NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,@"comment",@"type",user.token,@"token", nil];
             }else if (self.notifyType == Notification_at) {
                 redisData = [MuzzikItem getDataFromLocalKey:[NSString stringWithFormat:@"user_Notify_at%@",user.uid]];
+                 requestDic = [NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,@"at",@"type",user.token,@"token", nil];
             }else if (self.notifyType == Notification_moved) {
                 redisData = [MuzzikItem getDataFromLocalKey:[NSString stringWithFormat:@"user_Notify_moved%@",user.uid]];
+                 requestDic = [NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,@"moved",@"type",user.token,@"token", nil];
             }else if (self.notifyType == Notification_follow) {
                 redisData = [MuzzikItem getDataFromLocalKey:[NSString stringWithFormat:@"user_Notify_follow%@",user.uid]];
+                requestDic = [NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,@"follow",@"type",user.token,@"token", nil];
             }else if (self.notifyType == Notification_repost) {
                 redisData = [MuzzikItem getDataFromLocalKey:[NSString stringWithFormat:@"user_Notify_repost%@",user.uid]];
+                requestDic = [NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,@"repost",@"type",user.token,@"token", nil];
             }else if (self.notifyType == Notification_participation) {
                 redisData = [MuzzikItem getDataFromLocalKey:[NSString stringWithFormat:@"user_Notify_participation%@",user.uid]];
+                requestDic = [NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,@"participate_topic",@"type",user.token,@"token", nil];
             }
             if (redisData) {
                 NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:redisData options:NSJSONReadingMutableContainers error:nil];
                 if (dic) {
-                    page++;
                     notifyArray = [[NotifyObject new] makeMuzziksByNotifyArray:[dic objectForKey:@"notifies"]];
+                    NotifyObject *notifyobj = [notifyArray lastObject];
+                    lastId = notifyobj.notify_id;
+                    [notifyTabelView addFooterWithTarget:self action:@selector(refreshFooter)];
                     [notifyTabelView reloadData];
                     
                 }
             }else{
-                NSDictionary *requestDic;
-                if (self.notifyType == Notification_comment) {
-                    requestDic = [NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,@"comment",@"type",user.token,@"token", nil];
-                    [MuzzikItem addObjectToLocal:nil ForKey:[NSString stringWithFormat:@"user_Notify_comment%@",user.uid]];
-                    
-                }else if (self.notifyType == Notification_at) {
-                    requestDic = [NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,@"at",@"type",user.token,@"token", nil];
-                    [MuzzikItem addObjectToLocal:nil ForKey:[NSString stringWithFormat:@"user_Notify_at%@",user.uid]];
-                }else if (self.notifyType == Notification_moved) {
-                    [MuzzikItem addObjectToLocal:nil ForKey:[NSString stringWithFormat:@"user_Notify_moved%@",user.uid]];
-                    requestDic = [NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,@"moved",@"type",user.token,@"token", nil];
-                }else if (self.notifyType == Notification_follow) {
-                    [MuzzikItem addObjectToLocal:nil ForKey:[NSString stringWithFormat:@"user_Notify_follow%@",user.uid]];
-                    requestDic = [NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,@"follow",@"type",user.token,@"token", nil];
-                }else if (self.notifyType == Notification_repost) {
-                    [MuzzikItem addObjectToLocal:nil ForKey:[NSString stringWithFormat:@"user_Notify_repost%@",user.uid]];
-                    requestDic = [NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,@"repost",@"type",user.token,@"token", nil];
-                }else if (self.notifyType == Notification_participation) {
-                    [MuzzikItem addObjectToLocal:nil ForKey:[NSString stringWithFormat:@"user_Notify_participation%@",user.uid]];
-                    requestDic = [NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,@"participate_topic",@"type",user.token,@"token", nil];
-                }
                 ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"http://117.121.26.174:8000/api/notify"]]];
                 [request addBodyDataSourceWithJsonByDic:requestDic Method:GetMethod auth:YES];
                 __weak ASIHTTPRequest *weakrequest = request;
@@ -121,16 +175,19 @@
                             [MuzzikItem addObjectToLocal:data ForKey:[NSString stringWithFormat:@"user_Notify_participation%@",user.uid]];
                         }
                         notifyArray = [[NotifyObject new] makeMuzziksByNotifyArray:[dic objectForKey:@"notifies"]];
+                        NotifyObject *notifyobj = [notifyArray lastObject];
+                        lastId = notifyobj.notify_id;
+                        
                         [notifyTabelView reloadData];
                         
-                        if (notifyArray.count < 1) {
-                            [notifyTabelView removeFooter];
+                        if (notifyArray.count > 0) {
+                            [notifyTabelView addFooterWithTarget:self action:@selector(refreshFooter)];
                         }
                     }
                 }];
                 [request setFailedBlock:^{
                     if (![[weakrequest responseString] length]>0) {
-                        
+                        errorStatus = @"history";
                         [self networkErrorShow];
                     }
                     NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
@@ -138,32 +195,33 @@
                     
                     
                 }];
+                [request startAsynchronous];
             }
         }
     }else{
-        NSDictionary *requestDic;
+        NSDictionary *requestNumDic;
         if (self.notifyType == Notification_comment) {
-            requestDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%ld",self.numOfNewNotification],Parameter_Limit,@"comment",@"type",user.token,@"token", nil];
+            requestNumDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%ld",self.numOfNewNotification],Parameter_Limit,@"comment",@"type",user.token,@"token", nil];
             [MuzzikItem addObjectToLocal:nil ForKey:[NSString stringWithFormat:@"user_Notify_comment%@",user.uid]];
 
         }else if (self.notifyType == Notification_at) {
-            requestDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%ld",self.numOfNewNotification],Parameter_Limit,@"at",@"type",user.token,@"token", nil];
+            requestNumDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%ld",self.numOfNewNotification],Parameter_Limit,@"at",@"type",user.token,@"token", nil];
             [MuzzikItem addObjectToLocal:nil ForKey:[NSString stringWithFormat:@"user_Notify_at%@",user.uid]];
         }else if (self.notifyType == Notification_moved) {
             [MuzzikItem addObjectToLocal:nil ForKey:[NSString stringWithFormat:@"user_Notify_moved%@",user.uid]];
-            requestDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%ld",self.numOfNewNotification],Parameter_Limit,@"moved",@"type",user.token,@"token", nil];
+            requestNumDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%ld",self.numOfNewNotification],Parameter_Limit,@"moved",@"type",user.token,@"token", nil];
         }else if (self.notifyType == Notification_follow) {
             [MuzzikItem addObjectToLocal:nil ForKey:[NSString stringWithFormat:@"user_Notify_follow%@",user.uid]];
-            requestDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%ld",self.numOfNewNotification],Parameter_Limit,@"follow",@"type",user.token,@"token", nil];
+            requestNumDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%ld",self.numOfNewNotification],Parameter_Limit,@"follow",@"type",user.token,@"token", nil];
         }else if (self.notifyType == Notification_repost) {
             [MuzzikItem addObjectToLocal:nil ForKey:[NSString stringWithFormat:@"user_Notify_repost%@",user.uid]];
-            requestDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%ld",self.numOfNewNotification],Parameter_Limit,@"repost",@"type",user.token,@"token", nil];
+            requestNumDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%ld",self.numOfNewNotification],Parameter_Limit,@"repost",@"type",user.token,@"token", nil];
         }else if (self.notifyType == Notification_participation) {
             [MuzzikItem addObjectToLocal:nil ForKey:[NSString stringWithFormat:@"user_Notify_participation%@",user.uid]];
-            requestDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%ld",self.numOfNewNotification],Parameter_Limit,@"participate_topic",@"type",user.token,@"token", nil];
+            requestNumDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%ld",self.numOfNewNotification],Parameter_Limit,@"participate_topic",@"type",user.token,@"token", nil];
         }
         ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"http://117.121.26.174:8000/api/notify"]]];
-        [request addBodyDataSourceWithJsonByDic:requestDic Method:GetMethod auth:YES];
+        [request addBodyDataSourceWithJsonByDic:requestNumDic Method:GetMethod auth:YES];
         __weak ASIHTTPRequest *weakrequest = request;
         [request setCompletionBlock :^{
             //    NSLog(@"%@",weakrequest.originalURL);
@@ -173,6 +231,8 @@
             if (dic) {
                 //  [MuzzikItem addObjectToLocal:data ForKey:Constant_Data_notify];
                 notifyArray = [[NotifyObject new] makeMuzziksByNotifyArray:[dic objectForKey:@"notifies"]];
+                NotifyObject *notifyobj = [notifyArray lastObject];
+                lastId = notifyobj.notify_id;
                 [notifyTabelView reloadData];
                 if (self.notifyType == Notification_comment) {
                     user.notificationNumReply = 0;
@@ -196,13 +256,12 @@
                 [notifyDic setObject:[NSNumber numberWithInteger:user.notificationNumParticipationTopic] forKey:@"participate_topic"];
                 [MuzzikItem addObjectToLocal:[notifyDic copy] ForKey:Notification_Number_Dictionary];
                 
-                if (notifyArray.count < 1) {
-                    [notifyTabelView removeFooter];
-                }
+                [notifyTabelView setTableFooterView:footView];
             }
         }];
         [request setFailedBlock:^{
             if (![[weakrequest responseString] length]>0) {
+                errorStatus = @"new";
                 [self networkErrorShow];
             }
             NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
@@ -223,32 +282,6 @@
     
 }
 
--(void)refreshHeader{
-    NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,[NSNumber numberWithBool:YES],@"full", nil];
-    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Notify]]];
-    [request addBodyDataSourceWithJsonByDic:requestDic Method:GetMethod auth:YES];
-    __weak ASIHTTPRequest *weakrequest = request;
-    [request setCompletionBlock :^{
-        //    NSLog(@"%@",weakrequest.originalURL);
-        NSLog(@"%@",[weakrequest responseString]);
-        NSData *data = [weakrequest responseData];
-        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-        if (dic) {
-            page =2 ;
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [notifyTabelView headerEndRefreshing];
-                notifyArray = [[NotifyObject new] makeMuzziksByNotifyArray:[dic objectForKey:@"notifies"]];
-                 [notifyTabelView reloadData];
-            });
-            
-            
-        }
-    }];
-    [request setFailedBlock:^{
-        NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
-    }];
-    [request startAsynchronous];
-}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -265,9 +298,28 @@
 
 }
 -(void) refreshFooter{
-  
-    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Notify]]];
-    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,[NSNumber numberWithInt:page],Parameter_page,[NSNumber numberWithBool:YES],@"full", nil] Method:GetMethod auth:YES];
+    userInfo *user = [userInfo shareClass];
+    if (self.notifyType == Notification_comment) {
+
+        requestDic = [NSDictionary dictionaryWithObjectsAndKeys:lastId,Parameter_from,@"comment",@"type",user.token,@"token", nil];
+    }else if (self.notifyType == Notification_at) {
+
+        requestDic = [NSDictionary dictionaryWithObjectsAndKeys:lastId,Parameter_from,@"at",@"type",user.token,@"token", nil];
+    }else if (self.notifyType == Notification_moved) {
+
+        requestDic = [NSDictionary dictionaryWithObjectsAndKeys:lastId,Parameter_from,@"moved",@"type",user.token,@"token", nil];
+    }else if (self.notifyType == Notification_follow) {
+
+        requestDic = [NSDictionary dictionaryWithObjectsAndKeys:lastId,Parameter_from,@"follow",@"type",user.token,@"token", nil];
+    }else if (self.notifyType == Notification_repost) {
+
+        requestDic = [NSDictionary dictionaryWithObjectsAndKeys:lastId,Parameter_from,@"repost",@"type",user.token,@"token", nil];
+    }else if (self.notifyType == Notification_participation) {
+        requestDic = [NSDictionary dictionaryWithObjectsAndKeys:lastId,Parameter_from,@"participate_topic",@"type",user.token,@"token", nil];
+    }
+    
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"http://117.121.26.174:8000/api/notify"]]];
+    [request addBodyDataSourceWithJsonByDic:requestDic Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = request;
     [request setCompletionBlock :^{
         //    NSLog(@"%@",weakrequest.originalURL);
@@ -276,7 +328,8 @@
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         if (dic) {
             [notifyArray addObjectsFromArray:[[NotifyObject new] makeMuzziksByNotifyArray:[dic objectForKey:@"notifies"]]];
-            page++;
+            NotifyObject *notifyobj = [notifyArray lastObject];
+            lastId = notifyobj.notify_id;
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [notifyTabelView footerEndRefreshing];
                 [notifyTabelView reloadData];
@@ -288,8 +341,14 @@
         }
     }];
     [request setFailedBlock:^{
-        [notifyTabelView footerEndRefreshing];
+        if (![[weakrequest responseString] length]>0) {
+            errorStatus = @"history";
+            [self networkErrorShow];
+        }
         NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
+        
+        
+        
     }];
     [request startAsynchronous];
 }
@@ -427,7 +486,6 @@
         }
     }else{
         muzzik *tempMuzzik = tempNotify.muzzik;
-        tempMuzzik.MuzzikUser = tempNotify.muzzik.MuzzikUser;
         DetaiMuzzikVC *detail = [[DetaiMuzzikVC alloc] init];
         detail.muzzik_id = tempMuzzik.muzzik_id;
         [self.navigationController pushViewController:detail animated:YES];
@@ -438,7 +496,7 @@
     muzzik *localMzzik = notify.object;
     for (NotifyObject *tempMuzzik in notifyArray) {
         if ([tempMuzzik.muzzik.muzzik_id isEqualToString:localMzzik.muzzik_id]) {
-            [notifyArray removeObject:localMzzik];
+            [notifyArray removeObject:tempMuzzik];
             [notifyTabelView reloadData];
             break;
         }

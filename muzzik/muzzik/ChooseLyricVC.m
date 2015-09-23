@@ -64,6 +64,8 @@
     UIButton *QQZoneShare;
     UILabel *NoLyricTips;
     BOOL isSending;
+    BOOL isDefaultImage;
+    BOOL allowToSubmit;
 }
 @end
 @implementation ChooseLyricVC
@@ -188,6 +190,7 @@
         isCharacterWhite = YES;
         [ColorButton setImage:[UIImage imageNamed:Image_textwhiteImage] forState:UIControlStateNormal];
     }else{
+        isDefaultImage = YES;
         isCharacterWhite = NO;
         [LibraryButton setImage:[UIImage imageNamed:Image_addpicImage] forState:UIControlStateNormal];
         [ColorButton setImage:[UIImage imageNamed:Image_textblackImage] forState:UIControlStateNormal];
@@ -396,10 +399,12 @@
         headImage.image = self.image;
         isShow = YES;
         [ImageButton setHidden:NO];
+        isDefaultImage = NO;
 //        shareColor = [UIColor whiteColor];
 //        [shareLabel.textView setTextColor:shareColor];
 //        [lyricTablenview reloadData];
     }
+    [self checkNext];
 }
 
 
@@ -656,32 +661,84 @@
     
 }
 -(void)checkNext{
-    if (shareLabel) {
-        [self initNagationBar:@"填选一句话（3/3）" leftBtn:Constant_backImage rightBtn:2];
+    if (isDefaultImage) {
+        if (shareLabel) {
+            [self initNagationBar:@"填选一句话（3/3）" leftBtn:Constant_backImage rightBtn:2];
+            allowToSubmit = NO;
+        }else{
+            [self initNagationBar:@"填选一句话（3/3）" leftBtn:Constant_backImage rightBtn:5];
+            allowToSubmit = YES;
+        }
     }else{
-        [self initNagationBar:@"填选一句话（3/3）" leftBtn:Constant_backImage rightBtn:0];
+        [self initNagationBar:@"填选一句话（3/3）" leftBtn:Constant_backImage rightBtn:2];
+        allowToSubmit = NO;
     }
+    
 }
 -(void)rightBtnAction:(UIButton *)sender{
-    NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
-    NSString *folderPath = [path stringByAppendingPathComponent:@"Font"];
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    //判断temp文件夹是否存在
-    BOOL fileExists = [fileManager fileExistsAtPath:folderPath];
-    if (!fileExists) {//如果不存在说创建,因为下载时,不会自动创建文件夹
-        [fileManager createDirectoryAtPath:folderPath withIntermediateDirectories:YES attributes:nil error:nil];
-    }
-    
-    
-    NSArray  *arr = [fileManager subpathsAtPath:folderPath];
-    NSLog(@"%@",arr);
-    
-    
-    
-    if (shareLabel) {
+    MuzzikObject *mobject = [MuzzikObject shareClass];
+    if (allowToSubmit) {
+        if (!isSending) {
+            userInfo *user = [userInfo shareClass];
+            isSending = YES;
+            ASIHTTPRequest *shareRequest = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_new]]];
+            NSMutableDictionary *requestDic = [NSMutableDictionary dictionary];
+            if (mobject.isPrivate) {
+                [requestDic setObject:[NSNumber numberWithBool:YES] forKey:Parameter_private];
+            }
+            if ([mobject.message length]>0) {
+                [requestDic setObject:mobject.message forKey:Parameter_message];
+            }else{
+                [requestDic setObject:@"I Love This Muzzik!" forKey:Parameter_message];
+            }
+            NSDictionary *musicDic = [NSDictionary dictionaryWithObjectsAndKeys:mobject.music.key,@"key",mobject.music.name,@"name",mobject.music.artist,@"artist", nil];
+            [requestDic setObject:musicDic forKey:@"music"];
+            [shareRequest addBodyDataSourceWithJsonByDic:requestDic Method:PutMethod auth:YES];
+            __weak ASIHTTPRequest *weakShare = shareRequest;
+            [shareRequest setCompletionBlock:^{
+                NSLog(@"data:%@",[weakShare responseString]);
+                if ([weakShare responseStatusCode] == 200) {
+                    isSending = NO;
+                    NSDictionary *muzzikDic = [NSJSONSerialization JSONObjectWithData:[weakShare responseData] options:NSJSONReadingMutableContainers error:nil];
+                    [self setPoMuzzikMessage:muzzikDic];
+                    [mobject clearObject];
+                    [self.navigationController popToViewController:user.poController animated:YES];
+                    user.poController = nil;
+                } else if([weakShare responseStatusCode] == 400){
+                    isSending = NO;
+                }
+                else if([weakShare responseStatusCode] == 409){
+                    isSending = NO;
+                }
+            }];
+            [shareRequest setFailedBlock:^{
+                isSending = NO;
+                [MuzzikItem showNotifyOnView:self.view text:@"请求失败，请确认网络状态再次重试"];
+                NSLog(@"%@",[weakShare error ]);
+            }];
+            [shareRequest startAsynchronous];
+        
+        }
+    }else{
+        NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
+        NSString *folderPath = [path stringByAppendingPathComponent:@"Font"];
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        //判断temp文件夹是否存在
+        BOOL fileExists = [fileManager fileExistsAtPath:folderPath];
+        if (!fileExists) {//如果不存在说创建,因为下载时,不会自动创建文件夹
+            [fileManager createDirectoryAtPath:folderPath withIntermediateDirectories:YES attributes:nil error:nil];
+        }
+        
+        
+        NSArray  *arr = [fileManager subpathsAtPath:folderPath];
+        NSLog(@"%@",arr);
+        
+        
+        
+        
         [shareLabel hideTextViewBox];
         userInfo *user = [userInfo shareClass];
-        MuzzikObject *mobject = [MuzzikObject shareClass];
+        
         if (fontTableShowed) {
             fontTableShowed = NO;
             [fontButton setImage:[UIImage imageNamed:Image_fontImage] forState:UIControlStateNormal];
@@ -800,6 +857,7 @@
         }
         else{
             if (!isSending) {
+                isSending = YES;
                 ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@%@",BaseURL,URL_Upload_Image]]];
                 
                 [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
@@ -961,26 +1019,26 @@
                                         if (isShareToWeiChat) {
                                             [app sendImageContent:timage];
                                             //保存图片
-//                                            [self saveToAlbumWithMetadata:nil imageData:UIImagePNGRepresentation(timage) customAlbumName:@"Muzzik相册" completionBlock:^
-//                                             {
-//                                                 //这里可以创建添加成功的方法
-//                                                 // [MuzzikItem showNotifyOnView:self.navigationController.view text:@"保存成功"];
-//                                             }
-//                                                             failureBlock:^(NSError *error)
-//                                             {
-//                                                 //处理添加失败的方法显示alert让它回到主线程执行，不然那个框框死活不肯弹出来
-//                                                 dispatch_async(dispatch_get_main_queue(), ^{
-//                                                     
-//                                                     //添加失败一般是由用户不允许应用访问相册造成的，这边可以取出这种情况加以判断一下
-//                                                     if([error.localizedDescription rangeOfString:@"User denied access"].location != NSNotFound ||[error.localizedDescription rangeOfString:@"用户拒绝访问"].location!=NSNotFound){
-//                                                         
-//                                                         UIAlertView *alert=[[UIAlertView alloc]initWithTitle:error.localizedDescription message:error.localizedFailureReason delegate:nil cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles: nil];
-//                                                         
-//                                                         [alert show];
-//                                                         
-//                                                     }
-//                                                 });
-//                                             }];
+                                            //                                            [self saveToAlbumWithMetadata:nil imageData:UIImagePNGRepresentation(timage) customAlbumName:@"Muzzik相册" completionBlock:^
+                                            //                                             {
+                                            //                                                 //这里可以创建添加成功的方法
+                                            //                                                 // [MuzzikItem showNotifyOnView:self.navigationController.view text:@"保存成功"];
+                                            //                                             }
+                                            //                                                             failureBlock:^(NSError *error)
+                                            //                                             {
+                                            //                                                 //处理添加失败的方法显示alert让它回到主线程执行，不然那个框框死活不肯弹出来
+                                            //                                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                            //
+                                            //                                                     //添加失败一般是由用户不允许应用访问相册造成的，这边可以取出这种情况加以判断一下
+                                            //                                                     if([error.localizedDescription rangeOfString:@"User denied access"].location != NSNotFound ||[error.localizedDescription rangeOfString:@"用户拒绝访问"].location!=NSNotFound){
+                                            //
+                                            //                                                         UIAlertView *alert=[[UIAlertView alloc]initWithTitle:error.localizedDescription message:error.localizedFailureReason delegate:nil cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles: nil];
+                                            //
+                                            //                                                         [alert show];
+                                            //
+                                            //                                                     }
+                                            //                                                 });
+                                            //                                             }];
                                         }
                                         else if(isShareToWeiBo){
                                             WBMessageObject *message = [WBMessageObject message];
@@ -1014,26 +1072,26 @@
                                             [requestShare startAsynchronous];
                                             
                                             //保存图片
-//                                            [self saveToAlbumWithMetadata:nil imageData:UIImagePNGRepresentation(timage) customAlbumName:@"Muzzik相册" completionBlock:^
-//                                             {
-//                                                 //这里可以创建添加成功的方法
-//                                                 // [MuzzikItem showNotifyOnView:self.navigationController.view text:@"保存成功"];
-//                                             }
-//                                                             failureBlock:^(NSError *error)
-//                                             {
-//                                                 //处理添加失败的方法显示alert让它回到主线程执行，不然那个框框死活不肯弹出来
-//                                                 dispatch_async(dispatch_get_main_queue(), ^{
-//                                                     
-//                                                     //添加失败一般是由用户不允许应用访问相册造成的，这边可以取出这种情况加以判断一下
-//                                                     if([error.localizedDescription rangeOfString:@"User denied access"].location != NSNotFound ||[error.localizedDescription rangeOfString:@"用户拒绝访问"].location!=NSNotFound){
-//                                                         
-//                                                         UIAlertView *alert=[[UIAlertView alloc]initWithTitle:error.localizedDescription message:error.localizedFailureReason delegate:nil cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles: nil];
-//                                                         
-//                                                         [alert show];
-//                                                         
-//                                                     }
-//                                                 });
-//                                             }];
+                                            //                                            [self saveToAlbumWithMetadata:nil imageData:UIImagePNGRepresentation(timage) customAlbumName:@"Muzzik相册" completionBlock:^
+                                            //                                             {
+                                            //                                                 //这里可以创建添加成功的方法
+                                            //                                                 // [MuzzikItem showNotifyOnView:self.navigationController.view text:@"保存成功"];
+                                            //                                             }
+                                            //                                                             failureBlock:^(NSError *error)
+                                            //                                             {
+                                            //                                                 //处理添加失败的方法显示alert让它回到主线程执行，不然那个框框死活不肯弹出来
+                                            //                                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                            //
+                                            //                                                     //添加失败一般是由用户不允许应用访问相册造成的，这边可以取出这种情况加以判断一下
+                                            //                                                     if([error.localizedDescription rangeOfString:@"User denied access"].location != NSNotFound ||[error.localizedDescription rangeOfString:@"用户拒绝访问"].location!=NSNotFound){
+                                            //
+                                            //                                                         UIAlertView *alert=[[UIAlertView alloc]initWithTitle:error.localizedDescription message:error.localizedFailureReason delegate:nil cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles: nil];
+                                            //
+                                            //                                                         [alert show];
+                                            //
+                                            //                                                     }
+                                            //                                                 });
+                                            //                                             }];
                                         }
                                     }
                                     else if (isShareToQQ){
@@ -1080,15 +1138,9 @@
                 }];
                 [requestForm startAsynchronous];
             }
-            
-            
-            
-            
+
         }
-        
-        
-    }else{
-        
+
     }
 }
 
@@ -1143,12 +1195,14 @@
     
     if (isShow) {
         isShow = NO;
+        isDefaultImage = YES;
         [headImage setImage:[UIImage imageNamed:Image_Textcover]];
     }else{
         isShow = YES;
         headImage.image = self.image;
         
     }
+    [self checkNext];
 }
 -(void)tapAction:(UITapGestureRecognizer *)tap{
     if (step == 0) {

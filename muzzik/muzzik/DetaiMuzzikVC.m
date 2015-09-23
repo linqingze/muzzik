@@ -2161,7 +2161,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         if ([[dic allKeys] containsObject:@"image"] ) {
             self.localmuzzik.image = [dic objectForKey:@"image"];
         }
-        
+        self.localmuzzik.muzzik_id = [dic objectForKey:@"_id"];
         self.localmuzzik.topics = [dic objectForKey:@"topics"];
         self.localmuzzik.users = [dic objectForKey:@"users"];
         self.localmuzzik.onlytext = [[dic objectForKey:@"onlyText"] boolValue];
@@ -2399,7 +2399,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 -(void)rightBtnAction:(UIButton *)sender{
     if ([self.localmuzzik.replystring length]>0) {
         DialogVC *dialog = [[DialogVC alloc] init];
-        dialog.localmuzzik_id = self.localmuzzik.muzzik_id;
+        dialog.muzzik_id = self.localmuzzik.muzzik_id;
         MuzzikObject *mobject = [MuzzikObject shareClass];
         if (mobject.music) {
              [self deleSong];

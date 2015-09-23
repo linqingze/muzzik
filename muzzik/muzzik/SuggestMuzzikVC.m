@@ -147,7 +147,7 @@
     muzzik *localMzzik = notify.object;
     for (muzzik *tempMuzzik in self.suggestArray) {
         if ([tempMuzzik.muzzik_id isEqualToString:localMzzik.muzzik_id]) {
-            [self.suggestArray removeObject:localMzzik];
+            [self.suggestArray removeObject:tempMuzzik];
             [_suggestCollectionView reloadData];
             break;
         }

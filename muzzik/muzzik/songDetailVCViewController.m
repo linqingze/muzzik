@@ -841,7 +841,7 @@
     muzzik *localMzzik = notify.object;
     for (muzzik *tempMuzzik in self.muzziks) {
         if ([tempMuzzik.muzzik_id isEqualToString:localMzzik.muzzik_id]) {
-            [self.muzziks removeObject:localMzzik];
+            [self.muzziks removeObject:tempMuzzik];
             [MytableView reloadData];
             break;
         }

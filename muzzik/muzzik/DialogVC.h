@@ -9,5 +9,5 @@
 #import "AMScrollingNavbarViewController.h"
 
 @interface DialogVC : AMScrollingNavbarViewController
-@property (nonatomic,copy) NSString *localmuzzik_id;
+@property (nonatomic,retain) NSString *muzzik_id;
 @end

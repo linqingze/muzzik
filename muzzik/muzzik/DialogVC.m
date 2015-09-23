@@ -24,10 +24,10 @@
 #import "Globle.h"
 #import <TencentOpenAPI/TencentOAuth.h>
 #import "PhotoImageView.h"
-
-@interface DialogVC ()<UITableViewDataSource,UITableViewDelegate,TTTAttributedLabelDelegate,HPGrowingTextViewDelegate,CellDelegate,PhotoImageViewDelegate,UIActionSheetDelegate>{
+#import "IBActionSheet.h"
+@interface DialogVC ()<UITableViewDataSource,UITableViewDelegate,TTTAttributedLabelDelegate,HPGrowingTextViewDelegate,CellDelegate,PhotoImageViewDelegate,UIActionSheetDelegate,IBActionSheetDelegate>{
     NSMutableDictionary *RefreshDic;
-    
+    UIButton *alterButton;
     BOOL isforRepost;
     UITableView *muzzikTableView;
     UIView *headView;
@@ -71,9 +71,11 @@
     UIImage *saveImage;           //保存图片
     BOOL isPrivate;
     UIImageView *MprivateImage;
-    UIActionSheet *commentDeleteSheet;
+    IBActionSheet *commentDeleteSheet;
     NSString *fromId;
+    IBActionSheet *alertSheet;
 }
+@property (nonatomic,retain) muzzik *localmuzzik;
 @property (nonatomic,retain) NSMutableDictionary *profileDic;
 @property(nonatomic,retain)UIImageView *headimage;
 @property(nonatomic,retain)UIButton *attentionButton;
@@ -129,15 +131,13 @@
 @property (nonatomic) BOOL isPlaying;
 @property (nonatomic) PhotoImageView *poImage;
 @property (nonatomic) UIButton *addFriendButton;
-@property (nonatomic,retain) muzzik *localmuzzik;
 @end
 
 @implementation DialogVC
-
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     RefreshDic = [NSMutableDictionary dictionary];
+    self.localmuzzik = [muzzik new];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceMuzzikUpdate:) name:String_MuzzikDataSource_update object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceUserUpdate:) name:String_UserDataSource_update object:nil];
@@ -235,18 +235,7 @@
     [_timeStamp setFont:[UIFont fontWithName:Font_Next_medium size:9]];
     _timeStamp.textAlignment = NSTextAlignmentRight;
     
-    if ([self.localmuzzik.type isEqualToString:@"repost"]) {
-        _repostImage = [[UIImageView alloc] initWithFrame:CGRectMake(66, 36, 8, 8)];
-        [_muzzikView addSubview:_repostImage];
-        _repostUserName = [[UILabel alloc] initWithFrame:CGRectMake(80, 36, 150, 10)];
-        [_repostUserName setTextColor:Color_Additional_5];
-        [_repostUserName setFont:[UIFont fontWithName:Font_Next_DemiBold size:8]];
-        _repostUserName.text = self.localmuzzik.reposter.name;
-        [_muzzikView addSubview:_repostUserName];
-        _timeStamp.text = [MuzzikItem transtromTime:self.localmuzzik.repostDate];
-    }else{
-        _timeStamp.text = [MuzzikItem transtromTime:self.localmuzzik.date];
-    }
+    
     
     
     [_muzzikView addSubview:_timeStamp];
@@ -270,8 +259,8 @@
     
     [self loadMuzzikView];
     
+    
 }
-
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [Globle shareGloble].isHeadView = YES;
@@ -322,37 +311,12 @@
     // [MytableView removeKeyPath];
     
 }
-//-(void) loadComment{
-//    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/%@/dialog",BaseURL,self.localmuzzik.muzzik_id]]];
-//    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit, nil] Method:GetMethod auth:YES];
-//    __weak ASIHTTPRequest *weakre = request;
-//    [request setCompletionBlock :^{
-//        NSLog(@"%@",[weakre responseString]);
-//        NSLog(@"%d",[weakre responseStatusCode]);
-//        if ([weakre responseStatusCode] == 200) {
-//            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakre responseData]  options:NSJSONReadingMutableContainers error:nil];
-//            lastID = [dic objectForKey:@"tail"];
-//            commentArray = [[muzzik new] makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
-//            if ([[dic objectForKey:@"muzziks"] count] >1) {
-//                [muzzikTableView addFooterWithTarget:self action:@selector(refreshFooter)];
-//            }
-//            if ([commentArray count]>0) {
-//                [_muzzikView addSubview:commentTitle];
-//            }
-//            
-//            [muzzikTableView reloadData];
-//            
-//        }
-//        else{
-//            //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-//        }
-//    }];
-//    [request setFailedBlock:^{
-//        NSLog(@"%@",[weakre error]);
-//        NSLog(@"hhhh%@  kkk%@",[weakre responseString],[weakre responseHeaders]);
-//    }];
-//    [request startAsynchronous];
-//}
+
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
 -(void)viewDidScroll:(UIScrollView *)scrollView{
     [super viewDidScroll:scrollView];
     NSLog(@"%f",scrollView.contentOffset.y);
@@ -374,6 +338,8 @@
         _attentionButton.frame = d;
     }
 }
+
+
 
 #pragma -mark tableView Delegate
 
@@ -476,8 +442,7 @@
         [attributesText appendAttributedString:item1];
         cell.songName.attributedText = attributesText;
         [cell.lineview setFrame:CGRectMake(16, cell.message.frame.size.height+cell.message.frame.origin.y+52, SCREEN_WIDTH-32, 1)];
-    }
-    else{
+    }else{
         //        if (indexPath.row%2 == 0) {
         //            cell.backgroundColor = Color_Orange;
         //        }else{
@@ -504,7 +469,8 @@
     commentToMuzzik = commentArray[indexPath.row];
     if ([user.uid isEqualToString:tempMuzzik.MuzzikUser.user_id]) {
         [comnentTextView resignFirstResponder];
-        commentDeleteSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"删除评论", nil];
+        commentDeleteSheet = [[IBActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"删除评论", nil];
+        [commentDeleteSheet setButtonTextColor:Color_Active_Button_1 forButtonAtIndex:0];
         [commentDeleteSheet showInView:self.view.window];
     }else{
         isComment = YES;
@@ -516,6 +482,8 @@
     
     
 }
+
+
 #pragma mark - HOGrowingDelegate
 -(void)growingTextView:(HPGrowingTextView *)growingTextView willChangeHeight:(float)height{
     CGFloat delta = height-growingTextView.frame.size.height;
@@ -598,7 +566,7 @@
             newmuzzik.MuzzikUser.isFollow = NO;
             newmuzzik.MuzzikUser.isFans = NO;
             newmuzzik.music = self.localmuzzik.music;
-
+            
             [commentArray insertObject:newmuzzik atIndex:0];
             [muzzikTableView reloadData];
             if (mobject.music) {
@@ -651,17 +619,18 @@
 }
 #pragma mark - action
 -(void)tappedToSave:(PhotoImageView *)sender{
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"保存图片",@"举报", nil];
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"保存图片", nil];
     saveImage = sender.image;
     [sheet showInView:self.view.window];
 }
 
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+- (void)actionSheet:(IBActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     
-    if(buttonIndex==actionSheet.cancelButtonIndex){
+    if(buttonIndex==1){
         return;
-    }else if(actionSheet == commentDeleteSheet){
+    }
+    else if(actionSheet == commentDeleteSheet){
         ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@api/muzzik/%@",BaseURL,commentToMuzzik.muzzik_id]]];
         [requestForm addBodyDataSourceWithJsonByDic:nil Method:DeleteMethod auth:YES];
         __weak ASIHTTPRequest *weakrequest = requestForm;
@@ -683,7 +652,18 @@
             // [SVProgressHUD showErrorWithStatus:@"network error"];
         }];
         [requestForm startAsynchronous];
-    }else{
+    }
+    else if(actionSheet == alertSheet){
+        userInfo *user = [userInfo shareClass];
+        if ([user.token length]>0) {
+            repostVC *informvc = [[repostVC alloc] init];
+            informvc.informString = [NSString stringWithFormat:@"muzzik id:%@",self.localmuzzik.muzzik_id];
+            [self.navigationController pushViewController:informvc animated:YES];
+        }else{
+            [userInfo checkLoginWithVC:self];
+        }
+    }
+    else{
         if (buttonIndex==0){
             [self saveToAlbumWithMetadata:nil imageData:UIImagePNGRepresentation(saveImage) customAlbumName:@"Muzzik相册" completionBlock:^
              {
@@ -705,11 +685,6 @@
                      }
                  });
              }];
-        }else if (buttonIndex == 1){
-            TipsAlterView = [[UIAlertView alloc] initWithTitle:@"确定举报这条Muzzik吗?" message:@"" delegate:self cancelButtonTitle:@"放弃" otherButtonTitles:nil];
-            // optional - add more buttons:
-            [TipsAlterView addButtonWithTitle:@"确定"];
-            [TipsAlterView show];
         }
     }
     
@@ -802,6 +777,8 @@
         }
         if (self.localmuzzik.isReposted) {
             [self.repostButton setImage:[UIImage imageNamed:Image_hottweetredretweetImage] forState:UIControlStateNormal];
+        }else{
+            [self.repostButton setImage:[UIImage imageNamed:Image_detailretweetImage] forState:UIControlStateNormal];
         }
         
     }
@@ -823,6 +800,8 @@
         }
         if (self.localmuzzik.isReposted) {
             [self.repostButton setImage:[UIImage imageNamed:Image_hottweetyellowretweetImage] forState:UIControlStateNormal];
+        }else{
+            [self.repostButton setImage:[UIImage imageNamed:Image_detailretweetImage] forState:UIControlStateNormal];
         }
         
     }
@@ -841,6 +820,8 @@
         }
         if (self.localmuzzik.isReposted) {
             [self.repostButton setImage:[UIImage imageNamed:Image_hottweetblueretweetImage] forState:UIControlStateNormal];
+        }else{
+            [self.repostButton setImage:[UIImage imageNamed:Image_detailretweetImage] forState:UIControlStateNormal];
         }
     }
     [_moves setTitle:[self.localmuzzik.moveds integerValue]>0? [NSString stringWithFormat:@"喜欢数%@",self.localmuzzik.moveds] : @"喜欢数" forState:UIControlStateNormal];
@@ -854,83 +835,46 @@
 -(void)attentionAction{
     userInfo *user = [userInfo shareClass];
     if ([user.token length]>0) {
-    if ([[_profileDic objectForKey:@"isFollow"] boolValue]) {
-        [_profileDic setValue:[NSNumber numberWithBool:NO] forKey:@"isFollow"];
-        
-        MuzzikUser *attentionuser = [MuzzikUser new];
-        attentionuser.user_id = [_profileDic objectForKey:@"_id"];
-        attentionuser.isFans = [[_profileDic objectForKey:@"isFans"] boolValue];
-        attentionuser.isFollow = [[_profileDic objectForKey:@"isFollow"] boolValue];
-        [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
-        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_user_Unfollow]]];
-        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[_profileDic objectForKey:@"_id"] forKey:@"_id"] Method:PostMethod auth:YES];
-        __weak ASIHTTPRequest *weakrequest = requestForm;
-        [requestForm setCompletionBlock :^{
-            NSLog(@"%@",[weakrequest responseString]);
-            NSLog(@"%d",[weakrequest responseStatusCode]);
+        if ([[_profileDic objectForKey:@"isFollow"] boolValue]) {
+            [_profileDic setValue:[NSNumber numberWithBool:NO] forKey:@"isFollow"];
             
-            if ([weakrequest responseStatusCode] == 200) {
-                
-                
-                
-            }
-            else{
-                //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-            }
-        }];
-        [requestForm setFailedBlock:^{
-            NSLog(@"%@",[weakrequest error]);
-            NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-        }];
-        [requestForm startAsynchronous];
-    }else{
-        [_profileDic setValue:[NSNumber numberWithBool:YES] forKey:@"isFollow"];
-        
-        MuzzikUser *attentionuser = [MuzzikUser new];
-        attentionuser.user_id = [_profileDic objectForKey:@"_id"];
-        attentionuser.isFans = [[_profileDic objectForKey:@"isFans"] boolValue];
-        attentionuser.isFollow = [[_profileDic objectForKey:@"isFollow"] boolValue];
-        [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
-        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_User_Follow]]];
-        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:self.localmuzzik.MuzzikUser.user_id forKey:@"_id"] Method:PostMethod auth:YES];
-        __weak ASIHTTPRequest *weakrequest = requestForm;
-        [requestForm setCompletionBlock :^{
-            NSLog(@"%@",[weakrequest responseString]);
-            NSLog(@"%d",[weakrequest responseStatusCode]);
-            
-            if ([weakrequest responseStatusCode] == 200) {
-               
-            }
-            else{
-                //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-            }
-        }];
-        [requestForm setFailedBlock:^{
-            NSLog(@"%@",[weakrequest error]);
-            NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
-            
-        }];
-        [requestForm startAsynchronous];
-    }
-    }else{
-        [userInfo checkLoginWithVC:self];
-    }
-}
--(void)attentionOrVisit{
-    if ([[_profileDic objectForKey:@"isFollow"] boolValue]) {
-        userDetailInfo *uInfo = [[userDetailInfo alloc] init];
-        uInfo.uid = self.localmuzzik.MuzzikUser.user_id;
-        [self.navigationController pushViewController:uInfo animated:YES];
-    }
-    else{
-        userInfo *user = [userInfo shareClass];
-        if ([user.token length]>0) {
-            [_profileDic setValue:[NSNumber numberWithBool:YES] forKey:@"isFollow"];
             MuzzikUser *attentionuser = [MuzzikUser new];
             attentionuser.user_id = [_profileDic objectForKey:@"_id"];
             attentionuser.isFans = [[_profileDic objectForKey:@"isFans"] boolValue];
             attentionuser.isFollow = [[_profileDic objectForKey:@"isFollow"] boolValue];
             [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
+            
+            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_user_Unfollow]]];
+            [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[_profileDic objectForKey:@"_id"] forKey:@"_id"] Method:PostMethod auth:YES];
+            __weak ASIHTTPRequest *weakrequest = requestForm;
+            [requestForm setCompletionBlock :^{
+                NSLog(@"%@",[weakrequest responseString]);
+                NSLog(@"%d",[weakrequest responseStatusCode]);
+                
+                if ([weakrequest responseStatusCode] == 200) {
+                    
+                    
+                    
+                }
+                else{
+                    //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+                }
+            }];
+            [requestForm setFailedBlock:^{
+                NSLog(@"%@",[weakrequest error]);
+                NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
+            }];
+            [requestForm startAsynchronous];
+        }
+        else{
+            [_profileDic setValue:[NSNumber numberWithBool:YES] forKey:@"isFollow"];
+            
+            MuzzikUser *attentionuser = [MuzzikUser new];
+            attentionuser.user_id = [_profileDic objectForKey:@"_id"];
+            attentionuser.isFans = [[_profileDic objectForKey:@"isFans"] boolValue];
+            attentionuser.isFollow = [[_profileDic objectForKey:@"isFollow"] boolValue];
+            [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
+            
             ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_User_Follow]]];
             [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:self.localmuzzik.MuzzikUser.user_id forKey:@"_id"] Method:PostMethod auth:YES];
             __weak ASIHTTPRequest *weakrequest = requestForm;
@@ -939,7 +883,48 @@
                 NSLog(@"%d",[weakrequest responseStatusCode]);
                 
                 if ([weakrequest responseStatusCode] == 200) {
-                   
+                    
+                }
+                else{
+                    //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+                }
+            }];
+            [requestForm setFailedBlock:^{
+                NSLog(@"%@",[weakrequest error]);
+                NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
+                
+            }];
+            [requestForm startAsynchronous];
+        }
+    }else{
+        [userInfo checkLoginWithVC:self];
+    }
+    
+}
+-(void)attentionOrVisit{
+    if ([[_profileDic objectForKey:@"isFollow"] boolValue]) {
+        userDetailInfo *uInfo = [[userDetailInfo alloc] init];
+        uInfo.uid = self.localmuzzik.MuzzikUser.user_id;
+        [self.navigationController pushViewController:uInfo animated:YES];
+    }else{
+        userInfo *user = [userInfo shareClass];
+        if ([user.token length]>0) {
+            [_profileDic setValue:[NSNumber numberWithBool:YES] forKey:@"isFollow"];
+            MuzzikUser *attentionuser = [MuzzikUser new];
+            attentionuser.user_id = [_profileDic objectForKey:@"_id"];
+            attentionuser.isFans = [[_profileDic objectForKey:@"isFans"] boolValue];
+            attentionuser.isFollow = [[_profileDic objectForKey:@"isFollow"] boolValue];
+            [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
+            
+            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_User_Follow]]];
+            [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:self.localmuzzik.MuzzikUser.user_id forKey:@"_id"] Method:PostMethod auth:YES];
+            __weak ASIHTTPRequest *weakrequest = requestForm;
+            [requestForm setCompletionBlock :^{
+                NSLog(@"%@",[weakrequest responseString]);
+                NSLog(@"%d",[weakrequest responseStatusCode]);
+                
+                if ([weakrequest responseStatusCode] == 200) {
+                    
                 }
                 else{
                     //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
@@ -954,6 +939,7 @@
         }else{
             [userInfo checkLoginWithVC:self];
         }
+        
     }
 }
 -(void)goToUser{
@@ -1065,11 +1051,22 @@
     [alert show];
     
 }
-
+-(void)alertMuzzik{
+    
+    userInfo *user = [userInfo shareClass];
+    if ([user.token length]>0) {
+        alertSheet = [[IBActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"举报", nil];
+    }else{
+        alertSheet = [[IBActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"请先登录，再举报Ta", nil];
+    }
+    
+    [alertSheet showInView:self.view.window];
+}
 -(void)playMusicLocal{
     MuzzikRequestCenter *center = [MuzzikRequestCenter shareClass];
+    
     center.singleMusic = YES;
-
+    
     
     _musicplayer.MusicArray = [NSMutableArray arrayWithArray:@[self.localmuzzik]];
     _musicplayer.listType = TempList;
@@ -1087,79 +1084,6 @@
     //            }
     //        }
     //    }
-}
--(void) sendComment{
-    if ([comnentTextView.text length]>0) {
-        MuzzikObject *mobject = [MuzzikObject shareClass];
-        ASIHTTPRequest *shareRequest = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_new]]];
-        NSMutableDictionary *requestDic = [NSMutableDictionary dictionary];
-        if (isPrivate) {
-            [requestDic setObject:[NSNumber numberWithBool:YES] forKey:Parameter_private];
-        }
-        [requestDic setObject:[NSString stringWithFormat:@"@%@ %@",commentToMuzzik.MuzzikUser.name,comnentTextView.text] forKey:Parameter_message];
-        if (mobject.music) {
-            NSDictionary *musicDic = [NSDictionary dictionaryWithObjectsAndKeys:mobject.music.key,@"key",mobject.music.name,@"name",mobject.music.artist,@"artist", nil];
-            [requestDic setObject:musicDic forKey:@"music"];
-        }
-        if (isPrivate) {
-            [requestDic setValue:[NSNumber numberWithBool:YES] forKey:@"private"];
-        }else{
-            [requestDic setValue:[NSNumber numberWithBool:NO] forKey:@"private"];
-        }
-        [requestDic setObject:commentToMuzzik.muzzik_id forKey:@"reply"];
-        [shareRequest addBodyDataSourceWithJsonByDic:requestDic Method:PutMethod auth:YES];
-        __weak ASIHTTPRequest *weakShare = shareRequest;
-        [shareRequest setCompletionBlock:^{
-            NSLog(@"data:%@",[weakShare responseString]);
-            if ([weakShare responseStatusCode] == 200) {
-                
-                comnentTextView.internalTextView.text = @"";
-                if (mobject.music) {
-                    [self deleSong];
-                }
-                [mobject clearObject];
-                [comnentTextView performSelector:@selector(resignFirstResponder) withObject:nil afterDelay:0.3];
-                
-                ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/%@/comments",BaseURL,self.localmuzzik.muzzik_id]]];
-                [request addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:NO];
-                __weak ASIHTTPRequest *weakre = request;
-                [request setCompletionBlock :^{
-                    NSLog(@"%@",[weakre responseString]);
-                    NSLog(@"%d",[weakre responseStatusCode]);
-                    if ([weakre responseStatusCode] == 200) {
-                        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakre responseData]  options:NSJSONReadingMutableContainers error:nil];
-                        commentArray = [[muzzik new] makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
-                        if ([commentArray count]>0) {
-                            [_muzzikView addSubview:commentTitle];
-                        }
-                        [muzzikTableView reloadData];
-                        [muzzikTableView scrollToRowAtIndexPath:
-                         [NSIndexPath indexPathForRow:0 inSection:0]
-                                               atScrollPosition: UITableViewScrollPositionBottom
-                                                       animated:YES];
-                        
-                    }
-                    else{
-                        //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-                    }
-                }];
-                [request setFailedBlock:^{
-                    NSLog(@"%@",[weakre error]);
-                    NSLog(@"hhhh%@  kkk%@",[weakre responseString],[weakre responseHeaders]);
-                    [userInfo checkLoginWithVC:self];
-                }];
-                [request startAsynchronous];
-                
-            }
-        }];
-        [shareRequest setFailedBlock:^{
-            [userInfo checkLoginWithVC:self];
-            NSLog(@"%@",[weakShare error]);
-        }];
-        [shareRequest startAsynchronous];
-    }
-    
-    
 }
 -(void)deleSong{
     [musicButton setImage:[UIImage imageNamed:Image_detailaddsongImage] forState:UIControlStateNormal];
@@ -1211,7 +1135,7 @@
 {
     // [self updateSomeThing];
     if ([lastID length]>0) {
-        ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/%@/dialog",BaseURL,self.localmuzzik_id]]];
+        ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/%@/comments",BaseURL,self.localmuzzik.muzzik_id]]];
         [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:lastID,Parameter_from,Limit_Constant,Parameter_Limit, nil] Method:GetMethod auth:YES];
         __weak ASIHTTPRequest *weakrequest = request;
         [request setCompletionBlock :^{
@@ -1331,7 +1255,7 @@
             if ([commentArray count]==0) {
                 [muzzikTableView setContentOffset:CGPointMake(0, _muzzikView.frame.size.height-SCREEN_WIDTH+64) animated:YES];
             }else if([commentArray count]<=2){
-                [muzzikTableView setContentOffset:CGPointMake(0, _muzzikView.frame.size.height-SCREEN_WIDTH+64+[commentArray count]*70+20) animated:YES];
+                [muzzikTableView setContentOffset:CGPointMake(0, _muzzikView.frame.size.height-SCREEN_WIDTH+64+[commentArray count]*75+20) animated:YES];
             }else{
                 [muzzikTableView setContentOffset:CGPointMake(0, _muzzikView.frame.size.height-SCREEN_WIDTH+64+160) animated:YES];
             }
@@ -1794,6 +1718,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
                 self.localmuzzik.isReposted = YES;
                 self.localmuzzik.reposts = [NSString stringWithFormat:@"%d",[self.localmuzzik.reposts intValue]+1];
                 [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:self.localmuzzik];
+                
                 ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik",BaseURL]]];
                 NSDictionary *dictionary = [NSDictionary dictionaryWithObject:self.localmuzzik.muzzik_id forKey:@"repost"];
                 [requestForm addBodyDataSourceWithJsonByDic:dictionary Method:PutMethod auth:YES];
@@ -1807,15 +1732,17 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
                     }
                     
                     else if([weakrequest responseStatusCode] == 401){
-                        [userInfo checkLoginWithVC:self];
                         //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
                     }else if ([weakrequest responseStatusCode] == 400){
-
+                        //                        [MuzzikItem showNotifyOnView:self.view text:@"转发成功"];
+                        //                        self.localmuzzik.isReposted = YES;
+                        //                        [self colorViewWithColorString:self.localmuzzik.color];
                         
                     }
                 }];
                 [requestForm setFailedBlock:^{
                     NSLog(@"%@",[weakrequest error]);
+                    [userInfo checkLoginWithVC:self];
                 }];
                 [requestForm startAsynchronous];
             }
@@ -1832,11 +1759,10 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
                     NSLog(@"%@",[weakrequest responseString]);
                     NSLog(@"%d",[weakrequest responseStatusCode]);
                     if ([weakrequest responseStatusCode] == 200) {
-                       [MuzzikItem showNotifyOnView:self.view text:@"取消转发"];
+                        [MuzzikItem showNotifyOnView:self.view text:@"取消转发"];
                     }
                     
                     else if([weakrequest responseStatusCode] == 401){
-                        [userInfo checkLoginWithVC:self];
                         //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
                     }else if ([weakrequest responseStatusCode] == 400){
                         
@@ -2045,20 +1971,25 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
             
         }
         else{
-            _repostButton = [[UIButton alloc] initWithFrame:CGRectMake(16,_reposts.frame.origin.y+40, (int)((SCREEN_WIDTH-32)/3), 55)];
+            _repostButton = [[UIButton alloc] initWithFrame:CGRectMake(16,_reposts.frame.origin.y+40, (int)((SCREEN_WIDTH-32)/4), 55)];
             [_repostButton setImage:[UIImage imageNamed:Image_detailretweetImage] forState:UIControlStateNormal];
             [_repostButton addTarget:self action:@selector(repostAction) forControlEvents:UIControlEventTouchUpInside];
             [_muzzikView addSubview:_repostButton];
             //[_repostButton setBackgroundColor:Color_Additional_4];
-            _shareButton = [[UIButton alloc] initWithFrame:CGRectMake((int)((SCREEN_WIDTH-32)/3)+16,_reposts.frame.origin.y+40, (int)((SCREEN_WIDTH-32)/3), 55)];
+            _shareButton = [[UIButton alloc] initWithFrame:CGRectMake((int)((SCREEN_WIDTH-32)/4)+16,_reposts.frame.origin.y+40, (int)((SCREEN_WIDTH-32)/4), 55)];
             [_shareButton setImage:[UIImage imageNamed:Image_detailshareImage] forState:UIControlStateNormal];
             [_shareButton addTarget:self action:@selector(shareAction) forControlEvents:UIControlEventTouchUpInside];
             [_muzzikView addSubview:_shareButton];
             
-            _commentButton = [[UIButton alloc] initWithFrame:CGRectMake((int)((SCREEN_WIDTH-32)/3)*2+16,_reposts.frame.origin.y+40, (int)((SCREEN_WIDTH-32)/3), 55)];
+            _commentButton = [[UIButton alloc] initWithFrame:CGRectMake((int)((SCREEN_WIDTH-32)/2)+16,_reposts.frame.origin.y+40, (int)((SCREEN_WIDTH-32)/4), 55)];
             [_commentButton setImage:[UIImage imageNamed:Image_detailreplyImage] forState:UIControlStateNormal];
             [_commentButton addTarget:self action:@selector(commentAction) forControlEvents:UIControlEventTouchUpInside];
             [_muzzikView addSubview:_commentButton];
+            
+            alterButton = [[UIButton alloc] initWithFrame:CGRectMake((int)((SCREEN_WIDTH-32)/4)*3+16,_reposts.frame.origin.y+40, (int)((SCREEN_WIDTH-32)/4), 55)];
+            [alterButton setImage:[UIImage imageNamed:@"squaremoreicon"] forState:UIControlStateNormal];
+            [alterButton addTarget:self action:@selector(alertMuzzik) forControlEvents:UIControlEventTouchUpInside];
+            [_muzzikView addSubview:alterButton];
             cardView = [[UIView alloc] initWithFrame:CGRectMake(16, _reposts.frame.origin.y+95, SCREEN_WIDTH-32, 135)];
             cardView.backgroundColor = Color_line_2;
             cardView.layer.cornerRadius = 5;
@@ -2075,7 +2006,6 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
                     [cardHeader setAlpha:1];
                 }];
             }];
-            
             [cardHeader addTarget:self action:@selector(goToUser) forControlEvents:UIControlEventTouchUpInside];
             [cardView addSubview:cardHeader];
             
@@ -2185,7 +2115,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 }
 -(void)loadMuzzikView{
     
-     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/%@/dialog",BaseURL,self.localmuzzik_id]]];
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/%@/dialog",BaseURL,self.muzzik_id]]];
     [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:Limit_Constant forKey:Parameter_Limit] Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = request;
     [request setCompletionBlock :^{
@@ -2197,6 +2127,19 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         self.localmuzzik = commentArray[0];
         [commentArray removeObject:self.localmuzzik];
         commentToMuzzik = self.localmuzzik;
+        
+        if ([self.localmuzzik.type isEqualToString:@"repost"]) {
+            _repostImage = [[UIImageView alloc] initWithFrame:CGRectMake(66, 36, 8, 8)];
+            [_muzzikView addSubview:_repostImage];
+            _repostUserName = [[UILabel alloc] initWithFrame:CGRectMake(80, 36, 150, 10)];
+            [_repostUserName setTextColor:Color_Additional_5];
+            [_repostUserName setFont:[UIFont fontWithName:Font_Next_DemiBold size:8]];
+            _repostUserName.text = self.localmuzzik.reposter.name;
+            [_muzzikView addSubview:_repostUserName];
+            _timeStamp.text = [MuzzikItem transtromTime:self.localmuzzik.repostDate];
+        }else{
+            _timeStamp.text = [MuzzikItem transtromTime:self.localmuzzik.date];
+        }
         
         ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@",BaseURL,self.localmuzzik.MuzzikUser.user_id]]];
         [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
@@ -2247,6 +2190,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
                         
                         
                     }];
+                    [_muzzikView addSubview:_poImage];
                     
                     _reposts = [[UIButton alloc] initWithFrame:CGRectMake((int)((SCREEN_WIDTH-32)/4)+16, CGRectGetMaxY(_progress.frame)+SCREEN_WIDTH+28, (int)((SCREEN_WIDTH-32)/4), 40)];
                     
@@ -2348,14 +2292,6 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
                 [songView addSubview:deleButton];
                 
                 [self setUserInfo:_profileDic];
-                lastID = [dic objectForKey:@"tail"];
-                if ([[dic objectForKey:@"muzziks"] count] >=10) {
-                    [muzzikTableView addFooterWithTarget:self action:@selector(refreshFooter)];
-                }
-                if ([commentArray count]>0) {
-                    [_muzzikView addSubview:commentTitle];
-                }
-                
                 [muzzikTableView reloadData];
             }
         }];
@@ -2387,30 +2323,5 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     
     
 }
-
-
-
-
-
-
-
-
-
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-    
-}
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

@@ -91,7 +91,7 @@
     UINavigationController *nac = [[UINavigationController alloc] initWithRootViewController:rootvc];
 
     [self.window setRootViewController:nac];
-    self.window.backgroundColor = [UIColor whiteColor];
+    self.window.backgroundColor = [UIColor blackColor];
     [self.window makeKeyAndVisible];
     //[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
@@ -103,10 +103,10 @@
     [self QueryAllMusic];
     NSDictionary* message = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
     if (message) {
-//        [MuzzikItem addObjectToLocal:message ForKey:@"launch_APP"];
+       // [MuzzikItem addObjectToLocal:message ForKey:@"launch_APP"];
         NSString *payloadMsg = [message objectForKey:@"payload"];
         NSRange range = [payloadMsg rangeOfString:@"muzzik_id"];
-        if (range.location != NSNotFound) {
+        if ([payloadMsg length]>0 && range.location != NSNotFound) {
             DetaiMuzzikVC *detailvc = [[DetaiMuzzikVC alloc] init];
             
             detailvc.muzzik_id = [payloadMsg substringWithRange:NSMakeRange(range.length, payloadMsg.length-range.length)];
@@ -118,6 +118,19 @@
 
         [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     }
+//    NSDictionary* message = [MuzzikItem getDictionaryFromLocalForKey:@"launch_APP"];
+//    [MuzzikItem addObjectToLocal:message ForKey:@"launch_APP"];
+//    NSString *payloadMsg = [message objectForKey:@"payload"];
+//    NSRange range = [payloadMsg rangeOfString:@"muzzik_id"];
+//    if ([payloadMsg length]>0 &&range.location != NSNotFound) {
+//        DetaiMuzzikVC *detailvc = [[DetaiMuzzikVC alloc] init];
+//        
+//        detailvc.muzzik_id = [payloadMsg substringWithRange:NSMakeRange(range.length, payloadMsg.length-range.length)];
+//        [nac pushViewController:detailvc animated:YES];
+//    }else{
+//        NotificationCenterViewController *notifyVC = [[NotificationCenterViewController alloc] init];
+//        [nac pushViewController:notifyVC animated:YES];
+//    }
     return YES;
 }
 #pragma -mark 个推后台推送，消息处理
