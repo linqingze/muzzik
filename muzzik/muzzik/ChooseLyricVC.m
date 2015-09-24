@@ -9,12 +9,12 @@
 #import "ChooseLyricVC.h"
 #import "TableViewCell.h"
 #import "RJTextView.h"
-#import "TWPhotoPickerController.h"
+#import "JSImagePickerViewController.h"
 #import "StyledPageControl.h"
 #import "ASIFormDataRequest.h"
 #import "FontTableCell.h"
 #import <TencentOpenAPI/TencentOAuth.h>
-@interface ChooseLyricVC()<UITableViewDataSource,UITableViewDelegate,RJTextViewDelegate,ASIProgressDelegate>{
+@interface ChooseLyricVC()<UITableViewDataSource,UITableViewDelegate,RJTextViewDelegate,ASIProgressDelegate,JSImagePickerViewControllerDelegate>{
     NSMutableArray *fontArray;
     NSMutableArray *lyricArray;
     NSArray *famousArray;
@@ -1259,19 +1259,23 @@
     }
 }
 -(void) changeImage{
-    TWPhotoPickerController *photoPicker = [[TWPhotoPickerController alloc] init];
-    photoPicker.cropBlock = ^(UIImage *image) {
-        self.image = image;
-        isShow = YES;
-//        [MuzzikLogoImage setImage:[UIImage imageNamed:@"muzzikwhite"]];
-        [headImage setImage:image];
-//        shareColor = [UIColor whiteColor];
-//        [shareLabel.textView setTextColor:shareColor];
-//        [lyricTablenview reloadData];
-        [LibraryButton setImage:[UIImage imageNamed:Image_addedpicImage] forState:UIControlStateNormal];
-    };
-    [self presentViewController:photoPicker animated:YES completion:NULL];
+    
+    JSImagePickerViewController *imagePicker = [[JSImagePickerViewController alloc] init];
+    imagePicker.delegate = self;
+    [imagePicker showImagePickerInController:self animated:YES];
 }
+
+#pragma mark - JSImagePikcerViewControllerDelegate
+
+- (void)imagePickerDidSelectImage:(UIImage *)image {
+    self.image = image;
+    isShow = YES;
+    [headImage setImage:image];
+    [LibraryButton setImage:[UIImage imageNamed:Image_addedpicImage] forState:UIControlStateNormal];
+}
+
+
+
 - (void)handleSendResult:(QQApiSendResultCode)sendResult
 {
     switch (sendResult)

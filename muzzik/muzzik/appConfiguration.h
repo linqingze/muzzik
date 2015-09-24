@@ -221,6 +221,6 @@
 
 #define MUSIC_FileName              @"muzzik_musicFileForSaving"
 
-#define Image_Size_Small            @"?imageView2/1/w/100/h/100"
+#define Image_Size_Small            @"?imageView2/1/w/150/h/150"
 #define Image_Size_Big            @"?imageView2/1/w/500/h/500"
 #endif

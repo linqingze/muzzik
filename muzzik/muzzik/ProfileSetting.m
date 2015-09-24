@@ -11,9 +11,9 @@
 #import "ClassifySelectionVC.h"
 #import "ZHPickView.h"
 #import "AFViewShaker.h"
-#import "TWPhotoPickerController.h"
+#import "JSImagePickerViewController.h"
 #import "ASIFormDataRequest.h"
-@interface ProfileSetting ()<HPGrowingTextViewDelegate,UITextFieldDelegate,ZHPickViewDelegate,UITableViewDelegate>{
+@interface ProfileSetting ()<HPGrowingTextViewDelegate,UITextFieldDelegate,ZHPickViewDelegate,UITableViewDelegate,JSImagePickerViewControllerDelegate>{
     BOOL isChanged;
     BOOL changedBirth;
     UIButton *headimage;
@@ -380,14 +380,16 @@
     [UIView commitAnimations];
 }
 -(void) changeHeadImage{
-    TWPhotoPickerController *photoPicker = [[TWPhotoPickerController alloc] init];
-    photoPicker.cropBlock = ^(UIImage *image) {
-        localImage = image;
-        [headimage setBackgroundImage:image forState:UIControlStateNormal];
-    };
-    [self presentViewController:photoPicker animated:YES completion:NULL];
+    JSImagePickerViewController *imagePicker = [[JSImagePickerViewController alloc] init];
+    imagePicker.delegate = self;
+    [imagePicker showImagePickerInController:self animated:YES];
 }
+#pragma mark - JSImagePikcerViewControllerDelegate
 
+- (void)imagePickerDidSelectImage:(UIImage *)image {
+    localImage = image;
+    [headimage setBackgroundImage:image forState:UIControlStateNormal];
+}
 -(void) setfemale{
     [maleButton setImage:[UIImage imageNamed:@"selectcircleImage"] forState:UIControlStateNormal];
     [femaleButton setImage:[UIImage imageNamed:@"femaleselectedImage"] forState:UIControlStateNormal];

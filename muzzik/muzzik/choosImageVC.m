@@ -8,8 +8,12 @@
 
 #import "choosImageVC.h"
 #import "ASIFormDataRequest.h"
-#import "TWPhotoPickerController.h"
+#import "JSImagePickerViewController.h"
 #import "ChooseLyricVC.h"
+@interface choosImageVC ()<JSImagePickerViewControllerDelegate>{
+
+}
+@end
 @implementation choosImageVC
 -(void)viewDidLoad{
     [super viewDidLoad];
@@ -54,19 +58,23 @@
     notifyLabel.textAlignment = NSTextAlignmentCenter;
 }
 -(void) getPicture{
-    TWPhotoPickerController *photoPicker = [[TWPhotoPickerController alloc] init];
-    photoPicker.cropBlock = ^(UIImage *image) {
-        userImage = image;
-        [headImage setImage:image];
-        notifyLabel.alpha = 0;
-        [self.view addSubview:notifyLabel];
-        [UIView animateWithDuration:0.3 animations:^{
-            [notifyLabel setAlpha:1];
-        }];
-    };
-    [self presentViewController:photoPicker animated:YES completion:NULL];
-}
+    JSImagePickerViewController *imagePicker = [[JSImagePickerViewController alloc] init];
+    imagePicker.delegate = self;
+    [imagePicker showImagePickerInController:self animated:YES];
 
+   
+}
+#pragma mark - JSImagePikcerViewControllerDelegate
+
+- (void)imagePickerDidSelectImage:(UIImage *)image {
+    userImage = image;
+    [headImage setImage:image];
+    notifyLabel.alpha = 0;
+    [self.view addSubview:notifyLabel];
+    [UIView animateWithDuration:0.3 animations:^{
+        [notifyLabel setAlpha:1];
+    }];
+}
 -(NSAttributedString *)formatAttrItem:(NSString *)content color:(UIColor *)color font:(UIFont *)font
 {
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];

@@ -489,11 +489,11 @@
                     MuzzikUser * tempUser = tempArray[i*3+j];
                     UIButton_UserMuzzik *userbutton = [[UIButton_UserMuzzik alloc] initWithFrame:CGRectMake(localX, localY, SCREEN_WIDTH/3-31, SCREEN_WIDTH/3-31)];
                     userbutton.user =tempUser;
+                    CGFloat x = SCREEN_WIDTH/6-15.5;
                     userbutton.layer.cornerRadius = SCREEN_WIDTH/6-15.5;
                     userbutton.clipsToBounds = YES;
                     [userbutton addTarget:self action:@selector(seeVipUser:) forControlEvents:UIControlEventTouchUpInside];
                     [userbutton setAlpha:0];
-                    userbutton.layer.cornerRadius = SCREEN_WIDTH/6-15.5;
                     [userbutton sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,tempUser.avatar,Image_Size_Small]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                         [UIView animateWithDuration:0.5 animations:^{
                             [userbutton setAlpha:1];
@@ -575,6 +575,7 @@
                 for (int j=0; j<3; j++) {
                     MuzzikUser * tempUser = tempArray[i*3+j];
                     UIButton_UserMuzzik *userbutton = [[UIButton_UserMuzzik alloc] initWithFrame:CGRectMake(localX, localY, SCREEN_WIDTH/3-31, SCREEN_WIDTH/3-31)];
+                    CGFloat x = SCREEN_WIDTH/6-15.5;
                     userbutton.user =tempUser;
                     userbutton.layer.cornerRadius = SCREEN_WIDTH/6-15.5;
                     userbutton.clipsToBounds = YES;
