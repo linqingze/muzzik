@@ -2251,7 +2251,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
                 
                 [_playButton addTarget:self action:@selector(playMusicLocal) forControlEvents:UIControlEventTouchUpInside];
                 [_muzzikView addSubview:_playButton];
-                if ([self.localmuzzik.image length]>0) {
+                if (![self.localmuzzik.image isKindOfClass:[NSNull class]] && [self.localmuzzik.image length]>0) {
                     _poImage = [[PhotoImageView alloc] initWithFrame:CGRectMake(16, CGRectGetMaxY(_progress.frame)+60, SCREEN_WIDTH-32, SCREEN_WIDTH-32)];
                     _poImage.delegate = self;
                     _poImage.layer.cornerRadius = 3;
