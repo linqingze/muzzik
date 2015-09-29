@@ -23,7 +23,7 @@
     _titleImage = [[UIImageView alloc] initWithFrame:CGRectMake(16, 14, 32, 32)];
     [self addSubview:_titleImage];
     _decriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(64, 0, SCREEN_WIDTH-128, 60)];
-    _decriptionLabel.font = [UIFont fontWithName:HeiTiSC_Medium size:15];
+    _decriptionLabel.font = [UIFont boldSystemFontOfSize:Font_Size_Muzzik_Message];
     [self addSubview:_decriptionLabel];
     _badgeImage = [[badgeImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-32, 22, 16, 16)];
     [_badgeImage setImage:[UIImage imageNamed:@"noti_cycle"]];

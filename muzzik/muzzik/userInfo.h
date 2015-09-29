@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 @interface userInfo : NSObject
+@property (nonatomic,assign) BOOL launched;
 @property (nonatomic,retain) muzzik *poMuzzik;
 @property (nonatomic,copy) NSString *token;
 @property (nonatomic,copy) NSString *uid;

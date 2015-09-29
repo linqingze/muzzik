@@ -75,8 +75,8 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
     
     self.animationTime = 0.2;
     
-    [self.window addSubview:self.backgroundView];
-    [self.window addSubview:self.imagePickerView];
+    [self.view addSubview:self.backgroundView];
+    [self.view addSubview:self.imagePickerView];
     
     UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, self.imagePickerView.frame.size.width, 50)];
     [btn setTitle:@"Hello!" forState:UIControlStateNormal];
@@ -293,7 +293,7 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
         
         [self setTransitioningDelegate:transitionController];
         self.modalPresentationStyle = UIModalPresentationCustom;
-        [controller presentViewController:self animated:NO completion:nil];
+        [controller presentViewController:self animated:YES completion:nil];
         
         if (animated) {
             [UIView animateWithDuration:self.animationTime

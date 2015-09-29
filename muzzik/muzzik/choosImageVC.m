@@ -10,8 +10,9 @@
 #import "ASIFormDataRequest.h"
 #import "JSImagePickerViewController.h"
 #import "ChooseLyricVC.h"
-@interface choosImageVC ()<JSImagePickerViewControllerDelegate>{
-
+#import "NLImageCropperView.h"
+@interface choosImageVC ()<JSImagePickerViewControllerDelegate,NLImageCropperViewDelegate>{
+    NLImageCropperView* _imageCropper;
 }
 @end
 @implementation choosImageVC
@@ -56,6 +57,8 @@
     [text appendAttributedString:item1];
     notifyLabel.attributedText = text;
     notifyLabel.textAlignment = NSTextAlignmentCenter;
+    _imageCropper = [[NLImageCropperView alloc] initWithFrame:self.view.bounds];
+    _imageCropper.delegate = self;
 }
 -(void) getPicture{
     JSImagePickerViewController *imagePicker = [[JSImagePickerViewController alloc] init];
@@ -67,6 +70,16 @@
 #pragma mark - JSImagePikcerViewControllerDelegate
 
 - (void)imagePickerDidSelectImage:(UIImage *)image {
+    [_imageCropper setImage:image];
+    CGFloat minLength = image.size.width <image.size.height ? image.size.width : image.size.height;
+    if (minLength >200) {
+        [_imageCropper setCropRegionRect:CGRectMake(image.size.width/2-100*_imageCropper.scalingFactor, image.size.height/2 - 100*_imageCropper.scalingFactor, 200*_imageCropper.scalingFactor, 200*_imageCropper.scalingFactor)];
+    }else{
+        [_imageCropper setCropRegionRect:CGRectMake(image.size.width/2-minLength/2, image.size.height/2 - minLength/2, minLength*_imageCropper.scalingFactor, minLength)];
+    }
+    [self.navigationController.view addSubview:_imageCropper];
+}
+-(void)userCropImage:(UIImage *)image{
     userImage = image;
     [headImage setImage:image];
     notifyLabel.alpha = 0;

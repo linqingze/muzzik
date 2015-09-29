@@ -263,95 +263,98 @@
 -(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfoDic fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
 
     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
-    
-    Globle *glob = [Globle shareGloble];
-    if (!glob.isApplicationEnterBackground && isLaunched) {
-        
-        AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
-        
-//        
-//        if ([self checkMute]) {
-//            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
-//        }else{
-//            AudioServicesPlaySystemSound(1301);
-//        }
-        
-        
-    }
-    // [4-EXT]:处理APN
-    UINavigationController *nac = (UINavigationController *)self.window.rootViewController;
-    if (glob.isApplicationEnterBackground && [[userInfoDic allKeys] containsObject:@"payload"] && [[userInfoDic objectForKey:@"payload"] rangeOfString:@"muzzik_id"].location!= NSNotFound) {
-        DetaiMuzzikVC *detailvc = [[DetaiMuzzikVC alloc] init];
-        NSRange range = [[userInfoDic objectForKey:@"payload"] rangeOfString:@"muzzik_id"];
-        detailvc.muzzik_id = [[userInfoDic objectForKey:@"payload"] substringWithRange:NSMakeRange(range.length, [[userInfoDic objectForKey:@"payload"] length]-range.length)];
-        [nac pushViewController:detailvc animated:YES];
-    }else{
+    userInfo *user = [userInfo shareClass];
+    if (user.launched) {
+        Globle *glob = [Globle shareGloble];
         if (!glob.isApplicationEnterBackground && isLaunched) {
-            if ([[nac.viewControllers lastObject] isKindOfClass:[NotificationCenterViewController class]]) {
-                NotificationCenterViewController *notifyVC = (NotificationCenterViewController *)[nac.viewControllers lastObject];
-                [notifyVC checkNewNotification];
-                //            [[UIApplication sharedApplication] cancelAllLocalNotifications];
-                [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
-            }else{
-                if ([[userInfoDic allKeys] containsObject:@"aps"] && [[[userInfoDic objectForKey:@"aps"] allKeys] containsObject:@"alert"] && [[userInfoDic objectForKey:@"aps"] objectForKey:@"alert"] && [[[[userInfoDic objectForKey:@"aps"] objectForKey:@"alert"] allKeys] containsObject:@"body"]) {
-                    for (UIViewController *vc in nac.viewControllers) {
-                        if ([vc isKindOfClass:[RootViewController class]]) {
-                            RootViewController *rootvc = (RootViewController*)vc;
-                            [rootvc getMessage];
+            
+            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+            
+            //
+            //        if ([self checkMute]) {
+            //            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+            //        }else{
+            //            AudioServicesPlaySystemSound(1301);
+            //        }
+            
+            
+        }
+        // [4-EXT]:处理APN
+        UINavigationController *nac = (UINavigationController *)self.window.rootViewController;
+        if (glob.isApplicationEnterBackground && [[userInfoDic allKeys] containsObject:@"payload"] && [[userInfoDic objectForKey:@"payload"] rangeOfString:@"muzzik_id"].location!= NSNotFound) {
+            DetaiMuzzikVC *detailvc = [[DetaiMuzzikVC alloc] init];
+            NSRange range = [[userInfoDic objectForKey:@"payload"] rangeOfString:@"muzzik_id"];
+            detailvc.muzzik_id = [[userInfoDic objectForKey:@"payload"] substringWithRange:NSMakeRange(range.length, [[userInfoDic objectForKey:@"payload"] length]-range.length)];
+            [nac pushViewController:detailvc animated:YES];
+        }else{
+            if (!glob.isApplicationEnterBackground && isLaunched) {
+                if ([[nac.viewControllers lastObject] isKindOfClass:[NotificationCenterViewController class]]) {
+                    NotificationCenterViewController *notifyVC = (NotificationCenterViewController *)[nac.viewControllers lastObject];
+                    [notifyVC checkNewNotification];
+                    //            [[UIApplication sharedApplication] cancelAllLocalNotifications];
+                    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+                }else{
+                    if ([[userInfoDic allKeys] containsObject:@"aps"] && [[[userInfoDic objectForKey:@"aps"] allKeys] containsObject:@"alert"] && [[userInfoDic objectForKey:@"aps"] objectForKey:@"alert"] && [[[[userInfoDic objectForKey:@"aps"] objectForKey:@"alert"] allKeys] containsObject:@"body"]) {
+                        for (UIViewController *vc in nac.viewControllers) {
+                            if ([vc isKindOfClass:[RootViewController class]]) {
+                                RootViewController *rootvc = (RootViewController*)vc;
+                                [rootvc getMessage];
+                            }
                         }
-                    }
-                    NSDictionary *aps = [userInfoDic objectForKey:@"aps"];
-                    
-                    NSString *record = [NSString stringWithFormat:@"[APN]%@, %@", [NSDate date], aps];
-                    NSLog(@"%@       didReceiveRemoteNotification",record);
-                    NSString *Message = [[aps objectForKey:@"alert" ] objectForKey:@"body"];
-                    NSArray *array = [Message componentsSeparatedByString:@" "];
-                    if ([array count]>1 ) {
-                        NSString *alter = [array objectAtIndex:1];
-                        if ([alter isEqualToString:@"评论了你"]) {
-                            [MuzzikItem showNewNotifyByText:Message];
-                        }else if([alter isEqualToString:@"提到了你"]){
-                            [MuzzikItem showNewNotifyByText:Message];
-                        }
+                        NSDictionary *aps = [userInfoDic objectForKey:@"aps"];
                         
-                        //
-                        //            if ([alter isEqualToString:@"评论了你"]) {
-                        //                [MuzzikItem showNewNotifyByText:Message];
-                        //            }else if([alter isEqualToString:@"提到了你"]){
-                        //                [MuzzikItem showNewNotifyByText:Message];
-                        //            }else if([alter isEqualToString:@"喜欢了你的"]){
-                        //                [MuzzikItem showNewNotifyByText:Message];
-                        //            }else if([alter isEqualToString:@"转发了你的"]){
-                        //                [MuzzikItem showNewNotifyByText:Message];
-                        //            }else if([alter isEqualToString:@"参与了你发起的话题"]){
-                        //                [MuzzikItem showNewNotifyByText:Message];
-                        //            }else {
-                        //                //处理关注，微博好友等
-                        //                [MuzzikItem showNewNotifyByText:Message];
-                        //            }
+                        NSString *record = [NSString stringWithFormat:@"[APN]%@, %@", [NSDate date], aps];
+                        NSLog(@"%@       didReceiveRemoteNotification",record);
+                        NSString *Message = [[aps objectForKey:@"alert" ] objectForKey:@"body"];
+                        NSArray *array = [Message componentsSeparatedByString:@" "];
+                        if ([array count]>1 ) {
+                            NSString *alter = [array objectAtIndex:1];
+                            if ([alter isEqualToString:@"评论了你"]) {
+                                [MuzzikItem showNewNotifyByText:Message];
+                            }else if([alter isEqualToString:@"提到了你"]){
+                                [MuzzikItem showNewNotifyByText:Message];
+                            }
+                            
+                            //
+                            //            if ([alter isEqualToString:@"评论了你"]) {
+                            //                [MuzzikItem showNewNotifyByText:Message];
+                            //            }else if([alter isEqualToString:@"提到了你"]){
+                            //                [MuzzikItem showNewNotifyByText:Message];
+                            //            }else if([alter isEqualToString:@"喜欢了你的"]){
+                            //                [MuzzikItem showNewNotifyByText:Message];
+                            //            }else if([alter isEqualToString:@"转发了你的"]){
+                            //                [MuzzikItem showNewNotifyByText:Message];
+                            //            }else if([alter isEqualToString:@"参与了你发起的话题"]){
+                            //                [MuzzikItem showNewNotifyByText:Message];
+                            //            }else {
+                            //                //处理关注，微博好友等
+                            //                [MuzzikItem showNewNotifyByText:Message];
+                            //            }
+                        }
                     }
+                    
+                    
+                    
                 }
                 
-                
-                
-            }
-            
-        }else{
-            //[[UIApplication sharedApplication] cancelAllLocalNotifications];
-            [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
-            if ([[nac.viewControllers lastObject] isKindOfClass:[NotificationCenterViewController class]]) {
-                NotificationCenterViewController *notifyVC = (NotificationCenterViewController *)[nac.viewControllers lastObject];
-                [notifyVC checkNewNotification];
-                
             }else{
-                NotificationCenterViewController *notifyVC = [[NotificationCenterViewController alloc] init];
-                [nac pushViewController:notifyVC animated:YES];
+                //[[UIApplication sharedApplication] cancelAllLocalNotifications];
+                [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+                if ([[nac.viewControllers lastObject] isKindOfClass:[NotificationCenterViewController class]]) {
+                    NotificationCenterViewController *notifyVC = (NotificationCenterViewController *)[nac.viewControllers lastObject];
+                    [notifyVC checkNewNotification];
+                    
+                }else{
+                    NotificationCenterViewController *notifyVC = [[NotificationCenterViewController alloc] init];
+                    [nac pushViewController:notifyVC animated:YES];
+                }
+                
             }
             
         }
 
     }
-        isLaunched = YES;
+           isLaunched = YES;
     completionHandler(UIBackgroundFetchResultNewData);
 
 }

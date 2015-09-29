@@ -159,26 +159,32 @@
         notifyvc.title = @"他们回复了你的Muzzik";
         notifyvc.notifyType = Notification_comment;
         notifyvc.numOfNewNotification = user.notificationNumReply;
+        user.notificationNumReplyNew = NO;
     }else if (indexPath.row == 1) {
         notifyvc.title = @"他们提到了你";
         notifyvc.notifyType = Notification_at;
         notifyvc.numOfNewNotification = user.notificationNumMetion;
+        user.notificationNumMetionNew = NO;
     }else if (indexPath.row == 2) {
         notifyvc.title = @"他们关注了你";
         notifyvc.notifyType = Notification_follow;
         notifyvc.numOfNewNotification = user.notificationNumFollow;
+        user.notificationNumFollowNew = NO;
     }else if (indexPath.row == 3) {
         notifyvc.title = @"他们喜欢了你的Muzzik";
         notifyvc.notifyType = Notification_moved;
         notifyvc.numOfNewNotification = user.notificationNumMoved;
+        user.notificationNumMovedNew = NO;
     }else if (indexPath.row == 4) {
         notifyvc.title = @"他们转发了你的Muzzik";
         notifyvc.notifyType = Notification_repost;
         notifyvc.numOfNewNotification = user.notificationNumRepost;
+        user.notificationNumRepostNew = NO;
     }else if (indexPath.row == 5) {
         notifyvc.title = @"他们参与了你的话题";
         notifyvc.notifyType = Notification_participation;
         notifyvc.numOfNewNotification = user.notificationNumParticipationTopic;
+        user.notificationNumParticipationTopicNew = NO;
     }
     [self.navigationController pushViewController:notifyvc animated:YES];
         

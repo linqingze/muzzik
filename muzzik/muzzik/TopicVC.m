@@ -651,7 +651,12 @@
         }
         
         suggestArray = [[user.playList objectForKey:Constant_userInfo_suggest] objectForKey:UserInfo_muzziks];
-        suggestMuzzik = suggestArray[arc4random()%[suggestArray count]];
+        if ([suggestArray count] >= 10) {
+            suggestMuzzik = suggestArray[arc4random()%10];
+        }else{
+            suggestMuzzik = suggestArray[arc4random()%[suggestArray count]];
+        }
+        
         [suggestArray removeObject:suggestMuzzik];
         [suggestArray insertObject:suggestMuzzik atIndex:0];
         [self suggestViewLayout];
@@ -673,7 +678,11 @@
                     muzzikLabel.text = @"本期推荐";
                 }
                 suggestArray =  [[muzzik new] makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"] ];
-                suggestMuzzik = suggestArray[arc4random()%[suggestArray count]];
+                if ([suggestArray count] >= 10) {
+                    suggestMuzzik = suggestArray[arc4random()%10];
+                }else{
+                    suggestMuzzik = suggestArray[arc4random()%[suggestArray count]];
+                }
                 [suggestArray removeObject:suggestMuzzik];
                 [suggestArray insertObject:suggestMuzzik atIndex:0];
                 [self suggestViewLayout];

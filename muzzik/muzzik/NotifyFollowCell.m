@@ -33,7 +33,7 @@
     [_message setTextColor:Color_Text_2];
     [_message setFont:[UIFont fontWithName:Font_Next_DemiBold size:14]];
     [self addSubview: _message];
-    _lineView = [[UIView alloc] initWithFrame:CGRectMake(23, 71, SCREEN_WIDTH-31, 1)];
+    _lineView = [[UIView alloc] initWithFrame:CGRectMake(23, 71, SCREEN_WIDTH-46, 1)];
     [_lineView setBackgroundColor:Color_line_1];
     [self addSubview:_lineView];
 }

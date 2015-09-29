@@ -144,6 +144,8 @@
 		F212A76F1AF5044A005B14DD /* DetaiMuzzikVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F212A76E1AF5044A005B14DD /* DetaiMuzzikVC.m */; };
 		F218144F1AF234CE00AA06AA /* HPGrowingTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = F218144C1AF234CE00AA06AA /* HPGrowingTextView.m */; };
 		F21814501AF234CE00AA06AA /* HPTextViewInternal.m in Sources */ = {isa = PBXBuildFile; fileRef = F218144E1AF234CE00AA06AA /* HPTextViewInternal.m */; };
+		F2190DBB1BBA86CA00588A7D /* NLCropViewLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = F2190DB81BBA86CA00588A7D /* NLCropViewLayer.m */; settings = {ASSET_TAGS = (); }; };
+		F2190DBC1BBA86CA00588A7D /* NLImageCropperView.m in Sources */ = {isa = PBXBuildFile; fileRef = F2190DBA1BBA86CA00588A7D /* NLImageCropperView.m */; settings = {ASSET_TAGS = (); }; };
 		F21EA1CA1ACECC6200F5ED32 /* TopicVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F21EA1C91ACECC6200F5ED32 /* TopicVC.m */; };
 		F22AB3A31B05E29900C61677 /* SongListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F22AB3A21B05E29900C61677 /* SongListCell.m */; };
 		F22AB3A61B068A6000C61677 /* TapImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = F22AB3A51B068A6000C61677 /* TapImageView.m */; };
@@ -530,6 +532,10 @@
 		F218144C1AF234CE00AA06AA /* HPGrowingTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HPGrowingTextView.m; sourceTree = "<group>"; };
 		F218144D1AF234CE00AA06AA /* HPTextViewInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HPTextViewInternal.h; sourceTree = "<group>"; };
 		F218144E1AF234CE00AA06AA /* HPTextViewInternal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HPTextViewInternal.m; sourceTree = "<group>"; };
+		F2190DB71BBA86CA00588A7D /* NLCropViewLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NLCropViewLayer.h; sourceTree = "<group>"; };
+		F2190DB81BBA86CA00588A7D /* NLCropViewLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NLCropViewLayer.m; sourceTree = "<group>"; };
+		F2190DB91BBA86CA00588A7D /* NLImageCropperView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NLImageCropperView.h; sourceTree = "<group>"; };
+		F2190DBA1BBA86CA00588A7D /* NLImageCropperView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NLImageCropperView.m; sourceTree = "<group>"; };
 		F21EA1C81ACECC6200F5ED32 /* TopicVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopicVC.h; sourceTree = "<group>"; };
 		F21EA1C91ACECC6200F5ED32 /* TopicVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopicVC.m; sourceTree = "<group>"; };
 		F22AB3A11B05E29900C61677 /* SongListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SongListCell.h; sourceTree = "<group>"; };
@@ -1378,6 +1384,17 @@
 			name = HPGrowingTextView;
 			sourceTree = "<group>";
 		};
+		F2190DB61BBA86AA00588A7D /* cropView */ = {
+			isa = PBXGroup;
+			children = (
+				F2190DB71BBA86CA00588A7D /* NLCropViewLayer.h */,
+				F2190DB81BBA86CA00588A7D /* NLCropViewLayer.m */,
+				F2190DB91BBA86CA00588A7D /* NLImageCropperView.h */,
+				F2190DBA1BBA86CA00588A7D /* NLImageCropperView.m */,
+			);
+			name = cropView;
+			sourceTree = "<group>";
+		};
 		F21EA1C71ACECB8A00F5ED32 /* 推荐 */ = {
 			isa = PBXGroup;
 			children = (
@@ -1410,6 +1427,7 @@
 		F24F0A651BB320790073F6FA /* JSImagePicker */ = {
 			isa = PBXGroup;
 			children = (
+				F2190DB61BBA86AA00588A7D /* cropView */,
 				F24F0A661BB320910073F6FA /* JSImagePickerViewController.h */,
 				F24F0A671BB320910073F6FA /* JSImagePickerViewController.m */,
 			);
@@ -1880,6 +1898,7 @@
 				F20B10361AF6B4A30067EBD3 /* UserHomePage.m in Sources */,
 				F2F7EE1A1AED69B600265596 /* MessageStepViewController.m in Sources */,
 				E1B2303A1AB5BF22004E50DA /* FMDatabaseAdditions.m in Sources */,
+				F2190DBC1BBA86CA00588A7D /* NLImageCropperView.m in Sources */,
 				E11246481AAAB1F20014D461 /* ASIInputStream.m in Sources */,
 				F2F68F641B25C9C1005F19E6 /* PhotoImageView.m in Sources */,
 				F2F7EE431AEE241A00265596 /* FriendVC.m in Sources */,
@@ -1996,6 +2015,7 @@
 				E1FA13421AB1911D005EDA1D /* http_stream.cpp in Sources */,
 				E1FA12D11AB14CEF005EDA1D /* NSError+Additions.m in Sources */,
 				F2B81FF11ADD6C6A00012ED6 /* MuzzikItem.m in Sources */,
+				F2190DBB1BBA86CA00588A7D /* NLCropViewLayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

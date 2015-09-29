@@ -13,7 +13,9 @@
 #import "AFViewShaker.h"
 #import "JSImagePickerViewController.h"
 #import "ASIFormDataRequest.h"
-@interface ProfileSetting ()<HPGrowingTextViewDelegate,UITextFieldDelegate,ZHPickViewDelegate,UITableViewDelegate,JSImagePickerViewControllerDelegate>{
+#import "NLImageCropperView.h"
+@interface ProfileSetting ()<HPGrowingTextViewDelegate,UITextFieldDelegate,ZHPickViewDelegate,UITableViewDelegate,JSImagePickerViewControllerDelegate,NLImageCropperViewDelegate>{
+    NLImageCropperView* _imageCropper;
     BOOL isChanged;
     BOOL changedBirth;
     UIButton *headimage;
@@ -217,6 +219,8 @@
     [self.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(endEditOnView)]];
     [mainTableView setTableHeaderView:mainView];
     [mainTableView  setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+    _imageCropper = [[NLImageCropperView alloc] initWithFrame:self.view.bounds];
+    _imageCropper.delegate = self;
     // Do any additional setup after loading the view.
 }
 
@@ -385,11 +389,21 @@
     [imagePicker showImagePickerInController:self animated:YES];
 }
 #pragma mark - JSImagePikcerViewControllerDelegate
-
 - (void)imagePickerDidSelectImage:(UIImage *)image {
+    [_imageCropper setImage:image];
+    CGFloat minLength = image.size.width <image.size.height ? image.size.width : image.size.height;
+    if (minLength >200) {
+        [_imageCropper setCropRegionRect:CGRectMake(image.size.width/2-100*_imageCropper.scalingFactor, image.size.height/2 - 100*_imageCropper.scalingFactor, 200*_imageCropper.scalingFactor, 200*_imageCropper.scalingFactor)];
+    }else{
+        [_imageCropper setCropRegionRect:CGRectMake(image.size.width/2-minLength/2, image.size.height/2 - minLength/2, minLength*_imageCropper.scalingFactor, minLength)];
+    }
+    [self.navigationController.view addSubview:_imageCropper];
+}
+-(void)userCropImage:(UIImage *)image{
     localImage = image;
     [headimage setBackgroundImage:image forState:UIControlStateNormal];
 }
+
 -(void) setfemale{
     [maleButton setImage:[UIImage imageNamed:@"selectcircleImage"] forState:UIControlStateNormal];
     [femaleButton setImage:[UIImage imageNamed:@"femaleselectedImage"] forState:UIControlStateNormal];

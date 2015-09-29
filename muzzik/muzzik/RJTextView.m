@@ -492,6 +492,9 @@
         [self setFrame:CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, self.frame.size.height-self.textView.textContainer.lineFragmentPadding-self.textView.font.pointSize)];
         [self layoutSubViewWithFrame:self.frame];
     }
+    if ([self.delegate respondsToSelector:@selector(textViewDidChanged:)]) {
+        [self.delegate textViewDidChanged:textView];
+    }
 }
 //- (void)textViewDidChange:(UITextView *)textView
 //{

@@ -14,7 +14,9 @@
 #import "ASIFormDataRequest.h"
 #import "FontTableCell.h"
 #import <TencentOpenAPI/TencentOAuth.h>
-@interface ChooseLyricVC()<UITableViewDataSource,UITableViewDelegate,RJTextViewDelegate,ASIProgressDelegate,JSImagePickerViewControllerDelegate>{
+#import "NLImageCropperView.h"
+@interface ChooseLyricVC()<UITableViewDataSource,UITableViewDelegate,RJTextViewDelegate,ASIProgressDelegate,JSImagePickerViewControllerDelegate,NLImageCropperViewDelegate>{
+    NLImageCropperView* _imageCropper;
     NSMutableArray *fontArray;
     NSMutableArray *lyricArray;
     NSArray *famousArray;
@@ -347,6 +349,8 @@
         [PageControl setNumberOfPages:2];
         [editView setFrame:CGRectMake(SCREEN_WIDTH, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
     }
+    _imageCropper = [[NLImageCropperView alloc] initWithFrame:self.view.bounds];
+    _imageCropper.delegate = self;
    
 
 }
@@ -586,6 +590,14 @@
 }
 -(void)textViewDidEndEditing:(RJTextView *)textView{
     if ([textView.textView.text length]>0) {
+        shareLabel = editTextView;
+    }else{
+        shareLabel = nil;
+    }
+    [self checkNext];
+}
+-(void)textViewDidChanged:(UITextView *)textView{
+    if ([textView.text length]>0) {
         shareLabel = editTextView;
     }else{
         shareLabel = nil;
@@ -1268,11 +1280,22 @@
 #pragma mark - JSImagePikcerViewControllerDelegate
 
 - (void)imagePickerDidSelectImage:(UIImage *)image {
+    [_imageCropper setImage:image];
+    CGFloat minLength = image.size.width <image.size.height ? image.size.width : image.size.height;
+    if (minLength >200) {
+        [_imageCropper setCropRegionRect:CGRectMake(image.size.width/2-100*_imageCropper.scalingFactor, image.size.height/2 - 100*_imageCropper.scalingFactor, 200*_imageCropper.scalingFactor, 200*_imageCropper.scalingFactor)];
+    }else{
+        [_imageCropper setCropRegionRect:CGRectMake(image.size.width/2-minLength/2, image.size.height/2 - minLength/2, minLength*_imageCropper.scalingFactor, minLength)];
+    }
+    [self.navigationController.view addSubview:_imageCropper];
+}
+-(void)userCropImage:(UIImage *)image{
     self.image = image;
     isShow = YES;
     [headImage setImage:image];
     [LibraryButton setImage:[UIImage imageNamed:Image_addedpicImage] forState:UIControlStateNormal];
 }
+
 
 
 

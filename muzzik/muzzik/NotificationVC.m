@@ -24,6 +24,9 @@
     NSDictionary *requestDic;
     NSString *lastId;
     UIView *footView;
+    UIView *footTapView;
+    UILabel *footLabel;
+    UIActivityIndicatorView *indicator;
 }
 
 @end
@@ -46,18 +49,41 @@
     
     [notifyTabelView registerClass:[NotifyFollowCell class] forCellReuseIdentifier:@"NotifyFollowCell"];
     [notifyTabelView registerClass:[NotifyMuzzikCell class] forCellReuseIdentifier:@"NotifyMuzzikCell"];
-    footView  = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 80)];
-    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-50, 20, 100, 30)];
-    [button setBackgroundColor:Color_line_2];
-    [button setTitleColor:Color_Text_1 forState:UIControlStateNormal];
-    [button setTitle:@"加载更多" forState:UIControlStateNormal];
-    [button addTarget:self action:@selector(getHistoryNotification) forControlEvents:UIControlEventTouchUpInside];
-    [footView addSubview:button];
+    footView  = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 60)];
+    footTapView = [[UIView alloc] initWithFrame:CGRectMake(23, 10, SCREEN_WIDTH-46, 30)];
+    footTapView.backgroundColor = Color_line_2;
+    footTapView.layer.cornerRadius = 5;
+    footTapView.clipsToBounds = YES;
+    footTapView.layer.borderColor = Color_line_1.CGColor;
+    [footTapView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(getHistoryNotification)]];
+    footTapView.layer.borderWidth = 1.0f;
+    indicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(footTapView.frame.size.width/2-52, 8, 14, 14)];
+    [indicator setColor:Color_Additional_5];
+    footLabel = [[UILabel alloc] initWithFrame:CGRectMake(footTapView.frame.size.width/2-40, 5, 80, 20)];
+    [footLabel setText:@"查看更多"];
+    [footLabel setFont:[UIFont systemFontOfSize:13]];
+    footLabel.textAlignment = NSTextAlignmentCenter;
+    [footLabel setTextColor:Color_Additional_5];
+    [footTapView addSubview:footLabel];
+    [footView addSubview:footTapView];
     
-
     [self loadDataMessage];
 }
+-(void)startLoading{
+    footTapView.userInteractionEnabled = NO;
+    [footLabel setText:@"正在加载..."];
+    [footTapView addSubview:indicator];
+    [indicator startAnimating];
+}
+
+-(void)endLoading{
+    footTapView.userInteractionEnabled = YES;
+    [indicator stopAnimating];
+    [footLabel setText:@"查看更多"];
+    [indicator removeFromSuperview];
+}
 -(void)getHistoryNotification{
+    [self startLoading];
     userInfo *user = [userInfo shareClass];
     
     if (self.notifyType == Notification_comment) {
@@ -93,7 +119,7 @@
             NotifyObject *notifyobj = [notifyArray lastObject];
             lastId = notifyobj.notify_id;
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [notifyTabelView footerEndRefreshing];
+                [self endLoading];
                 [notifyTabelView reloadData];
                 
                 if ([[dic objectForKey:@"notifies"] count] == 0 ) {
@@ -107,8 +133,10 @@
     }];
     [request setFailedBlock:^{
         if (![[weakrequest responseString] length]>0) {
-            errorStatus = @"history";
-            [self networkErrorShow];
+             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                 [self endLoading];
+             });
+
         }
         NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
         

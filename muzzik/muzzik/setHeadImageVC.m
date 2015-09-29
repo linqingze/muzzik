@@ -9,8 +9,9 @@
 #import "ASIFormDataRequest.h"
 #import "setGenderVC.h"
 #import "JSImagePickerViewController.h"
-@interface setHeadImageVC ()<JSImagePickerViewControllerDelegate>{
-
+#import "NLImageCropperView.h"
+@interface setHeadImageVC ()<JSImagePickerViewControllerDelegate,NLImageCropperViewDelegate>{
+    NLImageCropperView* _imageCropper;
 }
 @end
 @implementation setHeadImageVC
@@ -55,6 +56,10 @@
     [text appendAttributedString:item1];
     notifyLabel.attributedText = text;
     notifyLabel.textAlignment = NSTextAlignmentCenter;
+    _imageCropper = [[NLImageCropperView alloc] initWithFrame:self.view.bounds];
+    _imageCropper.delegate = self;
+    
+    
 //    UIButton *nextButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-67, SCREEN_HEIGHT-133, 54, 52)];
 //    [nextButton setImage:[UIImage imageNamed:@"cycleNext"] forState:UIControlStateNormal];
 //    [self.view addSubview: nextButton];
@@ -70,8 +75,17 @@
 }
 
 #pragma mark - JSImagePikcerViewControllerDelegate
-
 - (void)imagePickerDidSelectImage:(UIImage *)image {
+    [_imageCropper setImage:image];
+    CGFloat minLength = image.size.width <image.size.height ? image.size.width : image.size.height;
+    if (minLength >200) {
+        [_imageCropper setCropRegionRect:CGRectMake(image.size.width/2-100*_imageCropper.scalingFactor, image.size.height/2 - 100*_imageCropper.scalingFactor, 200*_imageCropper.scalingFactor, 200*_imageCropper.scalingFactor)];
+    }else{
+        [_imageCropper setCropRegionRect:CGRectMake(image.size.width/2-minLength/2, image.size.height/2 - minLength/2, minLength*_imageCropper.scalingFactor, minLength)];
+    }
+    [self.navigationController.view addSubview:_imageCropper];
+}
+-(void)userCropImage:(UIImage *)image{
     userImage = image;
     [headImage setImage:image];
     notifyLabel.alpha = 0;
@@ -80,6 +94,7 @@
         [notifyLabel setAlpha:1];
     }];
 }
+
 
 
 -(NSAttributedString *)formatAttrItem:(NSString *)content color:(UIColor *)color font:(UIFont *)font

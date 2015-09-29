@@ -253,9 +253,16 @@
             if ([weakrequest responseStatusCode] == 200 && [_searchText isEqualToString:self.keeper.searchBar.text] && [_searchText length]>0) {
                 NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
                 self.searchArray = [[MuzzikUser new] makeMuzziksByUserArray:[dic objectForKey:@"users"]];
-                 [myTableView setTableFooterView:searchBlankLabel];
-                [myTableView reloadData];
                 
+                
+                if ([[dic objectForKey:@"users"] count] >0) {
+                    [myTableView addFooterWithTarget:self action:@selector(refreshFooter)];
+                    
+                    page = 2;
+                }else{
+                    [myTableView setTableFooterView:searchBlankLabel];
+                }
+                [myTableView reloadData];
                 
             }
             else{
@@ -268,6 +275,50 @@
             if (![[weakrequest responseString] length]>0) {
                 [MuzzikItem showNotifyOnView:self.view text:@"网络请求失败，请重试"];
             }
+        }];
+        [requestForm startAsynchronous];
+    }
+}
+-(void)refreshFooter{
+    if ([self.keeper.searchBar.text length]>0) {
+        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Users_search]]];
+        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:[self.keeper.searchBar.text stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],@"name",[NSNumber numberWithInteger:page],Parameter_page, nil] Method:GetMethod auth:YES];
+        __weak ASIHTTPRequest *weakrequest = requestForm;
+        [requestForm setCompletionBlock :^{
+            NSLog(@"%@",[weakrequest responseString]);
+            NSLog(@"%d",[weakrequest responseStatusCode]);
+            
+            if ([weakrequest responseStatusCode] == 200 && [_searchText isEqualToString:self.keeper.searchBar.text] && [_searchText length]>0) {
+                NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
+                [self.searchArray addObjectsFromArray:[[MuzzikUser new] makeMuzziksByUserArray:[dic objectForKey:@"users"]]];
+                
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    if ([[dic objectForKey:@"users"] count] >0) {
+                        [myTableView footerEndRefreshing];
+                        page = page + 1 ;
+                    }else{
+                        [myTableView removeFooter];
+                        [myTableView setTableFooterView:searchBlankLabel];
+                    }
+                    [myTableView reloadData];
+                });
+                
+                
+            }
+            else{
+                //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+            }
+        }];
+        [requestForm setFailedBlock:^{
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [myTableView footerEndRefreshing];
+                NSLog(@"%@",[weakrequest error]);
+                NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
+                if (![[weakrequest responseString] length]>0) {
+                    [MuzzikItem showNotifyOnView:self.view text:@"网络请求失败，请重试"];
+                }
+            }); 
+            
         }];
         [requestForm startAsynchronous];
     }

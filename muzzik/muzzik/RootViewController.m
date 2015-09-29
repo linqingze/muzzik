@@ -37,6 +37,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    userInfo *user = [userInfo shareClass];
+    user.launched = YES;
     _isLaunched = YES;
     [KxMenu setTintColor:Color_NavigationBar];
     [self initNagationBar:@"Root" leftBtn:0 rightBtn:0];

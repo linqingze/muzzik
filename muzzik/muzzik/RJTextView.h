@@ -14,6 +14,7 @@
 @optional
 
 - (void)textViewDidEndEditing:(RJTextView *)textView;
+- (void)textViewDidChanged:(UITextView *)textView;
 -(void) closeLabel:(RJTextView *)rjView;
 @end
 

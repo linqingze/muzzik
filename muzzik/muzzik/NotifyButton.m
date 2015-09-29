@@ -7,7 +7,7 @@
 //
 
 #import "NotifyButton.h"
-#import "NotificationVC.h"
+#import "NotificationCenterViewController.h"
 @implementation NotifyButton
 
 - (id)initWithFrame:(CGRect)frame
@@ -30,13 +30,14 @@
             break;
         }
     }
-    if ([nac.viewControllers.lastObject isKindOfClass:[NotificationVC class]]) {
-        NotificationVC *currentVC = (NotificationVC *)nac.viewControllers.lastObject;
-        [currentVC reloadDataSource];
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+    if ([[nac.viewControllers lastObject] isKindOfClass:[NotificationCenterViewController class]]) {
+        NotificationCenterViewController *notifyVC = (NotificationCenterViewController *)[nac.viewControllers lastObject];
+        [notifyVC checkNewNotification];
         
     }else{
-        NotificationVC *notify = [[NotificationVC alloc] init];
-        [nac pushViewController:notify animated:YES];
+        NotificationCenterViewController *notifyVC = [[NotificationCenterViewController alloc] init];
+        [nac pushViewController:notifyVC animated:YES];
     }
     
 }
