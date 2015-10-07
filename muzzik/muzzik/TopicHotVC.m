@@ -16,14 +16,16 @@
     UIView *searchView;
     UISearchBar *searchBar;
     UIButton *cancelButton;
-    int page;
+    NSInteger page;
     BOOL isNew;
     BOOL equalTopic;
     NSString *_searchText;
     UIView *TapsearchView;
     UILabel *searchLabel;
     UILabel *resultLabel;
-    int localpage;
+    NSInteger localpage;
+    NSMutableArray *recentArray;
+    
 }
 @end
 
@@ -34,6 +36,8 @@
     [super viewDidLoad];
     page = 1;
     localpage = 1;
+    TopicArray = [NSMutableArray array];
+    recentArray  = [[MuzzikItem getArrayFromLocalForKey:@"Recent_Topic_Array_Local"] mutableCopy];
     [self initNagationBar:@"选择话题" leftBtn:Constant_backImage rightBtn:Constant_searchImage];
     topicTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     [self.view addSubview:topicTableView];
@@ -41,7 +45,7 @@
     topicTableView.dataSource = self;
     [topicTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Get_Topic]]];
-    [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%d",localpage],Parameter_page,Limit_Constant,Parameter_Limit, nil] Method:GetMethod auth:NO];
+    [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%ld",localpage],Parameter_page,Limit_Constant,Parameter_Limit, nil] Method:GetMethod auth:NO];
     __weak ASIHTTPRequest *weakrequest = requestForm;
     [requestForm setCompletionBlock :^{
         NSLog(@"%@",[weakrequest responseString]);
@@ -49,7 +53,26 @@
         if ([weakrequest responseStatusCode] == 200) {
             localpage ++;
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
-            TopicArray = [dic objectForKey:@"topics"];
+            if (recentArray) {
+                [TopicArray addObjectsFromArray:recentArray];
+                NSArray *array = [dic objectForKey:@"topics"];
+                for (NSDictionary *tempDic in array) {
+                    BOOL isContained = NO;
+                    for (NSDictionary *localDic in recentArray) {
+                        if ([[localDic objectForKey:@"name"] isEqualToString:[tempDic objectForKey:@"name"]]) {
+                            isContained = YES;
+                            break;
+                        }
+                    }
+                    if (!isContained) {
+                        [TopicArray addObject:tempDic];
+                    }
+                }
+            }
+            else{
+                TopicArray = [dic objectForKey:@"topics"];
+            }
+           
             [topicTableView reloadData];
         }
         else{
@@ -128,10 +151,10 @@
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Get_Topic]]];
     NSDictionary  *paraDic;
     if ([searchBar.text length]>0) {
-        paraDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%d",page],Parameter_page,[searchBar.text stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],@"q", nil];
+        paraDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%ld",page],Parameter_page,[searchBar.text stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],@"q", nil];
         
     }else{
-         paraDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%d",localpage],Parameter_page,Limit_Constant,Parameter_Limit, nil];
+         paraDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%ld",localpage],Parameter_page,Limit_Constant,Parameter_Limit, nil];
     }
     [requestForm addBodyDataSourceWithJsonByDic:paraDic Method:GetMethod auth:NO];
     __weak ASIHTTPRequest *weakrequest = requestForm;
@@ -145,8 +168,27 @@
                 [searchArray addObjectsFromArray:[dic objectForKey:@"topics"]];
                 
             }else{
+                if (recentArray) {
+                    NSArray *array = [dic objectForKey:@"topics"];
+                    for (NSDictionary *tempDic in array) {
+                        BOOL isContained = NO;
+                        for (NSDictionary *localDic in recentArray) {
+                            if ([[localDic objectForKey:@"name"] isEqualToString:[tempDic objectForKey:@"name"]]) {
+                                isContained = YES;
+                                break;
+                            }
+                        }
+                        if (!isContained) {
+                            [TopicArray addObject:tempDic];
+                        }
+                    }
+                }
+                else{
+                    [TopicArray addObjectsFromArray:[dic objectForKey:@"topics"]];
+                }
+                
                 localpage++;
-                [TopicArray addObjectsFromArray:[dic objectForKey:@"topics"]];
+                
             }
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -176,20 +218,31 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     
     // Return the number of sections.
-    
     return 1;
+    
 }
 
+// Return the number of rows in the section.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
     // Return the number of rows in the section.
-    return isSearch ?[searchArray count]:[TopicArray count];
+    if (isSearch) {
+        return [searchArray count];
+    }else{
+        return [TopicArray count];
+    }
 }
-
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
    HotSearchTopicCell *cell = [tableView dequeueReusableCellWithIdentifier:@"HotSearchTopicCell" forIndexPath:indexPath];
-    NSDictionary *tempDic = isSearch? searchArray[indexPath.row] : TopicArray[indexPath.row];
+    
+    NSDictionary *tempDic;
+    if (isSearch) {
+        tempDic = searchArray[indexPath.row];
+    }else{
+         tempDic = TopicArray[indexPath.row];
+
+    }
     UIFont *font = [UIFont boldSystemFontOfSize:14];
     if (isSearch && !equalTopic && indexPath.row == 0) {
         [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
@@ -223,6 +276,8 @@
     
     
 }
+
+
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return 60.0;
 }
@@ -234,9 +289,27 @@
         tempTopic = [searchArray objectAtIndex:indexPath.row];
     }
     else{
-        tempTopic = [TopicArray objectAtIndex:indexPath.row];
+        tempTopic = TopicArray[indexPath.row];
     }
-    
+    BOOL isRecent = NO;
+    for (NSDictionary *tempDic in recentArray) {
+        if ([[tempDic objectForKey:@"name"] isEqualToString:[tempTopic objectForKey:@"name"]]) {
+            [recentArray removeObject:tempDic];
+            [recentArray insertObject:tempDic atIndex:0];
+            isRecent = YES;
+            break;
+        }
+    }
+    if (!isRecent) {
+        if (!recentArray) {
+            recentArray = [NSMutableArray array];
+        }
+        [recentArray insertObject:tempTopic atIndex:0];
+    }
+    if ([recentArray count]>5) {
+        [recentArray removeLastObject];
+    }
+    [MuzzikItem addObjectToLocal:[recentArray copy] ForKey:@"Recent_Topic_Array_Local"];
     mobject.tempmessage = [NSString stringWithFormat:@"#%@#",[tempTopic objectForKey:@"name"]];
     
     [self.navigationController popViewControllerAnimated:YES];

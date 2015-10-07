@@ -146,6 +146,8 @@
 		F21814501AF234CE00AA06AA /* HPTextViewInternal.m in Sources */ = {isa = PBXBuildFile; fileRef = F218144E1AF234CE00AA06AA /* HPTextViewInternal.m */; };
 		F2190DBB1BBA86CA00588A7D /* NLCropViewLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = F2190DB81BBA86CA00588A7D /* NLCropViewLayer.m */; settings = {ASSET_TAGS = (); }; };
 		F2190DBC1BBA86CA00588A7D /* NLImageCropperView.m in Sources */ = {isa = PBXBuildFile; fileRef = F2190DBA1BBA86CA00588A7D /* NLImageCropperView.m */; settings = {ASSET_TAGS = (); }; };
+		F2190DBF1BBAB13C00588A7D /* TencentOpenApi_IOS_Bundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F2190DBD1BBAB13C00588A7D /* TencentOpenApi_IOS_Bundle.bundle */; settings = {ASSET_TAGS = (); }; };
+		F2190DC01BBAB13C00588A7D /* TencentOpenAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2190DBE1BBAB13C00588A7D /* TencentOpenAPI.framework */; settings = {ASSET_TAGS = (); }; };
 		F21EA1CA1ACECC6200F5ED32 /* TopicVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F21EA1C91ACECC6200F5ED32 /* TopicVC.m */; };
 		F22AB3A31B05E29900C61677 /* SongListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F22AB3A21B05E29900C61677 /* SongListCell.m */; };
 		F22AB3A61B068A6000C61677 /* TapImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = F22AB3A51B068A6000C61677 /* TapImageView.m */; };
@@ -188,8 +190,6 @@
 		F2AEC6981B09075800DA676E /* ReplyObject.m in Sources */ = {isa = PBXBuildFile; fileRef = F2AEC6971B09075800DA676E /* ReplyObject.m */; };
 		F2AEC69B1B0908B500DA676E /* NotifyObject.m in Sources */ = {isa = PBXBuildFile; fileRef = F2AEC69A1B0908B500DA676E /* NotifyObject.m */; };
 		F2AEC69E1B090FF100DA676E /* NotifyFollowCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2AEC69D1B090FF100DA676E /* NotifyFollowCell.m */; };
-		F2B703671AC67EBF005F0903 /* TencentOpenApi_IOS_Bundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F2B703651AC67EBF005F0903 /* TencentOpenApi_IOS_Bundle.bundle */; };
-		F2B703681AC67EBF005F0903 /* TencentOpenAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2B703661AC67EBF005F0903 /* TencentOpenAPI.framework */; };
 		F2B81FF11ADD6C6A00012ED6 /* MuzzikItem.m in Sources */ = {isa = PBXBuildFile; fileRef = F2B81FF01ADD6C6A00012ED6 /* MuzzikItem.m */; };
 		F2E380001B790663008FF496 /* MuzzikRequestCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = F2E37FFF1B790663008FF496 /* MuzzikRequestCenter.m */; };
 		F2E558A71B164D420080F9C9 /* MJRefresh.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F2E558971B164D420080F9C9 /* MJRefresh.bundle */; };
@@ -536,6 +536,8 @@
 		F2190DB81BBA86CA00588A7D /* NLCropViewLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NLCropViewLayer.m; sourceTree = "<group>"; };
 		F2190DB91BBA86CA00588A7D /* NLImageCropperView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NLImageCropperView.h; sourceTree = "<group>"; };
 		F2190DBA1BBA86CA00588A7D /* NLImageCropperView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NLImageCropperView.m; sourceTree = "<group>"; };
+		F2190DBD1BBAB13C00588A7D /* TencentOpenApi_IOS_Bundle.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = TencentOpenApi_IOS_Bundle.bundle; sourceTree = "<group>"; };
+		F2190DBE1BBAB13C00588A7D /* TencentOpenAPI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TencentOpenAPI.framework; sourceTree = "<group>"; };
 		F21EA1C81ACECC6200F5ED32 /* TopicVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopicVC.h; sourceTree = "<group>"; };
 		F21EA1C91ACECC6200F5ED32 /* TopicVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopicVC.m; sourceTree = "<group>"; };
 		F22AB3A11B05E29900C61677 /* SongListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SongListCell.h; sourceTree = "<group>"; };
@@ -630,8 +632,6 @@
 		F2AEC69A1B0908B500DA676E /* NotifyObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotifyObject.m; sourceTree = "<group>"; };
 		F2AEC69C1B090FF100DA676E /* NotifyFollowCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotifyFollowCell.h; sourceTree = "<group>"; };
 		F2AEC69D1B090FF100DA676E /* NotifyFollowCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotifyFollowCell.m; sourceTree = "<group>"; };
-		F2B703651AC67EBF005F0903 /* TencentOpenApi_IOS_Bundle.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = TencentOpenApi_IOS_Bundle.bundle; sourceTree = "<group>"; };
-		F2B703661AC67EBF005F0903 /* TencentOpenAPI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TencentOpenAPI.framework; sourceTree = "<group>"; };
 		F2B81FEF1ADD6C6A00012ED6 /* MuzzikItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MuzzikItem.h; sourceTree = "<group>"; };
 		F2B81FF01ADD6C6A00012ED6 /* MuzzikItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MuzzikItem.m; sourceTree = "<group>"; };
 		F2E37FFE1B790663008FF496 /* MuzzikRequestCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MuzzikRequestCenter.h; sourceTree = "<group>"; };
@@ -751,7 +751,6 @@
 				F208EF4D1B1F783A00DB5A68 /* CoreText.framework in Frameworks */,
 				F24F0A771BB42A340073F6FA /* libWeiboSDK.a in Frameworks */,
 				E162BD7F1AB444370001A61C /* libstdc++.dylib in Frameworks */,
-				F2B703681AC67EBF005F0903 /* TencentOpenAPI.framework in Frameworks */,
 				E162BD7D1AB4442B0001A61C /* CoreTelephony.framework in Frameworks */,
 				E162BD7B1AB444140001A61C /* libsqlite3.dylib in Frameworks */,
 				E162BD791AB444020001A61C /* libiconv.dylib in Frameworks */,
@@ -768,6 +767,7 @@
 				E11246851AAAB25A0014D461 /* CFNetwork.framework in Frameworks */,
 				E11246831AAAB2530014D461 /* SystemConfiguration.framework in Frameworks */,
 				E11246811AAAB2490014D461 /* MobileCoreServices.framework in Frameworks */,
+				F2190DC01BBAB13C00588A7D /* TencentOpenAPI.framework in Frameworks */,
 				E112467F1AAAB23D0014D461 /* CoreGraphics.framework in Frameworks */,
 				E112467D1AAAB2300014D461 /* libz.1.2.5.dylib in Frameworks */,
 			);
@@ -865,12 +865,12 @@
 		E112461C1AAAB0D10014D461 /* Framework */ = {
 			isa = PBXGroup;
 			children = (
+				F2190DBD1BBAB13C00588A7D /* TencentOpenApi_IOS_Bundle.bundle */,
+				F2190DBE1BBAB13C00588A7D /* TencentOpenAPI.framework */,
 				E162BD7E1AB444370001A61C /* libstdc++.dylib */,
 				E162BD7C1AB4442B0001A61C /* CoreTelephony.framework */,
 				E162BD7A1AB444140001A61C /* libsqlite3.dylib */,
 				E162BD781AB444020001A61C /* libiconv.dylib */,
-				F2B703651AC67EBF005F0903 /* TencentOpenApi_IOS_Bundle.bundle */,
-				F2B703661AC67EBF005F0903 /* TencentOpenAPI.framework */,
 				E1FA13351AB18DAF005EDA1D /* Foundation.framework */,
 				E1FA13331AB18D9B005EDA1D /* UIKit.framework */,
 				E1FA12F51AB185CA005EDA1D /* libxml2.dylib */,
@@ -1771,6 +1771,7 @@
 				F208EF551B1F7D6100DB5A68 /* calico_cyrillic.ttf in Resources */,
 				F208EF541B1F7D6100DB5A68 /* Bluehigh.ttf in Resources */,
 				F24F0A781BB42A340073F6FA /* WeiboSDK.bundle in Resources */,
+				F2190DBF1BBAB13C00588A7D /* TencentOpenApi_IOS_Bundle.bundle in Resources */,
 				F208EF4F1B1F7A7700DB5A68 /* VNI_HLThuphap.ttf in Resources */,
 				E11246061AAAAE4B0014D461 /* LaunchScreen.xib in Resources */,
 				F2E558A71B164D420080F9C9 /* MJRefresh.bundle in Resources */,
@@ -1778,7 +1779,6 @@
 				F2FD3B061B30617F001B2332 /* popWords.plist in Resources */,
 				F20C4EE21B69E23800331101 /* HYQuanTangShiF.ttf in Resources */,
 				F2F0FC8D1ADD8B7100668103 /* TeachViewController.xib in Resources */,
-				F2B703671AC67EBF005F0903 /* TencentOpenApi_IOS_Bundle.bundle in Resources */,
 				F2F7EE401AEE23E400265596 /* unicode_to_hanyu_pinyin.txt in Resources */,
 				F200B7AC1B2ABF6E002A6F61 /* Copperplate_00.ttf in Resources */,
 				E11246031AAAAE4B0014D461 /* Images.xcassets in Resources */,

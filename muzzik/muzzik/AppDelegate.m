@@ -817,7 +817,7 @@
 -(void) checkChannel{
     userInfo *user = [userInfo shareClass];
     user.WeChatInstalled = [WXApi isWXAppInstalled];
-    user.QQInstalled = [QQApi isQQInstalled];
+    user.QQInstalled = [QQApiInterface isQQInstalled];
 }
 -(void)loadData{
     userInfo *user = [userInfo shareClass];

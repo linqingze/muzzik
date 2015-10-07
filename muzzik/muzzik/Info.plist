@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.2.7</string>
+	<string>1.2.8</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -66,9 +66,11 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>10417</string>
+	<string>10443</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
+		<string>mqzone</string>
+		<string>mqqOpensdkSSoLogin</string>
 		<string>sinaweibohd</string>
 		<string>sinaweibo</string>
 		<string>weibosdk</string>

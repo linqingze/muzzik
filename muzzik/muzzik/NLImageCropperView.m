@@ -67,11 +67,6 @@
     _scalingFactor = 1.0;
     _movePoint = NoPoint;
     _lastMovePoint = CGPointMake(0, 0);
-    
-#ifdef ARC
-    [_imageView release];
-    [_cropView release];
-#endif
     return self;
 }
 
@@ -169,21 +164,13 @@
     CGPoint locationPoint = [[touches anyObject] locationInView:_imageView];
 
     NSLog(@"Location Point: (%f,%f)", locationPoint.x, locationPoint.y);
-    if(locationPoint.x < 0 || locationPoint.y < 0 || locationPoint.x > _imageView.bounds.size.width || locationPoint.y > _imageView.bounds.size.height)
-    {
-        _movePoint = NoPoint;
-        return;
-    }
-    float x,y;
+     float x,y;
     CGFloat widthX ;
     CGFloat heightY ;
     CGFloat delta;
     CGFloat minMove ;
     switch (_movePoint) {
         case LeftTop:
-            if(((locationPoint.x + MIN_IMG_SIZE) >= (_translatedCropRect.origin.x + _translatedCropRect.size.width)) ||
-               ((locationPoint.y + MIN_IMG_SIZE)>= (_translatedCropRect.origin.y + _translatedCropRect.size.height)))
-                return;
             widthX = _translatedCropRect.size.width + (_translatedCropRect.origin.x - locationPoint.x);
             heightY = _translatedCropRect.size.height + (_translatedCropRect.origin.y - locationPoint.y);
             minMove = (_translatedCropRect.origin.x - locationPoint.x) <  (_translatedCropRect.origin.y - locationPoint.y)?
@@ -192,13 +179,18 @@
             if (locationPoint.x <= _translatedCropRect.origin.x && locationPoint.y <= _translatedCropRect.origin.y && (_translatedCropRect.origin.x - minMove) > 0 && (_translatedCropRect.origin.y - minMove>0) ) {
                 delta= widthX<heightY ? widthX:heightY;
                 _translatedCropRect = CGRectMake(_translatedCropRect.origin.x-minMove, _translatedCropRect.origin.y - minMove,delta,delta);
+                
             }else if ((locationPoint.x >= _translatedCropRect.origin.x && locationPoint.y >= _translatedCropRect.origin.y) ){
                 
                 delta= widthX>heightY ? widthX:heightY;
                 minMove = (locationPoint.x - _translatedCropRect.origin.x) <  (locationPoint.y - _translatedCropRect.origin.y)?
                 (locationPoint.x - _translatedCropRect.origin.x) :  (locationPoint.y - _translatedCropRect.origin.y);
+                if (delta <= MIN_IMG_SIZE) {
+                    _translatedCropRect = CGRectMake(_translatedCropRect.origin.x, _translatedCropRect.origin.y,MIN_IMG_SIZE,MIN_IMG_SIZE);
+                }else{
+                    _translatedCropRect = CGRectMake(_translatedCropRect.origin.x + minMove, _translatedCropRect.origin.y + minMove,delta,delta);
+                }
                 
-                _translatedCropRect = CGRectMake(_translatedCropRect.origin.x + minMove, _translatedCropRect.origin.y + minMove,delta,delta);
             }
             
             break;
@@ -211,7 +203,7 @@
             minMove = (_translatedCropRect.origin.x - locationPoint.x) <  (locationPoint.y - _translatedCropRect.origin.y -_translatedCropRect.size.height)?
             (_translatedCropRect.origin.x - locationPoint.x) : (locationPoint.y - _translatedCropRect.origin.y -_translatedCropRect.size.height);
             
-            if (locationPoint.x <= _translatedCropRect.origin.x && locationPoint.y >= _translatedCropRect.origin.y+_translatedCropRect.size.height && (_translatedCropRect.origin.x - minMove) > 0 && (_translatedCropRect.origin.y + minMove<self.frame.size.height) ) {
+            if (locationPoint.x <= _translatedCropRect.origin.x && locationPoint.y >= _translatedCropRect.origin.y+_translatedCropRect.size.height && (_translatedCropRect.origin.x - minMove) > 0 && (_translatedCropRect.origin.y + minMove + _translatedCropRect.size.height<_cropView.bounds.size.height) ) {
                 delta= widthX<heightY ? widthX:heightY;
                 _translatedCropRect = CGRectMake(_translatedCropRect.origin.x-minMove, _translatedCropRect.origin.y,delta,delta);
             }else if ((locationPoint.x >= _translatedCropRect.origin.x && locationPoint.y <= _translatedCropRect.origin.y +_translatedCropRect.size.height) ){
@@ -256,7 +248,7 @@
             if (locationPoint.x <= _translatedCropRect.origin.x+_translatedCropRect.size.width && locationPoint.y <= _translatedCropRect.origin.y+_translatedCropRect.size.height ) {
                 delta= widthX > heightY ? widthX:heightY;
                 _translatedCropRect = CGRectMake(_translatedCropRect.origin.x, _translatedCropRect.origin.y,delta,delta);
-            }else if ((locationPoint.x >= _translatedCropRect.origin.x + _translatedCropRect.size.width && locationPoint.y >= _translatedCropRect.origin.y + _translatedCropRect.size.height) ){
+            }else if ((locationPoint.x >= _translatedCropRect.origin.x + _translatedCropRect.size.width && locationPoint.y >= _translatedCropRect.origin.y + _translatedCropRect.size.height  &&  _translatedCropRect.origin.x+_translatedCropRect.size.width <= _cropView.bounds.size.width && _translatedCropRect.origin.y + _translatedCropRect.size.height <= _cropView.bounds.size.height) ){
                 minMove = (locationPoint.x - _translatedCropRect.origin.x -_translatedCropRect.size.width) <  (locationPoint.y - _translatedCropRect.origin.y - _translatedCropRect.size.height)?
                 (_translatedCropRect.origin.x +_translatedCropRect.size.width- locationPoint.x) :  (_translatedCropRect.origin.y + _translatedCropRect.size.height - locationPoint.y);
                 delta= widthX<heightY ? widthX:heightY;
@@ -267,13 +259,19 @@
 
             x = _lastMovePoint.x - locationPoint.x;
             y = _lastMovePoint.y - locationPoint.y;
-            if(((_translatedCropRect.origin.x-x) > 0) && ((_translatedCropRect.origin.x + _translatedCropRect.size.width - x) <
-                                                          _cropView.bounds.size.width) &&
-               ((_translatedCropRect.origin.y-y) > 0) && ((_translatedCropRect.origin.y + _translatedCropRect.size.height - y) < _cropView.bounds.size.height))
-            {
-                
-                _translatedCropRect = CGRectMake(_translatedCropRect.origin.x - x, _translatedCropRect.origin.y - y, _translatedCropRect.size.width, _translatedCropRect.size.height);
+            _translatedCropRect = CGRectMake(_translatedCropRect.origin.x - x, _translatedCropRect.origin.y - y, _translatedCropRect.size.width, _translatedCropRect.size.height);
+            if (_translatedCropRect.origin.x < 0) {
+                _translatedCropRect = CGRectMake(0, _translatedCropRect.origin.y, _translatedCropRect.size.width, _translatedCropRect.size.height);
+            }else if (_translatedCropRect.origin.x +_translatedCropRect.size.width >self.frame.size.width){
+                _translatedCropRect = CGRectMake(self.frame.size.width - _translatedCropRect.size.width, _translatedCropRect.origin.y, _translatedCropRect.size.width, _translatedCropRect.size.height);
             }
+            
+            if (_translatedCropRect.origin.y < 0) {
+                _translatedCropRect = CGRectMake(_translatedCropRect.origin.x, 0, _translatedCropRect.size.width, _translatedCropRect.size.height);
+            }else if (_translatedCropRect.origin.y +_translatedCropRect.size.height >_cropView.bounds.size.height){
+                _translatedCropRect = CGRectMake(_translatedCropRect.origin.x, _cropView.bounds.size.height - _translatedCropRect.size.height, _translatedCropRect.size.width, _translatedCropRect.size.height);
+            }
+            
             _lastMovePoint = locationPoint;
             break;
         default: //NO Point

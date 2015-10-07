@@ -14,7 +14,7 @@
 #import "musicPlayer.h"
 #import "RootViewController.h"
 #import "WXApiObject.h"
-#import "TencentOpenAPI/QQApi.h"
+#import "TencentOpenAPI/QQApiInterface.h"
 
 
 @interface muzzikTrendController : AMScrollingNavbarViewController<UITableViewDataSource,UITableViewDelegate,TTTAttributedLabelDelegate,CellDelegate,WBHttpRequestDelegate>{
