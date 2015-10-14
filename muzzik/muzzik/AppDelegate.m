@@ -24,7 +24,8 @@
 #import "UserHomePage.h"
 #import "TopicVC.h"
 #import "DetaiMuzzikVC.h"
-#import "MuzzikTabViewController.h"
+#import "RDVTabBarController.h"
+#import "RDVTabBarItem.h"
 @interface AppDelegate (){
     BOOL isLaunched;
 }
@@ -145,19 +146,34 @@
     UINavigationController *lastViewController = [[UINavigationController alloc]
                                                   initWithRootViewController:self.userhomeVC];
     
-    MuzzikTabViewController *tabBarController = [[MuzzikTabViewController alloc] init];
+    RDVTabBarController *tabBarController = [[RDVTabBarController alloc] init];
     [tabBarController setViewControllers:@[firstNavigationController, secondNavigationController,[[UIViewController alloc] init],
                                            thirdNavigationController,lastViewController]];
     self.tabviewController = tabBarController;
     //[self.tabviewController.tabBar setBackgroundImage:[MuzzikItem createImageWithColor:[UIColor clearColor]]];
-    [self.tabviewController.tabBar setShadowImage:[MuzzikItem createImageWithColor:[UIColor clearColor]]];
+//    [self.tabviewController.tabBar setShadowImage:[MuzzikItem createImageWithColor:[UIColor clearColor]]];
     
     self.tabviewController.tabBar.translucent = NO;
     self.tabviewController.tabBar.alpha = 0.95;
     [self.tabviewController addCenterButtonWithImage:[UIImage imageNamed:@"newMuzzikImage"] highlightImage:[UIImage imageNamed:@"newMuzzikImage"]];
-    self.tabviewController.tabBarItem
+     [self customizeTabBarForController:tabBarController];
 }
-
+- (void)customizeTabBarForController:(RDVTabBarController *)tabBarController {
+    UIImage *finishedImage = [MuzzikItem createImageWithColor:Color_Active_Button_1];
+    UIImage *unfinishedImage = [MuzzikItem createImageWithColor:[UIColor whiteColor]];
+    NSArray *tabBarItemImages = @[@"tabbarMuzzik", @"tabbarHot", @"third",@"tabbarNotification",@"tabbarUserCenter"];
+    
+    NSInteger index = 0;
+    for (RDVTabBarItem *item in [[tabBarController tabBar] items]) {
+        [item setBackgroundSelectedImage:finishedImage withUnselectedImage:unfinishedImage];
+        UIImage *selectedimage = [UIImage imageNamed:[NSString stringWithFormat:@"%@_Selected",
+                                                      [tabBarItemImages objectAtIndex:index]]];
+        UIImage *unselectedimage = [UIImage imageNamed:[tabBarItemImages objectAtIndex:index]];
+        [item setFinishedSelectedImage:selectedimage withFinishedUnselectedImage:unselectedimage];
+        
+        index++;
+    }
+}
 
 
 #pragma -mark 个推后台推送，消息处理

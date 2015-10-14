@@ -17,11 +17,11 @@ typedef enum {
     SdkStatusStarted
 } SdkStatus;
 
-@class MuzzikTabViewController,FeedViewController,NotificationCenterViewController,UserHomePage,TopicVC;
+@class RDVTabBarController,FeedViewController,NotificationCenterViewController,UserHomePage,TopicVC;
 @interface AppDelegate : UIResponder <UIApplicationDelegate,GexinSdkDelegate,WeiboSDKDelegate,WXApiDelegate>{
      NSString *_deviceToken;
 }
-@property (strong, nonatomic) MuzzikTabViewController *tabviewController;
+@property (strong, nonatomic) RDVTabBarController *tabviewController;
 @property (strong, nonatomic) FeedViewController *feedVC;
 @property (strong, nonatomic) NotificationCenterViewController *notifyVC;
 @property (strong, nonatomic) UserHomePage *userhomeVC;

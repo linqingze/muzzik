@@ -48,7 +48,7 @@
     
     [self.view addSubview:[self contentView]];
     [self.view addSubview:[self tabBar]];
-    [self addCenterButtonWithImage:[UIImage imageNamed:@"newMuzzikImage"] highlightImage:[UIImage imageNamed:@"newMuzzikImage"]];
+    [self addCenterButtonWithImage:[UIImage imageNamed:@"tabbaraddsongImage"] highlightImage:[UIImage imageNamed:@"tabbaraddsongImage"]];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -106,12 +106,6 @@
     [self.tabBar addSubview:button];
 }
 -(void)poNewMuzzik{
-    if (self.isTabBarHidden) {
-        [self setTabBarHidden:NO animated:YES];
-    }else{
-        [self setTabBarHidden:YES animated:YES];
-    }
-    
     NSLog(@"212121");
 }
 #pragma mark - Methods

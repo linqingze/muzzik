@@ -55,9 +55,10 @@
 
 - (void)commonInitialization {
     _backgroundView = [[UIView alloc] init];
+    [_backgroundView setBackgroundColor:[UIColor whiteColor]];
     [self addSubview:_backgroundView];
     
-    [self setTranslucent:NO];
+    [self setTranslucent:YES];
 }
 
 - (void)layoutSubviews {
