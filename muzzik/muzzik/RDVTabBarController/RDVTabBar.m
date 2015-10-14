@@ -57,8 +57,9 @@
     _backgroundView = [[UIView alloc] init];
     [_backgroundView setBackgroundColor:[UIColor whiteColor]];
     [self addSubview:_backgroundView];
+    [self setBackgroundColor:[UIColor whiteColor]];
     
-    [self setTranslucent:YES];
+    [self setTranslucent:NO];
 }
 
 - (void)layoutSubviews {
@@ -164,9 +165,9 @@
     
     CGFloat alpha = (translucent ? 0.9 : 1.0);
     
-    [_backgroundView setBackgroundColor:[UIColor colorWithRed:245/255.0
-                                                        green:245/255.0
-                                                         blue:245/255.0
+    [_backgroundView setBackgroundColor:[UIColor colorWithRed:255/255.0
+                                                        green:255/255.0
+                                                         blue:255/255.0
                                                         alpha:alpha]];
 }
 
