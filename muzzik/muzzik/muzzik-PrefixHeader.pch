@@ -15,7 +15,8 @@
 #import "userInfo.h"
 #import "musicPlayer.h"
 #import "ASIHTTPRequest.h"
-
+#import "WXApiObject.h"
+#import <TencentOpenAPI/QQApiInterface.h>
 #import "MuzzikItem.h"
 #import "UIColor+HexColor.h"
 #import "MJRefresh.h"

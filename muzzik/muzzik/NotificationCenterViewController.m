@@ -25,7 +25,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     page = 1;
-   
+    self.hidesBottomBarWhenPushed=YES;
     notifyArray = [NSMutableArray array];
     [[MuzzikObject shareClass].notifyBUtton setHidden:YES];
     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;

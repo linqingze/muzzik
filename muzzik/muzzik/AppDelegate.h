@@ -10,7 +10,6 @@
 #import "WXApi.h"
 #import "GexinSdk.h"
 #import "WeiboSDK.h"
-#import "muzzikTrendController.h"
 #import "Reachability.h"
 typedef enum {
     SdkStatusStoped,
@@ -18,19 +17,23 @@ typedef enum {
     SdkStatusStarted
 } SdkStatus;
 
-
+@class MuzzikTabViewController,FeedViewController,NotificationCenterViewController,UserHomePage,TopicVC;
 @interface AppDelegate : UIResponder <UIApplicationDelegate,GexinSdkDelegate,WeiboSDKDelegate,WXApiDelegate>{
      NSString *_deviceToken;
 }
-@property (nonatomic,weak) muzzikTrendController *viewcontroller;
+@property (strong, nonatomic) MuzzikTabViewController *tabviewController;
+@property (strong, nonatomic) FeedViewController *feedVC;
+@property (strong, nonatomic) NotificationCenterViewController *notifyVC;
+@property (strong, nonatomic) UserHomePage *userhomeVC;
+@property (strong, nonatomic) TopicVC *topicVC;
 @property (strong, nonatomic) UIWindow *window;
 @property (strong, nonatomic) GexinSdk *gexinPusher;
-@property (strong, nonatomic) NSString *wbtoken;
-@property (strong, nonatomic) NSString *wbCurrentUserID;
-@property (retain, nonatomic) NSString *appKey;
-@property (retain, nonatomic) NSString *appSecret;
-@property (retain, nonatomic) NSString *appID;
-@property (retain, nonatomic) NSString *clientId;
+@property (copy, nonatomic) NSString *wbtoken;
+@property (copy, nonatomic) NSString *wbCurrentUserID;
+@property (copy, nonatomic) NSString *appKey;
+@property (copy, nonatomic) NSString *appSecret;
+@property (copy, nonatomic) NSString *appID;
+@property (copy, nonatomic) NSString *clientId;
 @property (assign, nonatomic) SdkStatus sdkStatus;
 
 @property (assign, nonatomic) int lastPayloadIndex;

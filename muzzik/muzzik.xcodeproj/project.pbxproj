@@ -151,6 +151,10 @@
 		F21EA1CA1ACECC6200F5ED32 /* TopicVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F21EA1C91ACECC6200F5ED32 /* TopicVC.m */; };
 		F22AB3A31B05E29900C61677 /* SongListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F22AB3A21B05E29900C61677 /* SongListCell.m */; };
 		F22AB3A61B068A6000C61677 /* TapImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = F22AB3A51B068A6000C61677 /* TapImageView.m */; };
+		F24B8F5A1BCD1CB900FC2597 /* RDVTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = F24B8F551BCD1CB900FC2597 /* RDVTabBar.m */; settings = {ASSET_TAGS = (); }; };
+		F24B8F5B1BCD1CB900FC2597 /* RDVTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = F24B8F571BCD1CB900FC2597 /* RDVTabBarController.m */; settings = {ASSET_TAGS = (); }; };
+		F24B8F5C1BCD1CB900FC2597 /* RDVTabBarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = F24B8F591BCD1CB900FC2597 /* RDVTabBarItem.m */; settings = {ASSET_TAGS = (); }; };
+		F24B8F611BCD5CBF00FC2597 /* MuzzikTabViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F24B8F601BCD5CBF00FC2597 /* MuzzikTabViewController.m */; settings = {ASSET_TAGS = (); }; };
 		F24F0A681BB320910073F6FA /* JSImagePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F24F0A671BB320910073F6FA /* JSImagePickerViewController.m */; settings = {ASSET_TAGS = (); }; };
 		F24F0A771BB42A340073F6FA /* libWeiboSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F24F0A6B1BB42A340073F6FA /* libWeiboSDK.a */; settings = {ASSET_TAGS = (); }; };
 		F24F0A781BB42A340073F6FA /* WeiboSDK.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F24F0A741BB42A340073F6FA /* WeiboSDK.bundle */; settings = {ASSET_TAGS = (); }; };
@@ -544,6 +548,14 @@
 		F22AB3A21B05E29900C61677 /* SongListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SongListCell.m; sourceTree = "<group>"; };
 		F22AB3A41B068A6000C61677 /* TapImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TapImageView.h; sourceTree = "<group>"; };
 		F22AB3A51B068A6000C61677 /* TapImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TapImageView.m; sourceTree = "<group>"; };
+		F24B8F541BCD1CB900FC2597 /* RDVTabBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDVTabBar.h; sourceTree = "<group>"; };
+		F24B8F551BCD1CB900FC2597 /* RDVTabBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDVTabBar.m; sourceTree = "<group>"; };
+		F24B8F561BCD1CB900FC2597 /* RDVTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDVTabBarController.h; sourceTree = "<group>"; };
+		F24B8F571BCD1CB900FC2597 /* RDVTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDVTabBarController.m; sourceTree = "<group>"; };
+		F24B8F581BCD1CB900FC2597 /* RDVTabBarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDVTabBarItem.h; sourceTree = "<group>"; };
+		F24B8F591BCD1CB900FC2597 /* RDVTabBarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDVTabBarItem.m; sourceTree = "<group>"; };
+		F24B8F5F1BCD5CBF00FC2597 /* MuzzikTabViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MuzzikTabViewController.h; sourceTree = "<group>"; };
+		F24B8F601BCD5CBF00FC2597 /* MuzzikTabViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MuzzikTabViewController.m; sourceTree = "<group>"; };
 		F24F0A661BB320910073F6FA /* JSImagePickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSImagePickerViewController.h; sourceTree = "<group>"; };
 		F24F0A671BB320910073F6FA /* JSImagePickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSImagePickerViewController.m; sourceTree = "<group>"; };
 		F24F0A6B1BB42A340073F6FA /* libWeiboSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libWeiboSDK.a; sourceTree = "<group>"; };
@@ -815,6 +827,8 @@
 				E14F4A4B1ACD2B3700270903 /* 登录 */,
 				E11245F91AAAAE4B0014D461 /* AppDelegate.h */,
 				E11245FA1AAAAE4B0014D461 /* AppDelegate.m */,
+				F24B8F5F1BCD5CBF00FC2597 /* MuzzikTabViewController.h */,
+				F24B8F601BCD5CBF00FC2597 /* MuzzikTabViewController.m */,
 				F20B102D1AF674540067EBD3 /* RootViewController.h */,
 				F20B102E1AF674540067EBD3 /* RootViewController.m */,
 				F200B7B21B2D4252002A6F61 /* 设置 */,
@@ -903,6 +917,7 @@
 		E112461E1AAAB0F60014D461 /* 3plus-in */ = {
 			isa = PBXGroup;
 			children = (
+				F24B8F531BCD1CB900FC2597 /* RDVTabBarController */,
 				F24F0A651BB320790073F6FA /* JSImagePicker */,
 				F20C4EE31B6A48C600331101 /* actionsheet */,
 				F2AD9F7D1B5F9D180039FBC4 /* SUNSlideSwitchView.h */,
@@ -1424,6 +1439,19 @@
 			name = "推荐";
 			sourceTree = "<group>";
 		};
+		F24B8F531BCD1CB900FC2597 /* RDVTabBarController */ = {
+			isa = PBXGroup;
+			children = (
+				F24B8F541BCD1CB900FC2597 /* RDVTabBar.h */,
+				F24B8F551BCD1CB900FC2597 /* RDVTabBar.m */,
+				F24B8F561BCD1CB900FC2597 /* RDVTabBarController.h */,
+				F24B8F571BCD1CB900FC2597 /* RDVTabBarController.m */,
+				F24B8F581BCD1CB900FC2597 /* RDVTabBarItem.h */,
+				F24B8F591BCD1CB900FC2597 /* RDVTabBarItem.m */,
+			);
+			path = RDVTabBarController;
+			sourceTree = "<group>";
+		};
 		F24F0A651BB320790073F6FA /* JSImagePicker */ = {
 			isa = PBXGroup;
 			children = (
@@ -1820,6 +1848,8 @@
 				F2F089E01B009CCA00FB1639 /* SettingCell.m in Sources */,
 				F200B7AF1B2AC7F6002A6F61 /* FeedViewController.m in Sources */,
 				E14F4A4E1ACD2B9800270903 /* LoginViewController.m in Sources */,
+				F24B8F5A1BCD1CB900FC2597 /* RDVTabBar.m in Sources */,
+				F24B8F5C1BCD1CB900FC2597 /* RDVTabBarItem.m in Sources */,
 				F20C4EE61B6A48D100331101 /* IBActionSheet.m in Sources */,
 				F20C4EDD1B68CA5800331101 /* MuzzikUserCell.m in Sources */,
 				E1FA12D21AB14CEF005EDA1D /* UIView+Additions.m in Sources */,
@@ -1970,6 +2000,7 @@
 				F2F7EE261AEE213200265596 /* BATableViewIndex.m in Sources */,
 				F200B7A21B28B727002A6F61 /* SDBallProgressView.m in Sources */,
 				F2F7EE3F1AEE23E400265596 /* PinyinHelper.m in Sources */,
+				F24B8F611BCD5CBF00FC2597 /* MuzzikTabViewController.m in Sources */,
 				F20878B71B9F2A7F00A9FA45 /* badgeImageView.m in Sources */,
 				F25C50501B034BA000F03A61 /* UserSongVC.m in Sources */,
 				F20B10321AF69D8D0067EBD3 /* searchViewController.m in Sources */,
@@ -2012,6 +2043,7 @@
 				F2F68F5B1B23FAEA005F19E6 /* DraftBoxVC.m in Sources */,
 				F2F0FC901ADE0E9100668103 /* checkVerifyCode.m in Sources */,
 				F26131241ADE1C200042F1D4 /* setNameVc.m in Sources */,
+				F24B8F5B1BCD1CB900FC2597 /* RDVTabBarController.m in Sources */,
 				E1FA13421AB1911D005EDA1D /* http_stream.cpp in Sources */,
 				E1FA12D11AB14CEF005EDA1D /* NSError+Additions.m in Sources */,
 				F2B81FF11ADD6C6A00012ED6 /* MuzzikItem.m in Sources */,

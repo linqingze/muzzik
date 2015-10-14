@@ -62,7 +62,7 @@
  * Changes the visibility of the tab bar.
  */
 - (void)setTabBarHidden:(BOOL)hidden animated:(BOOL)animated;
-
+-(void) addCenterButtonWithImage:(UIImage*)buttonImage highlightImage:(UIImage*)highlightImage;
 @end
 
 @protocol RDVTabBarControllerDelegate <NSObject>

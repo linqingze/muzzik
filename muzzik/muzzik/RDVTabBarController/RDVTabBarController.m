@@ -48,6 +48,7 @@
     
     [self.view addSubview:[self contentView]];
     [self.view addSubview:[self tabBar]];
+    [self addCenterButtonWithImage:[UIImage imageNamed:@"newMuzzikImage"] highlightImage:[UIImage imageNamed:@"newMuzzikImage"]];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -58,7 +59,7 @@
     [self setTabBarHidden:self.isTabBarHidden animated:NO];
 }
 
-- (NSUInteger)supportedInterfaceOrientations {
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
     UIInterfaceOrientationMask orientationMask = UIInterfaceOrientationMaskAll;
     for (UIViewController *viewController in [self viewControllers]) {
         if (![viewController respondsToSelector:@selector(supportedInterfaceOrientations)]) {
@@ -84,7 +85,35 @@
     }
     return YES;
 }
-
+-(void) addCenterButtonWithImage:(UIImage*)buttonImage highlightImage:(UIImage*)highlightImage{
+    UIButton* button = [UIButton buttonWithType:UIButtonTypeCustom];
+    [button addTarget:self action:@selector(poNewMuzzik) forControlEvents:UIControlEventTouchUpInside];
+    button.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
+    button.frame = CGRectMake(0.0, 0.0, buttonImage.size.width, buttonImage.size.height);
+    [button setBackgroundImage:buttonImage forState:UIControlStateNormal];
+    [button setBackgroundImage:highlightImage forState:UIControlStateHighlighted];
+    
+    CGFloat heightDifference = buttonImage.size.height - self.tabBar.frame.size.height;
+    if (heightDifference < 0)
+        button.center = self.tabBar.center;
+    else
+    {
+        CGPoint center = self.tabBar.center;
+        center.y = center.y - heightDifference/2.0;
+        button.center = center;
+    }
+    
+    [self.tabBar addSubview:button];
+}
+-(void)poNewMuzzik{
+    if (self.isTabBarHidden) {
+        [self setTabBarHidden:NO animated:YES];
+    }else{
+        [self setTabBarHidden:YES animated:YES];
+    }
+    
+    NSLog(@"212121");
+}
 #pragma mark - Methods
 
 - (UIViewController *)selectedViewController {

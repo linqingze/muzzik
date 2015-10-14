@@ -96,7 +96,6 @@
     muzzikvc.parentRoot = self;
     muzzikvc.isRootSubview = YES;
     AppDelegate *mydelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    mydelegate.viewcontroller = muzzikvc;
     topicvc = [[TopicVC alloc] init];
     topicvc.parentRoot = self;
     userHome = [[UserHomePage alloc] init];

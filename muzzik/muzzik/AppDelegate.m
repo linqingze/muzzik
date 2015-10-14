@@ -20,7 +20,11 @@
 #import "settingSystemVC.h"
 #import "UIImageView+WebCache.m"
 #import "NotificationCenterViewController.h"
+#import "FeedViewController.h"
+#import "UserHomePage.h"
+#import "TopicVC.h"
 #import "DetaiMuzzikVC.h"
+#import "MuzzikTabViewController.h"
 @interface AppDelegate (){
     BOOL isLaunched;
 }
@@ -101,6 +105,11 @@
         [self createAlbum];
     }
     [self QueryAllMusic];
+    [self setupViewControllers];
+    [self.window setRootViewController:self.tabviewController];
+    
+    
+    
     NSDictionary* message = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
     if (message) {
        // [MuzzikItem addObjectToLocal:message ForKey:@"launch_APP"];
@@ -118,21 +127,39 @@
 
         [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     }
-//    NSDictionary* message = [MuzzikItem getDictionaryFromLocalForKey:@"launch_APP"];
-//    [MuzzikItem addObjectToLocal:message ForKey:@"launch_APP"];
-//    NSString *payloadMsg = [message objectForKey:@"payload"];
-//    NSRange range = [payloadMsg rangeOfString:@"muzzik_id"];
-//    if ([payloadMsg length]>0 &&range.location != NSNotFound) {
-//        DetaiMuzzikVC *detailvc = [[DetaiMuzzikVC alloc] init];
-//        
-//        detailvc.muzzik_id = [payloadMsg substringWithRange:NSMakeRange(range.length, payloadMsg.length-range.length)];
-//        [nac pushViewController:detailvc animated:YES];
-//    }else{
-//        NotificationCenterViewController *notifyVC = [[NotificationCenterViewController alloc] init];
-//        [nac pushViewController:notifyVC animated:YES];
-//    }
     return YES;
 }
+- (void)setupViewControllers {
+    self.feedVC = [[FeedViewController alloc] init];
+    UINavigationController *firstNavigationController = [[UINavigationController alloc]
+                                                   initWithRootViewController:self.feedVC];
+    
+    self.topicVC = [[TopicVC alloc] init];
+    UINavigationController *secondNavigationController = [[UINavigationController alloc]
+                                                    initWithRootViewController:self.topicVC];
+    
+    self.notifyVC = [[NotificationCenterViewController alloc] init];
+    UINavigationController *thirdNavigationController = [[UINavigationController alloc]
+                                                   initWithRootViewController:self.notifyVC];
+    self.userhomeVC = [[UserHomePage alloc] init];
+    UINavigationController *lastViewController = [[UINavigationController alloc]
+                                                  initWithRootViewController:self.userhomeVC];
+    
+    MuzzikTabViewController *tabBarController = [[MuzzikTabViewController alloc] init];
+    [tabBarController setViewControllers:@[firstNavigationController, secondNavigationController,[[UIViewController alloc] init],
+                                           thirdNavigationController,lastViewController]];
+    self.tabviewController = tabBarController;
+    //[self.tabviewController.tabBar setBackgroundImage:[MuzzikItem createImageWithColor:[UIColor clearColor]]];
+    [self.tabviewController.tabBar setShadowImage:[MuzzikItem createImageWithColor:[UIColor clearColor]]];
+    
+    self.tabviewController.tabBar.translucent = NO;
+    self.tabviewController.tabBar.alpha = 0.95;
+    [self.tabviewController addCenterButtonWithImage:[UIImage imageNamed:@"newMuzzikImage"] highlightImage:[UIImage imageNamed:@"newMuzzikImage"]];
+    self.tabviewController.tabBarItem
+}
+
+
+
 #pragma -mark 个推后台推送，消息处理
 -(void)GexinSdkDidReceivePayload:(NSString *)payloadId fromApplication:(NSString *)appId{
     _payloadId =payloadId;
