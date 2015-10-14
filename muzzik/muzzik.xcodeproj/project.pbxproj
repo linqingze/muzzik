@@ -176,6 +176,7 @@
 		F29290291ADFC74B0086E8D4 /* phoneForResetVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F29290281ADFC74B0086E8D4 /* phoneForResetVC.m */; };
 		F292902C1ADFCA9B0086E8D4 /* messageForResetVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F292902B1ADFCA9B0086E8D4 /* messageForResetVC.m */; };
 		F29A17021AEA98B600200EAE /* SearchLibraryMusicVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F29A17011AEA98B600200EAE /* SearchLibraryMusicVC.m */; };
+		F29E94E61BCE4A8400D0CD3E /* TencentOpenApi_IOS_Bundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F29E94E51BCE4A8400D0CD3E /* TencentOpenApi_IOS_Bundle.bundle */; settings = {ASSET_TAGS = (); }; };
 		F2A2E8FF1B08A81300D65514 /* ActivityUserVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A2E8FE1B08A81300D65514 /* ActivityUserVC.m */; };
 		F2A2E9051B08C44D00D65514 /* SuggestMuzzikVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A2E9041B08C44D00D65514 /* SuggestMuzzikVC.m */; };
 		F2A2E9081B08C69B00D65514 /* suggestCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A2E9071B08C69B00D65514 /* suggestCollectionCell.m */; };
@@ -607,6 +608,7 @@
 		F292902B1ADFCA9B0086E8D4 /* messageForResetVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = messageForResetVC.m; sourceTree = "<group>"; };
 		F29A17001AEA98B600200EAE /* SearchLibraryMusicVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchLibraryMusicVC.h; sourceTree = "<group>"; };
 		F29A17011AEA98B600200EAE /* SearchLibraryMusicVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchLibraryMusicVC.m; sourceTree = "<group>"; };
+		F29E94E51BCE4A8400D0CD3E /* TencentOpenApi_IOS_Bundle.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = TencentOpenApi_IOS_Bundle.bundle; sourceTree = "<group>"; };
 		F2A2E8FD1B08A81300D65514 /* ActivityUserVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityUserVC.h; sourceTree = "<group>"; };
 		F2A2E8FE1B08A81300D65514 /* ActivityUserVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivityUserVC.m; sourceTree = "<group>"; };
 		F2A2E9031B08C44D00D65514 /* SuggestMuzzikVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SuggestMuzzikVC.h; sourceTree = "<group>"; };
@@ -877,6 +879,7 @@
 		E112461C1AAAB0D10014D461 /* Framework */ = {
 			isa = PBXGroup;
 			children = (
+				F29E94E51BCE4A8400D0CD3E /* TencentOpenApi_IOS_Bundle.bundle */,
 				F2190DBE1BBAB13C00588A7D /* TencentOpenAPI.framework */,
 				E162BD7E1AB444370001A61C /* libstdc++.dylib */,
 				E162BD7C1AB4442B0001A61C /* CoreTelephony.framework */,
@@ -1796,6 +1799,7 @@
 				F208EF551B1F7D6100DB5A68 /* calico_cyrillic.ttf in Resources */,
 				F208EF541B1F7D6100DB5A68 /* Bluehigh.ttf in Resources */,
 				F24F0A781BB42A340073F6FA /* WeiboSDK.bundle in Resources */,
+				F29E94E61BCE4A8400D0CD3E /* TencentOpenApi_IOS_Bundle.bundle in Resources */,
 				F208EF4F1B1F7A7700DB5A68 /* VNI_HLThuphap.ttf in Resources */,
 				E11246061AAAAE4B0014D461 /* LaunchScreen.xib in Resources */,
 				F2E558A71B164D420080F9C9 /* MJRefresh.bundle in Resources */,
