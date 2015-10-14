@@ -154,8 +154,14 @@
     
     self.tabviewController.tabBar.translucent = NO;
     self.tabviewController.tabBar.alpha = 0.95;
-    [self.tabviewController addCenterButtonWithImage:[UIImage imageNamed:@"newMuzzikImage"] highlightImage:[UIImage imageNamed:@"newMuzzikImage"]];
-    self.tabviewController.tabBarItem
+    NSArray *imageName = @[@"tabbarMuzzik",@"tabbarHot",@"tabbarHot",@"tabbarNotification",@"tabbarUserCenter"];
+    [self.tabviewController addCenterButtonWithImage:[UIImage imageNamed:@"tabbaraddsongImage"] highlightImage:[UIImage imageNamed:@"tabbaraddsongImage"]];
+    UITabBar *tabBar = self.tabviewController.tabBar;
+    for (NSInteger i = 0; i<tabBar.items.count; i++) {
+        UITabBarItem *tabBarItem = [tabBar.items objectAtIndex:i];
+        [tabBarItem setSelectedImage:[[UIImage imageNamed:[NSString stringWithFormat:@"%@_Selected",imageName[i]]] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
+        [tabBarItem setImage:[UIImage imageNamed:imageName[i]]];
+    }
 }
 
 
