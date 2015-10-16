@@ -25,7 +25,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self initNagationBar:@"发po选歌" leftBtn:0 rightBtn:0];
     sliderView = [[SUNSlideSwitchView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     sliderView.tabItemNormalColor = Color_Text_4;
     sliderView.tabItemSelectedColor = Color_Text_2;

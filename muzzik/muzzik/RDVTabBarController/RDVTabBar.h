@@ -75,7 +75,6 @@
 /**
  * Returns the minimum height of tab bar's items.
  */
-- (CGFloat)minimumContentHeight;
 
 /*
  * Enable or disable tabBar translucency. Default is NO.

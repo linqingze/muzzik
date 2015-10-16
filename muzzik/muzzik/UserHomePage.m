@@ -13,6 +13,7 @@
 #import "MuzzikTableVC.h"
 #import "UsetTopicVC.h"
 #import "showUsersVC.h"
+#import "RDVTabBarController.h"
 #import "UserSongVC.h"
 @interface UserHomePage ()<UITableViewDelegate>{
     UIView *mainView;
@@ -46,7 +47,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self initNagationBar:@"个人主页" leftBtn:Constant_backImage rightBtn:0];
+    [self initNagationBar:@"个人主页" leftBtn:8 rightBtn:0];
     mainView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     [mainTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
@@ -177,19 +178,20 @@
     [mainView addSubview: messageView];
     [mainView setFrame:CGRectMake(0,0,SCREEN_WIDTH, SCREEN_WIDTH+SCREEN_WIDTH/320.0*184.0)];
     [mainTableView setTableHeaderView:mainView];
+    if (self.rdv_tabBarController.tabBar.translucent) {
+        UIEdgeInsets insets = UIEdgeInsetsMake(0,
+                                               0,
+                                               CGRectGetHeight(self.rdv_tabBarController.tabBar.frame),
+                                               0);
+        
+        mainTableView.contentInset = insets;
+        mainTableView.scrollIndicatorInsets = insets;
+    }
 }
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    if (self.parentRoot) {
-        for (UIView *view in [self.parentRoot.titleShowView subviews]) {
-            [view removeFromSuperview];
-        }
-        UIImageView *headImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"metitleImage"]];
-        [headImage setFrame:CGRectMake((self.parentRoot.titleShowView.frame.size.width-headImage.frame.size.width)/2, 5, headImage.frame.size.width, headImage.frame.size.height)];
-        [self.parentRoot.titleShowView addSubview:headImage];
-        [self.parentRoot.pagecontrol setCurrentPage:2];
-    }
+    [self.rdv_tabBarController setTabBarHidden:NO animated:YES];
     [self loadDataMessage];
 }
 -(void)loadDataMessage{
@@ -423,40 +425,47 @@
         setting.profileDic = self.profileDic;
         setting.userhome = self;
         [self.navigationController pushViewController:setting animated:YES];
+        [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
     }
 }
 
 -(void)showMuzziks{
     UserMuzzikVC *uMuzzik = [[UserMuzzikVC alloc] init];
     [self.navigationController pushViewController:uMuzzik animated:YES];
+    [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
 }
 
 -(void)showMoveds{
     MuzzikTableVC *muzzikMoved = [[MuzzikTableVC alloc] init];
     muzzikMoved.requstType = @"moved";
     [self.navigationController pushViewController:muzzikMoved animated:YES];
+    [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
 }
 
 -(void)showTopic{
     UsetTopicVC *usertopic = [[UsetTopicVC alloc] init];
     [self.navigationController pushViewController:usertopic animated:YES];
+    [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
 }
 
 -(void)showFollow{
     showUsersVC *showuser = [[showUsersVC alloc] init];
     showuser.showType = @"follows";
     [self.navigationController pushViewController:showuser animated:YES];
+    [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
 }
 
 -(void)showFans{
     showUsersVC *showuser = [[showUsersVC alloc] init];
     showuser.showType = @"fans";
     [self.navigationController pushViewController:showuser animated:YES];
+    [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
 }
 
 -(void)showSong{
     UserSongVC* usersong = [[UserSongVC alloc] init];
     [self.navigationController pushViewController:usersong animated:YES];
+    [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
 }
 /*
 #pragma mark - Navigation

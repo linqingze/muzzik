@@ -41,7 +41,6 @@
 		E11246811AAAB2490014D461 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E11246801AAAB2490014D461 /* MobileCoreServices.framework */; };
 		E11246831AAAB2530014D461 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E11246821AAAB2530014D461 /* SystemConfiguration.framework */; };
 		E11246851AAAB25A0014D461 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E11246841AAAB25A0014D461 /* CFNetwork.framework */; };
-		E112468E1AAAB2CD0014D461 /* muzzikTrendController.m in Sources */ = {isa = PBXBuildFile; fileRef = E11246871AAAB2CD0014D461 /* muzzikTrendController.m */; };
 		E112468F1AAAB2CD0014D461 /* NormalCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E11246891AAAB2CD0014D461 /* NormalCell.m */; };
 		E11246911AAAB2CD0014D461 /* TopicHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = E112468D1AAAB2CD0014D461 /* TopicHeaderView.m */; };
 		E112469A1AAAC02A0014D461 /* AMScrollingNavbarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E11246951AAAC02A0014D461 /* AMScrollingNavbarViewController.m */; };
@@ -121,7 +120,6 @@
 		F208EF541B1F7D6100DB5A68 /* Bluehigh.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F208EF521B1F7D6100DB5A68 /* Bluehigh.ttf */; };
 		F208EF551B1F7D6100DB5A68 /* calico_cyrillic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F208EF531B1F7D6100DB5A68 /* calico_cyrillic.ttf */; };
 		F208EF581B1F85B800DB5A68 /* FontTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F208EF571B1F85B800DB5A68 /* FontTableCell.m */; };
-		F20B102F1AF674540067EBD3 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F20B102E1AF674540067EBD3 /* RootViewController.m */; };
 		F20B10321AF69D8D0067EBD3 /* searchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F20B10311AF69D8D0067EBD3 /* searchViewController.m */; };
 		F20B10361AF6B4A30067EBD3 /* UserHomePage.m in Sources */ = {isa = PBXBuildFile; fileRef = F20B10351AF6B4A30067EBD3 /* UserHomePage.m */; };
 		F20B10391AF6B4DE0067EBD3 /* NotificationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F20B10381AF6B4DE0067EBD3 /* NotificationVC.m */; };
@@ -342,8 +340,6 @@
 		E11246801AAAB2490014D461 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		E11246821AAAB2530014D461 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		E11246841AAAB25A0014D461 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
-		E11246861AAAB2CD0014D461 /* muzzikTrendController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = muzzikTrendController.h; sourceTree = "<group>"; };
-		E11246871AAAB2CD0014D461 /* muzzikTrendController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = muzzikTrendController.m; sourceTree = "<group>"; };
 		E11246881AAAB2CD0014D461 /* NormalCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NormalCell.h; sourceTree = "<group>"; };
 		E11246891AAAB2CD0014D461 /* NormalCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NormalCell.m; sourceTree = "<group>"; };
 		E112468C1AAAB2CD0014D461 /* TopicHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopicHeaderView.h; sourceTree = "<group>"; };
@@ -491,8 +487,6 @@
 		F208EF531B1F7D6100DB5A68 /* calico_cyrillic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = calico_cyrillic.ttf; sourceTree = "<group>"; };
 		F208EF561B1F85B800DB5A68 /* FontTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FontTableCell.h; sourceTree = "<group>"; };
 		F208EF571B1F85B800DB5A68 /* FontTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FontTableCell.m; sourceTree = "<group>"; };
-		F20B102D1AF674540067EBD3 /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
-		F20B102E1AF674540067EBD3 /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
 		F20B10301AF69D8D0067EBD3 /* searchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = searchViewController.h; sourceTree = "<group>"; };
 		F20B10311AF69D8D0067EBD3 /* searchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = searchViewController.m; sourceTree = "<group>"; };
 		F20B10341AF6B4A30067EBD3 /* UserHomePage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserHomePage.h; sourceTree = "<group>"; };
@@ -829,8 +823,6 @@
 				E11245FA1AAAAE4B0014D461 /* AppDelegate.m */,
 				F24B8F5F1BCD5CBF00FC2597 /* MuzzikTabViewController.h */,
 				F24B8F601BCD5CBF00FC2597 /* MuzzikTabViewController.m */,
-				F20B102D1AF674540067EBD3 /* RootViewController.h */,
-				F20B102E1AF674540067EBD3 /* RootViewController.m */,
 				F200B7B21B2D4252002A6F61 /* 设置 */,
 				E1B230481AB6E6FA004E50DA /* muzzik-PrefixHeader.pch */,
 				E11246921AAABFED0014D461 /* appConfiguration.h */,
@@ -1415,8 +1407,6 @@
 			children = (
 				F21EA1C81ACECC6200F5ED32 /* TopicVC.h */,
 				F21EA1C91ACECC6200F5ED32 /* TopicVC.m */,
-				E11246861AAAB2CD0014D461 /* muzzikTrendController.h */,
-				E11246871AAAB2CD0014D461 /* muzzikTrendController.m */,
 				F2A2E9031B08C44D00D65514 /* SuggestMuzzikVC.h */,
 				F2A2E9041B08C44D00D65514 /* SuggestMuzzikVC.m */,
 				F2A2E9061B08C69B00D65514 /* suggestCollectionCell.h */,
@@ -1879,7 +1869,6 @@
 				E16716251AAD77830068AE98 /* userInfo.m in Sources */,
 				F2AD9F7F1B5F9D180039FBC4 /* SUNSlideSwitchView.m in Sources */,
 				F27EBBA01B7D065600A5A599 /* LocalMusicTableViewController.m in Sources */,
-				E112468E1AAAB2CD0014D461 /* muzzikTrendController.m in Sources */,
 				E1FA12E81AB18252005EDA1D /* FSXMLHttpRequest.m in Sources */,
 				E1FA13401AB1911D005EDA1D /* audio_queue.cpp in Sources */,
 				F22AB3A31B05E29900C61677 /* SongListCell.m in Sources */,
@@ -1924,7 +1913,6 @@
 				F2ED22DB1B136029001F7787 /* UIButton_UserMuzzik.m in Sources */,
 				E1B230391AB5BF22004E50DA /* FMDatabase.m in Sources */,
 				F205539C1B340C1A0093AE8A /* SelectionLabel.m in Sources */,
-				F20B102F1AF674540067EBD3 /* RootViewController.m in Sources */,
 				F20B10361AF6B4A30067EBD3 /* UserHomePage.m in Sources */,
 				F2F7EE1A1AED69B600265596 /* MessageStepViewController.m in Sources */,
 				E1B2303A1AB5BF22004E50DA /* FMDatabaseAdditions.m in Sources */,

@@ -55,18 +55,30 @@
 
 - (void)commonInitialization {
     _backgroundView = [[UIView alloc] init];
-    [_backgroundView setBackgroundColor:[UIColor whiteColor]];
-    [self addSubview:_backgroundView];
-    [self setBackgroundColor:[UIColor whiteColor]];
+    [_backgroundView setBackgroundColor:[UIColor clearColor]];
+    UIImageView *backImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tabhalfcirclebgImage"]];
+    UIImageView *line0 = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tabbgImage"]];
+    UIImageView *line1 = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tabbgImage"]];
+    UIEdgeInsets inset0 = UIEdgeInsetsMake(0, line0.frame.size.width-1, 0, 1);
+    UIEdgeInsets inset1 = UIEdgeInsetsMake(0, line1.frame.size.width-1, 0, 1);
+    line0.image = [line0.image resizableImageWithCapInsets:inset0 resizingMode:UIImageResizingModeStretch];
+    line1.image = [line1.image resizableImageWithCapInsets:inset1 resizingMode:UIImageResizingModeStretch];
+    [line0 setFrame:CGRectMake(0, 0, SCREEN_WIDTH/2-16, 60)];
+    [line1 setFrame:CGRectMake(SCREEN_WIDTH/2+16, 0, SCREEN_WIDTH/2-16, 60)];
     
+    [backImage setFrame:CGRectMake(SCREEN_WIDTH/2-16, 0, 32, 60)];
+    [self.backgroundView addSubview:backImage];
+    [self.backgroundView addSubview:line0];
+    [self.backgroundView addSubview:line1];
+    [self addSubview:_backgroundView];
+    [self setBackgroundColor:[UIColor clearColor]];
     [self setTranslucent:NO];
 }
 
 - (void)layoutSubviews {
     CGSize frameSize = self.frame.size;
-    CGFloat minimumContentHeight = [self minimumContentHeight];
     
-    [[self backgroundView] setFrame:CGRectMake(0, frameSize.height - minimumContentHeight,
+    [[self backgroundView] setFrame:CGRectMake(0, frameSize.height - 60,
                                             frameSize.width, frameSize.height)];
     
     [self setItemWidth:roundf((frameSize.width - [self contentEdgeInsets].left -
@@ -80,12 +92,12 @@
         CGFloat itemHeight = [item itemHeight];
         
         if (!itemHeight) {
-            itemHeight = frameSize.height;
+            itemHeight = frameSize.height-11;
         }
         
         [item setFrame:CGRectMake(self.contentEdgeInsets.left + (index * self.itemWidth),
-                                  roundf(frameSize.height - itemHeight) - self.contentEdgeInsets.top,
-                                  self.itemWidth, itemHeight - self.contentEdgeInsets.bottom)];
+                                  roundf(frameSize.height - itemHeight) - self.contentEdgeInsets.top-0.5,
+                                  self.itemWidth, itemHeight - self.contentEdgeInsets.bottom+0.5)];
         [item setNeedsDisplay];
         
         index++;
@@ -115,19 +127,6 @@
 - (void)setHeight:(CGFloat)height {
     [self setFrame:CGRectMake(CGRectGetMinX(self.frame), CGRectGetMinY(self.frame),
                               CGRectGetWidth(self.frame), height)];
-}
-
-- (CGFloat)minimumContentHeight {
-    CGFloat minimumTabBarContentHeight = CGRectGetHeight([self frame]);
-    
-    for (RDVTabBarItem *item in [self items]) {
-        CGFloat itemHeight = [item itemHeight];
-        if (itemHeight && (itemHeight < minimumTabBarContentHeight)) {
-            minimumTabBarContentHeight = itemHeight;
-        }
-    }
-    
-    return minimumTabBarContentHeight;
 }
 
 #pragma mark - Item selection
@@ -163,12 +162,12 @@
 - (void)setTranslucent:(BOOL)translucent {
     _translucent = translucent;
     
-    CGFloat alpha = (translucent ? 0.9 : 1.0);
-    
-    [_backgroundView setBackgroundColor:[UIColor colorWithRed:255/255.0
-                                                        green:255/255.0
-                                                         blue:255/255.0
-                                                        alpha:alpha]];
+//    CGFloat alpha = (translucent ? 0.9 : 1.0);
+//    
+//    [_backgroundView setBackgroundColor:[UIColor colorWithRed:255/255.0
+//                                                        green:255/255.0
+//                                                         blue:255/255.0
+//                                                        alpha:alpha]];
 }
 
 @end

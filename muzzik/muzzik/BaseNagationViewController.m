@@ -56,7 +56,7 @@
     }
     UIButton *leftBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
     leftBtn.frame = CGRectMake(0, 0, 44, 44);
-    [leftBtn setImageEdgeInsets:UIEdgeInsetsMake(2,0,2,30)];
+    [leftBtn setImageEdgeInsets:UIEdgeInsetsMake(2,-20,2,10)];
 
     if ([[self btnImage:leftImage] isKindOfClass:[UIImage class]]) {
         UIImage *image = (UIImage *)[self btnImage:leftImage];
@@ -184,7 +184,8 @@
             btnImage = [UIImage imageNamed:@"自拍"];
             break;
         case 8:
-            btnImage = [UIImage imageNamed:@"分享"];
+            btnImage = [UIImage imageNamed:@"searchImage"];
+            [self.leftBtn setImageEdgeInsets:UIEdgeInsetsMake(2,0,2,0)];
             break;
         case 9:
             btnImage = [NSString stringWithFormat:@"注册"];

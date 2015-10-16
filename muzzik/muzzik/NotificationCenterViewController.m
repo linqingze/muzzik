@@ -10,7 +10,7 @@
 #import "NotifyObject.h"
 #import "NotificationCategoryCell.h"
 #import "NotificationVC.h"
-
+#import "RDVTabBarController.h"
 @interface NotificationCenterViewController ()<UITableViewDataSource,UITableViewDelegate>{
     UITableView *notifyTabelView;
     NSMutableArray *notifyArray;
@@ -29,7 +29,7 @@
     notifyArray = [NSMutableArray array];
     [[MuzzikObject shareClass].notifyBUtton setHidden:YES];
     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
-     [self initNagationBar:@"消息" leftBtn:Constant_backImage rightBtn:0];
+     [self initNagationBar:@"消息" leftBtn:8 rightBtn:0];
     notifyTabelView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     notifyTabelView.delegate = self;
     notifyTabelView.dataSource = self;
@@ -39,7 +39,15 @@
     notifyTabelView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self loadLocalMessage];
     [self checkNewNotification];
-    
+    if (self.rdv_tabBarController.tabBar.translucent) {
+        UIEdgeInsets insets = UIEdgeInsetsMake(0,
+                                               0,
+                                               CGRectGetHeight(self.rdv_tabBarController.tabBar.frame),
+                                               0);
+        
+        notifyTabelView.contentInset = insets;
+        notifyTabelView.scrollIndicatorInsets = insets;
+    }
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteMuzzik:) name:String_Muzzik_Delete object:nil];
     
     // Do any additional setup after loading the view.
@@ -47,6 +55,7 @@
 }
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    [self.rdv_tabBarController setTabBarHidden:NO animated:YES];
     [notifyTabelView reloadData];
 }
 -(void)dealloc{
@@ -187,7 +196,7 @@
         user.notificationNumParticipationTopicNew = NO;
     }
     [self.navigationController pushViewController:notifyvc animated:YES];
-        
+    [self.rdv_tabBarController setTabBarHidden:YES animated:YES];    
 }
 /**
  *  读取本地持久化数据，设置每个通知类型的个数;

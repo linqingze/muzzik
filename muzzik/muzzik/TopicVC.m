@@ -18,9 +18,10 @@
 #import "ActivityUserVC.h"
 #import "TopRankVC.h"
 #import "UIButton_UserMuzzik.h"
-#import "muzzikTrendController.h"
+#import "RDVTabBarController.h"
 #define width_For_Cell 60.0
 @interface TopicVC ()<UIScrollViewDelegate,TapLabelDelegate>{
+    
     UIScrollView *mainScroll;
     NSArray *topicArray;
     NSArray *userArray;
@@ -28,10 +29,6 @@
     muzzik *suggestMuzzik;
     NSMutableArray *suggestArray;
     muzzik *localMuzzik;
-    //feed
-    UIView *attentionView;
-    UILabel * attentionLabel;
-    UIImageView * nextImage;
     
     //topic
     UIView *topicView;
@@ -74,6 +71,7 @@
     [super viewDidLoad];
     userImageArray = [NSMutableArray array];
     [self.view setBackgroundColor:[UIColor whiteColor]];
+    [self initNagationBar:@"热门" leftBtn:8 rightBtn:0];
      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceMuzzikUpdate:) name:String_MuzzikDataSource_update object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceUserUpdate:) name:String_UserDataSource_update object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
@@ -81,58 +79,41 @@
     [mainScroll setContentSize:CGSizeMake(SCREEN_WIDTH, 1200)];
     [self.view addSubview:mainScroll];
     [self followScrollView:mainScroll];
-    attentionView = [[UIView alloc] initWithFrame:CGRectMake(8, 16, SCREEN_WIDTH-16, 40)];
-    [attentionView setBackgroundColor:Color_line_2];
-    attentionView.layer.cornerRadius = 3;
-    attentionView.clipsToBounds = YES;
-    UITapGestureRecognizer *tapForAttention = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapForAttention)];
-    [attentionView addGestureRecognizer:tapForAttention];
-    
-    
-    attentionLabel = [[UILabel alloc] initWithFrame:CGRectMake(15,0 , attentionView.frame.size.width-30, 40)];
-    [attentionLabel setText:@"广场"];
-    [attentionLabel setFont:[UIFont boldSystemFontOfSize:15]];
-    [attentionLabel setTextColor:Color_Text_2];
-    [attentionView addSubview:attentionLabel];
-    
-    nextImage = [[UIImageView alloc] initWithFrame:CGRectMake(attentionView.frame.size.width-22, 14, 7, 12)];
-    nextImage.image = [UIImage imageNamed:Image_recommendarrowImage];
-    [attentionView addSubview:nextImage];
 
     
     
     //topic
-    topicView = [[UIView alloc] initWithFrame:CGRectMake(8, 319+(NSInteger)(SCREEN_WIDTH*5/3), SCREEN_WIDTH-16, 234)];
+    topicView = [[UIView alloc] initWithFrame:CGRectMake(8, 259+(NSInteger)(SCREEN_WIDTH*5/3), SCREEN_WIDTH-16, 234)];
     [topicView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapForMoreTopic)]];
     [topicView setBackgroundColor:Color_line_2];
     topicView.layer.cornerRadius =3;
     topicView.clipsToBounds = YES;
     [mainScroll addSubview:topicView];
-    hotLabel = [[UILabel alloc] initWithFrame:CGRectMake(15,0 , attentionView.frame.size.width-30, 40)];
+    hotLabel = [[UILabel alloc] initWithFrame:CGRectMake(15,0 , topicView.frame.size.width-30, 40)];
     hotLabel.font = [UIFont boldSystemFontOfSize:15];
     [hotLabel setTextColor:Color_Text_2];
     hotLabel.adjustsFontSizeToFitWidth = YES;
     hotLabel.text = @"热门话题";
     
-    topicNext = [[UIImageView alloc] initWithFrame:CGRectMake(attentionView.frame.size.width-22, 14, 7, 12)];
+    topicNext = [[UIImageView alloc] initWithFrame:CGRectMake(topicView.frame.size.width-22, 14, 7, 12)];
     [topicNext setImage:[UIImage imageNamed:Image_recommendarrowImage]];
     [topicView addSubview:hotLabel];
     [topicView addSubview:topicNext];
     
     [self loadTopics];
     //user
-    userView = [[UIView alloc] initWithFrame:CGRectMake(8, 76, SCREEN_WIDTH-16, (NSInteger)(58+SCREEN_WIDTH*2/3))];
+    userView = [[UIView alloc] initWithFrame:CGRectMake(8, 16, SCREEN_WIDTH-16, (NSInteger)(58+SCREEN_WIDTH*2/3))];
     [userView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapForMoreUser)]];
     [userView setBackgroundColor:Color_line_2];
     userView.layer.cornerRadius =3;
     userView.clipsToBounds = YES;
     [mainScroll addSubview:userView];
-    userLabel = [[UILabel alloc] initWithFrame:CGRectMake(15,0 , attentionView.frame.size.width-30, 40)];
+    userLabel = [[UILabel alloc] initWithFrame:CGRectMake(15,0 , topicView.frame.size.width-30, 40)];
     userLabel.font = [UIFont boldSystemFontOfSize:15];
     userLabel.adjustsFontSizeToFitWidth = YES;
     [userLabel setTextColor:Color_Text_2];
     [userView addSubview:userLabel];
-    userNext = [[UIImageView alloc] initWithFrame:CGRectMake(attentionView.frame.size.width-22, 14, 7, 12)];
+    userNext = [[UIImageView alloc] initWithFrame:CGRectMake(topicView.frame.size.width-22, 14, 7, 12)];
     [userNext setImage:[UIImage imageNamed:Image_recommendarrowImage]];
     [userView addSubview:userNext];
     [self loadUser];
@@ -147,20 +128,28 @@
     muzzikView.layer.cornerRadius =3;
     muzzikView.clipsToBounds = YES;
     [MainMuzzikView addSubview:muzzikView];
-    muzzikLabel = [[UILabel alloc] initWithFrame:CGRectMake(15,0 , attentionView.frame.size.width-30 , 40)];
+    muzzikLabel = [[UILabel alloc] initWithFrame:CGRectMake(15,0 , topicView.frame.size.width-30 , 40)];
     muzzikLabel.font = [UIFont boldSystemFontOfSize:15];
     muzzikLabel.adjustsFontSizeToFitWidth = YES;
     [muzzikLabel setTextColor:Color_Text_2];
     [muzzikView addSubview:muzzikLabel];
-    muzzikNext = [[UIImageView alloc] initWithFrame:CGRectMake(attentionView.frame.size.width-22, 14, 7, 12)];
+    muzzikNext = [[UIImageView alloc] initWithFrame:CGRectMake(topicView.frame.size.width-22, 14, 7, 12)];
     [muzzikNext setImage:[UIImage imageNamed:Image_recommendarrowImage]];
     [muzzikView addSubview:muzzikNext];
     [self loadMuzzik];
     [mainScroll addHeaderWithTarget:self action:@selector(refreshHeader)];
+    if (self.rdv_tabBarController.tabBar.translucent) {
+        UIEdgeInsets insets = UIEdgeInsetsMake(0,
+                                               0,
+                                               CGRectGetHeight(self.rdv_tabBarController.tabBar.frame),
+                                               0);
+        
+        mainScroll.contentInset = insets;
+        mainScroll.scrollIndicatorInsets = insets;
+    }
     
 }
 -(void)refreshHeader{
-    [self loadFeeds];
      [self loadUser];
      [self loadMuzzik];
      [self loadTopics];
@@ -176,49 +165,11 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    for (UIView *view in [self.parentRoot.titleShowView subviews]) {
-        [view removeFromSuperview];
-    }
-    UIImageView *headImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"hottitleImage"]];
-    [headImage setFrame:CGRectMake((self.parentRoot.titleShowView.frame.size.width-headImage.frame.size.width)/2, 5, headImage.frame.size.width, headImage.frame.size.height)];
-    [self.parentRoot.titleShowView addSubview:headImage];
-    [self.parentRoot.pagecontrol setCurrentPage:1];
-    if ([[userInfo shareClass].token length]>0) {
-        [mainScroll addSubview:attentionView];
-        
-        userView.frame = CGRectMake(8, 76, SCREEN_WIDTH-16, (NSInteger)(58+SCREEN_WIDTH*2/3));
-        MainMuzzikView.frame = CGRectMake(0, (NSInteger)(154+SCREEN_WIDTH*2/3), SCREEN_WIDTH-16, MainMuzzikView.frame.size.height);
-        topicView.frame = CGRectMake(8, 174+(NSInteger)(SCREEN_WIDTH*2/3+MainMuzzikView.frame.size.height), SCREEN_WIDTH-16, 234);
-        [mainScroll setContentSize:CGSizeMake(SCREEN_WIDTH, topicView.frame.origin.y+topicView.frame.size.height+20)];
-        [self loadFeeds];
-    }else{
-        [attentionView removeFromSuperview];
-        
-        userView.frame = CGRectMake(8, 16, SCREEN_WIDTH-16, (NSInteger)(58+SCREEN_WIDTH*2/3));
-        MainMuzzikView.frame = CGRectMake(0, (NSInteger)(94+SCREEN_WIDTH*2/3), SCREEN_WIDTH-16, MainMuzzikView.frame.size.height);
-        topicView.frame = CGRectMake(8, 114+(NSInteger)(SCREEN_WIDTH*2/3+MainMuzzikView.frame.size.height), SCREEN_WIDTH-16, 234);
-        [mainScroll setContentSize:CGSizeMake(SCREEN_WIDTH, topicView.frame.origin.y+topicView.frame.size.height+20)];
-        
-    }
-    if ([localMuzzik.muzzik_id isEqualToString:trendMuzzik.muzzik_id]) {
-        [attentionView setBackgroundColor:Color_line_2];
-        [attentionLabel setTextColor:Color_Text_2];
-        [nextImage setImage:[UIImage imageNamed:Image_recommendarrowImage]];
-    }else{
-        if ([trendMuzzik.color longLongValue]==1) {
-            [attentionView setBackgroundColor:Color_Action_Button_1];
-            [attentionLabel setTextColor:[UIColor whiteColor]];
-            [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
-        }else if ([trendMuzzik.color longLongValue]==2){
-            [attentionView setBackgroundColor:Color_Action_Button_2];
-            [attentionLabel setTextColor:[UIColor whiteColor]];
-            [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
-        }else{
-            [attentionView setBackgroundColor:Color_Action_Button_3];
-            [attentionLabel setTextColor:[UIColor whiteColor]];
-            [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
-        }
-    }
+    [self.rdv_tabBarController setTabBarHidden:NO animated:YES];
+//    userView.frame = CGRectMake(8, 16, SCREEN_WIDTH-16, (NSInteger)(58+SCREEN_WIDTH*2/3));
+//    MainMuzzikView.frame = CGRectMake(0, (NSInteger)(94+SCREEN_WIDTH*2/3), SCREEN_WIDTH-16, MainMuzzikView.frame.size.height);
+//    topicView.frame = CGRectMake(8, 114+(NSInteger)(SCREEN_WIDTH*2/3+MainMuzzikView.frame.size.height), SCREEN_WIDTH-16, 234);
+//    [mainScroll setContentSize:CGSizeMake(SCREEN_WIDTH, topicView.frame.origin.y+topicView.frame.size.height+20)];
     
 
 }
@@ -234,125 +185,6 @@
 
 
 #pragma mark -loadData
-
--(void) loadFeeds{
-    if ([MuzzikItem getDataFromLocalKey: Constant_Data_Square]) {
-        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[MuzzikItem getDataFromLocalKey: Constant_Data_Square] options:NSJSONReadingMutableContainers error:nil];
-        if (dic) {
-            
-            muzzik *muzzikToy = [muzzik new];
-            NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
-            if ([array count]>0) {
-                loadedSquare = YES;
-                trendMuzzik = array[0];
-                if ([localMuzzik.muzzik_id isEqualToString:trendMuzzik.muzzik_id]) {
-                    [attentionView setBackgroundColor:Color_line_2];
-                    [attentionLabel setTextColor:Color_Text_2];
-                    [nextImage setImage:[UIImage imageNamed:Image_recommendarrowImage]];
-                }else{
-                    if ([trendMuzzik.color longLongValue]==1) {
-                        [attentionView setBackgroundColor:Color_Action_Button_1];
-                        [attentionLabel setTextColor:[UIColor whiteColor]];
-                        [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
-                    }else if ([trendMuzzik.color longLongValue]==2){
-                        [attentionView setBackgroundColor:Color_Action_Button_2];
-                        [attentionLabel setTextColor:[UIColor whiteColor]];
-                        [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
-                    }else{
-                        [attentionView setBackgroundColor:Color_Action_Button_3];
-                        [attentionLabel setTextColor:[UIColor whiteColor]];
-                        [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
-                    }
-                }
-            }
-            
-            NSMutableArray *resultArray = [NSMutableArray array];
-            for (muzzik *tempmuzzik in array) {
-                BOOL isContained = NO;
-                for (muzzik *arrayMuzzik in resultArray) {
-                    if ([arrayMuzzik.muzzik_id isEqualToString:tempmuzzik.muzzik_id]) {
-                        isContained = YES;
-                        break;
-                    }
-                    
-                }
-                if (!isContained) {
-                    [resultArray addObject:tempmuzzik];
-                }
-                isContained = NO;
-            }
-            [MuzzikItem SetUserInfoWithMuzziks:resultArray title:Constant_userInfo_square description:nil];
-            
-        }
-    }
-    
-    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_Trending]]];
-    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:@"20" forKey:Parameter_Limit] Method:GetMethod auth:YES];
-    __weak ASIHTTPRequest *weakrequest = request;
-    [request setCompletionBlock :^{
-        //    NSLog(@"%@",weakrequest.originalURL);
-        
-        NSData *data = [weakrequest responseData];
-        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-        if (dic) {
-            [MuzzikItem addObjectToLocal:data ForKey:Constant_Data_Square];
-            muzzik *muzzikToy = [muzzik new];
-            NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
-            if ([array count]>0) {
-                loadedSquare = YES;
-                trendMuzzik = array[0];
-                if ([localMuzzik.muzzik_id isEqualToString:trendMuzzik.muzzik_id]) {
-                    [attentionView setBackgroundColor:Color_line_2];
-                    [attentionLabel setTextColor:Color_Text_2];
-                    [nextImage setImage:[UIImage imageNamed:Image_recommendarrowImage]];
-                }else{
-                    if ([trendMuzzik.color longLongValue]==1) {
-                        [attentionView setBackgroundColor:Color_Action_Button_1];
-                        [attentionLabel setTextColor:[UIColor whiteColor]];
-                        [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
-                    }else if ([trendMuzzik.color longLongValue]==2){
-                        [attentionView setBackgroundColor:Color_Action_Button_2];
-                        [attentionLabel setTextColor:[UIColor whiteColor]];
-                        [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
-                    }else{
-                        [attentionView setBackgroundColor:Color_Action_Button_3];
-                        [attentionLabel setTextColor:[UIColor whiteColor]];
-                        [nextImage setImage:[UIImage imageNamed:Image_recommendwhitearrowImage]];
-                    }
-                }
-            }
-            
-            NSMutableArray *resultArray = [NSMutableArray array];
-            for (muzzik *tempmuzzik in array) {
-                BOOL isContained = NO;
-                for (muzzik *arrayMuzzik in resultArray) {
-                    if ([arrayMuzzik.muzzik_id isEqualToString:tempmuzzik.muzzik_id]) {
-                        isContained = YES;
-                        break;
-                    }
-                    
-                }
-                if (!isContained) {
-                    [resultArray addObject:tempmuzzik];
-                }
-                isContained = NO;
-            }
-            [MuzzikItem SetUserInfoWithMuzziks:resultArray title:Constant_userInfo_square description:nil];
-            
-        }
-    }];
-    [request setFailedBlock:^{
-        NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
-        
-    }];
-    [request startAsynchronous];
-    
-    
-    
-    
-    
-    
-}
 -(void) loadTopics{
     if ([MuzzikItem getDataFromLocalKey: Constant_Data_topic]) {
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[MuzzikItem getDataFromLocalKey: Constant_Data_topic] options:NSJSONReadingMutableContainers error:nil];
@@ -823,23 +655,11 @@
     [musicName setTextColor:color];
     muzzikView.frame = CGRectMake(8, 0, SCREEN_WIDTH-16, 145+SCREEN_WIDTH+label.frame.size.height);
 
-    if ([[userInfo shareClass].token length]>0) {
-        [mainScroll addSubview:attentionView];
-          MainMuzzikView.frame = CGRectMake(0, (NSInteger)(408+SCREEN_WIDTH*2/3), SCREEN_WIDTH-16, (NSInteger)(145+SCREEN_WIDTH+label.frame.size.height));
-        userView.frame = CGRectMake(8, 76, SCREEN_WIDTH-16, (NSInteger)(58+SCREEN_WIDTH*2/3));
-        MainMuzzikView.frame = CGRectMake(0, (NSInteger)(154+SCREEN_WIDTH*2/3), SCREEN_WIDTH-16, MainMuzzikView.frame.size.height);
-        topicView.frame = CGRectMake(8, 174+(NSInteger)(SCREEN_WIDTH*2/3+MainMuzzikView.frame.size.height), SCREEN_WIDTH-16, 234);
-        [mainScroll setContentSize:CGSizeMake(SCREEN_WIDTH, topicView.frame.origin.y+topicView.frame.size.height+20)];
-        [self loadFeeds];
-    }else{
-        [attentionView removeFromSuperview];
-        MainMuzzikView.frame = CGRectMake(0, (NSInteger)(348+SCREEN_WIDTH*2/3), SCREEN_WIDTH-16, (NSInteger)(145+SCREEN_WIDTH+label.frame.size.height));
-        userView.frame = CGRectMake(8, 16, SCREEN_WIDTH-16, (NSInteger)(58+SCREEN_WIDTH*2/3));
-        MainMuzzikView.frame = CGRectMake(0, (NSInteger)(94+SCREEN_WIDTH*2/3), SCREEN_WIDTH-16, MainMuzzikView.frame.size.height);
-        topicView.frame = CGRectMake(8, 114+(NSInteger)(SCREEN_WIDTH*2/3+MainMuzzikView.frame.size.height), SCREEN_WIDTH-16, 234);
-        [mainScroll setContentSize:CGSizeMake(SCREEN_WIDTH, topicView.frame.origin.y+topicView.frame.size.height+20)];
-        
-    }
+    MainMuzzikView.frame = CGRectMake(0, (NSInteger)(348+SCREEN_WIDTH*2/3), SCREEN_WIDTH-16, (NSInteger)(145+SCREEN_WIDTH+label.frame.size.height));
+    userView.frame = CGRectMake(8, 16, SCREEN_WIDTH-16, (NSInteger)(58+SCREEN_WIDTH*2/3));
+    MainMuzzikView.frame = CGRectMake(0, (NSInteger)(94+SCREEN_WIDTH*2/3), SCREEN_WIDTH-16, MainMuzzikView.frame.size.height);
+    topicView.frame = CGRectMake(8, 114+(NSInteger)(SCREEN_WIDTH*2/3+MainMuzzikView.frame.size.height), SCREEN_WIDTH-16, 234);
+    [mainScroll setContentSize:CGSizeMake(SCREEN_WIDTH, topicView.frame.origin.y+topicView.frame.size.height+20)];
 
 }
 
@@ -848,22 +668,25 @@
     TopicDetail *topic = [[TopicDetail alloc] init];
     topic.topic_id = sender.tid;
     [self.navigationController pushViewController:topic animated:YES];
+    [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
 }
 -(void)SeeMoreSuggestMuzzik{
     SuggestMuzzikVC *suggsetvc = [[SuggestMuzzikVC alloc]init];
     suggsetvc.viewTittle = muzzikLabel.text;
     suggsetvc.suggestArray = suggestArray;
     [self.navigationController pushViewController:suggsetvc animated:YES];
+    [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
 }
 -(void)goToUser{
     userInfo *user = [userInfo shareClass];
     if ([suggestMuzzik.MuzzikUser.user_id isEqualToString:user.uid]) {
-        UserHomePage *home = [[UserHomePage alloc] init];
-        [self.navigationController pushViewController:home animated:YES];
+//        UserHomePage *home = [[UserHomePage alloc] init];
+//        [self.navigationController pushViewController:home animated:YES];
     }else{
         userDetailInfo *detailuser = [[userDetailInfo alloc] init];
         detailuser.uid = suggestMuzzik.MuzzikUser.user_id;
         [self.navigationController pushViewController:detailuser animated:YES];
+        [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
     }
 }
 -(void)moveAction{
@@ -900,6 +723,7 @@
         
     }else{
         [userInfo checkLoginWithVC:self];
+        [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
     }
 }
 
@@ -910,21 +734,19 @@
     [musicPlayer shareClass].MusicArray = [NSMutableArray arrayWithArray:suggestArray];
     [[musicPlayer shareClass] playSongWithSongModel:suggestMuzzik Title:@"推荐列表"];
     [MuzzikItem SetUserInfoWithMuzziks:suggestArray title:Constant_userInfo_temp description:@"推荐列表"];
-}
--(void) tapForAttention{
-    muzzikTrendController *muzziktablevc = [[muzzikTrendController alloc] init];
-    localMuzzik = trendMuzzik;
-    [self.navigationController pushViewController:muzziktablevc animated:YES];
+    
 }
 -(void) tapForMoreUser{
     ActivityUserVC *activity = [[ActivityUserVC alloc] init];
     activity.viewTittle = userLabel.text;
     [self.navigationController pushViewController:activity animated:YES];
+    [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
     NSLog(@"user");
 }
 -(void) tapForMoreTopic{
     TopRankVC *toprank = [[TopRankVC alloc] init];
     [self.navigationController pushViewController:toprank animated:YES];
+    [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
 }
 -(void)playnextMuzzikUpdate{
     Globle *glob = [Globle shareGloble];
@@ -1020,10 +842,12 @@
     if ([button.user.user_id isEqualToString:user.uid]) {
         UserHomePage *home = [[UserHomePage alloc] init];
         [self.navigationController pushViewController:home animated:YES];
+        [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
     }else{
         userDetailInfo *detailuser = [[userDetailInfo alloc] init];
         detailuser.uid = button.user.user_id;
         [self.navigationController pushViewController:detailuser animated:YES];
+        [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
     }
 }
 -(void)follwUser:(UIButton_UserMuzzik *)button{

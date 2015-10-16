@@ -265,6 +265,7 @@
     if (unselectedImage && (unselectedImage != [self unselectedImage])) {
         [self setUnselectedImage:unselectedImage];
     }
+    [self setNeedsDisplay];
 }
 
 - (void)setBadgeValue:(NSString *)badgeValue {

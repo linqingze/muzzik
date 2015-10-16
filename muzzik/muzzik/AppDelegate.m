@@ -10,13 +10,11 @@
 #import "WXApi.h"
 #import "WeiboSDK.h"
 #import "AppDelegate.h"
-#import "muzzikTrendController.h"
 #import "appConfiguration.h"
 #import "musicPlayer.h"
 #import <TencentOpenAPI/TencentOAuth.h>
 #import "ASIHTTPRequest.h"
 #import "userInfo.h"
-#import "RootViewController.h"
 #import "settingSystemVC.h"
 #import "UIImageView+WebCache.m"
 #import "NotificationCenterViewController.h"
@@ -24,8 +22,8 @@
 #import "UserHomePage.h"
 #import "TopicVC.h"
 #import "DetaiMuzzikVC.h"
-#import "RDVTabBarController.h"
 #import "RDVTabBarItem.h"
+#import "LoginViewController.h"
 @interface AppDelegate (){
     BOOL isLaunched;
 }
@@ -92,10 +90,6 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     [ASIHTTPRequest clearSession];
     
-    RootViewController *rootvc = [[RootViewController alloc] init];
-    UINavigationController *nac = [[UINavigationController alloc] initWithRootViewController:rootvc];
-
-    [self.window setRootViewController:nac];
     self.window.backgroundColor = [UIColor blackColor];
     [self.window makeKeyAndVisible];
     //[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
@@ -106,7 +100,28 @@
         [self createAlbum];
     }
     [self QueryAllMusic];
-    [self setupViewControllers];
+    FeedViewController *feedVC = [[FeedViewController alloc] init];
+    self.feedVC = [[UINavigationController alloc] initWithRootViewController:feedVC];
+    
+    TopicVC *topicVC = [[TopicVC alloc] init];
+    self.topicVC = [[UINavigationController alloc] initWithRootViewController:topicVC];
+    
+    NotificationCenterViewController *notifyVC = [[NotificationCenterViewController alloc] init];
+    self.notifyVC = [[UINavigationController alloc] initWithRootViewController:notifyVC];
+    UserHomePage *userhomeVC = [[UserHomePage alloc] init];
+    self.userhomeVC = [[UINavigationController alloc] initWithRootViewController:userhomeVC];
+    
+    RDVTabBarController *tabBarController = [[RDVTabBarController alloc] init];
+    [tabBarController setViewControllers:@[self.feedVC, self.topicVC,[[UIViewController alloc] init],
+                                           self.notifyVC,self.userhomeVC]];
+    tabBarController.delegate = self;
+    self.tabviewController = tabBarController;
+    //[self.tabviewController.tabBar setBackgroundImage:[MuzzikItem createImageWithColor:[UIColor clearColor]]];
+    //    [self.tabviewController.tabBar setShadowImage:[MuzzikItem createImageWithColor:[UIColor clearColor]]];
+    
+    self.tabviewController.tabBar.translucent = YES;
+    
+    [self customizeTabBarForController:tabBarController];
     [self.window setRootViewController:self.tabviewController];
     
     
@@ -120,52 +135,25 @@
             DetaiMuzzikVC *detailvc = [[DetaiMuzzikVC alloc] init];
             
             detailvc.muzzik_id = [payloadMsg substringWithRange:NSMakeRange(range.length, payloadMsg.length-range.length)];
-            [nac pushViewController:detailvc animated:YES];
+            [self.feedVC pushViewController:detailvc animated:YES];
         }else{
-            NotificationCenterViewController *notifyVC = [[NotificationCenterViewController alloc] init];
-            [nac pushViewController:notifyVC animated:YES];
+            [self.tabviewController setSelectedViewController:self.notifyVC];
         }
 
         [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     }
     return YES;
 }
-- (void)setupViewControllers {
-    self.feedVC = [[FeedViewController alloc] init];
-    UINavigationController *firstNavigationController = [[UINavigationController alloc]
-                                                   initWithRootViewController:self.feedVC];
-    
-    self.topicVC = [[TopicVC alloc] init];
-    UINavigationController *secondNavigationController = [[UINavigationController alloc]
-                                                    initWithRootViewController:self.topicVC];
-    
-    self.notifyVC = [[NotificationCenterViewController alloc] init];
-    UINavigationController *thirdNavigationController = [[UINavigationController alloc]
-                                                   initWithRootViewController:self.notifyVC];
-    self.userhomeVC = [[UserHomePage alloc] init];
-    UINavigationController *lastViewController = [[UINavigationController alloc]
-                                                  initWithRootViewController:self.userhomeVC];
-    
-    RDVTabBarController *tabBarController = [[RDVTabBarController alloc] init];
-    [tabBarController setViewControllers:@[firstNavigationController, secondNavigationController,[[UIViewController alloc] init],
-                                           thirdNavigationController,lastViewController]];
-    self.tabviewController = tabBarController;
-    //[self.tabviewController.tabBar setBackgroundImage:[MuzzikItem createImageWithColor:[UIColor clearColor]]];
-//    [self.tabviewController.tabBar setShadowImage:[MuzzikItem createImageWithColor:[UIColor clearColor]]];
-    
-    self.tabviewController.tabBar.translucent = NO;
-    self.tabviewController.tabBar.alpha = 0.95;
-    [self.tabviewController addCenterButtonWithImage:[UIImage imageNamed:@"newMuzzikImage"] highlightImage:[UIImage imageNamed:@"newMuzzikImage"]];
-     [self customizeTabBarForController:tabBarController];
-}
 - (void)customizeTabBarForController:(RDVTabBarController *)tabBarController {
     UIImage *finishedImage = [MuzzikItem createImageWithColor:Color_Active_Button_1];
-    UIImage *unfinishedImage = [MuzzikItem createImageWithColor:[UIColor whiteColor]];
+    UIImage *unfinishedImage = [MuzzikItem createImageWithColor:[UIColor clearColor]];
     NSArray *tabBarItemImages = @[@"tabbarMuzzik", @"tabbarHot", @"third",@"tabbarNotification",@"tabbarUserCenter"];
     
     NSInteger index = 0;
     for (RDVTabBarItem *item in [[tabBarController tabBar] items]) {
-        [item setBackgroundSelectedImage:finishedImage withUnselectedImage:unfinishedImage];
+        if (index!=2) {
+             [item setBackgroundSelectedImage:finishedImage withUnselectedImage:unfinishedImage];
+        }
         UIImage *selectedimage = [UIImage imageNamed:[NSString stringWithFormat:@"%@_Selected",
                                                       [tabBarItemImages objectAtIndex:index]]];
         UIImage *unselectedimage = [UIImage imageNamed:[tabBarItemImages objectAtIndex:index]];
@@ -173,6 +161,7 @@
         
         index++;
     }
+    
 }
 
 
@@ -181,20 +170,20 @@
     _payloadId =payloadId;
     NSData *data = [_gexinPusher retrivePayloadById:payloadId];
     NSString *payloadMsg = nil;
-    if (data) {
-        UINavigationController *nac = (UINavigationController *)self.window.rootViewController;
-        for (UIViewController *vc in nac.viewControllers) {
-            if ([vc isKindOfClass:[RootViewController class]]){
-                RootViewController *root = (RootViewController *)vc;
-                [root getMessage];
-                
-            }
-    }
-        payloadMsg = [[NSString alloc] initWithBytes:data.bytes
-                                              length:data.length
-                                            encoding:NSUTF8StringEncoding];
-    NSLog(@"payload:%@",[payloadMsg stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]);
-    }
+//    if (data) {
+//        UINavigationController *nac = (UINavigationController *)self.window.rootViewController;
+//        for (UIViewController *vc in nac.viewControllers) {
+//            if ([vc isKindOfClass:[RootViewController class]]){
+//                RootViewController *root = (RootViewController *)vc;
+//                [root getMessage];
+//                
+//            }
+//    }
+//        payloadMsg = [[NSString alloc] initWithBytes:data.bytes
+//                                              length:data.length
+//                                            encoding:NSUTF8StringEncoding];
+//    NSLog(@"payload:%@",[payloadMsg stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]);
+//    }
 }
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -319,7 +308,10 @@
             //        }else{
             //            AudioServicesPlaySystemSound(1301);
             //        }
-            
+            RDVTabBarItem *item = [[[self.tabviewController tabBar] items] objectAtIndex:3];
+            UIImage *selectedimage = [UIImage imageNamed:@"tabbarNotification_Selected"];
+            UIImage *unselectedimage = [UIImage imageNamed:@"tabbarGetNotifucation"];
+            [item setFinishedSelectedImage:selectedimage withFinishedUnselectedImage:unselectedimage];
             
         }
         // [4-EXT]:处理APN
@@ -338,12 +330,10 @@
                     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
                 }else{
                     if ([[userInfoDic allKeys] containsObject:@"aps"] && [[[userInfoDic objectForKey:@"aps"] allKeys] containsObject:@"alert"] && [[userInfoDic objectForKey:@"aps"] objectForKey:@"alert"] && [[[[userInfoDic objectForKey:@"aps"] objectForKey:@"alert"] allKeys] containsObject:@"body"]) {
-                        for (UIViewController *vc in nac.viewControllers) {
-                            if ([vc isKindOfClass:[RootViewController class]]) {
-                                RootViewController *rootvc = (RootViewController*)vc;
-                                [rootvc getMessage];
-                            }
-                        }
+                        RDVTabBarItem *item = [[[self.tabviewController tabBar] items] objectAtIndex:3];
+                        UIImage *selectedimage = [UIImage imageNamed:@"tabbarNotification_Selected"];
+                        UIImage *unselectedimage = [UIImage imageNamed:@"tabbarGetNotifucation"];
+                        [item setFinishedSelectedImage:selectedimage withFinishedUnselectedImage:unselectedimage];
                         NSDictionary *aps = [userInfoDic objectForKey:@"aps"];
                         
                         NSString *record = [NSString stringWithFormat:@"[APN]%@, %@", [NSDate date], aps];
@@ -470,15 +460,11 @@
         NSData *data = [weakrequest responseData];
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         if (dic && [[dic allKeys] containsObject:@"result"] && [[dic objectForKey:@"result"] integerValue]>0) {
-            UINavigationController *nac = (UINavigationController *)self.window.rootViewController;
-            for (UIViewController *vc in nac.viewControllers) {
-                if ([vc isKindOfClass:[RootViewController class]]) {
-                    RootViewController *rootvc = (RootViewController*)vc;
-                    [rootvc getMessage];
-                    [MuzzikItem showNewNotifyByText:[NSString stringWithFormat:@"您有%d条新消息",[[dic objectForKey:@"result"] intValue]]];
-                    break;
-                }
-            }
+            RDVTabBarItem *item = [[[self.tabviewController tabBar] items] objectAtIndex:3];
+            UIImage *selectedimage = [UIImage imageNamed:@"tabbarNotification_Selected"];
+            UIImage *unselectedimage = [UIImage imageNamed:@"tabbarGetNotifucation"];
+            [item setFinishedSelectedImage:selectedimage withFinishedUnselectedImage:unselectedimage];
+            [MuzzikItem showNewNotifyByText:[NSString stringWithFormat:@"您有%d条新消息",[[dic objectForKey:@"result"] intValue]]];
         }
     }];
     [request startAsynchronous];
@@ -1189,7 +1175,41 @@
     }
     
 }
+- (BOOL)tabBarController:(RDVTabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController{
+    userInfo *user = [userInfo shareClass];
+    if ([user.token length] == 0) {
+        if (viewController == self.notifyVC) {
+            UINavigationController *nac = (UINavigationController *) self.tabviewController.selectedViewController;
+            LoginViewController *login = [[LoginViewController alloc] init];
+            [nac pushViewController:login animated:YES];
+            [self.tabviewController setTabBarHidden:YES animated:YES];
+            return NO;
+        }else if(viewController == self.userhomeVC){
+            UINavigationController *nac = (UINavigationController *) self.tabviewController.selectedViewController;
+            LoginViewController *login = [[LoginViewController alloc] init];
+            [nac pushViewController:login animated:YES];
+            [self.tabviewController setTabBarHidden:YES animated:YES];
+            return NO;
+        }else{
+            return YES;
+        }
+            
+    }else{
+        return YES;
+    }
+}
 
+/**
+ * Tells the delegate that the user selected an item in the tab bar.
+ */
+- (void)tabBarController:(RDVTabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController{
+    if (viewController == self.notifyVC) {
+        RDVTabBarItem *item = [[[self.tabviewController tabBar] items] objectAtIndex:3];
+        UIImage *selectedimage = [UIImage imageNamed:@"tabbarNotification_Selected"];
+        UIImage *unselectedimage = [UIImage imageNamed:@"tabbarNotification"];
+        [item setFinishedSelectedImage:selectedimage withFinishedUnselectedImage:unselectedimage];
+    }
+}
 //-(BOOL)checkMute{
 //    CFStringRef state;
 //    UInt32 propertySize = sizeof(CFStringRef);

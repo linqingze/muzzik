@@ -24,7 +24,9 @@
 #import "RDVTabBarController.h"
 #import "RDVTabBarItem.h"
 #import <objc/runtime.h>
-
+#import "ChooseMusicVC.h"
+#import "LoginViewController.h"
+#define NavHeight 124
 @interface UIViewController (RDVTabBarControllerItemInternal)
 
 - (void)rdv_setTabBarController:(RDVTabBarController *)tabBarController;
@@ -49,6 +51,7 @@
     [self.view addSubview:[self contentView]];
     [self.view addSubview:[self tabBar]];
     [self addCenterButtonWithImage:[UIImage imageNamed:@"tabbaraddsongImage"] highlightImage:[UIImage imageNamed:@"tabbaraddsongImage"]];
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -88,25 +91,30 @@
 -(void) addCenterButtonWithImage:(UIImage*)buttonImage highlightImage:(UIImage*)highlightImage{
     UIButton* button = [UIButton buttonWithType:UIButtonTypeCustom];
     [button addTarget:self action:@selector(poNewMuzzik) forControlEvents:UIControlEventTouchUpInside];
-    button.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
-    button.frame = CGRectMake(0.0, 0.0, buttonImage.size.width, buttonImage.size.height);
+    button.frame = CGRectMake(SCREEN_WIDTH/2-20, 12, 40, 40);
     [button setBackgroundImage:buttonImage forState:UIControlStateNormal];
     [button setBackgroundImage:highlightImage forState:UIControlStateHighlighted];
-    
-    CGFloat heightDifference = buttonImage.size.height - self.tabBar.frame.size.height;
-    if (heightDifference < 0)
-        button.center = self.tabBar.center;
-    else
-    {
-        CGPoint center = self.tabBar.center;
-        center.y = center.y - heightDifference/2.0;
-        button.center = center;
-    }
     
     [self.tabBar addSubview:button];
 }
 -(void)poNewMuzzik{
-    NSLog(@"212121");
+    userInfo *user = [userInfo shareClass];
+    if ([[[self selectedViewController] class] isSubclassOfClass:[UINavigationController class]]) {
+        UINavigationController * viewcontroller = (UINavigationController *)[self selectedViewController];
+        if ([user.token length]>0) {
+            //new po
+            user.poController = self;
+            ChooseMusicVC *choosevc = [[ChooseMusicVC alloc] init];
+            [viewcontroller pushViewController:choosevc animated:YES];
+            
+        }
+        else{
+            LoginViewController *loginVC = [[LoginViewController alloc] init];
+            [viewcontroller pushViewController:loginVC animated:YES];
+        }
+        [self setTabBarHidden:YES animated:YES];
+    }
+    
 }
 #pragma mark - Methods
 
@@ -168,13 +176,8 @@
 
 - (RDVTabBar *)tabBar {
     if (!_tabBar) {
-        _tabBar = [[RDVTabBar alloc] init];
+        _tabBar = [[RDVTabBar alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT-NavHeight, SCREEN_WIDTH, 60)];
         [_tabBar setBackgroundColor:[UIColor clearColor]];
-        [_tabBar setAutoresizingMask:(UIViewAutoresizingFlexibleWidth|
-                                      UIViewAutoresizingFlexibleTopMargin|
-                                      UIViewAutoresizingFlexibleLeftMargin|
-                                      UIViewAutoresizingFlexibleRightMargin|
-                                      UIViewAutoresizingFlexibleBottomMargin)];
         [_tabBar setDelegate:self];
     }
     return _tabBar;
@@ -184,8 +187,7 @@
     if (!_contentView) {
         _contentView = [[UIView alloc] init];
         [_contentView setBackgroundColor:[UIColor whiteColor]];
-        [_contentView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth|
-                                           UIViewAutoresizingFlexibleHeight)];
+        [_contentView setFrame:CGRectMake(0, NavHeight, SCREEN_WIDTH, SCREEN_HEIGHT-NavHeight)];
     }
     return _contentView;
 }
@@ -202,19 +204,19 @@
         CGFloat tabBarHeight = CGRectGetHeight([[weakSelf tabBar] frame]);
         
         if (!tabBarHeight) {
-            tabBarHeight = 49;
+            tabBarHeight = 60;
         }
         
         if (!hidden) {
             tabBarStartingY = viewSize.height - tabBarHeight;
             if (![[weakSelf tabBar] isTranslucent]) {
-                contentViewHeight -= ([[weakSelf tabBar] minimumContentHeight] ?: tabBarHeight);
+                contentViewHeight -= tabBarHeight;
             }
             [[weakSelf tabBar] setHidden:NO];
         }
         
         [[weakSelf tabBar] setFrame:CGRectMake(0, tabBarStartingY, viewSize.width, tabBarHeight)];
-        [[weakSelf contentView] setFrame:CGRectMake(0, 0, viewSize.width, contentViewHeight)];
+        [[weakSelf contentView] setFrame:CGRectMake(0, 0, viewSize.width, contentViewHeight+11)];
     };
     
     void (^completion)(BOOL) = ^(BOOL finished){

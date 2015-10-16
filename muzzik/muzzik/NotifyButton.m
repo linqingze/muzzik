@@ -8,6 +8,7 @@
 
 #import "NotifyButton.h"
 #import "NotificationCenterViewController.h"
+
 @implementation NotifyButton
 
 - (id)initWithFrame:(CGRect)frame
@@ -21,24 +22,18 @@
 }
 -(void)showNotify{
     [self setHidden:YES];
-    AppDelegate *app = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    UINavigationController *nac = (UINavigationController *)app.window.rootViewController;
-    for (UIViewController *vc in nac.viewControllers) {
-        if ([vc isKindOfClass:[RootViewController class]]) {
-            RootViewController *rootvc = (RootViewController*)vc;
-            [rootvc seeMessage];
-            break;
-        }
-    }
-    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
-    if ([[nac.viewControllers lastObject] isKindOfClass:[NotificationCenterViewController class]]) {
-        NotificationCenterViewController *notifyVC = (NotificationCenterViewController *)[nac.viewControllers lastObject];
-        [notifyVC checkNewNotification];
-        
-    }else{
-        NotificationCenterViewController *notifyVC = [[NotificationCenterViewController alloc] init];
-        [nac pushViewController:notifyVC animated:YES];
-    }
+//    AppDelegate *app = (AppDelegate*)[UIApplication sharedApplication].delegate;
+//    UINavigationController *nac = (UINavigationController *)app.window.rootViewController;
+//    
+//    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+//    if ([[nac.viewControllers lastObject] isKindOfClass:[NotificationCenterViewController class]]) {
+//        NotificationCenterViewController *notifyVC = (NotificationCenterViewController *)[nac.viewControllers lastObject];
+//        [notifyVC checkNewNotification];
+//        
+//    }else{
+//        NotificationCenterViewController *notifyVC = [[NotificationCenterViewController alloc] init];
+//        [nac pushViewController:notifyVC animated:YES];
+//    }
     
 }
 @end

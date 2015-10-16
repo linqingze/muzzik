@@ -11,21 +11,21 @@
 #import "GexinSdk.h"
 #import "WeiboSDK.h"
 #import "Reachability.h"
+#import "RDVTabBarController.h"
 typedef enum {
     SdkStatusStoped,
     SdkStatusStarting,
     SdkStatusStarted
 } SdkStatus;
 
-@class RDVTabBarController,FeedViewController,NotificationCenterViewController,UserHomePage,TopicVC;
-@interface AppDelegate : UIResponder <UIApplicationDelegate,GexinSdkDelegate,WeiboSDKDelegate,WXApiDelegate>{
+@interface AppDelegate : UIResponder <UIApplicationDelegate,GexinSdkDelegate,WeiboSDKDelegate,WXApiDelegate,RDVTabBarControllerDelegate>{
      NSString *_deviceToken;
 }
 @property (strong, nonatomic) RDVTabBarController *tabviewController;
-@property (strong, nonatomic) FeedViewController *feedVC;
-@property (strong, nonatomic) NotificationCenterViewController *notifyVC;
-@property (strong, nonatomic) UserHomePage *userhomeVC;
-@property (strong, nonatomic) TopicVC *topicVC;
+@property (strong, nonatomic) UINavigationController *feedVC;
+@property (strong, nonatomic) UINavigationController *notifyVC;
+@property (strong, nonatomic) UINavigationController *userhomeVC;
+@property (strong, nonatomic) UINavigationController *topicVC;
 @property (strong, nonatomic) UIWindow *window;
 @property (strong, nonatomic) GexinSdk *gexinPusher;
 @property (copy, nonatomic) NSString *wbtoken;

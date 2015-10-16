@@ -7,10 +7,9 @@
 //
 
 #import "AMScrollingNavbarViewController.h"
-
+@class MainMuzzikViewController;
 @interface FeedViewController : AMScrollingNavbarViewController
-@property(nonatomic) NSMutableArray *muzziks;
+@property (nonatomic,weak) MainMuzzikViewController *keeper;
 @property(nonatomic) musicPlayer *musicplayer;
-@property (nonatomic,weak) RootViewController *parentRoot;
-@property (nonatomic,assign) BOOL isNewCreate;
+
 @end

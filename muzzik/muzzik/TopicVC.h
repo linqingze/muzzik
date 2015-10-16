@@ -9,5 +9,4 @@
 #import <UIKit/UIKit.h>
 #import "AMScrollingNavbarViewController.h"
 @interface TopicVC : AMScrollingNavbarViewController
-@property (nonatomic,weak) RootViewController *parentRoot;
 @end
